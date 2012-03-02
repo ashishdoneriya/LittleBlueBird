@@ -1,9 +1,13 @@
 Launch git, cd ~/LittleBlueBird
 
 
-# how you commit
+how you commit
+
 git commit -m "comments"
 
 
-# how you push to github
+
+
+how you push to github
+
 git push origin master

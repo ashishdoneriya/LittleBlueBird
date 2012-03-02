@@ -1,6 +1,11 @@
-######@@@@@@@@2222
+######@@@@@@@@
 
 Launch git, cd ~/LittleBlueBird
+
+
+Window -> Preferences -> General -> Network Connections -> SSH2
+SSH2 Home:  	C:\Users\bdunklau\.ssh
+Private Keys: 	id_dsa,id_rsa
 
 
 how you commit

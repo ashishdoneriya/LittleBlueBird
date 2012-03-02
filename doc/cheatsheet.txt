@@ -1,0 +1,3 @@
+From git, ~/LittleBlueBird, this will push the committed stuff out to github
+
+git push origin master

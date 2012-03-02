@@ -31,7 +31,7 @@ class UserTest extends FunSuite with AssertionsForJUnit {
 	new StandardDBVendor(Props.get("db.driver") openOr "com.mysql.jdbc.Driver",
 			     Props.get("db.url") openOr 
 			     "jdbc:mysql://localhost:3306/littlebluebird",
-			     Box("bdunklau"), Box("Pi314159"))
+			     Box(Props.get("db.user") openOr "test"), Box(Props.get("db.pass") openOr "test"))
 
     DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
     

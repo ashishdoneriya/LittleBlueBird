@@ -35,7 +35,7 @@ class Boot {
 	new StandardDBVendor(Props.get("db.driver") openOr "com.mysql.jdbc.Driver",
 			     Props.get("db.url") openOr 
 			     "jdbc:mysql://localhost:3306/littlebluebird",
-			     Box("bdunklau"), Box("Pi314159"))
+			     Box(Props.get("db.user") openOr "test"), Box(Props.get("db.pass") openOr "test"))
 
       LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
 

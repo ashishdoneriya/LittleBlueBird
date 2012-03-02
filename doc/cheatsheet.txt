@@ -1,4 +1,3 @@
-######@@@@@@@@
 
 Launch git, cd ~/LittleBlueBird
 

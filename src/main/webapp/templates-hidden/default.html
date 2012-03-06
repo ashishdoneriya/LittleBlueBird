@@ -57,6 +57,12 @@
       <div class="column span-12 last" style="text-align: right">
         <h1 class="alt">LittleBlueBird<img alt="" id="ajax-loader" style="display:none; margin-bottom: 0px; margin-left: 5px" src="/images/ajax-loader.gif"/></h1>
           <span class="lift:embed?what=user/currentUser">name here</span>
+          <div class="site">
+            <lift:Menu.group group="auth"
+              a:class="siteLink">
+              <menu:bind />
+            </lift:Menu.group>
+          </div>
       </div>
 
       <hr/>
@@ -65,7 +71,7 @@
         <hr class="space" />
 
 	    <span class="lift:Menu.builder"></span>
-	    <span class="lift:Circles.showMine"></span>
+	    
 
         <div class="lift:Msgs?showAll=true"></div>
         <hr class="space" />

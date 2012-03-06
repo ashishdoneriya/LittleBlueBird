@@ -28,30 +28,14 @@ object SessionCircle extends SessionVar[Box[Circle]](Empty)
 class Circles {
   private object selectedCircle extends SessionVar[Box[Circle]](Empty)
   
-  /**
-  * Add a circle - this is an "admin" action - something to verify that I can create
-  * circles by themselves
-  */
-  def add(xhtml: Group): NodeSeq = {
-    var thetype = ""
-    var thename = ""
-    var thedate = ""
-    def addCircle() = {
-      
-      val circle = Circle.create.circleType(thetype).name(thename).date(new SimpleDateFormat("MM/dd/yyyy").parse(thedate))
-      circle.save
-      circle
-    }
-    
-    bind("entry", xhtml, "thetype" -> SHtml.text(thetype, thetype = _), "name" -> SHtml.text(thename, thename = _), "thedate" -> SHtml.text(thedate, thedate = _), "submit" -> SHtml.submit("Create", addCircle))
-  }
-  
+
   /**
    * This is where the user is creating a new event.  In this action, the user is automatically added
    * to the circle (unlike the add method above, where the user isn't)
    */
   // TODO when adding current user, don't assume the user is a receiver
-  def addevent(xhtml: Group): NodeSeq = {
+  def add(xhtml: Group): NodeSeq = {
+          println("addevent: begin")
     var thetype = ""
     var thename = ""
     var thedate = ""
@@ -59,14 +43,20 @@ class Circles {
       
       val circle = Circle.create.circleType(thetype).name(thename).date(new SimpleDateFormat("MM/dd/yyyy").parse(thedate))
       circle.save
-      circle
       
       SessionUser.is match {
         // TODO don't assume the user is a receiver
         // TODO what if error saving circle participant?
-        case f:Full[User] => CircleParticipant.create.circle(circle).person(f.open_!).inviter(f.open_!).receiver(true).save
-        case _ => redirectTo("index")
+        case f:Full[User] => {
+          val s = CircleParticipant.create.circle(circle).person(f.open_!).inviter(f.open_!).receiver(true).save
+          println("addevent.addCircle: case f:Full[User]: CircleParticipant.save="+s)
+        }
+        case _ => {
+          println("addevent.addCircle: case _ : redirectTo(\"index\")")
+          redirectTo("index")
+        }
       }
+
     }
     
     bind("entry", xhtml, "thetype" -> SHtml.text(thetype, thetype = _), "name" -> SHtml.text(thename, thename = _), "thedate" -> SHtml.text(thedate, thedate = _), "submit" -> SHtml.submit("Create", addCircle))
@@ -98,22 +88,6 @@ class Circles {
     }
 
     res
-  }
-  
-  def showMine: NodeSeq = {
-    SessionUser.is match {
-      case f:Full[User] => {
-        val circles = f.open_!.circles
-        // the header
-        <tr>{Circle.htmlHeaders}<th>Edit</th><th>Delete</th></tr> ::
-        // get and display each of the circles
-        circles.flatMap(u => <tr>{u.circle.obj.open_!.htmlLine}
-            <td>{link("/circle/edit", () => selectedCircle(Full(u.circle.obj.open_!)), Text("Edit"))}</td>
-            <td>{link("/circle/delete", () => selectedCircle(Full(u.circle.obj.open_!)), Text("Delete"))}</td>
-                                                          </tr>)
-      }
-      case _ => <table><tr><td></td></tr></table>
-    }
   }
   
   /**

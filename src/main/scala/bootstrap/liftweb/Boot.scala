@@ -27,6 +27,7 @@ import net.liftweb.util.NamedPF
 import net.liftweb.http.RewriteRequest
 import net.liftweb.http.ParsePath
 import net.liftweb.http.RewriteResponse
+import com.lbb.EventLoc
 
 class Boot {
   def boot {
@@ -60,10 +61,8 @@ class Boot {
     LiftRules.addToPackages("com.lbb")
     
     LiftRules.rewrite.prepend(NamedPF("CircleRewrite") {
-      case RewriteRequest(
-          ParsePath("circle" :: "view" :: circle :: Nil, _, _,_), _, _) => 
-        RewriteResponse(
-          "circle" :: "index" :: Nil, Map("circle" -> circle)
+      case RewriteRequest(ParsePath("circle" :: "view" :: circle :: Nil, _, _,_), _, _) => 
+        RewriteResponse("circle" :: "index" :: Nil, Map("circle" -> circle)
       )
     })
     
@@ -85,12 +84,14 @@ class Boot {
                   Menu(Loc("LoginLoc", Link(List("login"), true, "/login"), "Login", NotLoggedIn)) ::
                   Menu(Loc("LogoutLoc", Link(List("logout"), true, "/logout"), "Logout", LoggedIn)) ::
                   Menu(Loc("AddEventLoc", "circle"::"addevent"::Nil, "Add Event", LoggedIn)) ::
+                  Menu(new EventLoc) ::
                   addUserMenu :: editUserMenu :: deleteUserMenu :: 
                   Menu(Loc("CircleView", "circle"::"index"::Nil, "View Circles", Hidden)) ::
                   Menu(Loc("CircleAdmin", "circle"::"admin"::Nil, "Admin: Circles", SuperRequired)) ::
                   Menu(Loc("CircleAdd", "circle"::"add"::Nil, "Add Circle", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleEdit", "circle"::"edit"::Nil, "Edit Circle", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleDelete", "circle"::"delete"::Nil, "Delete Circle", LoggedIn, Hidden)) ::
+                  Menu(Loc("CircleDetails", "circle"::"details"::Nil, "CircleDetails", LoggedIn, Hidden)) ::
                   userMenu :: Nil
     
     LiftRules.setSiteMap(SiteMap(entries:_*))

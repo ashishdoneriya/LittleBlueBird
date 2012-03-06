@@ -1,3 +1,3 @@
 [debug] Copy resource mappings: 
-[debug] 	(C:\Lift\lift-lift_24_sbt-05be36f\scala_29\LittleBlueBird\src\main\resources\props,C:\Lift\lift-lift_24_sbt-05be36f\scala_29\LittleBlueBird\target\scala-2.9.1\classes\props)
-[debug] 	(C:\Lift\lift-lift_24_sbt-05be36f\scala_29\LittleBlueBird\src\main\resources\props\default.props,C:\Lift\lift-lift_24_sbt-05be36f\scala_29\LittleBlueBird\target\scala-2.9.1\classes\props\default.props)
+[debug] 	(C:\Users\bdunklau\LittleBlueBird\src\main\resources\props,C:\Users\bdunklau\LittleBlueBird\target\scala-2.9.1\classes\props)
+[debug] 	(C:\Users\bdunklau\LittleBlueBird\src\main\resources\props\default.props,C:\Users\bdunklau\LittleBlueBird\target\scala-2.9.1\classes\props\default.props)

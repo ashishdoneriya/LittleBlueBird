@@ -109,13 +109,13 @@ object UserTest extends UserTest {
   }
   
   def createTamie = {
-    val user = createUser("Tamie", "Dunklau", "tamie", "123456789", "tamiemarie@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("10/10/1976"))
+    val user = createUser("Tamie", "Dunklau", "tamie", "123456789", "xxxxxx@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("10/10/1976"))
     user.save
     user
   }
   
   def createKiera = {
-    val user = createUser("Kiera", "Daniell", "kiera", "123456789", "superkikid@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/16/2001"))
+    val user = createUser("Kiera", "Daniell", "kiera", "123456789", "xxxxxx@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/16/2001"))
     user.save
     user
   }

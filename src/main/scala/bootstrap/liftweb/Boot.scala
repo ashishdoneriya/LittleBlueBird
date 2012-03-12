@@ -28,20 +28,24 @@ import net.liftweb.http.RewriteRequest
 import net.liftweb.http.ParsePath
 import net.liftweb.http.RewriteResponse
 import com.lbb.EventLoc
+import com.lbb.PopulateDb
 
 class Boot {
   def boot {
     if (!DB.jndiJdbcConnAvailable_?) {
       val vendor = 
-	new StandardDBVendor(Props.get("db.driver") openOr "com.mysql.jdbc.Driver",
+	new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver", //"com.mysql.jdbc.Driver",
 			     Props.get("db.url") openOr 
-			     "jdbc:mysql://localhost:3306/littlebluebird",
+			     "jdbc:h2:~/test", //"jdbc:mysql://localhost:3306/littlebluebird",
 			     Box(Props.get("db.user") openOr "test"), Box(Props.get("db.pass") openOr "test"))
 
       LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
 
       DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
     }
+    
+    PopulateDb.doit
+    println("Boot.boot: db populated with sample data")
     
     configMailer
     

@@ -13,8 +13,9 @@ object Emailer {
   val fromname = "LittleBlueBird.com"
     
   private def send(e:Email) {
-    Mailer.sendMail(From(e.fromemail), Subject(e.subject),
-      (PlainMailBodyType(e.message) :: To(e.to) :: ReplyTo(e.fromemail) :: Nil) : _*)
+    // TODO emailing commented out temporarily
+//    Mailer.sendMail(From(e.fromemail), Subject(e.subject),
+//      (PlainMailBodyType(e.message) :: To(e.to) :: ReplyTo(e.fromemail) :: Nil) : _*)
   }
   
   // TODO add the little blue bird to all emails

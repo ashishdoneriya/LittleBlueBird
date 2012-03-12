@@ -1,6 +1,8 @@
 package com.lbb
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
+import net.liftweb.mapper.By
+import net.liftweb.mapper.IHaveValidatedThisSQL
 import net.liftweb.mapper.IdPK
 import net.liftweb.mapper.LongKeyedMapper
 import net.liftweb.mapper.LongKeyedMetaMapper
@@ -8,7 +10,6 @@ import net.liftweb.mapper.MappedBoolean
 import net.liftweb.mapper.MappedLongForeignKey
 import net.liftweb.mapper.MappedString
 import net.liftweb.mapper.MappedTextarea
-import net.liftweb.mapper.By
 
 class Gift extends LongKeyedMapper[Gift] with IdPK {
   def getSingleton = Gift

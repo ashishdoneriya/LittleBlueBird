@@ -272,13 +272,13 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
     
     perspective.foreach( kv => {
       val expDesc = perspective.get(kv._1).get.toList.map(_.description.is).sortWith(_ < _)
-      
+      val recipient = kv._1
       val viewer = tuple._1
       val circle = tuple._2
       
-      val actDesc = kv._1.giftlist(viewer, circle).map(_.description.is).sortWith(_ < _)
+      val actDesc = recipient.giftlist(viewer, circle).map(_.description.is).sortWith(_ < _)
       
-      println("checking "+viewer.first+"'s view of "+kv._1.first+"'s "+circle.name+" list...")
+      println("checking "+viewer.first+"'s view of "+recipient.first+"'s "+circle.name+" list...")
       
       expDesc foreach {g => println("expected gifts: "+g)}
       

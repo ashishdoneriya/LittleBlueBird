@@ -61,9 +61,13 @@ class Boot {
     LiftRules.addToPackages("com.lbb")
     
     LiftRules.rewrite.prepend(NamedPF("CircleRewrite") {
+      // TODO Are we using this one?
       case RewriteRequest(ParsePath("circle" :: "view" :: circle :: Nil, _, _,_), _, _) => 
-        RewriteResponse("circle" :: "index" :: Nil, Map("circle" -> circle)
-      )
+        RewriteResponse("circle" :: "index" :: Nil, Map("circle" -> circle))
+      case RewriteRequest(ParsePath("circle" :: "details" :: circle :: Nil, _, _,_), _, _) => 
+        RewriteResponse("circle" :: "index" :: Nil, Map("circle" -> circle))
+      case RewriteRequest(ParsePath("circle" :: "giftlist" :: circle :: recipient :: Nil, _, _,_), _, _) => 
+        RewriteResponse("circle" :: "gifts" :: Nil, Map("circle" -> circle, "recipient" -> recipient))
     })
     
     // https://github.com/lift/framework/blob/master/web/webkit/src/main/scala/net/liftweb/sitemap/Loc.scala
@@ -91,8 +95,11 @@ class Boot {
                   Menu(Loc("CircleAdd", "circle"::"add"::Nil, "Add Circle", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleEdit", "circle"::"edit"::Nil, "Edit Circle", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleDelete", "circle"::"delete"::Nil, "Delete Circle", LoggedIn, Hidden)) ::
-                  Menu(Loc("CircleDetails", "circle"::"details"::Nil, "CircleDetails", LoggedIn, Hidden)) ::
-                  userMenu :: Nil
+                  Menu(Loc("CircleDetails", ("circle"::"details" :: Nil) -> true, "CircleDetails", LoggedIn, Hidden)) ::
+                  Menu(Loc("Y", ("circle"::"giftlist" :: Nil) -> true, "Y", LoggedIn, Hidden)) ::
+                  Menu(Loc("X", ("circle"::"gifts" :: Nil) -> true, "X", LoggedIn, Hidden)) ::
+                  userMenu :: 
+                  Menu(Loc("Logmein", "b"::Nil, "Log Me In", Hidden)) :: Nil
     
     LiftRules.setSiteMap(SiteMap(entries:_*))
     

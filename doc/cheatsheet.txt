@@ -17,3 +17,9 @@ git commit -m "comments"
 how you push to github
 
 git push origin master
+
+
+
+Will re-read the build.sbt and update all dependencies found there
+
+sbt> reload

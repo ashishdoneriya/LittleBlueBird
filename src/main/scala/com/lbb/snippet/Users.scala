@@ -1,7 +1,7 @@
 package com.lbb.snippet
 import scala.xml.NodeSeq.seqToNodeSeq
-import scala.xml.Group
 import scala.xml.NodeSeq
+import scala.xml.Group
 import scala.xml.Text
 
 import com.lbb.Emailer
@@ -15,12 +15,18 @@ import net.liftweb.http.SHtml.submit
 import net.liftweb.http.S.error
 import net.liftweb.http.S.notice
 import net.liftweb.http.S.redirectTo
+import net.liftweb.http.SessionVar
 import net.liftweb.http.RequestVar
 import net.liftweb.mapper.Ascending
 import net.liftweb.mapper.OrderBy
 import net.liftweb.util.AnyVar.whatVarIs
 import net.liftweb.util.Helpers.bind
 import net.liftweb.util.Helpers.strToSuperArrowAssoc
+
+
+
+object SessionRecipient extends SessionVar[Box[User]](Empty)
+
 
 /**
  * Adapted from :

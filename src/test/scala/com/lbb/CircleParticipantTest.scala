@@ -48,9 +48,9 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit {
     
     
     // this stuff goes in the snippet I guess...
-    val brent : User = User.create.first("BRENT").last("Dunklau").username("bdunklau").password("123456789").email("bdunklau@yahoo.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
-    val tamie : User = User.create.first("Tamie").last("Dunklau").username("tamie").password("123456789").email("bdunklau@yahoo.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("10/10/1976"))
-    val kiera : User = User.create.first("Kiera").last("Daniell").username("kiera").password("123456789").email("bdunklau@yahoo.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("9/16/2001"))
+    val brent : User = User.create.first("BRENT").last("Dunklau").username("bdunklau").password("123456789").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
+    val tamie : User = User.create.first("Tamie").last("Dunklau").username("tamie").password("123456789").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("10/10/1976"))
+    val kiera : User = User.create.first("Kiera").last("Daniell").username("kiera").password("123456789").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("9/16/2001"))
     
     assert(brent.save===true)
     assert(tamie.save===true)

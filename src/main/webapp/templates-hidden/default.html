@@ -33,14 +33,14 @@
 .sidebar ul li a {
 	display:block;
 	padding:3px;
-	text-indent:30px;
+	text-indent:3px;
 	text-decoration:none;
 }
 
 .sidebar ul li span {
 	display:block;
 	padding:3px;
-	text-indent:30px;
+	text-indent:3px;
 	text-decoration:none;
 }
 
@@ -51,10 +51,39 @@
 
   /* ]]> */
   </style>
+  
+  
+  
+<script src="/script/superfish.css" ></script> 
+<script src="/script/hoverIntent.js"></script> 
+<script src="/script/superfish.js"></script> 
+<script src="/script/superfish-vertical.css" ></script> 
+<script src="/script/supersubs.js"></script> 
+ 
         
   </head>
+  
+  
+  
+  
   <body>
     <div class="container">
+
+
+<script> 
+ 
+    $(document).ready(function(){ 
+        $("ul.sf-menu").supersubs({ 
+            minWidth:    12, 
+            maxWidth:    27, 
+            extraWidth:  1,
+            arrows:		 true,
+            dropShadows:  true
+        }).superfish();
+    }); 
+ 
+</script>
+
 
       <div class="column span-12 last" style="text-align: right">
         <h1 class="alt">LittleBlueBird<img alt="" id="ajax-loader" style="display:none; margin-bottom: 0px; margin-left: 5px" src="/images/ajax-loader.gif"/></h1>
@@ -72,7 +101,7 @@
       <div class="column span-6 colborder sidebar">
         <hr class="space" />        
         
-	    <lift:Menu.builder ul:class="tabs" li_item:class="selected" li_path:class="selected" />
+	    <lift:Menu.builder linkToSelf="true" expandAll="true" ul:class="sf-menu sf-vertical" />
 
         <div class="lift:Msgs?showAll=true"></div>
         <hr class="space" />

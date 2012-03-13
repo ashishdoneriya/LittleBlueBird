@@ -34,9 +34,9 @@ class Boot {
   def boot {
     if (!DB.jndiJdbcConnAvailable_?) {
       val vendor = 
-	new StandardDBVendor(Props.get("db.driver") openOr "org.h2.Driver", //"com.mysql.jdbc.Driver",
+	new StandardDBVendor(Props.get("db.driver") openOr "com.mysql.jdbc.Driver", //"org.h2.Driver", //"com.mysql.jdbc.Driver",
 			     Props.get("db.url") openOr 
-			     "jdbc:h2:~/test", //"jdbc:mysql://localhost:3306/littlebluebird",
+			     "jdbc:mysql://localhost:3306/littlebluebird", //"jdbc:h2:~/test", //"jdbc:mysql://localhost:3306/littlebluebird",
 			     Box(Props.get("db.user") openOr "test"), Box(Props.get("db.pass") openOr "test"))
 
       LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
@@ -44,8 +44,8 @@ class Boot {
       DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
     }
     
-    PopulateDb.doit
-    println("Boot.boot: db populated with sample data")
+//    PopulateDb.doit
+//    println("Boot.boot: db populated with sample data")
     
     configMailer
     
@@ -70,7 +70,7 @@ class Boot {
         RewriteResponse("circle" :: "index" :: Nil, Map("circle" -> circle))
       case RewriteRequest(ParsePath("circle" :: "details" :: circle :: Nil, _, _,_), _, _) => 
         RewriteResponse("circle" :: "index" :: Nil, Map("circle" -> circle))
-      case RewriteRequest(ParsePath("circle" :: "giftlist" :: circle :: recipient :: Nil, _, _,_), _, _) => 
+      case RewriteRequest(ParsePath("giftlist" :: circle :: recipient :: Nil, _, _,_), _, _) => 
         RewriteResponse("circle" :: "gifts" :: Nil, Map("circle" -> circle, "recipient" -> recipient))
     })
     
@@ -88,7 +88,7 @@ class Boot {
 
     // dynamic menu items from db ...try: http://groups.google.com/group/liftweb/msg/f5d03fc3bf446f1c
     // and...  http://scala-programming-language.1934581.n4.nabble.com/Menu-generated-from-database-td1979930.html
-    val entries = Menu(Loc("HomeLoc", Link(List("index"), true, "/index"), "Home")) ::
+    val entries = Menu(Loc("HomeLoc", Link(List("index"), true, "/index"), "HomeAB")) ::
                   Menu(Loc("LoginLoc", Link(List("login"), true, "/login"), "Login", NotLoggedIn)) ::
                   Menu(Loc("LogoutLoc", Link(List("logout"), true, "/logout"), "Logout", LoggedIn)) ::
                   Menu(Loc("AddEventLoc", "circle"::"addevent"::Nil, "Add Event", LoggedIn)) ::
@@ -100,7 +100,7 @@ class Boot {
                   Menu(Loc("CircleEdit", "circle"::"edit"::Nil, "Edit Circle", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleDelete", "circle"::"delete"::Nil, "Delete Circle", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleDetails", ("circle"::"details" :: Nil) -> true, "CircleDetails", LoggedIn, Hidden)) ::
-                  Menu(Loc("Y", ("circle"::"giftlist" :: Nil) -> true, "Y", LoggedIn, Hidden)) ::
+                  Menu(Loc("Y", ("giftlist" :: Nil) -> true, "Y", LoggedIn, Hidden)) ::
                   Menu(Loc("X", ("circle"::"gifts" :: Nil) -> true, "X", LoggedIn, Hidden)) ::
                   userMenu :: 
                   Menu(Loc("Logmein", "b"::Nil, "Log Me In", Hidden)) :: Nil

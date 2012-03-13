@@ -50,7 +50,7 @@ class EventLoc extends Loc[User] {
   def makeMenuItem(c:Circle):MenuItem = {
     println("EventLoc.makemenuitem")
     val current = false // value doesn't matter
-    val kids = c.participants.map(cp => MenuItem(cp.name(cp.person), Text("giftlist/"+c.id.is+"/"+cp.person.obj.open_!.id.is), Seq.empty, false, true, Nil))
-    MenuItem(Text(c.name.is), Text("details/"+c.id.is), kids, false, true, Nil)
+    val kids = c.participants.map(cp => MenuItem(cp.name(cp.person), Text("/giftlist/"+c.id.is+"/"+cp.person.obj.open_!.id.is), Seq.empty, false, true, Nil))
+    MenuItem(Text(c.name.is), Text("/circle/details/"+c.id.is), kids, false, true, Nil)
   }
 }

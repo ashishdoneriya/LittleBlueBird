@@ -81,29 +81,30 @@ class Boot {
     val LoggedIn = If(() => com.lbb.snippet.SessionUser.is != Empty, () => RedirectResponse("/index"))
     val NotLoggedIn = If(() => com.lbb.snippet.SessionUser.is == Empty, () => RedirectResponse("/index"))
                                        
-    val userMenu = Menu(Loc("User", "user"::"index"::Nil, "Admin: Users", SuperRequired))
-    val addUserMenu = Menu(Loc("Register", "user"::"add"::Nil, "Register"))
-    val editUserMenu = Menu(Loc("EditUser", "user"::"edit"::Nil, "Edit User", Hidden))
-    val deleteUserMenu = Menu(Loc("DeleteUser", "user"::"delete"::Nil, "Delete User", Hidden))
 
     // dynamic menu items from db ...try: http://groups.google.com/group/liftweb/msg/f5d03fc3bf446f1c
     // and...  http://scala-programming-language.1934581.n4.nabble.com/Menu-generated-from-database-td1979930.html
-    val entries = Menu(Loc("HomeLoc", Link(List("index"), true, "/index"), "HomeAB")) ::
-                  Menu(Loc("LoginLoc", Link(List("login"), true, "/login"), "Login", NotLoggedIn)) ::
-                  Menu(Loc("LogoutLoc", Link(List("logout"), true, "/logout"), "Logout", LoggedIn)) ::
-                  Menu(Loc("AddEventLoc", "circle"::"addevent"::Nil, "Add Event", LoggedIn)) ::
+    val entries = Menu(Loc("HomeLoc", Link(List("index"), true, "/index"), "Home")) ::
+                  Menu(Loc("LoginLoc", Link(List("login"), true, "/login"), "Login", NotLoggedIn, Hidden)) ::
+                  Menu(Loc("LogoutLoc", Link(List("logout"), true, "/logout"), "Logout", LoggedIn, Hidden)) ::
+                  Menu(Loc("Register", "user"::"add"::Nil, "Register")) ::
                   Menu(new EventLoc) ::
-                  addUserMenu :: editUserMenu :: deleteUserMenu :: 
+                  Menu(Loc("AddEventLoc", "circle"::"addevent"::Nil, "Add Event", LoggedIn)) ::
                   Menu(Loc("CircleView", "circle"::"index"::Nil, "View Circles", Hidden)) ::
-                  Menu(Loc("CircleAdmin", "circle"::"admin"::Nil, "Admin: Circles", SuperRequired)) ::
                   Menu(Loc("CircleAdd", "circle"::"add"::Nil, "Add Circle", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleEdit", "circle"::"edit"::Nil, "Edit Circle", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleDelete", "circle"::"delete"::Nil, "Delete Circle", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleDetails", ("circle"::"details" :: Nil) -> true, "CircleDetails", LoggedIn, Hidden)) ::
                   Menu(Loc("Y", ("giftlist" :: Nil) -> true, "Y", LoggedIn, Hidden)) ::
                   Menu(Loc("X", ("circle"::"gifts" :: Nil) -> true, "X", LoggedIn, Hidden)) ::
-                  userMenu :: 
-                  Menu(Loc("Logmein", "b"::Nil, "Log Me In", Hidden)) :: Nil
+                  // admin: user mgmt
+                  Menu(Loc("User", "user"::"index"::Nil, "Admin: Users", SuperRequired)) :: 
+                  Menu(Loc("EditUser", "user"::"edit"::Nil, "Edit User", SuperRequired, Hidden)) :: 
+                  Menu(Loc("DeleteUser", "user"::"delete"::Nil, "Delete User", SuperRequired, Hidden)) :: 
+                  Menu(Loc("CircleAdmin", "circle"::"admin"::Nil, "Admin: Circles", SuperRequired)) ::
+                  // other
+                  Menu(Loc("Logmein", "b"::Nil, "Logmein", Hidden)) :: Nil
+                  
     
     LiftRules.setSiteMap(SiteMap(entries:_*))
     

@@ -15,51 +15,34 @@
   color: red;
 }
 
-.sidebar ul {
-	margin:0;
-	padding:0;
-	border-bottom:1px solid #ccc;
-}
-	 
-
-.sidebar ul li {
-	margin:0;
-	padding:0;
-	list-style:none;
-	border:1px solid #ccc;
-	border-bottom:none;
-}
-
-.sidebar ul li a {
-	display:block;
-	padding:3px;
-	text-indent:3px;
-	text-decoration:none;
-}
-
-.sidebar ul li span {
-	display:block;
-	padding:3px;
-	text-indent:3px;
-	text-decoration:none;
-}
-
-.sidebar ul li a:hover {
-	background-color: #eee;
-}
-
 
   /* ]]> */
   </style>
   
   
-  
-<script src="/script/superfish.css" ></script> 
+  //link to the CSS files for this menu type 
+<link rel="stylesheet" media="screen" href="/script/superfish.css" />
+<link rel="stylesheet" media="screen" href="/script/superfish-vertical.css" />
+
+// link to the JavaScript files (hoverIntent is optional) 
 <script src="/script/hoverIntent.js"></script> 
 <script src="/script/superfish.js"></script> 
-<script src="/script/superfish-vertical.css" ></script> 
-<script src="/script/supersubs.js"></script> 
+<script src="/script/supersubs.js"></script>
  
+
+<script> 
+ 
+    $(document).ready(function(){ 
+        $("ul.sf-menu").supersubs({ 
+            minWidth:    12, 
+            maxWidth:    27, 
+            extraWidth:  1,
+            autoArrows:		 true,
+            dropShadows:  true
+        }).superfish();
+    }); 
+ 
+</script>
         
   </head>
   
@@ -69,20 +52,6 @@
   <body>
     <div class="container">
 
-
-<script> 
- 
-    $(document).ready(function(){ 
-        $("ul.sf-menu").supersubs({ 
-            minWidth:    12, 
-            maxWidth:    27, 
-            extraWidth:  1,
-            arrows:		 true,
-            dropShadows:  true
-        }).superfish();
-    }); 
- 
-</script>
 
 
       <div class="column span-12 last" style="text-align: right">
@@ -101,7 +70,7 @@
       <div class="column span-6 colborder sidebar">
         <hr class="space" />        
         
-	    <lift:Menu.builder linkToSelf="true" expandAll="true" ul:class="sf-menu sf-vertical" />
+	    <lift:Menu.builder linkToSelf="true" expandAll="true" top:class="sf-menu sf-vertical" />
 
         <div class="lift:Msgs?showAll=true"></div>
         <hr class="space" />

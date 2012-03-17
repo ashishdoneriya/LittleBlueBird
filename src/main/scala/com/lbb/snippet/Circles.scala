@@ -130,12 +130,14 @@ class Circles {
   /**
   * Confirm deleting a circle
   */
+  // TODO fix delete - don't actually delete - just flag as deleted
   def confirmDelete(xhtml: NodeSeq): NodeSeq = {
     (for (circle <- selectedCircle.is) // find the user
      yield {
-        def deleteCircle() {
+        def flagAsDeleted() {
           notice("Circle "+circle.name+" deleted")
-          circle.delete_!
+          circle.deleted(true)
+          circle.save()
           redirectTo("/circle/index")
         }
 
@@ -143,7 +145,7 @@ class Circles {
         // when the delete button is pressed, call the "deleteCircle"
         // function (which is a closure and bound the "circle" object
         // in the current content)
-        bind("xmp", xhtml, "circle" -> circle.name, "delete" -> submit("Delete", deleteCircle _))
+        bind("xmp", xhtml, "circle" -> circle.name, "delete" -> submit("Delete", flagAsDeleted _))
 
         // if there was no ID or the user couldn't be found,
         // display an error and redirect

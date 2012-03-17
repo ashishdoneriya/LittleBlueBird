@@ -29,9 +29,12 @@ import net.liftweb.http.ParsePath
 import net.liftweb.http.RewriteResponse
 import com.lbb.EventLoc
 import com.lbb.PopulateDb
+import net.liftweb.http.DocType
+import net.liftweb.http.Req
 
 class Boot {
   def boot {
+    // TODO need real db pool
     if (!DB.jndiJdbcConnAvailable_?) {
       val vendor = 
 	new StandardDBVendor(Props.get("db.driver") openOr "com.mysql.jdbc.Driver", //"org.h2.Driver", //"com.mysql.jdbc.Driver",
@@ -43,6 +46,13 @@ class Boot {
 
       DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
     }
+  
+    // set DocType to HTML5
+    LiftRules.docType.default.set((r: Req) => r match {
+      case _ if S.skipDocType => Empty
+      case _ if S.getDocType._1 => S.getDocType._2
+      case _ => Full(DocType.html5)
+    })
     
 //    PopulateDb.doit
 //    println("Boot.boot: db populated with sample data")
@@ -88,10 +98,9 @@ class Boot {
                   Menu(Loc("LoginLoc", Link(List("login"), true, "/login"), "Login", NotLoggedIn, Hidden)) ::
                   Menu(Loc("LogoutLoc", Link(List("logout"), true, "/logout"), "Logout", LoggedIn, Hidden)) ::
                   Menu(Loc("Register", "user"::"add"::Nil, "Register")) ::
-                  Menu(new EventLoc) ::
-                  Menu(Loc("AddEventLoc", "circle"::"addevent"::Nil, "Add Event", LoggedIn)) ::
                   Menu(Loc("CircleView", "circle"::"index"::Nil, "View Circles", Hidden)) ::
-                  Menu(Loc("CircleAdd", "circle"::"add"::Nil, "Add Circle", LoggedIn, Hidden)) ::
+                  Menu(Loc("CircleAdd", "circle"::"add"::Nil, "Add Event", LoggedIn)) ::
+                  Menu(new EventLoc) ::
                   Menu(Loc("CircleEdit", "circle"::"edit"::Nil, "Edit Circle", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleDelete", "circle"::"delete"::Nil, "Delete Circle", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleDetails", ("circle"::"details" :: Nil) -> true, "CircleDetails", LoggedIn, Hidden)) ::

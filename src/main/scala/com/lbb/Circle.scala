@@ -14,6 +14,7 @@ import net.liftweb.util.FieldError
 import net.liftweb.common.Full
 import net.liftweb.common.Empty
 import java.util.Date
+import net.liftweb.mapper.MappedBoolean
 
 
 class Circle extends LongKeyedMapper[Circle] { 
@@ -28,6 +29,8 @@ class Circle extends LongKeyedMapper[Circle] {
     override def displayName = "Name"
     override def dbIndexed_? = true
   }
+  
+  object deleted extends MappedBoolean(this)
   
   // https://github.com/lift/framework/blob/master/persistence/mapper/src/main/scala/net/liftweb/mapper/MappedDate.scala
   // TODO duplicated code here and in User

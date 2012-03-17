@@ -35,7 +35,7 @@ class EventLoc extends Loc[User] {
         println("EventLocsupplimentalKidMenuItems: case f:Full[User]")
         // get circles for this user
         // TODO can this cause NPE?
-        val items = f.open_!.circles.map(cp => makeMenuItem(cp.circle.obj.open_!))
+        val items = f.open_!.circles.filter(cp => !cp.circle.obj.open_!.deleted.is).map(cp => makeMenuItem(cp.circle.obj.open_!))
         List(items, super.supplimentalKidMenuItems).flatten
       }
       case _ => {

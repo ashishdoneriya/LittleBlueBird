@@ -23,3 +23,8 @@ git push origin master
 Will re-read the build.sbt and update all dependencies found there
 
 sbt> reload
+
+
+
+Info on LESS:
+http://fadeyev.net/2010/06/19/lessjs-will-obsolete-css/

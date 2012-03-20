@@ -31,6 +31,8 @@ import com.lbb.EventLoc
 import com.lbb.PopulateDb
 import net.liftweb.http.DocType
 import net.liftweb.http.Req
+import com.lbb.EventLocActive
+import com.lbb.EventLocExpired
 
 class Boot {
   def boot {
@@ -100,10 +102,13 @@ class Boot {
                   Menu(Loc("Register", "user"::"add"::Nil, "Register")) ::
                   Menu(Loc("CircleView", "circle"::"index"::Nil, "View Circles", Hidden)) ::
                   Menu(Loc("CircleAdd", "circle"::"add"::Nil, "Add Event", LoggedIn)) ::
-                  Menu(new EventLoc) ::
+                  Menu(new EventLocActive) ::
+                  Menu(new EventLocExpired) ::
                   Menu(Loc("CircleEdit", "circle"::"edit"::Nil, "Edit Circle", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleDelete", "circle"::"delete"::Nil, "Delete Circle", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleDetails", ("circle"::"details" :: Nil) -> true, "CircleDetails", LoggedIn, Hidden)) ::
+                  Menu(Loc("CircleAddPeopleByName", ("circle"::"addpeoplebyname" :: Nil) -> true, "By Name", LoggedIn, Hidden)) ::
+                  Menu(Loc("CircleAddPeopleFromCircle", ("circle"::"addpeoplefromcircle" :: Nil) -> true, "From Another Event", LoggedIn, Hidden)) ::
                   Menu(Loc("Y", ("giftlist" :: Nil) -> true, "Y", LoggedIn, Hidden)) ::
                   Menu(Loc("X", ("circle"::"gifts" :: Nil) -> true, "X", LoggedIn, Hidden)) ::
                   // admin: user mgmt

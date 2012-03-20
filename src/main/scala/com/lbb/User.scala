@@ -191,8 +191,14 @@ class User extends LongKeyedMapper[User] {
   def addedThis(g:Gift) = {
     g.addedBy.is==this.id.is
   }
-   def buy(g:Gift) = {
+  
+  def buy(g:Gift) = {
     g.sender(this).save()
+  }
+  
+  def findByName(f:String, l:String) = {
+    User.findAll(Cmp(User.first, OprEnum.Like, Full("%"+f.toLowerCase+"%"), Empty, Full("LOWER")),
+        Cmp(User.last, OprEnum.Like, Full("%"+l.toLowerCase+"%"), Empty, Full("LOWER")))
   }
 }
 

@@ -20,13 +20,19 @@ import java.util.Date
 import java.text.SimpleDateFormat
 import com.lbb.CircleParticipant
 import net.liftweb.mapper.By
+import scala.xml.Node
 
 
+// TODO don't need this - we have 'selectedCircle'
 object SessionCircle extends SessionVar[Box[Circle]](Empty)
 
 
 class Circles {
-  private object selectedCircle extends SessionVar[Box[Circle]](Empty)
+  object selectedCircle extends SessionVar[Box[Circle]](Empty)
+  
+  object selectedRecipient extends SessionVar[Box[User]](Empty)
+  
+  object multiplePeople extends RequestVar[List[User]](Nil)
   
 
   /**
@@ -62,32 +68,145 @@ class Circles {
     bind("entry", xhtml, "thetype" -> SHtml.text(thetype, thetype = _), "name" -> SHtml.text(thename, thename = _), "thedate" -> SHtml.text(thedate, thedate = _), "submit" -> SHtml.submit("Create", addCircle))
   }
   
+  def addbyname(xhtml:Group):NodeSeq = {
+    var thename = ""
+    def addperson() = {
+      val FL = """(\w+)\s+(\w+)""".r
+      val FML = """(\w+)\s+([^ ]+)\s+(\w+)""".r
+      val people = thename match {
+        case FL(f, l) => User.findByName(f, l)
+        case FML(f, m, l) => User.findByName(f, l)
+        case _ => Nil
+      }
+      
+      people match {
+        // more than one person found - present them all with checkboxes?
+        case l:List[User] if(l.size > 1) => {
+          multiplePeople(l)
+          val ref = S.referer openOr "/"
+          println("S.referer = "+ref)
+          ref
+        }
+        // just one person found - add this person
+        case x :: Nil => {
+          selectedCircle.is.open_!.add(List(x), SessionUser.is.open_!)
+          redirectTo("/circle/details/"+selectedCircle.is.open_!.id.is)
+        }
+        // no one found - create a new account?
+        case _ => {
+          S.notice("No one found by this name")
+          S.referer openOr "/"
+        }
+      }
+    }
+    
+    bind("f", xhtml, "name" -> SHtml.text(thename, thename = _), "Add" -> SHtml.submit("Add", addperson))
+  }
+  
+  /**
+   * Display, if they exist, the multiple people having the given name
+   */
+  def displayMultiplePeople: NodeSeq = {
+    multiplePeople.is match {
+      case l:List[User] if l.size > 0 => {
+        <table>
+          {
+            for(u <- l) yield {
+              <tr><td>{u.first.is + " " + u.last.is}</td></tr>
+            }
+          }
+        </table>
+      }
+      case _ => Text("")
+    }
+  }
+  
+  private def circleAsNavbar(b:Full[Circle]):NodeSeq = {
+            val c = b.open_!
+            <div class="brand">{c.name}</div>
+            <ul class="nav pull-right"><li>{link("/circle/edit", () => selectedCircle(b), Text("Edit"))}</li>
+            <li>{link("/circle/delete", () => selectedCircle(b), Text("Delete"))}</li>
+            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Add People<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+            <li>{link("/circle/addpeoplebyname", () => selectedCircle(b), Text("By Name"))}</li>
+            <li>{link("/circle/addpeoplefromcircle", () => selectedCircle(b), Text("From Another Event"))}</li>
+            </ul></li></ul>
+  }
+  
   /**
   * Get the XHTML containing a list of circles
   */
   def show: NodeSeq = {
-    val res = S.param("circle") match {
-      case f:Full[String] => {
+    (S.param("circle"), selectedCircle.is, S.uri) match {
+      case (f:Full[String], _, _) => {
+        // TODO non-numerics will cause blow up
+        Circle.findByKey(f.open_!.toLong) match {
+          case b:Full[Circle] => {
+            selectedCircle(b)
+            circleAsNavbar(b)
+          } // case b:Full[Circle]
+          case _ => redirectTo(S.referer openOr "/")
+        } // Circle.findByKey(f.open_!.toLong) match
+                                                           
+      } // case (f:Full[String], _, _)
+
+      case (_, b:Full[Circle], _) => {
+        circleAsNavbar(b)
+      } // case (_, b:Full[Circle], _)
+      
+      case (_, _, "/circle/admin") => {
         // the header
-        <tr>{Circle.htmlHeaders}<th>Edit</th><th>Delete</th></tr> ::
+        val header = <tr>{Circle.htmlHeaders}<th>Edit</th><th>Delete</th></tr>
         // get and display each of the circles
-        Circle.findAll(By(Circle.id, f.open_!.toLong), OrderBy(Circle.id, Ascending)).flatMap(u => <tr>{u.htmlLine}
+        val content = Circle.findAll(OrderBy(Circle.id, Ascending)).flatMap(u => <tr>{u.htmlLine}
         <td>{link("/circle/edit", () => selectedCircle(Full(u)), Text("Edit"))}</td>
         <td>{link("/circle/delete", () => selectedCircle(Full(u)), Text("Delete"))}</td>
                                                            </tr>)
+        
+        (<table> :: header :: content :: </table>).flatten
       }
-      case _ => {
-        // the header
-        <tr>{Circle.htmlHeaders}<th>Edit</th><th>Delete</th></tr> ::
-        // get and display each of the circles
-        Circle.findAll(OrderBy(Circle.id, Ascending)).flatMap(u => <tr>{u.htmlLine}
-        <td>{link("/circle/edit", () => selectedCircle(Full(u)), Text("Edit"))}</td>
-        <td>{link("/circle/delete", () => selectedCircle(Full(u)), Text("Delete"))}</td>
-                                                           </tr>)
-      }
+      case _ => redirectTo("/index")
     }
 
-    res
+  }
+  
+  def showReceivers: NodeSeq = S.param("circle") match {
+      case f:Full[String] => {
+        val circleBox = Circle.findByKey(Integer.parseInt(f.open_!))
+        circleBox match {
+          case c:Full[Circle] => {
+            val circle = c.open_!
+            
+            circle.participants.filter(cp1 => cp1.receiver.is).flatMap(cp => <tr><td>{link("/giftlist/"+cp.circle.is+"/"+cp.person.is, () => Empty, cp.name(cp.person))}</td></tr>)
+            
+          } // case c:Full
+          case _ => Text("no members")
+          
+        } // circleBox match
+        
+      } // case f:Full[String]
+      case _ => Text("")
+  }
+  
+  /**
+   * Don't show the givers as links - no point
+   */
+  def showGivers: NodeSeq = S.param("circle") match {
+      case f:Full[String] => {
+        val circleBox = Circle.findByKey(Integer.parseInt(f.open_!))
+        circleBox match {
+          case c:Full[Circle] => {
+            val circle = c.open_!
+            
+            circle.participants.filter(cp1 => !cp1.receiver.is).flatMap(cp => <tr><td>{cp.name(cp.person)}</td></tr>)
+            
+          } // case c:Full
+          case _ => Text("no members")
+          
+        } // circleBox match
+        
+      } // case f:Full[String]
+      case _ => Text("")
   }
   
   /**

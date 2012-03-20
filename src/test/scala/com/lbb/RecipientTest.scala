@@ -58,6 +58,9 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
     val kiera = UserTest.createKiera
     val truman = UserTest.createTruman
     val jett = UserTest.createJett
+    val brenda1 = UserTest.createBrenda1
+    val brenda2 = UserTest.createBrenda2
+    val bill = UserTest.createBill
     
     val lastXmas = CircleTest.lastXmas.add(List(brent, tamie, kiera, truman, jett), brent)
     val nextXmas = CircleTest.nextXmas.add(List(brent, tamie, kiera, truman, jett), brent)

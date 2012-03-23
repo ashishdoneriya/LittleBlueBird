@@ -26,13 +26,16 @@ import scala.xml.Node
 // TODO don't need this - we have 'selectedCircle'
 object SessionCircle extends SessionVar[Box[Circle]](Empty)
 
+object selectedCircle extends SessionVar[Box[Circle]](Empty)
+  
+object selectedRecipient extends SessionVar[Box[User]](Empty)
+  
+object multiplePeople extends RequestVar[List[User]](Nil)
+
+object deletingPeople extends SessionVar[Box[Boolean]](Empty)
+
 
 class Circles {
-  object selectedCircle extends SessionVar[Box[Circle]](Empty)
-  
-  object selectedRecipient extends SessionVar[Box[User]](Empty)
-  
-  object multiplePeople extends RequestVar[List[User]](Nil)
   
 
   /**
@@ -55,10 +58,8 @@ class Circles {
         // TODO what if error saving circle participant?
         case f:Full[User] => {
           val s = CircleParticipant.create.circle(circle).person(f.open_!).inviter(f.open_!).receiver(true).save
-          println("addevent.addCircle: case f:Full[User]: CircleParticipant.save="+s)
         }
         case _ => {
-          println("addevent.addCircle: case _ : redirectTo(\"index\")")
           redirectTo("index")
         }
       }
@@ -88,8 +89,8 @@ class Circles {
           ref
         }
         // just one person found - add this person
-        case x :: Nil => {
-          selectedCircle.is.open_!.add(List(x), SessionUser.is.open_!)
+        case l:List[User] if(l.size == 1) => {
+          selectedCircle.is.open_!.add(List(l.head), SessionUser.is.open_!)
           redirectTo("/circle/details/"+selectedCircle.is.open_!.id.is)
         }
         // no one found - create a new account?
@@ -112,7 +113,7 @@ class Circles {
         <table>
           {
             for(u <- l) yield {
-              <tr><td>{u.first.is + " " + u.last.is}</td></tr>
+              <tr><td>{SHtml.button("Add", () => addparticipant(u), "class" -> "btn btn-primary")}</td><td>{u.first + " " + u.last}</td></tr>
             }
           }
         </table>
@@ -121,16 +122,28 @@ class Circles {
     }
   }
   
+  private def addparticipant(person:User) = {
+    selectedCircle.is.open_!.add(List(person), SessionUser.is.open_!).save
+  }
+  
   private def circleAsNavbar(b:Full[Circle]):NodeSeq = {
             val c = b.open_!
             <div class="brand">{c.name}</div>
-            <ul class="nav pull-right"><li>{link("/circle/edit", () => selectedCircle(b), Text("Edit"))}</li>
-            <li>{link("/circle/delete", () => selectedCircle(b), Text("Delete"))}</li>
-            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Add People<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-            <li>{link("/circle/addpeoplebyname", () => selectedCircle(b), Text("By Name"))}</li>
-            <li>{link("/circle/addpeoplefromcircle", () => selectedCircle(b), Text("From Another Event"))}</li>
-            </ul></li></ul>
+            <ul class="nav pull-right">
+              <li>{link("/circle/edit", () => selectedCircle(b), Text("Edit"))}</li>
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Delete<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li>{link("/circle/delete", () => selectedCircle(b), Text("Delete Circle"))}</li>
+                  <li>{link("/circle/index", () => {selectedCircle(b);deletingPeople(Full(true))}, Text("Delete People"))}</li>
+                </ul>
+              </li>
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Add People<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li>{link("/circle/addpeoplebyname", () => selectedCircle(b), Text("By Name"))}</li>
+                  <li>{link("/circle/addpeoplefromcircle", () => selectedCircle(b), Text("From Another Event"))}</li>
+                </ul>
+              </li>
+            </ul>
   }
   
   /**
@@ -170,43 +183,89 @@ class Circles {
 
   }
   
-  def showReceivers: NodeSeq = S.param("circle") match {
-      case f:Full[String] => {
-        val circleBox = Circle.findByKey(Integer.parseInt(f.open_!))
-        circleBox match {
-          case c:Full[Circle] => {
-            val circle = c.open_!
-            
-            circle.participants.filter(cp1 => cp1.receiver.is).flatMap(cp => <tr><td>{link("/giftlist/"+cp.circle.is+"/"+cp.person.is, () => Empty, cp.name(cp.person))}</td></tr>)
-            
-          } // case c:Full
-          case _ => Text("no members")
-          
-        } // circleBox match
-        
-      } // case f:Full[String]
-      case _ => Text("")
+  private def currentCircle = (S.param("circle"), selectedCircle.is) match {
+      case (f:Full[String], _) => {
+        Circle.findByKey(Integer.parseInt(f.open_!))
+      }
+      case (_, ss:Full[Circle]) => {
+        ss
+      } // case (_, ss:Full[Circle])
+      case _ => Empty
+    
+  }
+  
+  def showReceivers: NodeSeq = {
+    currentCircle match {
+      case cc:Full[Circle] => cc.open_!.participants.filter(cp1 => cp1.receiver.is).flatMap(cp => receiverEntry(cp))
+      case Empty => Text("")
+    }
+  }
+  
+  private def receiverEntry(cp:CircleParticipant):NodeSeq = { 
+    deletingPeople.is match {
+      case f:Full[Boolean] if f.open_! => {  
+        <tr>
+        {
+          <td>{SHtml.button("Delete", () => cp.delete_!, "class" -> "btn btn-danger")}</td>
+          <td>{link("/giftlist/"+cp.circle.is+"/"+cp.person.is, () => Empty, cp.name(cp.person))}</td>
+        }
+        </tr>
+      }
+      case _ => {  
+        <tr>
+        {
+          <td>{link("/giftlist/"+cp.circle.is+"/"+cp.person.is, () => Empty, cp.name(cp.person))}</td>
+        }
+        </tr>
+      }
+    } // deletingPeople.is match
+  }
+  
+  private def giverEntry(cp:CircleParticipant) = {   
+    deletingPeople.is match {
+      case f:Full[Boolean] if f.open_! => {  
+        <tr>
+        {
+          <td>{SHtml.button("Delete", () => cp.delete_!, "class" -> "btn btn-danger")}</td>
+          <td>{cp.name(cp.person)}</td>
+        }
+        </tr>
+      }
+      case _ => {  
+        <tr>
+        {
+          <td>{cp.name(cp.person)}</td>
+        }
+        </tr>
+      }
+    } // deletingPeople.is match
   }
   
   /**
    * Don't show the givers as links - no point
    */
-  def showGivers: NodeSeq = S.param("circle") match {
-      case f:Full[String] => {
-        val circleBox = Circle.findByKey(Integer.parseInt(f.open_!))
-        circleBox match {
-          case c:Full[Circle] => {
-            val circle = c.open_!
-            
-            circle.participants.filter(cp1 => !cp1.receiver.is).flatMap(cp => <tr><td>{cp.name(cp.person)}</td></tr>)
-            
-          } // case c:Full
-          case _ => Text("no members")
-          
-        } // circleBox match
-        
-      } // case f:Full[String]
-      case _ => Text("")
+  def showGivers: NodeSeq = {
+    currentCircle match {
+      case cc:Full[Circle] => cc.open_!.participants.filter(cp1 => !cp1.receiver.is).flatMap(cp => giverEntry(cp))
+      case Empty => Text("")
+    }
+  }
+  
+  /**
+   * responsible for displaying buttons on the circle index page like the "Finished" button
+   * (finished removing people)
+   */
+  def buttons:NodeSeq = {  
+    deletingPeople.is match {
+      case f:Full[Boolean] if f.open_! => {  
+        <tr>
+        {
+          <td>{SHtml.button("Finished", () => deletingPeople(Empty), "class" -> "btn btn-primary")}</td>
+        }
+        </tr>
+      }
+      case _ => <tr><td></td></tr>
+    } // deletingPeople.is match
   }
   
   /**

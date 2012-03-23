@@ -18,6 +18,15 @@ object SessionUser extends SessionVar[Box[User]](Empty)
 
 object isSuper extends SessionVar[Boolean](false)
 
+object Logout {
+  def apply() = {
+    println("Logout.apply")
+    SessionUser(Empty)
+    isSuper(false)
+    S.redirectTo("index")
+  }
+}
+
 class Login {  
   object username extends RequestVar("")
       
@@ -46,11 +55,5 @@ class Login {
          "password" -> SHtml.password(password, password = _),
          "login" -> SHtml.submit("login", doLogin))
   }
-      
-  def logout(xhtml: NodeSeq): NodeSeq = {
-    SessionUser(Empty)
-    isSuper(false)
-    S.redirectTo("index")
-    //bind("f", xhtml)
-  }
 }
+

@@ -9,6 +9,8 @@
     <script src="/script/bootstrap.min.js"></script>
     <script src="/script/bootstrap-dropdown.js"></script>
     <link rel="stylesheet" media="screen" href="/script/bootstrap.min.css" />
+    <link rel="stylesheet" media="screen" href="/script/bootstrap.css" />
+    <link rel="stylesheet" media="screen" href="/script/lbb.css" />
     
     
     <style type="text/css">
@@ -22,54 +24,58 @@
   /* ]]> */
   </style>
   
-  
+  <LINK REL="SHORTCUT ICON" HREF="/images/logo.ico"/>
         
   </head>
   
   
-  
-  
-  <body>
+  <body style="background-color:#049cdb">
+    
+    
+    <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
     <div class="container">
-
-
       <div class="row">
-      <div class="span12">
-        <h1 class="alt">LittleBlueBird<img alt="" id="ajax-loader" style="display:none; margin-bottom: 0px; margin-left: 5px" src="/images/ajax-loader.gif"/></h1>
-          <span class="lift:embed?what=user/currentUser">name here</span>
-          <div class="site">
-            <lift:Menu.group group="auth"
-              a:class="siteLink">
-              <menu:bind />
-            </lift:Menu.group>
-          </div>
+        <div class="span9">
+          <h1>LittleBlueBird</h1><img alt="" id="ajax-loader" style="display:none; margin-bottom: 0px; margin-left: 5px" src="/images/ajax-loader.gif"/>
+        </div>
+        <div class="span2">
+          <div class="lift:Users.menu">name here</div>
+        </div>
+        <div class="span1">
+          <img src="/images/logo.gif"/>
+        </div>
       </div>
-      </div>
+    </div>
+    </div>
+    </div>
+    
 
-      <hr/>
-
+    <div class="container">
       <div class="row">
-      <div class="span3">
-        <hr class="space" />   
+        <div class="span3">
                 
-        <span class="lift:BootstrapMenu"></span>
+          <div class="well" style="padding:8px;"><span class="lift:BootstrapMenu.mainmenu"></span></div>
 
-        <div class="lift:Msgs?showAll=true"></div>
-        <hr class="space" />
-      </div>
+        </div>
 
-      <div class="span9">
-        <div id="content">The main content will get bound here</div>
+        <div class="span8 well">
+          <div id="content">The main content will get bound here</div>
+        </div>
       </div>
-      </div>
-
-      <hr />
 
     </div>
+    
+    <div class="lift:Errors">errors here</div>
     
 <script> 
  
     $('.dropdown-toggle').dropdown()
+    
+    $('#errorModal').modal({
+      keyboard: false,
+      backdrop: false
+    })
  
 </script>
 

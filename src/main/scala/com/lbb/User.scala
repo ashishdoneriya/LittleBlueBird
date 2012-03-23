@@ -2,17 +2,21 @@ package com.lbb
 
 import java.text.SimpleDateFormat
 import java.util.Date
+import scala.xml.Text
 import org.joda.time.DateMidnight
 import org.joda.time.Years
 import net.liftweb.common.Box
+import net.liftweb.common.Empty
 import net.liftweb.common.Full
 import net.liftweb.mapper._
-import net.liftweb.common.Empty
-import net.liftweb.http.S
 import net.liftweb.util.FieldError
-import scala.xml.Text
-import net.liftweb.json.JsonAST
-import net.liftweb.common.Failure
+import scala.xml.NodeSeq
+import scala.xml.Elem
+import net.liftweb.http.S
+import com.lbb.gui.MappedEmailExtended
+import com.lbb.gui.MappedTextareaExtended
+import com.lbb.gui.MappedStringExtended
+import com.lbb.gui.MappedDateExtended
 
 
 /**
@@ -26,31 +30,70 @@ class User extends LongKeyedMapper[User] {
   def primaryKeyField = id
   object id extends MappedLongIndex(this)
   
-  object first extends MappedString(this, 140) {
-    override def displayName = "First Name"
+  override def validate:List[FieldError] = {
+    (first, last) match {
+      case(f, l) if(f.is.trim()=="" && l.is.trim()=="") => {
+        val list = List(FieldError(first, Text("Enter a first or last name")))
+        val ff = (list :: super.validate :: Nil).flatten
+        ff
+      }
+      case _ => super.validate
+    }
   }
   
-  object last extends MappedString(this, 140) {
+  object first extends MappedStringExtended(this, 140) {
+    override def displayName = "First Name"
+      
+    override def _toForm:Box[Elem] = {
+      val sup = super._toForm
+      println("User.first._toForm: " + sup)
+      println("User.first._toForm: " + this.fieldId)
+      sup
+    }
+  }
+  
+  object last extends MappedStringExtended(this, 140) {
     override def displayName = "Last Name"
   }  
   
-  object email extends MappedEmail(this, 140) {
+  object profilepic extends MappedStringExtended(this, 1028) {
+    override def displayName = "Profile Pic"
+  }  
+  
+  object email extends MappedEmailExtended(this, 140) {
     override def displayName = "Email"
   }  
   
-  object username extends MappedString(this, 140) {
+  object username extends MappedStringExtended(this, 140) {
     override def displayName = "Username"
     
     // http://scala-tools.org/mvnsites/liftweb-2.4-M4/#net.liftweb.mapper.MappedString
     override def validations = valUnique(displayName+" already exists") _ :: super.validations
+  
+    override def validate:List[FieldError] = {
+      this.is match {
+        case s if(s.trim()=="") => {
+          val list = List(FieldError(this, Text("Username is required")))
+          val ff = (list :: super.validate :: Nil).flatten
+          ff
+        }
+        case _ => super.validate
+      }
+    }
   }
   
   object password extends MappedPassword(this) {
     override def displayName = "Password"
+    
+    override def _toForm: Box[NodeSeq] = {
+      S.fmapFunc({s: List[String] => this.setFromAny(s)}){funcName =>
+      Full(<div>{appendFieldId(<input type={formInputType} name={funcName} placeholder={displayName}/>)}</div><div><input type={formInputType} name={funcName} placeholder="Password Again"/></div>)
+      }
+    }
   }
   
   // https://github.com/lift/framework/blob/master/persistence/mapper/src/main/scala/net/liftweb/mapper/MappedDate.scala
-  object dateOfBirth extends MappedDate(this) {
+  object dateOfBirth extends MappedDateExtended(this) {
 
     override def displayName = "Date of Birth"
       
@@ -91,7 +134,7 @@ class User extends LongKeyedMapper[User] {
   }
 
   // define an additional field for a personal essay
-  object bio extends MappedTextarea(this, 2048) {
+  object bio extends MappedTextareaExtended(this, 2048) {
     override def textareaRows  = 10
     override def textareaCols = 50
     override def displayName = "Bio"
@@ -200,6 +243,12 @@ class User extends LongKeyedMapper[User] {
     User.findAll(Cmp(User.first, OprEnum.Like, Full("%"+f.toLowerCase+"%"), Empty, Full("LOWER")),
         Cmp(User.last, OprEnum.Like, Full("%"+l.toLowerCase+"%"), Empty, Full("LOWER")))
   }
+  
+  override def toForm(button: Box[String], f: User => Any): NodeSeq = {
+    println("User.toForm")
+    super.toForm(button, f)
+  }
+
 }
 
 /**
@@ -211,6 +260,6 @@ object User extends User with LongKeyedMetaMapper[User] {
   
   // define the order fields will appear in forms and output
   override def fieldOrder = List(id, first, last, email,
-  username, password, dateOfBirth, bio)
- 
+  username, password, dateOfBirth, profilepic, bio)
+  
 }

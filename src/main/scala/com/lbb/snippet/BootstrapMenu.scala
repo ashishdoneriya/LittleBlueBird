@@ -7,7 +7,8 @@ import net.liftweb.sitemap.MenuItem
 
 // http://groups.google.com/group/liftweb/browse_thread/thread/302623c7e0e0e0c4/99775e0358dfa6f7?show_docid=99775e0358dfa6f7
 class BootstrapMenu {
-def render(in: NodeSeq): NodeSeq = {
+    
+  def mainmenu(in: NodeSeq): NodeSeq = {
     val menuEntries =
       (for {sm <- LiftRules.siteMap; req <- S.request} yield
         sm.buildMenu(req.location).lines) openOr Nil

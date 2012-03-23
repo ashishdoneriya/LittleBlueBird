@@ -33,6 +33,8 @@ import net.liftweb.http.DocType
 import net.liftweb.http.Req
 import com.lbb.EventLocActive
 import com.lbb.EventLocExpired
+import net.liftweb.mapper.MapperRules
+import scala.xml.NodeSeq
 
 class Boot {
   def boot {
@@ -56,6 +58,9 @@ class Boot {
       case _ => Full(DocType.html5)
     })
     
+    MapperRules.formatFormElement = (name:NodeSeq, form:NodeSeq) =>
+      <xml:group><div>{form}</div></xml:group> 
+    
 //    PopulateDb.doit
 //    println("Boot.boot: db populated with sample data")
     
@@ -76,12 +81,14 @@ class Boot {
     // where to search snippet
     LiftRules.addToPackages("com.lbb")
     
-    LiftRules.rewrite.prepend(NamedPF("CircleRewrite") {
+    LiftRules.rewrite.prepend(NamedPF("CircleRewrite") {        
       // TODO Are we using this one?
       case RewriteRequest(ParsePath("circle" :: "view" :: circle :: Nil, _, _,_), _, _) => 
         RewriteResponse("circle" :: "index" :: Nil, Map("circle" -> circle))
+        
       case RewriteRequest(ParsePath("circle" :: "details" :: circle :: Nil, _, _,_), _, _) => 
         RewriteResponse("circle" :: "index" :: Nil, Map("circle" -> circle))
+        
       case RewriteRequest(ParsePath("giftlist" :: circle :: recipient :: Nil, _, _,_), _, _) => 
         RewriteResponse("circle" :: "gifts" :: Nil, Map("circle" -> circle, "recipient" -> recipient))
     })
@@ -111,8 +118,10 @@ class Boot {
                   Menu(Loc("CircleAddPeopleFromCircle", ("circle"::"addpeoplefromcircle" :: Nil) -> true, "From Another Event", LoggedIn, Hidden)) ::
                   Menu(Loc("Y", ("giftlist" :: Nil) -> true, "Y", LoggedIn, Hidden)) ::
                   Menu(Loc("X", ("circle"::"gifts" :: Nil) -> true, "X", LoggedIn, Hidden)) ::
+                  //Menu(Loc("Z", ("circle"::"deletepeople" :: Nil) -> true, "Z", LoggedIn, Hidden)) ::
                   // admin: user mgmt
-                  Menu(Loc("User", "user"::"index"::Nil, "Admin: Users", SuperRequired)) :: 
+                  Menu(Loc("User", "user"::"admin"::Nil, "Admin: Users", SuperRequired)) :: 
+                  Menu(Loc("MyAccount", "user"::"index"::Nil, "My Account", LoggedIn, Hidden)) :: 
                   Menu(Loc("EditUser", "user"::"edit"::Nil, "Edit User", SuperRequired, Hidden)) :: 
                   Menu(Loc("DeleteUser", "user"::"delete"::Nil, "Delete User", SuperRequired, Hidden)) :: 
                   Menu(Loc("CircleAdmin", "circle"::"admin"::Nil, "Admin: Circles", SuperRequired)) ::

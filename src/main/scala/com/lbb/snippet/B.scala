@@ -1,12 +1,12 @@
 package com.lbb.snippet
 import scala.xml.NodeSeq
 import scala.xml.Group
-import com.lbb.User
 import net.liftweb.mapper.Cmp
 import net.liftweb.mapper.OprEnum
 import net.liftweb.common.Full
 import net.liftweb.common.Empty
 import net.liftweb.http.S
+import com.lbb.entity.User
 
 class B {
 

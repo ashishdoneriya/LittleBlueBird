@@ -10,6 +10,11 @@ import net.liftweb.db.DefaultConnectionIdentifier
 import net.liftweb.util.Props
 import net.liftweb.common.Box
 import java.text.SimpleDateFormat
+import com.lbb.entity.Circle
+import com.lbb.entity.CircleParticipant
+import com.lbb.entity.Gift
+import com.lbb.entity.Recipient
+import com.lbb.entity.User
 
 @RunWith(classOf[JUnitRunner])
 class RecipientTest extends FunSuite with AssertionsForJUnit {

@@ -4,7 +4,7 @@ import scala.xml.NodeSeq
 import scala.xml.Group
 import scala.xml.Text
 import com.lbb.Emailer
-import com.lbb.User
+import com.lbb.entity.User
 import com.lbb.snippet.SessionUser
 import net.liftweb.common.Box
 import net.liftweb.common.Empty

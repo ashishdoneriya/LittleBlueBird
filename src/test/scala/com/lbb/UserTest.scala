@@ -16,6 +16,7 @@ import net.liftweb.mapper.Schemifier
 import net.liftweb.util.FieldError
 import net.liftweb.util.Props
 import java.util.Date
+import com.lbb.entity.User
 
 /**
  * From the project root: sbt

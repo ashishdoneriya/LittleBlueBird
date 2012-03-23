@@ -6,9 +6,6 @@ import net.liftweb.mapper.DB
 import net.liftweb.db.DefaultConnectionIdentifier
 import net.liftweb.util.Props
 import net.liftweb.common._
-import com.lbb.User
-import com.lbb.User
-import com.lbb.User
 import net.liftweb.sitemap.SiteMap
 import net.liftweb.sitemap.Menu
 import net.liftweb.sitemap.Loc
@@ -19,10 +16,11 @@ import javax.mail.Authenticator
 import javax.mail.PasswordAuthentication
 import net.liftweb.http.S
 import net.liftweb.http.RedirectResponse
-import com.lbb.CircleParticipant
-import com.lbb.Circle
-import com.lbb.Gift
-import com.lbb.Recipient
+import com.lbb.entity.User
+import com.lbb.entity.CircleParticipant
+import com.lbb.entity.Circle
+import com.lbb.entity.Gift
+import com.lbb.entity.Recipient
 import net.liftweb.util.NamedPF
 import net.liftweb.http.RewriteRequest
 import net.liftweb.http.ParsePath

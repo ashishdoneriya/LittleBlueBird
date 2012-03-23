@@ -3,7 +3,9 @@ import java.text.SimpleDateFormat
 import org.junit.runner.RunWith
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.FunSuite
-import com.lbb.User
+import com.lbb.entity.Circle
+import com.lbb.entity.CircleParticipant
+import com.lbb.entity.User
 import net.liftweb.common.Box
 import net.liftweb.db.DB1.db1ToDb
 import net.liftweb.db.DefaultConnectionIdentifier

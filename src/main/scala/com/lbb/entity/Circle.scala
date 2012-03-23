@@ -1,20 +1,23 @@
-package com.lbb
-import java.text.DateFormat
+package com.lbb.entity
 import java.text.SimpleDateFormat
+import java.util.Date
+
 import scala.xml.Text
+
+import org.joda.time.DateTime
+
+import com.lbb.Emailer
+
+import net.liftweb.common.Empty
+import net.liftweb.common.Full
 import net.liftweb.mapper.By
 import net.liftweb.mapper.LongKeyedMapper
 import net.liftweb.mapper.LongKeyedMetaMapper
+import net.liftweb.mapper.MappedBoolean
 import net.liftweb.mapper.MappedDate
 import net.liftweb.mapper.MappedLongIndex
 import net.liftweb.mapper.MappedString
-import org.joda.time.DateTime
-import com.lbb.Emailer
 import net.liftweb.util.FieldError
-import net.liftweb.common.Full
-import net.liftweb.common.Empty
-import java.util.Date
-import net.liftweb.mapper.MappedBoolean
 
 
 class Circle extends LongKeyedMapper[Circle] { 

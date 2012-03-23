@@ -1,26 +1,30 @@
 package com.lbb.snippet
-import com.lbb.Emailer
-import net.liftweb.http.SessionVar
-import scala.xml.NodeSeq
-import net.liftweb.common.Full
-import net.liftweb.http.S._
-import scala.xml.Group
-import com.lbb.User
-import net.liftweb.mapper.OrderBy
-import net.liftweb.common.Empty
-import net.liftweb.common.Box
-import com.lbb.Circle
-import net.liftweb.mapper.Ascending
-import net.liftweb.http.SHtml._
-import scala.xml.Text
-import net.liftweb.util.Helpers._
-import net.liftweb.common._
-import net.liftweb.http._
-import java.util.Date
 import java.text.SimpleDateFormat
-import com.lbb.CircleParticipant
-import net.liftweb.mapper.By
+import java.util.Date
+
+import scala.xml.Group
 import scala.xml.Node
+import scala.xml.NodeSeq
+import scala.xml.Text
+
+import com.lbb.entity.Circle
+import com.lbb.entity.CircleParticipant
+import com.lbb.entity.User
+import com.lbb.entity.Circle
+import com.lbb.entity.CircleParticipant
+import com.lbb.entity.User
+
+import net.liftweb.common._
+import net.liftweb.common.Box
+import net.liftweb.common.Empty
+import net.liftweb.common.Full
+import net.liftweb.http.SHtml._
+import net.liftweb.http.S._
+import net.liftweb.http._
+import net.liftweb.http.SessionVar
+import net.liftweb.mapper.Ascending
+import net.liftweb.mapper.OrderBy
+import net.liftweb.util.Helpers._
 
 
 // TODO don't need this - we have 'selectedCircle'

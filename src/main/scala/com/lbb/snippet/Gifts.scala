@@ -1,18 +1,21 @@
 package com.lbb.snippet
 import scala.xml.NodeSeq
-import com.lbb.Circle
+import com.lbb.entity.Circle
 import net.liftweb.http.S
 import net.liftweb.common.Full
 import net.liftweb.mapper.OrderBy
 import net.liftweb.mapper.By
 import net.liftweb.mapper.Ascending
-import com.lbb.Gift
-import com.lbb.User
+import com.lbb.entity.Gift
+import com.lbb.entity.User
 import net.liftweb.http.SHtml._
 import net.liftweb.http.SessionVar
 import net.liftweb.common.Empty
 import net.liftweb.common.Box
 import scala.xml.Text
+import com.lbb.entity.Gift
+import com.lbb.entity.Circle
+import com.lbb.entity.User
 
 class Gifts {
   private object selectedGift extends SessionVar[Box[Gift]](Empty)

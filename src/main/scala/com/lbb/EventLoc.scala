@@ -8,6 +8,8 @@ import com.lbb.snippet.SessionUser
 import net.liftweb.common.Full
 import net.liftweb.common.Empty
 import net.liftweb.http.RedirectResponse
+import com.lbb.entity.Circle
+import com.lbb.entity.User
 
 /**
  * To create your own Loc, you have to define defaultValue, params, link, text and name

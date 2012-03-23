@@ -5,6 +5,10 @@ import net.liftweb.common.Full
 import net.liftweb.util.Props
 import javax.mail.Authenticator
 import javax.mail.PasswordAuthentication
+import com.lbb.entity.Circle
+import com.lbb.entity.Gift
+import com.lbb.entity.User
+
 
 object Emailer {
   

@@ -1,4 +1,4 @@
-package com.lbb
+package com.lbb.entity
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
 import net.liftweb.mapper.By

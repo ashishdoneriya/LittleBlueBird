@@ -10,6 +10,7 @@ import net.liftweb.db.DefaultConnectionIdentifier
 import net.liftweb.util.Props
 import net.liftweb.common.Box
 import java.text.SimpleDateFormat
+import com.lbb.entity.Circle
 
 @RunWith(classOf[JUnitRunner])
 class CircleTest extends FunSuite with AssertionsForJUnit {

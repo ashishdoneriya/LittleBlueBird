@@ -1,6 +1,6 @@
 package com.lbb.snippet
 import scala.xml.NodeSeq
-import com.lbb.User
+import com.lbb.entity.User
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full

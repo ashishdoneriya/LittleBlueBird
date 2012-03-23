@@ -1,4 +1,4 @@
-package com.lbb
+package com.lbb.entity
 
 import java.text.SimpleDateFormat
 import java.util.Date

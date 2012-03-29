@@ -164,107 +164,6 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
     val canReturn = true; val cannotReturn = false;
 
     
-    // these are just the available gifts - Need to create 2 other collections of "stuff I'm buying" and "stuff others are giving"
-//    val whateachsees_old: Map[(User, Circle), Map[User, Set[Gift]]] = Map(
-//        // i can see everything because i added everything - no one added to my list
-//        (brent, nextXmas) -> 
-//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift16, gift17), 
-//                tamie -> Set(gift3, gift2, gift8, gift9, gift17), 
-//                kiera -> Set(gift4), 
-//                truman -> Set(gift4), 
-//                jett -> Set(gift4)),
-//        // tamie can't see gift2 because i added it
-//        // she CAN see gift3 even though i added it because it's for the both of us
-//        (tamie, nextXmas) -> 
-//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift17), 
-//                tamie -> Set(gift3, gift8, gift9, gift17), 
-//                kiera -> Set(gift4), 
-//                truman -> Set(gift4), 
-//                jett -> Set(gift4)),
-//        // kiera, truman and jett don't see gift4 on any list because it was added by me
-//        (kiera, nextXmas) -> 
-//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
-//                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
-//                kiera -> Set(), 
-//                truman -> Set(), 
-//                jett -> Set()),
-//        (truman, nextXmas) -> 
-//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
-//                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
-//                kiera -> Set(), 
-//                truman -> Set(), 
-//                jett -> Set()),
-//        (jett, nextXmas) -> 
-//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
-//                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
-//                kiera -> Set(), 
-//                truman -> Set(), 
-//                jett -> Set()),
-//         // view of xmas 2011 lists...
-//        (brent, lastXmas) -> 
-//            Map(brent -> Set(gift11, gift14), 
-//                tamie -> Set(gift12, gift15), 
-//                kiera -> Set(gift13), 
-//                truman -> Set(gift13), 
-//                jett -> Set(gift13)),
-//        (tamie, lastXmas) -> 
-//            Map(brent -> Set(gift11, gift14), 
-//                tamie -> Set(gift12, gift15),  
-//                kiera -> Set(gift13), 
-//                truman -> Set(gift13), 
-//                jett -> Set(gift13)),
-//        (kiera, lastXmas) -> 
-//            Map(brent -> Set(gift11, gift14),
-//                tamie -> Set(gift12, gift15),  
-//                kiera -> Set(gift13), 
-//                truman -> Set(gift13), 
-//                jett -> Set(gift13)),
-//        (truman, lastXmas) -> 
-//            Map(brent -> Set(gift11, gift14), 
-//                tamie -> Set(gift12, gift15), 
-//                kiera -> Set(gift13), 
-//                truman -> Set(gift13), 
-//                jett -> Set(gift13)),
-//        (jett, lastXmas) -> 
-//            Map(brent -> Set(gift11, gift14), 
-//                tamie -> Set(gift12, gift15),  
-//                kiera -> Set(gift13), 
-//                truman -> Set(gift13), 
-//                jett -> Set(gift13)),
-//         // view of anniv 2012 lists...
-//        (brent, anniv2012) -> 
-//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift16, gift17), 
-//                tamie -> Set(gift2, gift3, gift8, gift9, gift17), 
-//                kiera -> Set(), 
-//                truman -> Set(), 
-//                jett -> Set()),
-//        (tamie, anniv2012) -> 
-//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift17), 
-//                tamie -> Set(gift3, gift8, gift9, gift17), 
-//                kiera -> Set(), 
-//                truman -> Set(), 
-//                jett -> Set()),
-//        (kiera, anniv2012) -> 
-//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
-//                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
-//                kiera -> Set(), 
-//                truman -> Set(), 
-//                jett -> Set()),
-//        (truman, anniv2012) -> 
-//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
-//                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
-//                kiera -> Set(), 
-//                truman -> Set(), 
-//                jett -> Set()),
-//        (jett, anniv2012) -> 
-//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
-//                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
-//                kiera -> Set(), 
-//                truman -> Set(), 
-//                jett -> Set())
-//                )
-                
-                
 
     // these are just the available gifts - Need to create 2 other collections of "stuff I'm buying" and "stuff others are giving"
     val whateachsees: Map[(User, Circle), Map[User, Seq[(Gift,Boolean,Boolean,Boolean,Boolean)]]] = Map(
@@ -520,30 +419,6 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
     gifts foreach { g => checkRecipients(g, recipientMap) }
   }
   
-  /**
-   * Create a list of sorted strings (gift descriptions) so that we can just do === on 2 lists
-   */
-  def checkGifts_old(tuple:(User, Circle), whateachsees:Map[(User, Circle), Map[User, Set[Gift]]]) = {
-    val perspective:Map[User, Set[Gift]] = whateachsees.get(tuple).get
-    
-    perspective.foreach( kv => {
-      val expDesc = perspective.get(kv._1).get.toList.map(_.description.is).sortWith(_ < _)
-      val recipient = kv._1
-      val viewer = tuple._1
-      val circle = tuple._2
-      
-      val actDesc = recipient.giftlist(viewer, circle).map(_.description.is).sortWith(_ < _)
-      
-      println("checking "+viewer.first+"'s view of "+recipient.first+"'s "+circle.name+" list...")
-      
-      expDesc foreach {g => println("expected gifts: "+g)}
-      
-      actDesc foreach {g => println("actual gifts: "+g)}
-      
-      assert(expDesc===actDesc)
-    })
-
-  }
   
   /**
    * Create a list of sorted strings (gift descriptions) so that we can just do === on 2 lists

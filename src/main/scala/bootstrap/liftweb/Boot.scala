@@ -114,6 +114,7 @@ class Boot {
                   Menu(Loc("CircleDetails", ("circle"::"details" :: Nil) -> true, "CircleDetails", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleAddPeopleByName", ("circle"::"addpeoplebyname" :: Nil) -> true, "By Name", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleAddPeopleFromCircle", ("circle"::"addpeoplefromcircle" :: Nil) -> true, "From Another Event", LoggedIn, Hidden)) ::
+                  Menu(Loc("static", ("static" :: Nil) -> true, "static", Hidden)) ::
                   Menu(Loc("Y", ("giftlist" :: Nil) -> true, "Y", LoggedIn, Hidden)) ::
                   Menu(Loc("X", ("circle"::"gifts" :: Nil) -> true, "X", LoggedIn, Hidden)) ::
                   //Menu(Loc("Z", ("circle"::"deletepeople" :: Nil) -> true, "Z", LoggedIn, Hidden)) ::

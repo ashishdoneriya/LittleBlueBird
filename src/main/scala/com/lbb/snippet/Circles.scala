@@ -32,8 +32,6 @@ object SessionCircle extends SessionVar[Box[Circle]](Empty)
 
 object selectedCircle extends SessionVar[Box[Circle]](Empty)
   
-object selectedRecipient extends SessionVar[Box[User]](Empty)
-  
 object multiplePeople extends RequestVar[List[User]](Nil)
 
 object deletingPeople extends SessionVar[Box[Boolean]](Empty)
@@ -60,8 +58,8 @@ class Circles {
       SessionUser.is match {
         // TODO don't assume the user is a receiver
         // TODO what if error saving circle participant?
-        case f:Full[User] => {
-          val s = CircleParticipant.create.circle(circle).person(f.open_!).inviter(f.open_!).receiver(true).save
+        case Full(user) => {
+          val s = CircleParticipant.create.circle(circle).person(user).inviter(user).receiver(true).save
         }
         case _ => {
           redirectTo("index")
@@ -188,8 +186,8 @@ class Circles {
   }
   
   private def currentCircle = (S.param("circle"), selectedCircle.is) match {
-      case (f:Full[String], _) => {
-        Circle.findByKey(Integer.parseInt(f.open_!))
+      case (Full(circleId), _) => {
+        Circle.findByKey(Integer.parseInt(circleId))
       }
       case (_, ss:Full[Circle]) => {
         ss
@@ -198,27 +196,33 @@ class Circles {
     
   }
   
+  def showParticipants: NodeSeq = {
+    (showReceivers :: showGivers :: buttons :: Nil).flatten
+  }
+  
   def showReceivers: NodeSeq = {
     currentCircle match {
-      case cc:Full[Circle] => cc.open_!.participants.filter(cp1 => cp1.receiver.is).flatMap(cp => receiverEntry(cp))
+      case Full(circle) => circle.participants.filter(cp1 => cp1.receiver.is).flatMap(cp => receiverEntry(cp))
       case Empty => Text("")
     }
   }
   
   private def receiverEntry(cp:CircleParticipant):NodeSeq = { 
     deletingPeople.is match {
-      case f:Full[Boolean] if f.open_! => {  
+      case Full(bool) if bool => {  
         <tr>
         {
           <td>{SHtml.button("Delete", () => cp.delete_!, "class" -> "btn btn-danger")}</td>
-          <td>{link("/giftlist/"+cp.circle.is+"/"+cp.person.is, () => Empty, cp.name(cp.person))}</td>
+          <td>{cp.person.obj.open_!.profilepicOrDefault}</td>
+          <td width="100%">{link("/giftlist/"+cp.circle.is+"/"+cp.person.is, () => Empty, cp.name(cp.person))}</td>
         }
         </tr>
       }
       case _ => {  
         <tr>
         {
-          <td>{link("/giftlist/"+cp.circle.is+"/"+cp.person.is, () => Empty, cp.name(cp.person))}</td>
+          <td>{cp.person.obj.open_!.profilepicOrDefault}</td>
+          <td width="100%">{link("/giftlist/"+cp.circle.is+"/"+cp.person.is, () => Empty, cp.name(cp.person))}</td>
         }
         </tr>
       }
@@ -227,18 +231,20 @@ class Circles {
   
   private def giverEntry(cp:CircleParticipant) = {   
     deletingPeople.is match {
-      case f:Full[Boolean] if f.open_! => {  
+      case Full(bool) if bool => {  
         <tr>
         {
           <td>{SHtml.button("Delete", () => cp.delete_!, "class" -> "btn btn-danger")}</td>
-          <td>{cp.name(cp.person)}</td>
+          <td>{cp.person.obj.open_!.profilepicOrDefault}</td>
+          <td width="100%">{cp.name(cp.person)}</td>
         }
         </tr>
       }
       case _ => {  
         <tr>
         {
-          <td>{cp.name(cp.person)}</td>
+          <td>{cp.person.obj.open_!.profilepicOrDefault}</td>
+          <td width="100%">{cp.name(cp.person)}</td>
         }
         </tr>
       }
@@ -250,7 +256,7 @@ class Circles {
    */
   def showGivers: NodeSeq = {
     currentCircle match {
-      case cc:Full[Circle] => cc.open_!.participants.filter(cp1 => !cp1.receiver.is).flatMap(cp => giverEntry(cp))
+      case Full(circle) => circle.participants.filter(cp1 => !cp1.receiver.is).flatMap(cp => giverEntry(cp))
       case Empty => Text("")
     }
   }
@@ -261,14 +267,14 @@ class Circles {
    */
   def buttons:NodeSeq = {  
     deletingPeople.is match {
-      case f:Full[Boolean] if f.open_! => {  
+      case Full(bool) if bool => {  
         <tr>
         {
-          <td>{SHtml.button("Finished", () => deletingPeople(Empty), "class" -> "btn btn-primary")}</td>
+          <td width="100%" colspan="3">{SHtml.button("Finished", () => deletingPeople(Empty), "class" -> "btn btn-primary")}</td>
         }
         </tr>
       }
-      case _ => <tr><td></td></tr>
+      case _ => <tr><td width="100%" colspan="2"></td></tr>
     } // deletingPeople.is match
   }
   

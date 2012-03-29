@@ -60,6 +60,13 @@ class User extends LongKeyedMapper[User] {
     override def displayName = "Profile Pic"
   }  
   
+  def profilepicOrDefault:NodeSeq = {
+    profilepic.is match {
+      case s:String if(s!=null && !s.trim().equals("")) => <img src={profilepic.is}/>
+      case _ => <img src="/images/noprofilepic.jpg"/>
+    }
+  }
+  
   object email extends MappedEmailExtended(this, 140) {
     override def displayName = "Email"
   }  
@@ -87,7 +94,7 @@ class User extends LongKeyedMapper[User] {
     
     override def _toForm: Box[NodeSeq] = {
       S.fmapFunc({s: List[String] => this.setFromAny(s)}){funcName =>
-      Full(<div>{appendFieldId(<input type={formInputType} name={funcName} placeholder={displayName}/>)}</div><div><input type={formInputType} name={funcName} placeholder="Password Again"/></div>)
+      Full(<div>{appendFieldId(<input type={formInputType} name={funcName} value={is.toString} placeholder={displayName}/>)}</div><div><input type={formInputType} name={funcName} value={is.toString} placeholder="Password Again"/></div>)
       }
     }
   }
@@ -247,6 +254,38 @@ class User extends LongKeyedMapper[User] {
   override def toForm(button: Box[String], f: User => Any): NodeSeq = {
     println("User.toForm")
     super.toForm(button, f)
+  }
+  
+  def canEdit(g:Gift):Boolean = {
+    (iadded(g) || (iamrecipient(g) && g.wasAddedByARecipient)) && !g.hasBeenReceived
+  }
+  
+  def canDelete(g:Gift):Boolean = {
+    canEdit(g)
+  }
+  
+  def canBuy(g:Gift):Boolean = {
+    !g.isBought && !iamrecipient(g)
+  }
+  
+  def canReturn(g:Gift):Boolean = {
+    ibought(g) && !g.hasBeenReceived
+  }
+  
+  private def iadded(g:Gift):Boolean = {
+    g.addedBy.obj match {
+      case Full(adder) => adder.id.equals(this.id)
+      case _ => false
+    }
+  }
+  
+  private def iamrecipient(g:Gift):Boolean = {
+    g.isFor(this)
+  }
+  
+  private def ibought(g:Gift):Boolean = g.sender.obj match {
+    case Full(sender) => sender.id.equals(this.id)
+    case _ => false
   }
 
 }

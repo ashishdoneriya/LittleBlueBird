@@ -12,65 +12,184 @@
     <link rel="stylesheet" media="screen" href="/script/bootstrap.css" />
     <link rel="stylesheet" media="screen" href="/script/lbb.css" />
     
+    <link rel="stylesheet/less" type="text/css" href="/script/variables.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/accordion.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/alerts.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/badges.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/bootstrap.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/breadcrumbs.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/button-groups.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/buttons.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/carousel.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/close.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/code.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/component-animations.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/dropdowns.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/forms.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/grid.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/hero-unit.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/labels.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/layouts.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/mixins.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/modals.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/navbar.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/navs.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/pager.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/pagination.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/popovers.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/progress-bars.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/reset.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/responsive.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/scaffolding.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/sprites.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/tables.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/thumbnails.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/tooltip.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/type.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/utilities.less"/>
+    <link rel="stylesheet/less" type="text/css" href="/script/wells.less"/>
+    <script src="/script/less-1.3.0.min.js" type="text/javascript"></script>
     
-    <style type="text/css">
-/* <![CDATA[ */
-.edit_error_class {
-  display: block;
-  color: red;
+    <style>
+    
+.header {
+height: 100px;
+-moz-border-radius-topright: 50px;
+-moz-border-radius-topleft: 50px;
+border-top-right-radius: 50px;
+border-top-left-radius: 50px;
+border:2px solid #bbbbbb;
+  background-color:#cccccc;
+}
+
+.header-inner {
+  height: 100px;
+  background-color:#cccccc;
+}
+
+.header-text {
+  text-indent:20px;
+  font-size:36px;
+  font-family:Verdana;
+  color:#006caa;
+  padding-top:50px;
+}
+
+.thecontent {
+  border-left:2px solid #bbbbbb;
+  border-right:2px solid #bbbbbb;
+  background-color:#ffffff;
+}
+
+.thefooter {
+  border-left:2px solid #bbbbbb;
+  border-right:2px solid #bbbbbb;
+  border-bottom:2px solid #bbbbbb;
+  background-color:#ffffff;
+}
+
+.header-gradient
+{ 
+background-color: #dddddd; /* Fallback background color for non supported browsers */  
+background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#dddddd));  
+background-image: -webkit-linear-gradient(top, #ffffff, #dddddd);  
+background-image: -moz-linear-gradient(top, #ffffff, #dddddd);  
+background-image: -ms-linear-gradient(top, #ffffff, #dddddd);  
+background-image: -o-linear-gradient(top, #ffffff, #dddddd);  
+background-image: linear-gradient(top, #ffffff, #dddddd);  
+filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffffff', EndColorStr='#dddddd'); /* IE6–IE9 */  
+}
+
+.body-gradient
+{ 
+height:100%;
+background-color: #006caa; /* Fallback background color for non supported browsers */  
+background-image: -webkit-gradient(linear, left top, left bottom, from(#006caa), to(#228fcc));  
+background-image: -webkit-linear-gradient(top, #006caa, #228fcc);  
+background-image: -moz-linear-gradient(top, #006caa, #228fcc);  
+background-image: -ms-linear-gradient(top, #006caa, #228fcc);  
+background-image: -o-linear-gradient(top, #006caa, #228fcc);  
+background-image: linear-gradient(top, #006caa, #228fcc);  
+filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#006caa', EndColorStr='#228fcc' GradientType=1); /* IE6–IE9 */  
+-webkit-background-size:cover;
+-moz-background-size:cover;
+-o-background-size:cover;
+background-size:cover;
+}
+
+.mask
+{
+    overflow: hidden;
+}
+
+html {
+  min-height:100%;
+}
+
+.logo {
+  padding-top:20px;
 }
 
 
-  /* ]]> */
-  </style>
-  
-  <LINK REL="SHORTCUT ICON" HREF="/images/logo.ico"/>
+    </style>
         
   </head>
   
   
-  <body style="background-color:#049cdb">
+  <body class="body-gradient">
     
-    
-    <div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-    <div class="container">
-      <div class="row">
-        <div class="span9">
-          <h1>LittleBlueBird</h1><img alt="" id="ajax-loader" style="display:none; margin-bottom: 0px; margin-left: 5px" src="/images/ajax-loader.gif"/>
-        </div>
-        <div class="span2">
-          <div class="lift:Users.menu">name here</div>
-        </div>
-        <div class="span1">
-          <img src="/images/logo.gif"/>
+    <div class="row">
+      <div class="mask header">      
+        <div class="row header-inner header-gradient">
+          <div class="span6 header-text">LittleBlueBird</div>
+          <div class="span1 offset5 logo">
+            <img src="/images/logo.gif"/>
+          </div>
         </div>
       </div>
     </div>
-    </div>
+    
+    <div class="row thecontent">
+      <div class="span2 offset10">
+            <img alt="" id="ajax-loader" style="display:none; margin-bottom: 0px; margin-left: 5px" src="/images/ajax-loader.gif"/>
+            <div class="lift:Users.menu">name here</div>
+      </div>
     </div>
     
-
-    <div class="container">
-      <div class="row">
+    
+    <div class="row thecontent">
         <div class="span3">
                 
           <div class="well" style="padding:8px;"><span class="lift:BootstrapMenu.mainmenu"></span></div>
 
         </div>
 
-        <div class="span8 well">
+        <div class="span8">
           <div id="content">The main content will get bound here</div>
         </div>
-      </div>
-
     </div>
     
+    
+    <div class="row thefooter">
+        <div class="span12">
+        </div>
+    </div>
+    
+    
+    
     <div class="lift:Errors">errors here</div>
+    
     
 <script> 
  
     $('.dropdown-toggle').dropdown()
+    
+    $('#addGiftModal').modal({
+      keyboard: false,
+      backdrop: false
+    })
+    
+    $('#addGiftModal').modal('hide')
     
     $('#errorModal').modal({
       keyboard: false,

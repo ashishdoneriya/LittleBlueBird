@@ -16,9 +16,48 @@ import scala.xml.Text
 import com.lbb.entity.Gift
 import com.lbb.entity.Circle
 import com.lbb.entity.User
+//import com.lbb.snippet.selectedCircle
+import net.liftweb.util.Helpers._
+import net.liftweb.http.SHtml
+import com.lbb.entity.CircleParticipant
+import scala.xml.Group
+import net.liftweb.http.S._
+
 
 class Gifts {
   private object selectedGift extends SessionVar[Box[Gift]](Empty)
+  
+  
+  def add(xhtml: Group): NodeSeq = {
+          println("addevent: begin")
+    var description = ""
+    var url = ""
+    def addGift() = {
+      
+      println("addGift: begin")
+          
+      (selectedCircle.is, SessionUser.is, SessionRecipient.is) match {
+        case (Full(circle), Full(adder), Full(recipient)) => {
+          println("addGift: case (Full(circle), Full(adder), Full(recipient))")
+          val gift = Gift.create.description(description).url(url).circle(circle).addedBy(adder)
+          gift.save
+          gift.addRecipient(recipient)
+        }
+        // not sure what would case this to happen...
+        case _ => {
+          println("addGift: case _")
+          redirectTo(S.referer openOr "/")
+        }
+      }    
+
+    }
+    
+    bind("entry", xhtml, 
+        "description" -> SHtml.textarea(description, description = _), 
+        "url" -> SHtml.text(url, url = _), 
+        "saveButton" -> SHtml.submit("Add Gift", () => addGift, "class" -> "btn btn-primary"),
+        "cancelButton" -> SHtml.submit("Cancel", () => redirectTo(S.referer openOr "/"), "class" -> "btn", "data-dismiss" -> "modal"))
+  }
   
   
   // just to display the current circle - originally as a "header" above someone's gift list
@@ -28,30 +67,31 @@ class Gifts {
     val recipient = recAndEvent._1
     val circle = recAndEvent._2
     
-    <tr><td>{recipient.first.is}'s list for {circle.name}</td></tr>
+    <div class="navbar">
+    <div class="navbar-inner">
+    <div class="container">
+      <div class="brand">{recipient.first.is}'s list for {circle.name}</div><div class="pull-right"><a href="#addGiftModal" data-toggle="modal" class="btn btn-success">Add Gift</a></div>
+    </div>
+    </div>
+    </div>
 
   }
   
   
   def recipientAndEvent : (User, Circle) = {
     // TODO not exhaustive - hence the warnings
-    (S.param("circle"), S.param("recipient")) match {
-      case (c:Full[String], r:Full[String]) => {
-        val circleBox = Circle.findByKey(Integer.parseInt(c.open_!))
-        val recipientBox = User.findByKey(Integer.parseInt(r.open_!))
-        val viewer = SessionUser.is.open_!
+    (S.param("circle"), S.param("recipient"), SessionUser.is) match {
+      case (Full(c), Full(r), Full(viewer)) => {
+        val circleBox = Circle.findByKey(Integer.parseInt(c))
+        val recipientBox = User.findByKey(Integer.parseInt(r))
         
         (circleBox, recipientBox) match {
-          case (cir:Full[Circle], rec:Full[User]) => {
-            val circle = cir.open_!
+          case (Full(circle), Full(recipient)) => {
             
             SessionCircle(Full(circle))
             
-            val recipient = recipientBox.open_!
             SessionRecipient(Full(recipient))
 
-            println("Gifts.recipientAndEvent:  111111111111111111")
-            
             (recipient, circle)
             
           }
@@ -74,13 +114,15 @@ class Gifts {
     val recipient = recAndEvent._1
     val circle = recAndEvent._2
     val giftlist = recipient.giftlist(viewer, circle)
-    
-    // the header
-    <tr><th>Description</th><th>Edit</th><th>Delete</th></tr> ::               
+                 
     giftlist.flatMap(g => <tr><td>{g.description.is}</td>
     <td>{link("/gift/edit", () => selectedGift(Full(g)), Text("Edit"))}</td>
     <td>{link("/gift/delete", () => selectedGift(Full(g)), Text("Delete"))}</td>
                                                            </tr>)
                 
+  }
+  
+  private def displayGift(g:Gift, r:User, c:Circle) = {
+    
   }
 }

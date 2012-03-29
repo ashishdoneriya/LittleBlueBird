@@ -103,28 +103,34 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
     val gift10 = Gift.create.description("gift10").url("www.bn.com").circle(anniv2012).addedBy(kiera)
     
     // gifts bought last Xmas
-    val gift11 = Gift.create.description("gift11").url("www.bn.com").circle(lastXmas).addedBy(brent).sender(tamie)
+    val gift11 = Gift.create.description("gift11").url("www.bn.com").circle(lastXmas).addedBy(brent)
     tamie.buy(gift11)
     
     // gifts bought last Xmas
-    val gift12 = Gift.create.description("gift12").url("www.bn.com").circle(lastXmas).addedBy(brent).sender(brent)
+    val gift12 = Gift.create.description("gift12").url("www.bn.com").circle(lastXmas).addedBy(brent)
+    brent.buy(gift12)
     
     // gifts bought last Xmas
-    val gift13 = Gift.create.description("gift13").url("www.bn.com").circle(lastXmas).addedBy(brent).sender(brent)
+    val gift13 = Gift.create.description("gift13").url("www.bn.com").circle(lastXmas).addedBy(brent)
+    brent.buy(gift13)
     
     // gifts bought last Xmas
-    val gift14 = Gift.create.description("gift14").url("www.bn.com").circle(lastXmas).addedBy(brent).sender(kiera)
+    val gift14 = Gift.create.description("gift14").url("www.bn.com").circle(lastXmas).addedBy(brent)
+    kiera.buy(gift14)
     
     // gifts bought last Xmas
-    val gift15 = Gift.create.description("gift15").url("www.bn.com").circle(lastXmas).addedBy(brent).sender(truman)
+    val gift15 = Gift.create.description("gift15").url("www.bn.com").circle(lastXmas).addedBy(brent)
+    truman.buy(gift15)
     
     // gifts bought THIS Xmas - so they should appear on the recipients list when the viewer is the recipient
     // but the gift should not appear when the viewer is not the recipient
-    val gift16 = Gift.create.description("gift16").url("www.bn.com").circle(nextXmas).addedBy(brent).sender(tamie)
+    val gift16 = Gift.create.description("gift16").url("www.bn.com").circle(nextXmas).addedBy(brent)
+    tamie.buy(gift16)
     
     // gifts bought THIS Xmas - so they should appear on the recipients list when the viewer is the recipient
     // but the gift should not appear when the viewer is not the recipient
-    val gift17 = Gift.create.description("gift17").url("www.bn.com").circle(nextXmas).addedBy(brent).sender(kiera)
+    val gift17 = Gift.create.description("gift17").url("www.bn.com").circle(nextXmas).addedBy(brent)
+    kiera.buy(gift17)
     
 
     
@@ -151,104 +157,346 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
         kv._2 foreach { g => assert(g.addRecipient(kv._1)===true) } //Recipient.create.person(kv._1).gift(g).save===true) } 
       } 
     }
+    
+    val canEdit = true; val cannotEdit = false;
+    val canDelete = true; val cannotDelete = false;
+    val canBuy = true; val cannotBuy = false;
+    val canReturn = true; val cannotReturn = false;
 
-    val whateachsees: Map[(User, Circle), Map[User, Set[Gift]]] = Map(
+    
+    // these are just the available gifts - Need to create 2 other collections of "stuff I'm buying" and "stuff others are giving"
+//    val whateachsees_old: Map[(User, Circle), Map[User, Set[Gift]]] = Map(
+//        // i can see everything because i added everything - no one added to my list
+//        (brent, nextXmas) -> 
+//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift16, gift17), 
+//                tamie -> Set(gift3, gift2, gift8, gift9, gift17), 
+//                kiera -> Set(gift4), 
+//                truman -> Set(gift4), 
+//                jett -> Set(gift4)),
+//        // tamie can't see gift2 because i added it
+//        // she CAN see gift3 even though i added it because it's for the both of us
+//        (tamie, nextXmas) -> 
+//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift17), 
+//                tamie -> Set(gift3, gift8, gift9, gift17), 
+//                kiera -> Set(gift4), 
+//                truman -> Set(gift4), 
+//                jett -> Set(gift4)),
+//        // kiera, truman and jett don't see gift4 on any list because it was added by me
+//        (kiera, nextXmas) -> 
+//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
+//                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
+//                kiera -> Set(), 
+//                truman -> Set(), 
+//                jett -> Set()),
+//        (truman, nextXmas) -> 
+//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
+//                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
+//                kiera -> Set(), 
+//                truman -> Set(), 
+//                jett -> Set()),
+//        (jett, nextXmas) -> 
+//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
+//                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
+//                kiera -> Set(), 
+//                truman -> Set(), 
+//                jett -> Set()),
+//         // view of xmas 2011 lists...
+//        (brent, lastXmas) -> 
+//            Map(brent -> Set(gift11, gift14), 
+//                tamie -> Set(gift12, gift15), 
+//                kiera -> Set(gift13), 
+//                truman -> Set(gift13), 
+//                jett -> Set(gift13)),
+//        (tamie, lastXmas) -> 
+//            Map(brent -> Set(gift11, gift14), 
+//                tamie -> Set(gift12, gift15),  
+//                kiera -> Set(gift13), 
+//                truman -> Set(gift13), 
+//                jett -> Set(gift13)),
+//        (kiera, lastXmas) -> 
+//            Map(brent -> Set(gift11, gift14),
+//                tamie -> Set(gift12, gift15),  
+//                kiera -> Set(gift13), 
+//                truman -> Set(gift13), 
+//                jett -> Set(gift13)),
+//        (truman, lastXmas) -> 
+//            Map(brent -> Set(gift11, gift14), 
+//                tamie -> Set(gift12, gift15), 
+//                kiera -> Set(gift13), 
+//                truman -> Set(gift13), 
+//                jett -> Set(gift13)),
+//        (jett, lastXmas) -> 
+//            Map(brent -> Set(gift11, gift14), 
+//                tamie -> Set(gift12, gift15),  
+//                kiera -> Set(gift13), 
+//                truman -> Set(gift13), 
+//                jett -> Set(gift13)),
+//         // view of anniv 2012 lists...
+//        (brent, anniv2012) -> 
+//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift16, gift17), 
+//                tamie -> Set(gift2, gift3, gift8, gift9, gift17), 
+//                kiera -> Set(), 
+//                truman -> Set(), 
+//                jett -> Set()),
+//        (tamie, anniv2012) -> 
+//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift17), 
+//                tamie -> Set(gift3, gift8, gift9, gift17), 
+//                kiera -> Set(), 
+//                truman -> Set(), 
+//                jett -> Set()),
+//        (kiera, anniv2012) -> 
+//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
+//                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
+//                kiera -> Set(), 
+//                truman -> Set(), 
+//                jett -> Set()),
+//        (truman, anniv2012) -> 
+//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
+//                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
+//                kiera -> Set(), 
+//                truman -> Set(), 
+//                jett -> Set()),
+//        (jett, anniv2012) -> 
+//            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
+//                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
+//                kiera -> Set(), 
+//                truman -> Set(), 
+//                jett -> Set())
+//                )
+                
+                
+
+    // these are just the available gifts - Need to create 2 other collections of "stuff I'm buying" and "stuff others are giving"
+    val whateachsees: Map[(User, Circle), Map[User, Seq[(Gift,Boolean,Boolean,Boolean,Boolean)]]] = Map(
         // i can see everything because i added everything - no one added to my list
         (brent, nextXmas) -> 
-            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift16, gift17), 
-                tamie -> Set(gift3, gift2, gift8, gift9, gift17), 
-                kiera -> Set(gift4), 
-                truman -> Set(gift4), 
-                jett -> Set(gift4)),
+            Map(brent -> Seq((gift5, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift7, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift6, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift1, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift3, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift8, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift9, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift16, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift17, canEdit, canDelete, cannotBuy, cannotReturn)), 
+                tamie -> Seq((gift3, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift2, canEdit, canDelete, canBuy, cannotReturn), 
+                             (gift8, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift9, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift17, canEdit, canDelete, cannotBuy, cannotReturn)), 
+                kiera -> Seq((gift4, canEdit, canDelete, canBuy, cannotReturn)), 
+                truman -> Seq((gift4, canEdit, canDelete, canBuy, cannotReturn)), 
+                jett -> Seq((gift4, canEdit, canDelete, canBuy, cannotReturn))),
+                
         // tamie can't see gift2 because i added it
         // she CAN see gift3 even though i added it because it's for the both of us
         (tamie, nextXmas) -> 
-            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift17), 
-                tamie -> Set(gift3, gift8, gift9, gift17), 
-                kiera -> Set(gift4), 
-                truman -> Set(gift4), 
-                jett -> Set(gift4)),
+            Map(brent -> Seq((gift5, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift7, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift6, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift1, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift8, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift9, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift17, canEdit, canDelete, cannotBuy, cannotReturn)), 
+                tamie -> Seq((gift3, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift8, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift9, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift17, canEdit, canDelete, cannotBuy, cannotReturn)), 
+                kiera -> Seq((gift4, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
+                truman -> Seq((gift4, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
+                jett -> Seq((gift4, cannotEdit, cannotDelete, canBuy, cannotReturn))),
+                
         // kiera, truman and jett don't see gift4 on any list because it was added by me
         (kiera, nextXmas) -> 
-            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
-                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
-                kiera -> Set(), 
-                truman -> Set(), 
-                jett -> Set()),
+            Map(brent -> Seq((gift5, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift7, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift6, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift1, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift10, canEdit, canDelete, canBuy, cannotReturn)), 
+                tamie -> Seq((gift2, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift10, canEdit, canDelete, canBuy, cannotReturn)), 
+                kiera -> Seq(), 
+                truman -> Seq(), 
+                jett -> Seq()),
+                
         (truman, nextXmas) -> 
-            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
-                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
-                kiera -> Set(), 
-                truman -> Set(), 
-                jett -> Set()),
+            Map(brent -> Seq((gift5, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift7, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift6, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift1, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
+                tamie -> Seq((gift2, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
+                kiera -> Seq(), 
+                truman -> Seq(), 
+                jett -> Seq()),
+                
         (jett, nextXmas) -> 
-            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
-                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
-                kiera -> Set(), 
-                truman -> Set(), 
-                jett -> Set()),
+            Map(brent -> Seq((gift5, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift7, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift6, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift1, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
+                tamie -> Seq((gift2, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
+                kiera -> Seq(), 
+                truman -> Seq(), 
+                jett -> Seq()),
+                
          // view of xmas 2011 lists...
         (brent, lastXmas) -> 
-            Map(brent -> Set(gift11, gift14), 
-                tamie -> Set(gift12, gift15), 
-                kiera -> Set(gift13), 
-                truman -> Set(gift13), 
-                jett -> Set(gift13)),
+            Map(brent -> Seq((gift11, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
+                             (gift14, cannotEdit, cannotDelete, cannotBuy, cannotReturn)), 
+                tamie -> Seq((gift12, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
+                             (gift15, cannotEdit, cannotDelete, cannotBuy, cannotReturn)), 
+                kiera -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn)), 
+                truman -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn)), 
+                jett -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn))),
+                
         (tamie, lastXmas) -> 
-            Map(brent -> Set(gift11, gift14), 
-                tamie -> Set(gift12, gift15),  
-                kiera -> Set(gift13), 
-                truman -> Set(gift13), 
-                jett -> Set(gift13)),
+            Map(brent -> Seq((gift11, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
+                             (gift14, cannotEdit, cannotDelete, cannotBuy, cannotReturn)), 
+                tamie -> Seq((gift12, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
+                             (gift15, cannotEdit, cannotDelete, cannotBuy, cannotReturn)),  
+                kiera -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn)), 
+                truman -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn)), 
+                jett -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn))),
+                
         (kiera, lastXmas) -> 
-            Map(brent -> Set(gift11, gift14),
-                tamie -> Set(gift12, gift15),  
-                kiera -> Set(gift13), 
-                truman -> Set(gift13), 
-                jett -> Set(gift13)),
+            Map(brent -> Seq((gift11, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
+                             (gift14, cannotEdit, cannotDelete, cannotBuy, cannotReturn)),
+                tamie -> Seq((gift12, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
+                             (gift15, cannotEdit, cannotDelete, cannotBuy, cannotReturn)),  
+                kiera -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn)), 
+                truman -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn)), 
+                jett -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn))),
+                
         (truman, lastXmas) -> 
-            Map(brent -> Set(gift11, gift14), 
-                tamie -> Set(gift12, gift15), 
-                kiera -> Set(gift13), 
-                truman -> Set(gift13), 
-                jett -> Set(gift13)),
+            Map(brent -> Seq((gift11, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
+                             (gift14, cannotEdit, cannotDelete, cannotBuy, cannotReturn)),
+                tamie -> Seq((gift12, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
+                             (gift15, cannotEdit, cannotDelete, cannotBuy, cannotReturn)),  
+                kiera -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn)), 
+                truman -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn)), 
+                jett -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn))),
+                
         (jett, lastXmas) -> 
-            Map(brent -> Set(gift11, gift14), 
-                tamie -> Set(gift12, gift15),  
-                kiera -> Set(gift13), 
-                truman -> Set(gift13), 
-                jett -> Set(gift13)),
+            Map(brent -> Seq((gift11, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
+                             (gift14, cannotEdit, cannotDelete, cannotBuy, cannotReturn)),
+                tamie -> Seq((gift12, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
+                             (gift15, cannotEdit, cannotDelete, cannotBuy, cannotReturn)),  
+                kiera -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn)), 
+                truman -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn)), 
+                jett -> Seq((gift13, cannotEdit, cannotDelete, cannotBuy, cannotReturn))),
+                
          // view of anniv 2012 lists...
         (brent, anniv2012) -> 
-            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift16, gift17), 
-                tamie -> Set(gift2, gift3, gift8, gift9, gift17), 
-                kiera -> Set(), 
-                truman -> Set(), 
-                jett -> Set()),
+            Map(brent -> Seq((gift5, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift7, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift6, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift1, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift3, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift8, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift9, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift16, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift17, canEdit, canDelete, cannotBuy, cannotReturn)), 
+                tamie -> Seq((gift2, canEdit, canDelete, canBuy, cannotReturn),
+                             (gift3, canEdit, canDelete, cannotBuy, cannotReturn),
+                             (gift8, canEdit, canDelete, cannotBuy, cannotReturn),
+                             (gift9, canEdit, canDelete, cannotBuy, cannotReturn),
+                             (gift17, canEdit, canDelete, cannotBuy, cannotReturn)), 
+                kiera -> Seq(), 
+                truman -> Seq(), 
+                jett -> Seq()),
+                
         (tamie, anniv2012) -> 
-            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift17), 
-                tamie -> Set(gift3, gift8, gift9, gift17), 
-                kiera -> Set(), 
-                truman -> Set(), 
-                jett -> Set()),
+            Map(brent -> Seq((gift5, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift7, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift6, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift1, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift8, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift9, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift17, canEdit, canDelete, cannotBuy, cannotReturn)), 
+                tamie -> Seq((gift3, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift8, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift9, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift17, canEdit, canDelete, cannotBuy, cannotReturn)), 
+                kiera -> Seq(), 
+                truman -> Seq(), 
+                jett -> Seq()),
+                
         (kiera, anniv2012) -> 
-            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
-                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
-                kiera -> Set(), 
-                truman -> Set(), 
-                jett -> Set()),
+            Map(brent -> Seq((gift5, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift7, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift6, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift1, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift10, canEdit, canDelete, canBuy, cannotReturn)), 
+                tamie -> Seq((gift2, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift10, canEdit, canDelete, canBuy, cannotReturn)), 
+                kiera -> Seq(), 
+                truman -> Seq(), 
+                jett -> Seq()),
         (truman, anniv2012) -> 
-            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
-                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
-                kiera -> Set(), 
-                truman -> Set(), 
-                jett -> Set()),
+            Map(brent -> Seq((gift5, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift7, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift6, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift1, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn)),
+                tamie -> Seq((gift2, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
+                kiera -> Seq(), 
+                truman -> Seq(), 
+                jett -> Seq()),
+                
         (jett, anniv2012) -> 
-            Map(brent -> Set(gift5, gift7, gift6, gift1, gift3, gift8, gift9, gift10), 
-                tamie -> Set(gift2, gift3, gift8, gift9, gift10), 
-                kiera -> Set(), 
-                truman -> Set(), 
-                jett -> Set())
+            Map(brent -> Seq((gift5, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift7, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift6, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift1, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn)),
+                tamie -> Seq((gift2, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
+                kiera -> Seq(), 
+                truman -> Seq(), 
+                jett -> Seq())
                 )
     
     // now check everyone's gifts and make sure they look right...
@@ -275,7 +523,7 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
   /**
    * Create a list of sorted strings (gift descriptions) so that we can just do === on 2 lists
    */
-  def checkGifts(tuple:(User, Circle), whateachsees:Map[(User, Circle), Map[User, Set[Gift]]]) = {
+  def checkGifts_old(tuple:(User, Circle), whateachsees:Map[(User, Circle), Map[User, Set[Gift]]]) = {
     val perspective:Map[User, Set[Gift]] = whateachsees.get(tuple).get
     
     perspective.foreach( kv => {
@@ -295,6 +543,58 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
       assert(expDesc===actDesc)
     })
 
+  }
+  
+  /**
+   * Create a list of sorted strings (gift descriptions) so that we can just do === on 2 lists
+   */
+  def checkGifts(tuple:(User, Circle), whateachsees:Map[(User, Circle), Map[User, Seq[(Gift,Boolean,Boolean,Boolean,Boolean)]]]) = {
+    val perspective:Map[User, Seq[(Gift,Boolean,Boolean,Boolean,Boolean)]] = whateachsees.get(tuple).get
+    
+    perspective.foreach( kv => {
+      val giftInfos:Seq[(Gift,Boolean,Boolean,Boolean,Boolean)] = perspective.get(kv._1).get
+      
+      val expDescriptions = giftInfos.toList.map(_._1.description.is).sortWith(_ < _)
+      val recipient = kv._1
+      val viewer = tuple._1
+      val circle = tuple._2
+      
+      val giftlist = recipient.giftlist(viewer, circle)
+      val actDescriptions = giftlist.map(_.description.is).sortWith(_ < _)
+      
+      println("checking "+viewer.first+"'s view of "+recipient.first+"'s "+circle.name+" list...")
+      
+      expDescriptions foreach {g => println("expected gifts: "+g)}
+      
+      actDescriptions foreach {g => println("actual gifts: "+g)}
+      
+      assert(expDescriptions===actDescriptions)
+      
+      giftlist.foreach( g => assertCorrectBooleans(g, giftInfos, viewer))
+    })
+
+  }
+  
+  private def assertCorrectBooleans(actualGift:Gift, giftInfos:Seq[(Gift,Boolean,Boolean,Boolean,Boolean)], viewer:User) = {
+    val seq = giftInfos.filter(_._1.description.is.equals(actualGift.description.is))
+    // if this fails, our test setup is wrong - we depend upon the gifts having unique descriptions
+    assert(seq.size===1)
+    val expectedGiftInfo = seq.head
+    val expectedCanEdit = expectedGiftInfo._2
+    val expectedCanDelete = expectedGiftInfo._3
+    val expectedCanBuy = expectedGiftInfo._4
+    val expectedCanReturn = expectedGiftInfo._5
+    println("Can "+viewer.first.is+" edit "+actualGift.description.is+"...")
+    assert(expectedCanEdit===viewer.canEdit(actualGift))
+    
+    println("Can "+viewer.first.is+" delete "+actualGift.description.is+"...")
+    assert(expectedCanDelete===viewer.canDelete(actualGift))
+    
+    println("Can "+viewer.first.is+" buy "+actualGift.description.is+"...")
+    assert(expectedCanBuy===viewer.canBuy(actualGift))
+    
+    println("Can "+viewer.first.is+" return "+actualGift.description.is+"...")
+    assert(expectedCanReturn===viewer.canReturn(actualGift))
   }
   
   def checkRecipients(g:Gift, recipientMap:Map[Gift, Iterable[User]]) = {

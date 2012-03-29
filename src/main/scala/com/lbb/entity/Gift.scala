@@ -10,6 +10,8 @@ import net.liftweb.mapper.MappedBoolean
 import net.liftweb.mapper.MappedLongForeignKey
 import net.liftweb.mapper.MappedString
 import net.liftweb.mapper.MappedTextarea
+import com.lbb.gui.MappedTextareaExtended
+import com.lbb.gui.MappedStringExtended
 
 class Gift extends LongKeyedMapper[Gift] with IdPK {
   def getSingleton = Gift
@@ -19,19 +21,19 @@ class Gift extends LongKeyedMapper[Gift] with IdPK {
   object addedBy extends MappedLongForeignKey(this, User)
 
   // define an additional field for a personal essay
-  object description extends MappedTextarea(this, 2048) {
+  object description extends MappedTextareaExtended(this, 2048) {
     override def textareaRows  = 10
     override def textareaCols = 50
     override def displayName = "Description"
   } 
   
   // TODO validate url
-  object url extends MappedString(this, 1028) {
+  object url extends MappedStringExtended(this, 1028) {
     override def displayName = "URL"
   }
   
   // TODO validate url
-  object affiliateUrl extends MappedString(this, 1028) {
+  object affiliateUrl extends MappedStringExtended(this, 1028) {
     override def displayName = "Affiliate URL"
   }
   
@@ -69,9 +71,15 @@ class Gift extends LongKeyedMapper[Gift] with IdPK {
     this.recipients.map(_.person.obj.map(_.id.is) openOr -1).contains(u.id.is)
   }
   
-  def wasBoughtInThisCircle(circle:Circle) = (this.sender.obj, this.circle.obj) match {
+  // TODO do we need to check the circle or just the sender - just checking the sender for now
+  def isBought:Boolean = this.sender.obj match {
+    case Full(sender) => true
+    case _ => false
+  }
+  
+  def wasBoughtInThisCircle(c:Circle) = (this.sender.obj, this.circle.obj) match {
     case(Empty, _) => false
-    case(s:Full[User], c:Full[Circle]) if(circle.id.is==c.open_!.id.is) => true
+    case(Full(sender), Full(circle)) if(c.id.is==circle.id.is) => true
     case _ => false
   }
   

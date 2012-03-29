@@ -94,7 +94,7 @@ class Users {
    */
   def menu(xhtml:Group):NodeSeq = {
     SessionUser.is match {
-      case f:Full[User] => menuLoggedIn(f.open_!, xhtml)
+      case Full(u) => menuLoggedIn(u, xhtml)
       case _ => menuNotLoggedIn
     }
   }
@@ -102,32 +102,40 @@ class Users {
   
   def selectedUser(xhtml:Group):NodeSeq = {
     selectedUser.is match {
-      case f:Full[User] => {
-        val u = f.open_!
-        <div class="row">
-          <div class="span2">Name</div>
-          <div class="span3">{u.first + " " + u.last}</div>
+      case Full(u) => {
+      <div class="row">
+        <div class="span2">
+          <div class="row">
+            <div class="span2">{u.profilepicOrDefault}</div>
+          </div>
         </div>
-        <div class="row">
-          <div class="span2">Email</div>
-          <div class="span3">{u.email}</div>
+        <div class="span5">
+            <div class="row">
+              <div class="span2">Name</div>
+              <div class="span3">{u.first + " " + u.last}</div>
+            </div>
+            <div class="row">
+              <div class="span2">Email</div>
+              <div class="span3">{u.email}</div>
+            </div>
+            <div class="row">
+              <div class="span2">Username</div>
+              <div class="span3">{u.username}</div>
+            </div>
+            <div class="row">
+              <div class="span2">Date of Birth</div>
+              <div class="span3">{u.dateOfBirth}</div>
+            </div>
+            <div class="row">
+              <div class="span2">Profile Pic</div>
+              <div class="span3">{u.profilepic}</div>
+            </div>
+            <div class="row">
+              <div class="span2">Bio</div>
+              <div class="span3">{u.bio}</div>
+            </div>
         </div>
-        <div class="row">
-          <div class="span2">Username</div>
-          <div class="span3">{u.username}</div>
-        </div>
-        <div class="row">
-          <div class="span2">Date of Birth</div>
-          <div class="span3">{u.dateOfBirth}</div>
-        </div>
-        <div class="row">
-          <div class="span2">Profile Pic</div>
-          <div class="span3">{u.profilepic}</div>
-        </div>
-        <div class="row">
-          <div class="span2">Bio</div>
-          <div class="span3">{u.bio}</div>
-        </div>
+      </div>
       }
       case _ => Text("")
     }
@@ -136,12 +144,12 @@ class Users {
   
   
   private def menuLoggedIn(u:User, xhtml:Group):NodeSeq = {
-    <ul class="nav">
+    <ul class="nav nav-pills">
       <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{u.first + " " + u.last}<b class="caret"></b></a>
         <ul class="dropdown-menu">
           <li>{link("/user/edit", () => myAccount(u, xhtml), Text("My Account"))}</li>
           <li class="divider"></li>
-          <li>{link("#", () => Logout(), Text("Logout"))}</li>
+          <li>{link("/logout", () => Logout(), Text("Logout"))}</li>
         </ul>
       </li>
     </ul> 

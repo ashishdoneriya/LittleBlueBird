@@ -32,6 +32,11 @@ object SessionRecipient extends SessionVar[Box[User]](Empty)
  * Adapted from :
  * https://github.com/lift/examples/blob/master/combo/example/src/main/scala/net/liftweb/example/snippet/Misc.scala
  */
+// TODO Add Preferences to current user drop-down
+// TODO Preferences may contain: who can add to my list, should I allow surprises, from who, who can search for me (when adding people to circles), automatically post to FB, automatically post to Twitter
+// TODO Lost password feature
+// TODO Login page looks like crap
+// TODO implement "add people from another circle"
 class Users {
   private object selectedUser extends SessionVar[Box[User]](Empty)
   

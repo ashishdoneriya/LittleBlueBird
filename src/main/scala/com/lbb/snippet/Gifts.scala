@@ -23,7 +23,13 @@ import com.lbb.entity.CircleParticipant
 import scala.xml.Group
 import net.liftweb.http.S._
 
-
+// TODO conditional edit, delete and buy buttons
+// TODO "stuff I'm buying" section
+// TODO "stuff others are buying" section
+// TODO add note if circle is expired
+// TODO display wish lists as div's not tables
+// TODO Add popover/alert over givers explaining that they give but don't receive
+// TODO New feature: When adding to someone else's list, add a "surprise" checkbox to override the default show/hide and edit/delete rules
 class Gifts {
   private object selectedGift extends SessionVar[Box[Gift]](Empty)
   

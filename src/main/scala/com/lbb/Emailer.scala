@@ -10,6 +10,11 @@ import com.lbb.entity.Gift
 import com.lbb.entity.User
 
 
+// TODO must be able to send html email
+// TODO email buyer if gift is deleted
+// TODO email buyer if gift is edited
+// TODO Compile list of what causes emails to be sent out
+// TODO What if someone doesn't have an email?
 object Emailer {
   
   val fromemail = "info@littlebluebird.com"

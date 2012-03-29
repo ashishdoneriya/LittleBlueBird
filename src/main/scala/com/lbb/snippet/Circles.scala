@@ -36,7 +36,10 @@ object multiplePeople extends RequestVar[List[User]](Nil)
 
 object deletingPeople extends SessionVar[Box[Boolean]](Empty)
 
-
+// TODO Add alert if user tries to change date to past
+// TODO remove "deleted" checkbox from New Event form
+// TODO implement "delete circle"
+// TODO implement "wedding rules" - the recipients CAN see what they're getting
 class Circles {
   
 

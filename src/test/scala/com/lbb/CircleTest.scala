@@ -60,30 +60,36 @@ class CircleTest extends FunSuite with AssertionsForJUnit {
     import com.lbb.TypeOfCircle
     TypeOfCircle.values foreach {t => {println("Circle type:  "+t)}}
   }
+  
+  test("type of circle enums")
+  {
+    assert(TypeOfCircle.christmas.toString()==="Christmas")
+    assert(TypeOfCircle.anniversary.toString()==="Anniversary")
+  }
 }
 
 object CircleTest extends CircleTest {
   
   def lastXmas = {
-    val circle = Circle.create.circleType("Christmas").name("Christmas 2011").date(new SimpleDateFormat("MM/dd/yyyy").parse("12/25/2011"))
+    val circle = Circle.create.circleType(TypeOfCircle.christmas.toString()).name("Christmas 2011").date(new SimpleDateFormat("MM/dd/yyyy").parse("12/25/2011"))
     circle.save
     circle
   }
   
   def nextXmas = {
-    val circle = Circle.create.circleType("Christmas").name("Christmas 2012").date(new SimpleDateFormat("MM/dd/yyyy").parse("12/25/2012"))
+    val circle = Circle.create.circleType(TypeOfCircle.christmas.toString()).name("Christmas 2012").date(new SimpleDateFormat("MM/dd/yyyy").parse("12/25/2012"))
     circle.save
     circle
   }
   
   def anniv2012 = {
-    val circle = Circle.create.circleType("Anniversary").name("Anniversary 2012").date(new SimpleDateFormat("MM/dd/yyyy").parse("06/28/2012"))
+    val circle = Circle.create.circleType(TypeOfCircle.anniversary.toString()).name("Anniversary 2012").date(new SimpleDateFormat("MM/dd/yyyy").parse("06/28/2012"))
     circle.save
     circle
   }
   
   def bday2012 = {
-    val circle = Circle.create.circleType("Birthday").name("BDay 2012").date(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/2012"))
+    val circle = Circle.create.circleType(TypeOfCircle.birthday.toString()).name("BDay 2012").date(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/2012"))
     circle.save
     circle
   }

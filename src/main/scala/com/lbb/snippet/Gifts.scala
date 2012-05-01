@@ -16,12 +16,12 @@ import scala.xml.Text
 import com.lbb.entity.Gift
 import com.lbb.entity.Circle
 import com.lbb.entity.User
-//import com.lbb.snippet.selectedCircle
 import net.liftweb.util.Helpers._
 import net.liftweb.http.SHtml
 import com.lbb.entity.CircleParticipant
 import scala.xml.Group
 import net.liftweb.http.S._
+import com.lbb.snippet.SessionUser
 
 // TODO conditional edit, delete and buy buttons
 // TODO "stuff I'm buying" section
@@ -73,14 +73,36 @@ class Gifts {
     val recipient = recAndEvent._1
     val circle = recAndEvent._2
     
-    <div class="navbar">
+    val navbar:NodeSeq = <div class="navbar">
     <div class="navbar-inner">
     <div class="container">
-      <div class="brand">{recipient.first.is}'s list for {circle.name}</div><div class="pull-right"><a href="#addGiftModal" data-toggle="modal" class="btn btn-success">Add Gift</a></div>
+      <div class="brand">{myOrName(recipient)} list for {circle.name}</div>
+      {if(!circle.isExpired)
+      <div class="pull-right"><a href="#addGiftModal" data-toggle="modal" class="btn btn-success">Add Gift</a></div>
+      }
     </div>
     </div>
     </div>
+      
+    // TODO Say this is what "you" got if you're looking at your list - otherwise use recipient's first name
+    val expiredInfo:NodeSeq = circle.isExpired match {
+      case true => <div class="alert alert-info">This is what {youOrName(recipient)} got for {circle.name}</div>
+      case false => Nil
+    }
 
+    (navbar :: expiredInfo :: Nil).flatten
+  }
+  
+  
+  private def myOrName(u:User):String = SessionUser.is match {
+    case Full(user) if(user.id.equals(u.id)) => "My"
+    case _ => u.first + "'s"
+  } 
+  
+  
+  private def youOrName(u:User):String = SessionUser.is match {
+    case Full(user) if(user.id.equals(u.id)) => "you"
+    case _ => u.first
   }
   
   
@@ -94,7 +116,7 @@ class Gifts {
         (circleBox, recipientBox) match {
           case (Full(circle), Full(recipient)) => {
             
-            SessionCircle(Full(circle))
+            selectedCircle(Full(circle))
             
             SessionRecipient(Full(recipient))
 

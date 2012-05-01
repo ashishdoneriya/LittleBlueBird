@@ -91,7 +91,7 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit {
     assert(tamie_xmas.save===true)
     assert(kiera_xmas.save===true)
     
-    // brent.participants is a List.  It's all the instances of brent as a participant
+    // brent.circles is a List.  It's all the instances of brent as a participant
     // This is how you find out all the circles brent is a member of
     brent.circles.foreach(c => println(brent.first+" belongs to " +c.circleName))
     

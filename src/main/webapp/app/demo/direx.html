@@ -1,0 +1,58 @@
+<!doctype html>
+<html ng-app="zippyModule">
+    <script src="js/jquery-1.7.1.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/bootstrap-dropdown.js"></script>
+    <script src="http://code.angularjs.org/angular-1.0.0rc6.min.js"></script>
+    <link rel="stylesheet" media="screen" href="css/bootstrap.css" />
+ <script>
+  function Ctrl3($scope) {
+    $scope.title = 'Lorem Ipsum';
+    $scope.text = 'Neque porro quisquam est qui dolorem ipsum quia dolor...';
+  }
+   
+  angular.module('zippyModule', [])
+    .directive('ddbtn', function(){
+      return {
+        restrict: 'E',
+        // This HTML will replace the zippy directive.
+        replace: true,
+        transclude: true,
+        scope: { zippyTitle:'bind' },
+        templateUrl: 'templates/btn-dropdown.html',
+        // The linking function will add behavior to the template
+        link: function(scope, element, attrs) {
+           $('.dropdown-toggle').dropdown();
+        }
+      }
+    });
+ </script>
+ <body>
+  <style>
+    .zippy {
+      border: 1px solid black;
+      display: inline-block;
+      width: 250px;
+    }
+    .zippy.opened > .title:before { content: 'V'; }
+    .zippy.opened > .body { display: block; }
+    .zippy.closed > .title:before { content: '>'; }
+    .zippy.closed > .body { display: none; }
+    .zippy > .title {
+      background-color: black;
+      color: white;
+      padding: .1em .3em;
+      cursor: pointer;
+    }
+    .zippy > .body {
+      padding: .1em .3em;
+    }
+  </style>
+  <div ng-controller="Ctrl3">
+    Title: <input ng-model="title"> <br>
+    Text: <textarea ng-model="text"></textarea>
+    <hr>
+    <ddbtn zippy-title="Details: {{title}}...">{{text}}</ddbtn>
+  </div>
+ </body>
+</html>

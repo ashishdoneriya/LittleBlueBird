@@ -1,13 +1,9 @@
 package com.lbb.entity
 import java.text.SimpleDateFormat
 import java.util.Date
-
 import scala.xml.Text
-
 import org.joda.time.DateTime
-
 import com.lbb.Emailer
-
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
 import net.liftweb.mapper.By
@@ -18,6 +14,17 @@ import net.liftweb.mapper.MappedDate
 import net.liftweb.mapper.MappedLongIndex
 import net.liftweb.mapper.MappedString
 import net.liftweb.util.FieldError
+import com.lbb.gui.MappedStringExtended
+import com.lbb.gui.MappedDateExtended
+import scala.xml.NodeSeq
+import net.liftweb.common.Box
+import net.liftweb.http.S
+import net.liftweb.http.SHtml
+import com.lbb.TypeOfCircle
+import scala.xml.Elem
+import net.liftweb.http.js.JsExp
+import net.liftweb.mapper.KeyObfuscator
+import net.liftweb.http.js.JE.JsArray
 
 
 class Circle extends LongKeyedMapper[Circle] { 
@@ -28,18 +35,36 @@ class Circle extends LongKeyedMapper[Circle] {
   
   object id extends MappedLongIndex(this)
   
-  object name extends MappedString(this, 140) {
-    override def displayName = "Name"
-    override def dbIndexed_? = true
+  override def validate:List[FieldError] = {
+    println("Circle.validate...")
+    super.validate
   }
   
-  object deleted extends MappedBoolean(this)
+  object name extends MappedStringExtended(this, 140) {
+    override def displayName = "Name"
+    override def dbIndexed_? = true
+    
+    override def validate:List[FieldError] = {
+      this.is match {
+        case s if(s.trim()=="") => {
+          val list = List(FieldError(this, Text(displayName+" is required")))
+          val ff = (list :: super.validate :: Nil).flatten
+          ff
+        }
+        case _ => super.validate
+      }
+    }
+  }
+  
+  object deleted extends MappedBoolean(this) {
+    override def _toForm:Box[NodeSeq] = Empty
+  }
   
   // https://github.com/lift/framework/blob/master/persistence/mapper/src/main/scala/net/liftweb/mapper/MappedDate.scala
   // TODO duplicated code here and in User
   // TODO must make this a required field
-  object date extends MappedDate(this) {
-    override def displayName = "Date"
+  object date extends MappedDateExtended(this) {
+    override def displayName = "Event Date"
     override def dbColumnName = "expiration_date"
       
     var err:List[FieldError] = Nil
@@ -60,8 +85,8 @@ class Circle extends LongKeyedMapper[Circle] {
     
     override def parse(s:String) = s match {
       case Pat(m, d, y) => err = Nil; println("parse: case Pat(m, d, y): errors..."); err.foreach(println(_)); Full(dateFormat.parse(s))
-      case "" => err = Nil; println("parse: case \"\": errors..."); err.foreach(println(_)); this.set(null); Empty
-      case _ => err = FieldError(this, Text("Use MM/dd/yyyy format")) :: Nil; println("parse: case _ :  errors..."); err.foreach(println(_)); this.set(null); Empty
+      case "" => err = FieldError(this, Text(displayName+" is required")) :: Nil; println("parse: case \"\": errors..."); err.foreach(println(_)); this.set(null); Empty
+      case _ => err = FieldError(this, Text(displayName+" must be MM/dd/yyyy format")) :: Nil; println("parse: case _ :  errors..."); err.foreach(println(_)); this.set(null); Empty
     }
     
     override def validate:List[FieldError] = err
@@ -71,9 +96,26 @@ class Circle extends LongKeyedMapper[Circle] {
   object circleType extends MappedString(this, 140) {
     override def displayName = "Type"
     override def dbIndexed_? = true
+    
+    var chosenType:Box[TypeOfCircle.Value] = Empty
+    
+    override def _toForm: Box[Elem] = 
+      S.fmapFunc({s: List[String] => this.setFromAny(s)}){funcName =>
+      Full(appendFieldId(SHtml.selectObj[TypeOfCircle.Value](TypeOfCircle.values.toList.map(v => (v,v.toString)),
+          // this 'match' sets the default/selected value of the drop-down
+          TypeOfCircle.values.find(p => p.toString().equals(this.is)) match {
+            case None => Full(TypeOfCircle.christmas)
+            case Some(ctype) => Full(ctype)
+          }, 
+          selected => set(selected.toString()) )))
+    }
   }
   
   def participants = CircleParticipant.findAll(By(CircleParticipant.circle, this.id))
+  
+//  // new&improved version of 'participants' above
+//  // return a List[User] not just the fkeys
+//  def participantList = participants.map(fk => fk.person.obj.open_!)
   
   def isExpired = {
     new DateTime(date.is) isBefore(new DateTime())
@@ -98,6 +140,12 @@ class Circle extends LongKeyedMapper[Circle] {
     add(receivers, inviter, true)
     add(givers, inviter, false)
   }
+  
+//  override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
+//    val jsons = participantList.map(_.asJs)
+//    val jsArr = JsArray(jsons)
+//    List(("participants", jsArr))        
+//  }
 }
 
 object Circle extends Circle with LongKeyedMetaMapper[Circle] {

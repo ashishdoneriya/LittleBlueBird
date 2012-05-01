@@ -1,0 +1,16 @@
+
+<h3>Events</h3>
+  <ul ng-repeat="circle in user().circles" ng-class="'nav nav-pills nav-stacked'" style="margin:0px;">
+    <li ng-class="activeOrNot(circle)">
+      <a href="#/circledetails" ng-click="toggleCircle(circle);makeActive(circle);showParticipants(circle);">
+        <i class="icon-chevron-down"></i> {{circle.name}}
+      </a>
+      <div ng-repeat="participant in circle.participants">
+        <span ng-show="shouldShow(circle)">
+          <a href="#/giftlist" ng-click="giftlist(circle, participant)">
+            {{participant.first}} {{participant.last}}
+          </a>
+        </span>  
+      </div>
+    </li>
+  </ul>

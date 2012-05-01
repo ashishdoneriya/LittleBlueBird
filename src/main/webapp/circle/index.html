@@ -2,19 +2,13 @@
 
 <lift:surround with="default" at="content">
 
-    <div class="navbar">
-    <div class="navbar-inner">
-    <div class="container">
-      <span class="lift:Circles.show"/>
-    </div>
-    </div>
-    </div>
+  <span class="lift:Circles.show"/>
+  
+  <span class="lift:Circles.expiredInfo"/>
 
-
-
-  <table width="100%" class="table table-condensed">
+  <table class="table table-condensed">
     <tbody>
-      <tr class="lift:Circles.showParticipants?form=POST"><td>test</td></tr>
+      <div class="lift:Circles.showParticipants?form=POST">test</div>
     </tbody>
   </table>
 </lift:surround>

@@ -17,6 +17,8 @@ import net.liftweb.util.FieldError
 import net.liftweb.util.Props
 import java.util.Date
 import com.lbb.entity.User
+import net.liftweb.http.js.JsExp
+import com.lbb.util.MapperHelper
 
 /**
  * From the project root: sbt
@@ -80,6 +82,64 @@ class UserTest extends FunSuite with AssertionsForJUnit {
 
   }
   
+  test("findBy") {
+    initDb
+    
+    val all = User.findAll
+    User.findAll.foreach(_.delete_!)
+    assert(User.findAll.size===0)
+    
+    // this stuff goes in the snippet I guess...
+    val user : User = User.create
+    user.first("Brent").last("Dunklau").username("bdunklau").password("123456789").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
+    user.save
+    
+//  case-insensitive query
+    val findF = "BRenT"
+    val findL = "DUNklau"
+    val users = User.findAll(Cmp(User.first, OprEnum.Like, Full("%"+findF.toLowerCase+"%"), Empty, Full("LOWER")),
+        Cmp(User.last, OprEnum.Like, Full("%"+findL.toLowerCase+"%"), Empty, Full("LOWER")))
+    
+    // only one person with this name because the second didn't get saved 
+    assert(users.size===1)
+    println("UserTest: we found exactly 1 User")
+    assert(users.head.first==="Brent")
+    assert(users.head.age===41)
+    
+    // correct password?  
+    println("password="+users.head.password.match_?("123456789"))   
+
+  }
+  
+  // can't include the password in the query but you can see what the password is
+  // after the object is returned
+  test("login") {
+    initDb
+    
+    val all = User.findAll
+    User.findAll.foreach(_.delete_!)
+    assert(User.findAll.size===0)
+    
+    // this stuff goes in the snippet I guess...
+    val user : User = User.create
+    user.first("Brent").last("Dunklau").username("bdunklau").password("123456789").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
+    user.save
+     
+//  case-insensitive query
+    val findF = "BRenT"
+    val findL = "DUNklau"
+      
+    val parms = Map("username" -> List("bdunklau"))
+    val queryParams = MapperHelper.convert(parms, User.queriableFields)
+    val users = User.findAll(queryParams: _*)
+      
+    // only one person with this name because the second didn't get saved    
+    assert(users.size===1)
+    assert(users.head.first==="Brent")
+    assert(users.head.age===41)
+
+  }
+  
   test("create and update brent") {
     initDb
     
@@ -96,12 +156,32 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     assert(User.findAll.size===1)
     assert(u.last==="newlastname")
   }
+  
+  test("create JSON string") {
+    initDb
+    
+    User.findAll.foreach(_.delete_!)
+    assert(User.findAll.size===0)
+    
+    val brent = UserTest.createBrent
+    val tamie = UserTest.createTamie
+    val kiera = UserTest.createKiera
+    val truman = UserTest.createTruman
+    val jett = UserTest.createJett
+    val brenda1 = UserTest.createBrenda1
+    val brenda2 = UserTest.createBrenda2
+    val bill = UserTest.createBill
+    
+    val jsons = User.findAll.map(_.asJs)
+    val f = jsons.foldRight("")((a:JsExp, b:String) => a.toString() + "," + b)
+    println(f)
+  }
 
 }
 
 object UserTest extends UserTest {
   
-  val brent = ("Brent", "Dunklau", "bdunklau", "123456789", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
+  val brent = ("Brent", "Dunklau", "bdunklau", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
   
   def createBrent = {
     val user = createUser(brent._1, brent._2, brent._3, brent._4, brent._5, brent._6, brent._7)

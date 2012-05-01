@@ -10,10 +10,12 @@ import net.liftweb.common.Empty
 import net.liftweb.http.RedirectResponse
 import com.lbb.entity.Circle
 import com.lbb.entity.User
+import com.lbb.entity.CircleParticipant
 
 /**
  * To create your own Loc, you have to define defaultValue, params, link, text and name
  */
+// TODO Test with completely empty database
 abstract class EventLoc extends Loc[Any] {
   
   def defaultValue = Some("")
@@ -31,10 +33,10 @@ abstract class EventLoc extends Loc[Any] {
   def blah(isExpired:Boolean):List[MenuItem] = {
     
     SessionUser.get match {
-      case f:Full[User] => {
+      case Full(user) => {
         // get circles for this user
-        // TODO can this cause NPE?
-        val items = f.open_!.circles.filter(cp => !cp.circle.obj.open_!.deleted.is && cp.circle.obj.open_!.isExpired == isExpired).map(cp => makeMenuItem(cp.circle.obj.open_!))
+        // TODO can this cause NPE? - YES! If the user doesn't belong to any circles
+        val items = getCircleMenuItems(user, isExpired)
         List(items, super.supplimentalKidMenuItems).flatten
       }
       case _ => {
@@ -43,5 +45,22 @@ abstract class EventLoc extends Loc[Any] {
     
     }
     
+  }
+  
+  
+  private def getCircleMenuItems(user:User, expired:Boolean):List[MenuItem] = {
+    user.circles match {
+      case Nil => super.supplimentalKidMenuItems
+      // TODO open_! could be a problem
+      case cps:List[CircleParticipant] => cps.filter(cp => getTheRightCircles(cp, expired)).map(cp => makeMenuItem(cp.circle.obj.open_!))
+      case _ => super.supplimentalKidMenuItems
+    }
+  }
+  
+  private def getTheRightCircles(cp:CircleParticipant, expired:Boolean):Boolean = {
+    cp.circle.obj match {
+      case Full(circle) => !circle.deleted.is && circle.isExpired == expired
+      case _ => false
+    }
   }
 }

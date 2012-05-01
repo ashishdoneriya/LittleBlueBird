@@ -33,6 +33,7 @@ import com.lbb.EventLocActive
 import com.lbb.EventLocExpired
 import net.liftweb.mapper.MapperRules
 import scala.xml.NodeSeq
+import com.lbb.RestService
 
 class Boot {
   def boot {
@@ -48,6 +49,15 @@ class Boot {
 
       DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
     }
+    
+    // to make the container server a collection of files...
+    LiftRules.passNotFoundToChain = true
+    
+    // to make the container server a collection of files...
+    LiftRules.liftRequest.append{
+        case Req("app" :: _, _, _) => false
+     } 
+    
   
     // set DocType to HTML5
     LiftRules.docType.default.set((r: Req) => r match {
@@ -75,6 +85,8 @@ class Boot {
     Schemifier.schemify(true, Schemifier.infoF _, CircleParticipant)
     Schemifier.schemify(true, Schemifier.infoF _, Gift)
     Schemifier.schemify(true, Schemifier.infoF _, Recipient)
+    
+    LiftRules.dispatch.append(RestService)
 
     // where to search snippet
     LiftRules.addToPackages("com.lbb")
@@ -83,6 +95,9 @@ class Boot {
       // TODO Are we using this one?
       case RewriteRequest(ParsePath("circle" :: "view" :: circle :: Nil, _, _,_), _, _) => 
         RewriteResponse("circle" :: "index" :: Nil, Map("circle" -> circle))
+        
+      case RewriteRequest(ParsePath("circle" :: "addpeoplefrom" :: circle :: Nil, _, _,_), _, _) => 
+        RewriteResponse("circle" :: "addpeoplefromcircle" :: Nil, Map("anothercircle" -> circle))
         
       case RewriteRequest(ParsePath("circle" :: "details" :: circle :: Nil, _, _,_), _, _) => 
         RewriteResponse("circle" :: "index" :: Nil, Map("circle" -> circle))
@@ -110,7 +125,8 @@ class Boot {
                   Menu(new EventLocActive) ::
                   Menu(new EventLocExpired) ::
                   Menu(Loc("CircleEdit", "circle"::"edit"::Nil, "Edit Circle", LoggedIn, Hidden)) ::
-                  Menu(Loc("CircleDelete", "circle"::"delete"::Nil, "Delete Circle", LoggedIn, Hidden)) ::
+                  Menu(Loc("CircleConfirmDelete", "circle"::"confirmDelete"::Nil, "Delete Circle", LoggedIn, Hidden)) ::
+                  Menu(Loc("CircleDeleted", "circle"::"deleted"::Nil, "Circle Deleted", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleDetails", ("circle"::"details" :: Nil) -> true, "CircleDetails", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleAddPeopleByName", ("circle"::"addpeoplebyname" :: Nil) -> true, "By Name", LoggedIn, Hidden)) ::
                   Menu(Loc("CircleAddPeopleFromCircle", ("circle"::"addpeoplefromcircle" :: Nil) -> true, "From Another Event", LoggedIn, Hidden)) ::

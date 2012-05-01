@@ -1,0 +1,23 @@
+
+	<div class="row">
+	  <div class="span3">
+	    <div class="row">
+	      <div class="span5"><h2>{{activeCircle().name}}</h2></div>
+	    </div>
+	    <div class="row">
+	      <div class="span5"><h5>{{activeCircle().date | date:'EEE MMM d yyyy'}}</h5></div>
+	    </div>
+	  </div>
+	  <div class="span2">
+  
+       <btn-edit-circle/>
+    
+	  </div>
+	  
+	  <div class="span2">
+        <btn-user user-name="{{user().first}} {{user().last}}"/>
+	  </div>
+	</div>
+	    
+	    
+	    

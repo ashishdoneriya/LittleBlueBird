@@ -34,9 +34,11 @@ object SessionRecipient extends SessionVar[Box[User]](Empty)
  */
 // TODO Add Preferences to current user drop-down
 // TODO Preferences may contain: who can add to my list, should I allow surprises, from who, who can search for me (when adding people to circles), automatically post to FB, automatically post to Twitter
-// TODO Lost password feature
+// TODO Lost password link to current user drop-down
 // TODO Login page looks like crap
 // TODO implement "add people from another circle"
+// TODO Information in the Register page that tells the user they can create account for other people
+// TODO tooltip over the email field saying it doesn't have to be unique
 class Users {
   private object selectedUser extends SessionVar[Box[User]](Empty)
   
@@ -44,10 +46,7 @@ class Users {
   * Add a user
   */
   def add(xhtml: Group): NodeSeq =
-    new User().toForm(Empty, saveUser _) ++ <tr>
-      <td><a href="/user/index.html">Cancel</a></td>
-      <td><input type="submit" value="Create"/></td>
-                                                                </tr>
+    new User().toForm(Empty, saveUser _) ++ cancelSubmitButtons
   
   /**
   * Get the XHTML containing a list of users
@@ -75,14 +74,16 @@ class Users {
                    // "user" and "saveUser" will be called. The
                    // form fields are bound to the model's fields by this
                    // call.
-                   toForm(Empty, saveUser _) ++ <tr>
-      <td><a href="/user/index">Cancel</a></td>
-      <td><input type="submit" value="Save"/></td>
-                                                </tr>
+                   toForm(Empty, saveUser _) ++ cancelSubmitButtons
 
                    // bail out if the ID is not supplied or the user's not found
     ) openOr {error("User not found"); redirectTo("/user/index"); }
   }
+  
+  
+  val cancelSubmitButtons = <div class="row">
+      <div class="span1"><a href="/user/index">Cancel</a></div>
+      <div class="span1"><input type="submit" value="Create"/></div></div>
   
   
   private def myAccount(u:User, xhtml:Group):NodeSeq = {
@@ -165,6 +166,22 @@ class Users {
     <ul class="nav pull-right">
       <li>{link("/login", () => Empty, Text("Login"))}</li>
     </ul>
+  }
+  
+  
+  /**
+   * This method will see if the user belongs to any circles or not.
+   * If not, we will display a friendly alert to the user explaining
+   * that they need to now start creating events.
+   */
+  def alertNoEvents(xhtml:Group):NodeSeq = SessionUser.is match {
+    case Full(user) if(user.circles.size==0) => 
+        <div class="alert alert-info"><h4 class="alert-heading">Start Creating Events</h4>
+          You don't belong to any events.  Create an event by filling out the form to the left.  Then add 
+          your friends and family to the event.  That's how you can see everyone's wish list.
+          <P>Create as many events as you like.</P>
+        </div>
+    case _ => Nil
   }
   
   

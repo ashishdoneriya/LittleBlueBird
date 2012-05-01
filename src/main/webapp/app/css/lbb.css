@@ -1,0 +1,68 @@
+html {
+  height:100%;
+}
+
+body {
+  height:100%;
+}
+
+body.gradient
+{ 
+  height:100%;
+  background-color: #006caa; /* Fallback background color for non supported browsers */  
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#006caa), to(#228fcc));  
+  background-image: -webkit-linear-gradient(top, #006caa, #228fcc);  
+  background-image: -moz-linear-gradient(top, #006caa, #228fcc);  
+  background-image: -ms-linear-gradient(top, #006caa, #228fcc);  
+  background-image: -o-linear-gradient(top, #006caa, #228fcc);  
+  background-image: linear-gradient(top, #006caa, #228fcc);  
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#006caa', EndColorStr='#228fcc' GradientType=1); /* IE6–IE9 */  
+  -webkit-background-size:cover;
+  -moz-background-size:cover;
+  -o-background-size:cover;
+  background-size:cover;
+}
+
+.crop { width: 180px; height: 180px; overflow: hidden; }
+
+.crop img {  margin:0px 0 0 0px; }
+
+.header {
+  height: 100px;
+  -moz-border-radius-topright: 20px;
+  -moz-border-radius-topleft: 20px;
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
+  border:2px solid #bbbbbb;
+  background-color:#cccccc;
+}
+
+.header-gradient
+{ 
+  background-color: #dddddd; /* Fallback background color for non supported browsers */  
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#dddddd));  
+  background-image: -webkit-linear-gradient(top, #ffffff, #dddddd);  
+  background-image: -moz-linear-gradient(top, #ffffff, #dddddd);  
+  background-image: -ms-linear-gradient(top, #ffffff, #dddddd);  
+  background-image: -o-linear-gradient(top, #ffffff, #dddddd);  
+  background-image: linear-gradient(top, #ffffff, #dddddd);  
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffffff', EndColorStr='#dddddd'); /* IE6–IE9 */  
+}
+
+.header-inner {
+  height: 100px;
+  background-color:#cccccc;
+}
+
+.header-text {
+  text-indent:40px;
+  font-size:36px;
+  font-family:Verdana;
+  color:#006caa;
+  padding-top:15px;
+}
+
+.mask
+{
+    overflow: hidden;
+}

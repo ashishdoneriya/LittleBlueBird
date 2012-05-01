@@ -17,4 +17,8 @@ class MappedDateExtended[T <: Mapper[T]](towner: T) extends MappedDate[T](towner
                      placeholder={displayName}/>))
   }
   
+  override def toLong = {
+    super.toLong * 1000L
+  }
+  
 }

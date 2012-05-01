@@ -17,6 +17,15 @@ import com.lbb.gui.MappedEmailExtended
 import com.lbb.gui.MappedTextareaExtended
 import com.lbb.gui.MappedStringExtended
 import com.lbb.gui.MappedDateExtended
+import net.liftweb.http.js.JsExp
+import net.liftweb.http.JsonResponse
+import net.liftweb.http.js.JE.JsArray
+import net.liftweb.http.js.JE.Str
+import net.liftweb.json.JsonAST.JField
+import net.liftweb.json.JsonAST.JString
+import net.liftweb.json.JsonAST.JArray
+import net.liftweb.http.js.JE.JsAnd
+import net.liftweb.json.Serialization
 
 
 /**
@@ -80,7 +89,7 @@ class User extends LongKeyedMapper[User] {
     override def validate:List[FieldError] = {
       this.is match {
         case s if(s.trim()=="") => {
-          val list = List(FieldError(this, Text("Username is required")))
+          val list = List(FieldError(this, Text(displayName+" is required")))
           val ff = (list :: super.validate :: Nil).flatten
           ff
         }
@@ -149,6 +158,10 @@ class User extends LongKeyedMapper[User] {
   
   // query the circle_participant table to find out what circles you belong to
   def circles = CircleParticipant.findAll(By(CircleParticipant.person, this.id))
+  
+  // new&improved version of 'circles' above
+  // return a List[Circle] not just the fkeys
+  def circleList = circles.map(fk => fk.circle.obj.open_!)
   
   // For active circles
   def giftlist(viewer:User, circle:Circle) = {     		
@@ -287,6 +300,12 @@ class User extends LongKeyedMapper[User] {
     case Full(sender) => sender.id.equals(this.id)
     case _ => false
   }
+  
+  override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
+    val jsons = circleList.map(_.asJs)
+    val jsArr = JsArray(jsons)
+    List(("circles", jsArr))        
+  }
 
 }
 
@@ -301,4 +320,6 @@ object User extends User with LongKeyedMetaMapper[User] {
   override def fieldOrder = List(id, first, last, email,
   username, password, dateOfBirth, profilepic, bio)
   
+  // mapper won't let you query by password
+  val queriableFields = List(User.first, User.last, User.username, User.email)
 }

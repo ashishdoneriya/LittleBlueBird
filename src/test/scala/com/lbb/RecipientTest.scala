@@ -30,7 +30,7 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
 			     Box(Props.get("db.user") openOr "test"), Box(Props.get("db.pass") openOr "test"))
 
     DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
-    
+     
     Schemifier.schemify(true, Schemifier.infoF _, User)
     Schemifier.schemify(true, Schemifier.infoF _, Circle)
     Schemifier.schemify(true, Schemifier.infoF _, CircleParticipant)

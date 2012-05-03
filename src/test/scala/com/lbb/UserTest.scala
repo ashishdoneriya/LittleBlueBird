@@ -41,6 +41,22 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     Schemifier.schemify(true, Schemifier.infoF _, User)
   }
   
+    
+  test("parse first last") {
+    val user = User.create
+    user.name("Brent     Dunklau")
+    assert(user.first==="Brent")
+    assert(user.last==="Dunklau")
+    
+    user.name("BrentAA  W....   Dunklauxx")
+    assert(user.first==="BrentAA")
+    assert(user.last==="Dunklauxx")
+    
+    user.name("BrentBB")
+    assert(user.first==="BrentBB")
+    assert(user.last==="Dunklauxx") // value left over from prev test
+  }
+  
   test("create User with Mapper") {
     initDb
     
@@ -50,14 +66,14 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     
     // this stuff goes in the snippet I guess...
     val user : User = User.create
-    user.first("BRENT").last("Dunklau").username("bdunklau").password("123456789").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
+    user.first("BRENT").last("Dunklau").username("bdunklau").password("11111").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
     
     val saved : Boolean = user.save
     assert(saved===true)
     assert(User.findAll.size===1)
     
     val user2 : User = User.create
-    user2.first("brent").last("Dunklau").username("bdunklau").password("123456789").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
+    user2.first("brent").last("Dunklau").username("bdunklau").password("11111").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
     user2.validate match {
       case Nil => {
         println("user2 is valid, saving...")//S.notice(“Person is valid”)
@@ -76,10 +92,7 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     assert(users.size===1)
     assert(users.head.first==="BRENT")
     assert(users.head.age===41)
-    
-    // correct password?  
-    println("password="+users.head.password.match_?("123456789"))   
-
+    assert(users.head.password==="11111")
   }
   
   test("findBy") {
@@ -91,7 +104,7 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     
     // this stuff goes in the snippet I guess...
     val user : User = User.create
-    user.first("Brent").last("Dunklau").username("bdunklau").password("123456789").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
+    user.first("Brent").last("Dunklau").username("bdunklau").password("11111").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
     user.save
     
 //  case-insensitive query
@@ -105,9 +118,7 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     println("UserTest: we found exactly 1 User")
     assert(users.head.first==="Brent")
     assert(users.head.age===41)
-    
-    // correct password?  
-    println("password="+users.head.password.match_?("123456789"))   
+    assert(users.head.password==="11111")  
 
   }
   
@@ -122,7 +133,7 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     
     // this stuff goes in the snippet I guess...
     val user : User = User.create
-    user.first("Brent").last("Dunklau").username("bdunklau").password("123456789").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
+    user.first("Brent").last("Dunklau").username("bdunklau").password("11111").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
     user.save
      
 //  case-insensitive query
@@ -190,43 +201,43 @@ object UserTest extends UserTest {
   }
   
   def createTamie = {
-    val user = createUser("Tamie", "Dunklau", "tamie", "123456789", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("10/10/1976"))
+    val user = createUser("Tamie", "Dunklau", "tamie", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("10/10/1976"))
     user.save
     user
   }
   
   def createKiera = {
-    val user = createUser("Kiera", "Daniell", "kiera", "123456789", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/16/2001"))
+    val user = createUser("Kiera", "Daniell", "kiera", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/16/2001"))
     user.save
     user
   }
   
   def createTruman = {
-    val user = createUser("Truman", "Dunklau", "truman", "123456789", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("5/11/2010"))
+    val user = createUser("Truman", "Dunklau", "truman", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("5/11/2010"))
     user.save
     user
   }
   
   def createJett = {
-    val user = createUser("Jett", "Dunklau", "jett", "123456789", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"))
+    val user = createUser("Jett", "Dunklau", "jett", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"))
     user.save
     user
   }
   
   def createBrenda1 = {
-    val user = createUser("Brenda", "Dunklau", "brenda1", "123456789", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"))
+    val user = createUser("Brenda", "Dunklau", "brenda1", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"))
     user.save
     user
   }
   
   def createBrenda2 = {
-    val user = createUser("Brenda", "Dunklau", "brenda2", "123456789", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"))
+    val user = createUser("Brenda", "Dunklau", "brenda2", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"))
     user.save
     user
   }
   
   def createBill = {
-    val user = createUser("Bill", "Dunklau", "bill", "123456789", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"))
+    val user = createUser("Bill", "Dunklau", "bill", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"))
     user.save
     user
   }

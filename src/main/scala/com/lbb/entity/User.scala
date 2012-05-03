@@ -98,14 +98,10 @@ class User extends LongKeyedMapper[User] {
     }
   }
   
-  object password extends MappedPassword(this) {
+  // this was once a MappedPassword, but with angularjs talking over REST, there's no real point
+  // Trying to use the db tables I have - not worry about migrating to some new version of tables.
+  object password extends MappedStringExtended(this, 140) {
     override def displayName = "Password"
-    
-    override def _toForm: Box[NodeSeq] = {
-      S.fmapFunc({s: List[String] => this.setFromAny(s)}){funcName =>
-      Full(<div>{appendFieldId(<input type={formInputType} name={funcName} value={is.toString} placeholder={displayName}/>)}</div><div><input type={formInputType} name={funcName} value={is.toString} placeholder="Password Again"/></div>)
-      }
-    }
   }
   
   // https://github.com/lift/framework/blob/master/persistence/mapper/src/main/scala/net/liftweb/mapper/MappedDate.scala
@@ -146,6 +142,19 @@ class User extends LongKeyedMapper[User] {
       val now = new DateMidnight()
       val age = Years.yearsBetween(dob, now)
       age.getYears()
+    }
+  }
+  
+  val F = """(\w+)""".r
+  val FL = """(\w+)\s+(\w+)""".r
+  val FML = """(\w+)\s+([^ ]+)\s+(\w+)""".r
+  
+  def name(s:String) = {
+    s match {
+      case F(f) => { first(f); }
+      case FL(f, l) => { first(f); last(l); }
+      case FML(f, m, l) => { first(f); last(l); }
+      case _ => 
     }
   }
 

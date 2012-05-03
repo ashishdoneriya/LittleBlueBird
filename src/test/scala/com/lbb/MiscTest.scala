@@ -32,23 +32,6 @@ import net.liftweb.http.js.JsExp
 
 @RunWith(classOf[JUnitRunner])
 class MiscTest extends FunSuite with AssertionsForJUnit {
-
-  val FL = """(\w+)\s+(\w+)""".r
-  val FML = """(\w+)\s+([^ ]+)\s+(\w+)""".r
-    
-  test("parse first last") {
-    "Brent     Dunklau" match {
-      case FL(f, l) => println("FL: f = "+f+", l = "+l)
-      case FML(f, m, l) => println("FML: f = "+f+", l = "+l)
-      case _ => println("no match")
-    }
-    
-    "Brent  W.....   Dunklau" match {
-      case FL(f, l) => println("FL: f = "+f+", l = "+l)
-      case FML(f, m, l) => println("FML: f = "+f+", l = "+l)
-      case _ => println("no match")
-    }
-  }
   
   test("circle type enums") {
     val en = TypeOfCircle.withName("Christmas")

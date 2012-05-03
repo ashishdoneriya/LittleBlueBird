@@ -1,109 +1,88 @@
 
 <!-- See:  http://docs-next.angularjs.org/guide/dev_guide.forms -->
 
-  <div ng-include src="'partials/mycircles.html'"></div>
+<div class="row">
+  <div class="span3 aaa">
+    <div class="row">
+      <div class="span3 aac">Sign Up</div>
+    </div>
 
-<form novalidate class="css-form" name="regForm">
-  <div class="row"><div class="span3"><input maxlength="140" value="" placeholder="First Name" type="text" ng-model="user.first" /></div></div>
-  <div class="row"><div class="span3"><input maxlength="140" value="" placeholder="Last Name" type="text" ng-model="user.last" /></div></div>
-  <div class="row">
-    <div class="span3">
-      <input maxlength="140" value="" placeholder="Email" type="email" name="email" ng-model="user.email" required>
-      <span ng-show="regForm.email.$pristine">*</span>
-      <span ng-show="regForm.email.$dirty">
-        <span ng-show="regForm.email.$error.required"><img src="img/red_x.png" id="emailrequired" title="Email" data-content="Email is required"></span>
-        <span ng-show="regForm.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email" data-content="Email is invalid"></span>
-      </span>
-    </div>
-  </div>  
-  <div class="row">
-    <div class="span3">
-      <input maxlength="140" value="" placeholder="Username" type="text" name="username" ng-model="user.username" required />
-      <span ng-show="regForm.username.$pristine">*</span>
-      <span ng-show="regForm.username.$dirty">
-        <span ng-show="regForm.username.$error.required">
-          <img src="img/red_x.png" id="invalidusername" title="Username" data-content="Username is required">
-        </span>
-      </span>
-    </div>
-  </div>
-  <div class="row">
-    <div class="span3">
-      <input ng-model="user.password" type="password" placeholder="Password" name="password" value="*******" required />
-      <span ng-show="regForm.password.$pristine">*</span>
-      <span ng-show="regForm.password.$dirty">
-        <span ng-show="regForm.password.$error.required">
-          <img src="img/red_x.png" id="invalidpass" title="Password" data-content="Password is required">
-        </span>
-      </span>
-    </div>
-        
-  </div>
-  <div class="row">
-    <div class="span3">
-      <input ng-model="user.passwordAgain" type="password" placeholder="Password Again" name="passwordAgain" value="*******" required />
-      <span ng-show="regForm.passwordAgain.$pristine">*</span>
-      <span ng-show="regForm.passwordAgain.$dirty">
-        <span ng-show="regForm.passwordAgain.$error.required">
-          <img src="img/red_x.png" id="invalidpassagain" title="Password" data-content="Enter password twice">
-        </span>
-        <span ng-show="user.passwordAgain != user.password && !regForm.passwordAgain.$error.required">
-          <img src="img/red_x.png" id="passwordsdontmatch" title="Password" data-content="Passwords don't match">
-        </span>
-      </span>
-    </div>
-  </div>
-  <div class="row">
-    <div class="span3">
-      <input value="" placeholder="Date of Birth" type="text" name="dateOfBirth" ng-model="user.dateOfBirth" ng-pattern="/^(\d{1,2})/(\d{1,2})/(\d{4})$/" />
-      <span ng-show="regForm.dateOfBirth.$dirty">
-        <span ng-show="regForm.dateOfBirth.$error.pattern">
-          <img src="img/red_x.png" id="invaliddobb" title="Date Of Birth" data-content="Date must be entered in MM/dd/yyyy format">
-        </span>
-      </span>
-    </div>
-  </div>
-  <div class="row">
-    <div class="span3">
-        <div class="modal" id="profilePicModal">
-          <div class="modal-header">
-            <a class="close" data-dismiss="modal"> <i class="icon-remove"></i> </a>
-            <h3>Profile Picture</h3>
-          </div>
-          <div class="modal-body">
-      <input maxlength="1028" value="" placeholder="Profile Pic" type="url" name="profilepic" ng-model="user.profilepic" ng-validate="url" />
-      <span ng-show="regForm.profilepic.$dirty">
-        <span ng-show="regForm.profilepic.$error.url">
-          <img src="img/red_x.png" id="invalidprofilepic" title="Profile Pic" data-content="URL is invalid">
-        </span>
-      </span>
-          </div>
-          <div class="modal-footer">
-            <a href="#" class="btn btn-primary" data-dismiss="modal">Save</a>
-          </div>
-        </div>
-      <div class="crop" ng-mouseover="askProfilePic(user)"><a data-toggle="modal" href="#profilePicModal"><img id="profileimg" ng-src="{{user.profilepic}}" onerror="this.src='img/noprofilepic.jpg'" /></a></div>
-      
-      
-    </div>
-  </div>
-  <div class="row">
-    <div class="span3"><textarea rows="10" placeholder="Bio" ng-model="user.bio" cols="50"></textarea></div>
-  </div>
-  <div class="row">
-    <div class="span1">Cancel</div>
-    <div class="span1">    
-      
-      <div ng-show="regForm.$invalid || (user.passwordAgain != user.password && !regForm.passwordAgain.$error.required)" >
-        <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet" data-content="The form isn't ready to submit yet.  You still have fields to fix and complete.">Save</a>
-      </div>    
-      
-      <div ng-show="!(regForm.$invalid || (user.passwordAgain != user.password && !regForm.passwordAgain.$error.required))" >
-        <a href="#" class="btn btn-primary" ng-click="save(user)">Save</a>
-      </div>
-      
-        <a href="#" class="btn btn-primary" ng-click="pic(user)">Pic</a>
-    </div>
+    <div class="row">
+      <div class="span3 aab">
+
+<form novalidate name="regForm" ng-controller="UserCtrl">
+
     
-  </div>
+            <div class="row"><div class="span1">Name</div><div class="span2"><input class="input-small" maxlength="140" value="" type="text" name="fullname" ng-model="user.fullname" /></div></div>
+            <div class="row">
+              <div class="span1">Email</div>
+              <div class="span2">
+                <input class="input-small" maxlength="140" value="" name="email" type="email" ng-model="user.email" required>
+                <span ng-show="regForm.email.$dirty">
+                  <span ng-show="regForm.email.$error.required"><img src="img/red_x.png" id="emailrequired" title="Email is required"></span>
+                  <span ng-show="regForm.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
+                </span>
+              </div>
+            </div>  
+            <div class="row">
+              <div class="span1">Username</div>
+              <div class="span2">
+                <input class="input-small" maxlength="140" value="" name="username" type="text" ng-model="user.username" ng-change="isUsernameUnique(user, regForm)" required />
+                <span ng-show="regForm.username.$dirty">
+                  <span ng-show="regForm.username.$error.required">
+                    <img src="img/red_x.png" id="invalidusername" title="Username is required">
+                  </span>
+                  <span ng-show="regForm.username.$error.taken">
+                    <img src="img/red_x.png" id="invalidusername" title="Username is taken">
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="span1">Password</div>
+              <div class="span2">
+                <input class="input-small" ng-model="user.password" type="password" name="password" value="*******" required />
+                <span ng-show="regForm.password.$dirty">
+                  <span ng-show="regForm.password.$error.required">
+                    <img src="img/red_x.png" id="invalidpass" title="Password is required">
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="span1">Again</div>
+              <div class="span2">
+                <input class="input-small" ng-model="user.passwordAgain" type="password" name="passwordAgain" value="*******" required />
+                <span ng-show="regForm.passwordAgain.$dirty">
+                  <span ng-show="regForm.passwordAgain.$error.required">
+                    <img src="img/red_x.png" id="invalidpassagain" title="Enter password twice">
+                  </span>
+                  <span ng-show="user.passwordAgain != user.password && !regForm.passwordAgain.$error.required">
+                    <img src="img/red_x.png" id="passwordsdontmatch" title="Passwords don't match">
+                  </span>
+                </span> 
+              </div>
+            </div>
+  
+  
+
+        <div class="row">
+          <div class="span2 offset1">    
+          
+            <div ng-show="regForm.$invalid || (user.passwordAgain != user.password && !regForm.passwordAgain.$error.required)" >
+              <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet" data-content="The form isn't ready to submit yet.  You still have fields to fix and complete.">Save</a>
+            </div>    
+          
+            <div ng-show="!(regForm.$invalid || (user.passwordAgain != user.password && !regForm.passwordAgain.$error.required))" >
+              <a href="#" class="btn btn-primary" ng-click="save(user)">Save</a>
+            </div>
+      
+          </div>
+    
+        </div>
 </form>
+
+      </div>
+    </div>
+  </div>
+</div>

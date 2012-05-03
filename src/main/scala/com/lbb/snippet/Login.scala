@@ -40,7 +40,7 @@ class Login {
       users match {
         case Nil => S.error("username", "Username not found")
         case found:List[User] if(found.size > 1) => S.error("username", "More than one user found with this Username.  How did this happen?")  // S.error will handle this properly
-        case found:List[User] if(!found.head.password.match_?(password)) => S.error("password", "Password incorrect")
+        case found:List[User] if(!found.head.password.equals(password)) => S.error("password", "Password incorrect")
         case u :: us => {
           SessionUser(Full(u))
           println(SessionUser.is.openOr("login"))

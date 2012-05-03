@@ -2,9 +2,10 @@
 angular.module('project', ['UserModule']).
   config(function($routeProvider){
     $routeProvider.
-      when('/giftlist', {template: 'partials/layout.html', controller: UserCtrl}).
       when('/circledetails', {template: 'partials/layout.html', controller: UserCtrl}).
+      when('/giftlist', {template: 'partials/layout.html', controller: UserCtrl}).
       when('/login', {template: 'partials/layout-nlo.html', controller: LoginCtrl}).
+      when('/myaccount', {template: 'partials/layout.html', controller: MyAccountCtrl}).
       when('/register', {template: 'partials/register.html', controller: UserCtrl}).
       otherwise({redirectTo: '/login', template: 'partials/login.html', controller: LoginCtrl});
   })
@@ -76,13 +77,32 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
       }
   });
   
+ 
+function MyAccountCtrl( $scope, $cookieStore, User ) {
+ 
+  $scope.template = {one: 'partials/circleinfo.html', two: 'menu.html', four: 'partials/myaccount.html'};
   
+  $scope.user = function() {
+    var x;
+    if(angular.isDefined(User.currentUser)) {
+      return User.currentUser
+    }
+    else if(angular.isDefined($cookieStore.get("user"))) {
+      $scope.currentUser = User.find({userId:$cookieStore.get("user").id}, 
+                      function() {User.currentUser=$scope.currentUser; User.currentUser.passwordAgain=$scope.currentUser.password;} );
+      return User.currentUser
+    }
+    else {
+      return x;
+    }
+  } 
+  
+}
 
 
 function UserCtrl($location, $cookieStore, $scope, User, Gift, CircleParticipant) { 
  
-  $scope.templates = [{one: 'partials/circleinfo.html', two: 'menu.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html'}];
-  $scope.template = $scope.templates[0];
+  $scope.template = {one: 'partials/circleinfo.html', two: 'menu.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html'};
 
   $scope.saveOld = function(user) {
     User.save({first:user.first, last:user.last, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirth});

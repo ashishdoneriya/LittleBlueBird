@@ -51,9 +51,9 @@ body {
   background-size:cover;
 }
 
-.crop { width: 150px; height: 150px; overflow: hidden; position:relative;left:-15px; }
+.crop { width: 150px; height: 150px; overflow: hidden;  }
 
-.crop img {  margin:0px 10px 0px 0px; }
+.crop img { margin:0px 0px 0px -10px; }
 
 .header {
   height: 100px;

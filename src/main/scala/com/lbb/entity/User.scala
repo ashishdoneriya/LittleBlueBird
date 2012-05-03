@@ -313,7 +313,7 @@ class User extends LongKeyedMapper[User] {
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
     val jsons = circleList.map(_.asJs)
     val jsArr = JsArray(jsons)
-    List(("circles", jsArr))        
+    List(("fullname", JString(first+" "+last)), ("circles", jsArr))        
   }
 
 }

@@ -12,9 +12,20 @@ import net.liftweb.mapper.MappedString
 import net.liftweb.mapper.MappedTextarea
 import com.lbb.gui.MappedTextareaExtended
 import com.lbb.gui.MappedStringExtended
+import net.liftweb.http.js.JsExp
+import net.liftweb.json.JsonAST.JString
+import net.liftweb.http.js.JE.JsArray
+import net.liftweb.common.Box
+import net.liftweb.mapper.KeyObfuscator
+import net.liftweb.json.JsonAST.JBool
+import net.liftweb.mapper.MappedLongIndex
 
-class Gift extends LongKeyedMapper[Gift] with IdPK {
+class Gift extends LongKeyedMapper[Gift] {
   def getSingleton = Gift
+  
+  def primaryKeyField = id
+  
+  object id extends MappedLongIndex(this)
   
   object circle extends MappedLongForeignKey(this, Circle)
   object sender extends MappedLongForeignKey(this, User)
@@ -38,6 +49,8 @@ class Gift extends LongKeyedMapper[Gift] with IdPK {
   }
   
   def recipients = Recipient.findAll(By(Recipient.gift, this.id))
+  
+  def recipientList = recipients.map(fk => fk.person.obj.open_!)
   
   def wasAddedByARecipient = {
     this.recipients.map(_.person.obj.map(_.id.is) openOr -1).contains(this.addedBy.is)
@@ -86,6 +99,17 @@ class Gift extends LongKeyedMapper[Gift] with IdPK {
   def addRecipient(u:User) = {
     Recipient.create.person(u).gift(this).save
   }
+  
+  override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
+    val jsonRecipients = recipientList.map(_.asJs)
+    val jsRecipients = JsArray(jsonRecipients)
+    List(("recipients", jsRecipients), ("canedit", JBool(canedit)), ("candelete", JBool(candelete)), ("canbuy", JBool(canbuy)), ("canreturn", JBool(canreturn)))        
+  }
+  
+  var canedit = false;
+  var candelete = false;
+  var canbuy = false;
+  var canreturn = false;
 }
 
 object Gift extends Gift with LongKeyedMetaMapper[Gift] {

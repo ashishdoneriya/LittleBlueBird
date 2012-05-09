@@ -1,18 +1,24 @@
-// Create a new module
-angular.module('project', ['UserModule']).
+var app = angular.module('project', ['UserModule']).
   config(function($routeProvider){
     $routeProvider.
-      when('/circledetails', {template: 'partials/layout.html', controller: UserCtrl}).
-      when('/giftlist', {template: 'partials/layout.html', controller: UserCtrl}).
-      when('/login', {template: 'partials/layout-nlo.html', controller: LoginCtrl}).
-      when('/myaccount', {template: 'partials/layout.html', controller: MyAccountCtrl}).
-      when('/register', {template: 'partials/register.html', controller: UserCtrl}).
-      otherwise({redirectTo: '/login', template: 'partials/login.html', controller: LoginCtrl});
-  })
-  
+      when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html'}}).
+      when('/circles', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html'}}).
+      when('/event/:circleId', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html'}}).
+      when('/giftlist', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html'}}).
+      when('/myaccount', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/myaccount.html'}}).
+      otherwise({redirectTo: '/login', templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html'}});
+  }).run(function($route, $rootScope){    
+    $rootScope.$on('$beforeRouteChange', function(scope, newRoute){
+        if (!newRoute || !newRoute.$route) return;
+        $rootScope.templates = newRoute.$route.templates;
+        $rootScope.layoutController = newRoute.$route.controller;
+    });
+    
+});
+
 angular.module('UserModule', ['ngResource', 'ngCookies']).
   factory('User', function($resource) {
-      var User = $resource('/api/users/:userId', {userId:'@id', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio'}, 
+      var User = $resource('/api/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       find: {method:'GET', isArray:false}, 
@@ -22,8 +28,9 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
       return User;
   }).
   factory('Circle', function($resource) {
-      var Circle = $resource('/api/circles/:circleId', {circleId:'@id', userId:'@userId'}, 
+      var Circle = $resource('/api/circles/:circleId', {circleId:'@circleId', userId:'@userId'}, 
                     {
+                      query: {method:'GET', isArray:true}, 
                       activeEvents: {method:'GET', isArray:true}, 
                       expiredEvents: {method:'GET', isArray:true},
                       save: {method:'POST'}
@@ -32,7 +39,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
       return Circle;
   }).
   factory('CircleParticipant', function($resource) {
-      var CircleParticipant = $resource('/api/circleparticipants/:circleId', {circleId:'@id'}, 
+      var CircleParticipant = $resource('/api/circleparticipants/:circleId', {circleId:'@circleId'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       save: {method:'POST'}
@@ -67,8 +74,8 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
         restrict: 'E',
         replace: true,
         transclude: true,
-        controller: UserCtrl,
         scope: { btnText:'bind' },
+        controller: UserCtrl,
         templateUrl: 'templates/ddbtn-user.html',
         // The linking function will add behavior to the template
         link: function(scope, element, attrs) {
@@ -76,61 +83,95 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
         }
       }
   });
+
   
  
 function MyAccountCtrl( $scope, $cookieStore, User ) {
  
-  $scope.template = {one: 'partials/circleinfo.html', two: 'menu.html', four: 'partials/myaccount.html'};
+  $scope.save = function(user) {
+    $scope.user = User.save({userId:user.id, fullname:user.fullname, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirthStr, profilepic:user.profilepic}, 
+                                  function() {
+                                    alert("Your profile has been updated"); 
+                                    if(user.dateOfBirth == 0) { user.dateOfBirth = ''; } 
+                                    //User.currentUser = $scope.user;
+                                    $cookieStore.put("user", $scope.user);
+                                  },
+                                  function() {alert("Uh oh - had a problem updating your profile");}
+                                );
+  }
   
-  $scope.user = function() {
-    var x;
-    if(angular.isDefined(User.currentUser)) {
-      return User.currentUser
-    }
-    else if(angular.isDefined($cookieStore.get("user"))) {
-      $scope.currentUser = User.find({userId:$cookieStore.get("user").id}, 
-                      function() {User.currentUser=$scope.currentUser; User.currentUser.passwordAgain=$scope.currentUser.password;} );
-      return User.currentUser
-    }
-    else {
-      return x;
-    }
-  } 
+  if(!angular.isDefined($scope.user)) {
+    $scope.user = $cookieStore.get("user");
+  }
+  
+  //$scope.user = User.currentUser;
+  //$scope.user = $cookieStore.get("user");
   
 }
 
 
-function UserCtrl($location, $cookieStore, $scope, User, Gift, CircleParticipant) { 
- 
-  $scope.template = {one: 'partials/circleinfo.html', two: 'menu.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html'};
 
-  $scope.saveOld = function(user) {
-    User.save({first:user.first, last:user.last, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirth});
+function CurrentCtrl($scope, $cookieStore, User) {
+  $scope.user = function() {
+    return  angular.isDefined(User.showUser) ? User.showUser : (angular.isDefined(User.currentUser) ? User.currentUser : $cookieStore.get("user"));
   }
+}
 
+
+function GiftCtrl($scope, Circle) {
+  $scope.gifts = Circle.gifts;
+}
+
+
+function CircleCtrl($location, $cookieStore, $scope, User, Circle, Gift, CircleParticipant, $log) { 
+  // $scope.user = User.currentUser;
+  $scope.user = $cookieStore.get("user");
+  
+  $scope.toggleCircle = function(circle) {
+    circle.show = angular.isDefined(circle.show) ? !circle.show : true;
+  }
+  
+  $scope.activeCircle = function() { return Circle.activeCircle; //$cookieStore.get("activeCircle"); 
+  }
+  
+  $scope.makeActive = function(circle) {
+    Circle.activeCircle = circle;
+  }
+  
+  $scope.activeOrNot = function(circle) {
+    if(!angular.isDefined(circle) || !angular.isDefined(Circle.activeCircle))
+      return false;
+    return circle.id == Circle.activeCircle.id ? "active" : "";
+  }
+  
+  $scope.showParticipants = function(circle) {
+    circle.participants = CircleParticipant.query({circleId:circle.id});
+  }
+  
+  $scope.giftlist = function(circle, participant) {
+    gifts = Gift.query({viewerId:$cookieStore.get("user").id, circleId:circle.id, recipientId:participant.id}, 
+                            function() { Circle.gifts = gifts; User.showUser = participant; }, 
+                            function() {alert("Hmmm... Had a problem "+participant.first+"'s list\n  Try again");});
+  }
+  
+  $scope.gifts = function() { return Circle.gifts; }
+  
+}
+
+function UserCtrl($location, $cookieStore, $scope, User, Gift, CircleParticipant) {
+  
   $scope.save = function(user) {
-    User.currentUser = User.save({fullname:user.fullname, first:user.first, last:user.last, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirth}, 
+    var currentUser = User.save({fullname:user.fullname, first:user.first, last:user.last, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirth}, 
                                   function() {
                                     $location.url('giftlist'); 
-                                    $cookieStore.put("user", User.currentUser);
+                                    $cookieStore.put("user", currentUser);
+                                    User.currentUser = currentUser;
                                   }
                                 );
   }
   
-  $scope.user = function() {
-    var x;
-    if(angular.isDefined(User.currentUser)) {
-      return User.currentUser
-    }
-    else if(angular.isDefined($cookieStore.get("user"))) {
-      $scope.currentUser = User.find({userId:$cookieStore.get("user").id}, 
-                      function() {User.currentUser=$scope.currentUser;} );
-      return User.currentUser
-    }
-    else {
-      return x;
-    }
-  } 
+  // $scope.user = User.currentUser;
+  $scope.user = $cookieStore.get("user");
   
   $scope.isUsernameUnique = function(user, form) {
     if(!angular.isDefined(user.username)) 
@@ -142,53 +183,14 @@ function UserCtrl($location, $cookieStore, $scope, User, Gift, CircleParticipant
                                         });
   } 
   
-  $scope.toggleCircle = function(circle) {
-    return angular.isDefined(circle.show) ? circle.show=!circle.show : circle.show=true;
-  } 
-  
-  $scope.shouldShow = function(circle) {
-    return circle.show;
-  }
-  
-  $scope.activeCircle = function() { return User.currentCircle; }
-  
-  $scope.makeActive = function(circle) {
-    User.currentCircle = circle;
-  }
-  
-  $scope.activeOrNot = function(circle) {
-    return (angular.isDefined(User.currentUser.id) && User.currentUser.id == circle.id) ? "active" : "";
-  }
-  
-  $scope.showParticipants = function(circle) {
-    var participants = CircleParticipant.query({circleId:circle.id}, function() {circle.participants = participants;});
-  }
-  
-  $scope.giftlist = function(circle, participant) {
-    User.currentCircle.gifts = Gift.query({viewerId:User.currentUser.id, circleId:circle.id, recipientId:participant.id});
-  }
-  
-  $scope.gifts = function() {
-    return (angular.isDefined(User.currentCircle) && angular.isDefined(User.currentCircle.gifts)) ? User.currentCircle.gifts : [];
-  }
-  
-  $scope.circleDetails = function(circle) {
-    $location.url('circledetails')
-  }
-  
   $scope.logout = function() {
-    var x;
-    User.currentUser = x; 
     $cookieStore.remove("user");
+    $cookieStore.remove("activeCircle");
   }
-} 
+}
 
-
-function LoginCtrl($cookieStore, $scope, $location, User, Circle) { 
+function LoginCtrl($cookieStore, $scope, $location, User, Circle, CircleParticipant) { 
  
-  $scope.templates = [{one: 'partials/login.html', two: 'partials/register.html'}];
-  $scope.template = $scope.templates[0];
-  
   $scope.login = function() {
     //alert("login:  "+$scope.username+" / "+$scope.password);
     if(!angular.isDefined($scope.username) || ! angular.isDefined($scope.password)) {
@@ -198,23 +200,19 @@ function LoginCtrl($cookieStore, $scope, $location, User, Circle) {
     
     $scope.users = User.query({username:$scope.username, password:$scope.password}, 
                                function() {$scope.loginfail=false; 
-                                           $location.url('giftlist'); 
+                                           $location.url('myaccount'); 
+                                           if($scope.users[0].dateOfBirth == 0) { $scope.users[0].dateOfBirth = ''; }                                           
+                                           $cookieStore.put("user", $scope.users[0]);
                                            User.currentUser = $scope.users[0];
-                                           $cookieStore.put("user", User.currentUser);}, 
+                                           for(i=0; i < $scope.users[0].circles.length; i++) {
+                                             $scope.users[0].circles[i].participants = CircleParticipant.query({circleId:$scope.users[0].circles[i].id});
+                                           }
+                                          }, 
                                function() {$scope.loginfail=true;}  );
+                               
   }
   
-  $scope.isLoggedIn = function() {
-    return angular.isDefined($cookieStore.get("user"));
-  }
-  
-  $scope.makeActive = function(descr) {
-    $scope.activeLink = descr;
-  }
-  
-  $scope.activeOrNot = function(descr) {
-    return $scope.activeLink == descr ? "active" : "";
-  }
   
 }
 
+  

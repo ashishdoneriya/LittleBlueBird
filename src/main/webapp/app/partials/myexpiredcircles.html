@@ -1,6 +1,6 @@
 <div ng-controller="CircleCtrl">
-<h3>Events</h3>
-  <ul ng-repeat="circle in user.circles" ng-class="'nav nav-pills nav-stacked'" style="margin:0px;">
+<h3>Past Events</h3>
+  <ul ng-repeat="circle in user.expiredcircles" ng-class="'nav nav-pills nav-stacked'" style="margin:0px;">
     <li ng-class="activeOrNot(circle)">
       <a href="#/event/{{circle.id}}" ng-click="makeActive(circle);toggleCircle(circle);showParticipants(circle);">
         <i class="icon-chevron-down"></i> {{circle.name}}

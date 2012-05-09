@@ -1,19 +1,29 @@
 
-	<div class="row">
-	  <div class="span3">
-	    <div class="row">
-	      <div class="span5"><h2>{{activeCircle().name}}</h2></div>
-	    </div>
-	    <div class="row">
-	      <div class="span5"><h5>{{activeCircle().date | date:'EEE MMM d yyyy'}}</h5></div>
-	    </div>
-	  </div>
-	  <div class="span2">
+<div class="row">
+  <div ng-controller="CurrentCtrl">
+  <div class="span3">
+    <div class="aae">
+      <div class="crop">
+        <img id="profileimg" ng-src="{{user().profilepic}}" onerror="this.src='img/noprofilepic.jpg'" />
+      </div>
+    </div>
+  </div>
   
-       <btn-edit-circle/>
-    
-	  </div>
+  <div class="span1">
+    name: {{user().first}}
+  </div>
+  </div>
+  
+
+  <div class="span3" ng-controller="CircleCtrl">
+    <div class="row">
+	  <div class="span3"><h2>{{activeCircle().name}}</h2></div>
 	</div>
-	    
-	    
-	    
+	<div class="row">
+	  <div class="span3"><h5>{{activeCircle().date | date:'EEE MMM d yyyy'}}</h5></div>
+	</div>
+  </div>
+  <div class="span2">
+    <btn-edit-circle/>
+  </div>
+</div>

@@ -170,14 +170,22 @@ class User extends LongKeyedMapper[User] {
   
   // new&improved version of 'circles' above
   // return a List[Circle] not just the fkeys
-  def circleList = circles.map(fk => fk.circle.obj.open_!)
+  def circleList = circles.map(fk => fk.circle.obj.open_!).filter(c => !c.isExpired)
+  
+  def expiredCircles = circles.map(fk => fk.circle.obj.open_!).filter(c => c.isExpired)
   
   // For active circles
   def giftlist(viewer:User, circle:Circle) = {     		
     val sql = "select g.* from gift g join recipient r on r.gift = g.id where r.person = "+this.id   
     println(sql)    
     val gifts = Gift.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
-    gifts filter {g => viewer.canSee(this, g, circle)}
+    gifts.filter(g => viewer.canSee(this, g, circle)).map(g => {
+      g.canedit = viewer.canEdit(g)
+      g.candelete = viewer.canDelete(g)
+      g.canbuy = viewer.canBuy(g)
+      g.canreturn = viewer.canReturn(g)
+      g
+    })
   }
   
   /**
@@ -311,9 +319,15 @@ class User extends LongKeyedMapper[User] {
   }
   
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
-    val jsons = circleList.map(_.asJs)
-    val jsArr = JsArray(jsons)
-    List(("fullname", JString(first+" "+last)), ("circles", jsArr))        
+    val jsonActiveCircles = circleList.map(_.asJs)
+    val jsActive = JsArray(jsonActiveCircles)
+    val jsonExpiredCircles = expiredCircles.map(_.asJs)
+    val jsExpired = JsArray(jsonExpiredCircles)
+    val dobString = dateOfBirth.is match {
+      case null => ""
+      case d:Date => new SimpleDateFormat("M/d/yyyy").format(d)
+    }
+    List(("dateOfBirthStr", dobString), ("fullname", JString(first+" "+last)), ("circles", jsActive), ("expiredcircles", jsExpired))        
   }
 
 }

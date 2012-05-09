@@ -29,6 +29,9 @@ import net.liftweb.json.JsonAST.JString
 import net.liftweb.json.JsonAST
 import net.liftweb.http.js.JE.Str
 import net.liftweb.http.js.JsExp
+import com.lbb.entity.Gift
+import net.liftweb.common.Box
+import com.lbb.entity.Circle
 
 @RunWith(classOf[JUnitRunner])
 class MiscTest extends FunSuite with AssertionsForJUnit {
@@ -92,5 +95,4 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
   test("date") {
     println("1324792800 = "+new Date(1324792800L))
   }
-  
 }

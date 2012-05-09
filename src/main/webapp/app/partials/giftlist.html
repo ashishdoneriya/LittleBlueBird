@@ -1,8 +1,34 @@
 
-          <div class="row">
-            <div class="span5">
+
+
+          <div class="row" ng-controller="CircleCtrl">
+            <div class="span7"> 
               <div ng-repeat="gift in gifts()">
-                <div>{{gift.description}}</div>
+                <div class="row well">
+                  <div class="span2">
+                    <span ng-show="gift.canedit">
+                      <a class="btn btn-primary btn-mini" href="">Edit</a>
+                    </span>
+                    <span ng-show="gift.canedit">
+                      <a class="btn btn-danger btn-mini" href="">Delete</a>
+                    </span>
+                    <span ng-show="gift.canbuy">
+                      <a class="btn btn-success btn-mini" href="">Buy</a>
+                    </span>
+                    <span ng-show="gift.canreturn">
+                      <a class="btn btn-success btn-mini" href="">Return</a>
+                    </span>
+                  </div>
+                
+                  <div class="span1">
+                    {{gift.description}}
+                  </div>
+                  <div class="span4">
+                    <span ng-show="gift.recipients.length > 1">For {{gift.recipients[0].first}}
+                      <span ng-repeat="recipient in gift.recipients.slice(1)"> and {{recipient.first}}</span>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -1,17 +1,28 @@
 
 
 
-          <div class="row" ng-controller="CircleCtrl">
-            <div class="span7"> 
-              <div ng-repeat="gift in gifts()">
-                <div class="row well">
-                  <div class="span2">
-                    <span ng-show="gift.canedit">
-                      <a class="btn btn-primary btn-mini" href="">Edit</a>
-                    </span>
-                    <span ng-show="gift.canedit">
-                      <a class="btn btn-danger btn-mini" href="">Delete</a>
-                    </span>
+        <div ng-controller="CurrentCtrl">
+          <span ng-show="isExpired()">
+          <div class="row alert alert-success marg10">
+            <div class="span6">
+              <h4 class="alert-heading">{{circle.name}} has past</h4>
+              This is what {{showUser.first}} got for {{circle.name}}
+            </div>
+          </div>
+          </span>
+        </div>
+          
+            
+            
+        <div ng-controller="CircleCtrl">
+          <div ng-repeat="gift in gifts">
+            <div class="row gift marg10">
+              
+              <span ng-hide="gift.editing">    
+                
+                  <span ng-show="!isExpired() && !gifts.mylist">
+                  <div class="span1 giftcell">
+                    &nbsp;
                     <span ng-show="gift.canbuy">
                       <a class="btn btn-success btn-mini" href="">Buy</a>
                     </span>
@@ -19,16 +30,61 @@
                       <a class="btn btn-success btn-mini" href="">Return</a>
                     </span>
                   </div>
+                  </span>
                 
-                  <div class="span1">
-                    {{gift.description}}
+                  <span ng-hide="!isExpired() && !gifts.mylist">
+                  <div class="span1 giftcell">
+                    &nbsp;
                   </div>
-                  <div class="span4">
-                    <span ng-show="gift.recipients.length > 1">For {{gift.recipients[0].first}}
+                  </span>
+                
+                  <div class="span4 giftcell">
+                    <span class="giftdescription">{{gift.description}}</span>
+                    <span ng-show="gift.recipients.length > 1">
+                      <br/>
+                      For {{gift.recipients[0].first}}
                       <span ng-repeat="recipient in gift.recipients.slice(1)"> and {{recipient.first}}</span>
                     </span>
                   </div>
+                  
+                  <div class="span2 giftcell">
+                    <span ng-show="gift.canedit" class="pull-right">
+                                 
+                      <a href="javascript:void(0);" ng-click="editgift(gift)"><i class="icon-pencil"></i></a> <i class="icon-remove"></i>
+                      
+                    </span>
+                  </div>
+                  
+              </span>
+              <!-- end:  hide gift.editing -->      
+              
+                  
+              <span ng-show="gift.editing">
+                <div class="span7">
+<form novalidate name="giftForm" ng-controller="CircleCtrl">
+                  <div class="row">
+                    <div class="span1">Description</div><div class="span2"><input class="input-small" maxlength="140" value="" type="text" name="description" ng-model="gift.description" /></div>
+                  </div>
+                  <div class="row">
+                    <div class="span1">URL</div><div class="span2"><input class="input-small" maxlength="140" value="" type="URL" name="url" ng-model="gift.url" /></div>
+                  </div>
+                  <div class="row">
+                    <div class="span7">
+                      <div ng-show="giftForm.$invalid">
+                        <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet">Save</a>
+                      </div>    
+          
+                      <div ng-show="giftForm.$invalid">
+                        <a href="#" class="btn btn-primary" ng-click="savegift(gift)">Save</a>
+                      </div>
+                    </div>
+                  </div>
+</form>
                 </div>
-              </div>
+              </span>
+              <!-- end:  show gift.editing -->    
+                  
+                  
             </div>
           </div>
+        </div>

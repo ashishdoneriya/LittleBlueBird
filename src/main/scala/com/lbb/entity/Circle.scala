@@ -113,9 +113,9 @@ class Circle extends LongKeyedMapper[Circle] {
   
   def participants = CircleParticipant.findAll(By(CircleParticipant.circle, this.id))
   
-//  // new&improved version of 'participants' above
-//  // return a List[User] not just the fkeys
-//  def participantList = participants.map(fk => fk.person.obj.open_!)
+  // new&improved version of 'participants' above
+  // return a List[User] not just the fkeys
+  def participantList = participants.map(fk => fk.person.obj.open_!)
   
   def isExpired = {
     new DateTime(date.is) isBefore(new DateTime())
@@ -139,6 +139,11 @@ class Circle extends LongKeyedMapper[Circle] {
   def add(receivers:List[User], givers:List[User], inviter:User):Circle = {
     add(receivers, inviter, true)
     add(givers, inviter, false)
+  }
+  
+  def containsAll(recipients:List[User]) = {
+    val justreceivers = recipients.filter(r => r.isReceiver(this))
+    justreceivers.size == recipients.size
   }
   
 //  override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {

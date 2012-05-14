@@ -70,10 +70,10 @@
           <div class="span2 offset1">    
           
             <div ng-show="regForm.$invalid || (user.passwordAgain != user.password && !regForm.passwordAgain.$error.required)" >
-              <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet" data-content="The form isn't ready to submit yet.  You still have fields to fix and complete.">Save</a>
+              <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet">Save</a>
             </div>    
           
-            <div ng-show="!(regForm.$invalid || (user.passwordAgain != user.password && !regForm.passwordAgain.$error.required))" >
+            <div ng-hide="regForm.$invalid || (user.passwordAgain != user.password && !regForm.passwordAgain.$error.required)" >
               <a href="#" class="btn btn-primary" ng-click="save(user)">Save</a>
             </div>
       

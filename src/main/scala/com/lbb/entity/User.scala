@@ -196,12 +196,19 @@ class User extends LongKeyedMapper[User] {
     // the 'recipient' is only a 'giver'
     case(_, r, _, _, c) if(!r.isReceiver(c)) => false 
     
+    // You CANNOT see the gift
+    // - if it is for more than one person 
+    // - and all the recipients are not receivers in the circle
+    // Think: Birthdays, Mothers Day, Fathers Day, etc.  Don't show stuff
+    // on my birthday list that is for me and Tamie.
+    case(_, _, _, g, c) if(!c.containsAll(g.recipientList)) => false;
+    
     // You CAN see the gift in this context of this circle because:
     // - the circle is still active
     // - the item hasn't been bought
     // - and you (the viewer) are the one who added this gift
     case(v, _, Empty, g, c) if(!c.isExpired && v.addedThis(g)) => {
-      if(gift.description=="gift11") println("case(v, _, Empty, g, c) if(!c.isExpired && v.addedThis(g))")
+      if(gift.description=="gift17") println("case(v, _, Empty, g, c) if(!c.isExpired && v.addedThis(g))")
       true
     }
     
@@ -210,7 +217,7 @@ class User extends LongKeyedMapper[User] {
     // - the item hasn't been bought
     // - you are a recipient of the gift AND the gift was added by another recipient
     case(v, _, Empty, g, c) if(!c.isExpired && g.isFor(v)) => {
-      if(gift.description=="gift11") println("case(v, _, Empty, g, c) if(!c.isExpired && v.isRecipient(g))")
+      if(gift.description=="gift17") println("case(v, _, Empty, g, c) if(!c.isExpired && v.isRecipient(g))")
       g.wasAddedByARecipient
     }
     
@@ -220,7 +227,7 @@ class User extends LongKeyedMapper[User] {
     // - the item hasn't been bought
     // - you are not the one receiving this gift
     case(v, _, Empty, g, c) if(!c.isExpired && g.isForSomeoneElse(v)) => {
-      if(gift.description=="gift11") println("case(v, _, Empty, g, c) if(!c.isExpired && !v.isRecipient(g))")
+      if(gift.description=="gift17") println("case(v, _, Empty, g, c) if(!c.isExpired && !v.isRecipient(g))")
       true
     }
     
@@ -229,7 +236,7 @@ class User extends LongKeyedMapper[User] {
     // - you added this item to your own list
     // - and you have not yet received this item
     case(v, r, s:Full[User], g, c) if(!c.isExpired && v.addedThis(g) && !g.hasBeenReceived) => {
-      if(gift.description=="gift11") println("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.addedThis(g) && !g.hasBeenReceived)")
+      if(gift.description=="gift17") println("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.addedThis(g) && !g.hasBeenReceived)")
       true
     }
     
@@ -237,7 +244,7 @@ class User extends LongKeyedMapper[User] {
     // - the circle is still active
     // - and you have not yet received this item
     case(v, r, s:Full[User], g, c) if(!c.isExpired && g.isFor(v) && g.wasAddedByARecipient && !g.hasBeenReceived) => {
-      if(gift.description=="gift11") println("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.isRecipient(g) && !g.hasBeenReceived)")
+      if(gift.description=="gift17") println("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.isRecipient(g) && !g.hasBeenReceived)")
       true
     }
     
@@ -250,7 +257,7 @@ class User extends LongKeyedMapper[User] {
     // - the circle is expired
     // - the gift was bought in the expired circle
     case(_, _, s:Full[User], g, c) if(c.isExpired && g.circle.obj.map(_.id.is).openOr(-1)==c.id.is) => {
-      if(gift.description=="gift11") println("case(_, _, s:Full[User], g, c) if(c.isExpired && g.circle.obj.map(_.id.is).openOr(-1)==c.id.is)")
+      if(gift.description=="gift17") println("case(_, _, s:Full[User], g, c) if(c.isExpired && g.circle.obj.map(_.id.is).openOr(-1)==c.id.is)")
       true
     }
     
@@ -264,7 +271,7 @@ class User extends LongKeyedMapper[User] {
   }
   
   def isReceiver(c:Circle) = CircleParticipant.find(By(CircleParticipant.circle, c.id), By(CircleParticipant.person, this.id)) match {
-    case f:Full[CircleParticipant] if(f.open_!.receiver.is) => true
+    case Full(participant) if(participant.receiver.is) => true
     case _ => false
   }
   

@@ -1,8 +1,4 @@
 container:start
-container:stop
-container:start
-container:stop
-container:start
 exit
 container:start
 exit
@@ -193,6 +189,10 @@ container:start
 exit
 container:start
 exit
+container:start
+container:stop
+container:start
+container:stop
 container:start
 container:stop
 container:start

@@ -26,6 +26,10 @@ import net.liftweb.json.JsonAST.JString
 import net.liftweb.json.JsonAST.JArray
 import net.liftweb.http.js.JE.JsAnd
 import net.liftweb.json.Serialization
+import net.liftweb.json.JsonAST.JValue
+import net.liftweb.json.JsonAST.JObject
+import net.liftweb.json.JsonAST.JInt
+import net.liftweb.json.JsonAST
 
 
 /**
@@ -174,10 +178,9 @@ class User extends LongKeyedMapper[User] {
   
   def expiredCircles = circles.map(fk => fk.circle.obj.open_!).filter(c => c.isExpired)
   
-  // For active circles
+  // For active circles (I think expired circles too)
   def giftlist(viewer:User, circle:Circle) = {     		
-    val sql = "select g.* from gift g join recipient r on r.gift = g.id where r.person = "+this.id   
-    println(sql)    
+    val sql = "select g.* from gift g join recipient r on r.gift = g.id where r.person = "+this.id+" order by g.date_created desc"   
     val gifts = Gift.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
     gifts.filter(g => viewer.canSee(this, g, circle)).map(g => {
       g.canedit = viewer.canEdit(g)
@@ -187,6 +190,36 @@ class User extends LongKeyedMapper[User] {
       g
     })
   }
+  
+  /**
+   * "My wish list" is outside the context of any circle and 'this' user is the viewer
+   * so there are no arguments to this method.  The gifts returned by this method can
+   * have null or non-null circle id's.
+   * <P>
+   * Is there any difference between "my wish list" and my view of my xmas list?
+   * Possibly.  The xmas list won't show items that you want with someone else if
+   * that person isn't a member of the xmas circle.  But that item will appear
+   * in "my wish list".  Birthday - another good example - won't show stuff that I 
+   * want with Tamie.  But "my wish list" should show that stuff.
+   */
+  def mywishlist = {    		
+    val sql = "select g.* from gift g join recipient r on r.gift = g.id where r.person = "+this.id+" order by g.date_created desc"   
+    val gifts = Gift.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
+    gifts.filter(g => canSee(g)).map(g => {
+      g.canedit = this.canEdit(g)
+      g.candelete = this.canDelete(g)
+      g.canbuy = this.canBuy(g)
+      g.canreturn = this.canReturn(g)
+      g
+    })
+  }
+  
+  /**
+   * The gift must be for me.  It must have been added by me, or if it's for 
+   * me and someone else, it must have been added by one of us.  And the gift
+   * must not have been received yet (received = circle is expired and sender not null)
+   */
+  def canSee(gift:Gift):Boolean = { gift.isFor(this) && gift.wasAddedByARecipient && !gift.hasBeenReceived }
   
   /**
    * 'this' person is the viewer
@@ -279,8 +312,13 @@ class User extends LongKeyedMapper[User] {
     g.addedBy.is==this.id.is
   }
   
-  def buy(g:Gift) = {
-    g.sender(this).save()
+  /**
+   * Have to pass in the circle also.  The gift may not have a circle because it
+   * was added to "my wish list".  Or the gift may have been added in the context of
+   * one circle but bought in another
+   */
+  def buy(g:Gift, c:Circle) = {
+    g.sender(this).circle(c).save()
   }
   
   def findByName(f:String, l:String) = {
@@ -310,10 +348,7 @@ class User extends LongKeyedMapper[User] {
   }
   
   private def iadded(g:Gift):Boolean = {
-    g.addedBy.obj match {
-      case Full(adder) => adder.id.equals(this.id)
-      case _ => false
-    }
+    addedThis(g)
   }
   
   private def iamrecipient(g:Gift):Boolean = {
@@ -323,6 +358,20 @@ class User extends LongKeyedMapper[User] {
   private def ibought(g:Gift):Boolean = g.sender.obj match {
     case Full(sender) => sender.id.equals(this.id)
     case _ => false
+  }
+  
+  def asJsShallow:JValue = {
+    JObject(List(JField("id", JInt(this.id.is)), 
+                 JField("first", JString(this.first)), 
+                 JField("last", JString(this.last)), 
+                 JField("fullname", JString(this.first + " " + this.last)), 
+                 JField("username", JString(this.username)), 
+                 JField("profilepic", JString(this.profilepic)),
+                 JField("email", JString(this.email)),
+                 JField("bio", JString(this.bio)),
+                 JField("age", JInt(this.age.is)),
+                 JField("dateOfBirth", if(this.dateOfBirth.is == null) { JsonAST.JNull } else { JInt(this.dateOfBirth.is.getTime()) } )
+                 ))
   }
   
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {

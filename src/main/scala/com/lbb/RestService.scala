@@ -1,11 +1,9 @@
 package com.lbb
 import java.text.SimpleDateFormat
 import java.util.Date
-
 import com.lbb.entity.Circle
 import com.lbb.entity.User
 import com.lbb.util.MapperHelper
-
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
@@ -19,6 +17,7 @@ import net.liftweb.http.Req
 import net.liftweb.http.S
 import net.liftweb.json.JsonAST._
 import net.liftweb.util.BasicTypesHelpers._
+import com.lbb.entity.Gift
 
 object RestService extends RestHelper {
 
@@ -26,9 +25,11 @@ object RestService extends RestHelper {
   serve {
     case Get("api" :: "users" :: AsLong(userId) :: _, _) => println("RestService.serve:  22222222222222"); findUser(userId)
     case Get("api" :: "users" :: _, _) => println("RestService.serve:  333333333333333333333333"); findUsers
+    case JsonPost("api" :: "gifts" :: AsLong(giftId) :: _, (json, req)) => println("RestService.serve:  BBBBBBBB"); updateGift(giftId)
+    case JsonPost("api" :: "gifts" :: Nil, (json, req)) => println("RestService.serve:  CCCCCCC"); debug(json); insertGift
     case JsonPost("api" :: "users" :: AsLong(userId) :: _, (json, req)) => println("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
     case JsonPost("api" :: "users" :: Nil, (json, req)) => println("RestService.serve:  4444444444444444"); debug(json); insertUser
-    case Post("api" :: "users" :: Nil, _) => println("RestService.serve:  555555555555555"); insertUser //println("Post(api :: users  :: Nil, _)  S.uri="+S.uri); JsonResponse("Post(api :: users  :: Nil, _)  S.uri="+S.uri)
+    //case Post("api" :: "users" :: Nil, _) => println("RestService.serve:  555555555555555"); insertUser
     case Post("api" :: "users" :: _, _) => println("RestService.serve:  Post(api :: users  :: _, _)  S.uri="+S.uri); JsonResponse("Post(api :: users  :: _, _)  S.uri="+S.uri)
     case Post(_, _) => println("RestService.serve:  case Post(_, _)"); JsonResponse("Post(_, _)  S.uri="+S.uri)
     
@@ -179,11 +180,20 @@ object RestService extends RestHelper {
   
   def findCircleParticipants(circleId:Long) = Circle.findByKey(circleId) match {
     case Full(circle) => {
-      val participantList = circle.participants.map(fk => fk.person.obj.open_!)
-      val jsons = participantList.map(_.asJs)
-      val jsArr = JsArray(jsons)
-      List(("participants", jsArr))        
-      val r = JsonResponse(jsArr)
+      
+      val receivers = circle.participantList.filter(_.isReceiver(circle)).map(_.asJsShallow)
+      val rarr = JArray(receivers)
+      
+      val givers = circle.participantList.filter(!_.isReceiver(circle)).map(_.asJsShallow)
+      val garr = JArray(givers)
+      
+      val giverField = JField("givers", garr)
+      val receiverField = JField("receivers", rarr)
+      
+      val participants = JObject(List(giverField, receiverField))  
+      val jarr = JField("participants", participants)
+      
+      val r = JsonResponse(participants)
       println("RestService.findCircleParticipants: JsonResponse(jsArr)=" + r.toString())
       r
     }
@@ -206,6 +216,14 @@ object RestService extends RestHelper {
         println("RestService.findGifts: JsonResponse(jsArr)=" + r.toString())
         r
       }
+      case (Full(viewer), Empty, Empty) => {
+        val mywishlist = viewer.mywishlist
+        val jsons = mywishlist.map(_.asJs)
+        val jsArr = JsArray(jsons)
+        val r = JsonResponse(jsArr)
+        println("RestService.findGifts: JsonResponse(jsArr)=" + r.toString())
+        r
+      }
       case _ => {
         println("RestService.findGifts: S.param(viewerId)=" + S.param("viewerId"))
         println("RestService.findGifts: S.param(circleId)=" + S.param("circleId"))
@@ -213,4 +231,63 @@ object RestService extends RestHelper {
         BadResponse()
       }
   }
+  
+  def updateGift(id:Long) = (Gift.findByKey(id), S.request) match {
+    case (Full(gift), Full(req)) => {
+      req.json match {
+        case Full(jvalue:JObject) => {
+          jvalue.values foreach {kv => (kv._1, kv._2) match {
+              case ("giftId", id:BigInt) => { }
+              case ("description", s:String) => gift.description(s)
+              case ("url", s:String) => gift.url(s)
+              case ("receivers", a:Any) => println("updateGift: receivers = "+a.toString)
+            } // kv => (kv._1, kv._2) match
+          } // jvalue.values foreach
+          
+          gift.save()
+          JsonResponse(gift.asJs)
+          
+        } // case Full(jvalue:JObject)
+        case _ => BadResponse()
+      } // req.json
+    } // case (Full(user), Full(req))
+    case _ => BadResponse()
+  }
+  
+  
+  def insertGift = {
+    S.request match {
+      case Full(req) => {
+        req.json match {
+          case Full(jvalue:JObject) => {
+            println("RestService.insertGift: jvalue = "+jvalue)
+            val gift = Gift.create
+            jvalue.values foreach {kv => (kv._1, kv._2) match {
+                case ("addedby", a:BigInt) => gift.addedBy(a.longValue())
+                case ("circle", a:BigInt) if(a!=null && a.longValue() != 0 && a.longValue() != -1L) => gift.circle(a.longValue())
+                case ("description", s:String) => gift.description(s)
+                case ("url", s:String) => gift.url(s)
+                case ("receivers", l:List[Map[String, Any]]) => {
+                  //println("insertGift:  so far so good  kv._2="+kv._2)
+                  l.filter(e => e.get("checked").getOrElse(false).equals(true) )
+                     .foreach(e => {
+                       val boxId = asLong(e.get("id"))
+                       println("RestService.insertGift: recipient id = " + boxId.getOrElse(-1L))
+                       gift.addRecipient(boxId.getOrElse(-1L)) 
+                     })
+                }
+                case _ => println("insertGift:  Not handled: kv._1="+kv._1+"  kv._2="+kv._2)
+              } // (kv._1, kv._2) match
+            } // jvalue.values foreach
+            gift.save()
+            JsonResponse(gift.asJs)
+          } // case Full(jvalue:JObject)
+          case _ => println("RestService.insertGift: case _ :  req.json = "+Empty); BadResponse()
+        } // req.json match
+      } // case Full(req)
+      case _ => BadResponse()
+    } // S.request match
+  }
+  
+  
 }

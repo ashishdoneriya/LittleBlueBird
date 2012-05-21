@@ -1,23 +1,31 @@
 
 <!-- See:  http://docs-next.angularjs.org/guide/dev_guide.forms -->
 
-<div class="row">
-  <div class="span3 aaa">
-    <div class="row">
-      <div class="span3 aac">Sign Up</div>
-    </div>
 
     <div class="row">
-      <div class="span3 aab">
+      <div class="span3 well well-small">
 
 <form novalidate name="regForm" ng-controller="UserCtrl">
 
+            <div class="row"><div class="span3"><h3>Sign Up</h3></div></div>
     
-            <div class="row"><div class="span1">Name</div><div class="span2"><input class="input-small" maxlength="140" value="" type="text" name="fullname" ng-model="user.fullname" /></div></div>
+            <div class="row">
+              <div class="span1">Name</div>
+              <div class="span2 margleft0">
+                <input class="span2" maxlength="140" value="" type="text" name="fullname" ng-model="user.fullname" required />
+              </div>
+              <div class="span1 w20 margleft0">
+                <span ng-show="regForm.fullname.$dirty">
+                  <span ng-show="regForm.fullname.$error.required"><img src="img/red_x.png" id="fullnamerequired" title="Name is required"></span>
+                </span>
+              </div>
+            </div>
             <div class="row">
               <div class="span1">Email</div>
-              <div class="span2">
-                <input class="input-small" maxlength="140" value="" name="email" type="email" ng-model="user.email" required>
+              <div class="span2 margleft0">
+                <input class="span2" maxlength="140" value="" name="email" type="email" ng-model="user.email" required>
+              </div>
+              <div class="span1 w20 margleft0">
                 <span ng-show="regForm.email.$dirty">
                   <span ng-show="regForm.email.$error.required"><img src="img/red_x.png" id="emailrequired" title="Email is required"></span>
                   <span ng-show="regForm.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
@@ -26,8 +34,10 @@
             </div>  
             <div class="row">
               <div class="span1">Username</div>
-              <div class="span2">
-                <input class="input-small" maxlength="140" value="" name="username" type="text" ng-model="user.username" ng-change="isUsernameUnique(user, regForm)" required />
+              <div class="span2 margleft0">
+                <input class="span2" maxlength="140" value="" name="username" type="text" ng-model="user.username" ng-change="isUsernameUnique(user, regForm)" required />
+              </div>
+              <div class="span1 w20 margleft0">
                 <span ng-show="regForm.username.$dirty">
                   <span ng-show="regForm.username.$error.required">
                     <img src="img/red_x.png" id="invalidusername" title="Username is required">
@@ -40,8 +50,10 @@
             </div>
             <div class="row">
               <div class="span1">Password</div>
-              <div class="span2">
-                <input class="input-small" ng-model="user.password" type="password" name="password" value="*******" required />
+              <div class="span2 margleft0">
+                <input class="span2" ng-model="user.password" type="password" name="password" value="*******" required />
+              </div>
+              <div class="span1 w20 margleft0">
                 <span ng-show="regForm.password.$dirty">
                   <span ng-show="regForm.password.$error.required">
                     <img src="img/red_x.png" id="invalidpass" title="Password is required">
@@ -51,8 +63,10 @@
             </div>
             <div class="row">
               <div class="span1">Again</div>
-              <div class="span2">
-                <input class="input-small" ng-model="user.passwordAgain" type="password" name="passwordAgain" value="*******" required />
+              <div class="span2 margleft0">
+                <input class="span2" ng-model="user.passwordAgain" type="password" name="passwordAgain" value="*******" required />
+              </div>
+              <div class="span1 w20 margleft0">
                 <span ng-show="regForm.passwordAgain.$dirty">
                   <span ng-show="regForm.passwordAgain.$error.required">
                     <img src="img/red_x.png" id="invalidpassagain" title="Enter password twice">
@@ -84,5 +98,3 @@
 
       </div>
     </div>
-  </div>
-</div>

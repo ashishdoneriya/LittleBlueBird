@@ -1,23 +1,22 @@
 
 <div ng-controller="LoginCtrl">
   <div class="row">
-    <div class="span5">
-  
-<form class="form-inline">
-  User: <input type="text" ng-model="username" class="input-small" >
-  Pass: <input type="password" ng-model="password" class="input-small">
-  <button class="btn" ng-click="login()">Login</button>
-  <BR/> &nbsp;
-  <a href="#/register">sign up</a> | <a href="#/forgot">forgot your login?</a>
-  <BR/> 
-</form>
-  
+    <div class="span3 well well-small">
+      <span ng-hide="forgotlogin">
+		<form novalidate class="form-inline">
+		    <input type="text" title="username" placeholder="Username" ng-model="username"  class="input-small">
+		    <input type="password" title="password" placeholder="Password" ng-model="password" class="input-small">
+		    <button class="btn" ng-click="login()">Login</button> <a href="#/login" ng-click="forgotlogin=true">forgot your login?</a> 
+		</form>
 
-    </div>
-  </div>
-  <div class="row">
-    <div class="span3">
-<span ng-show="loginfail"><div class="alert alert-error">Wrong username/password</div></span>
+        <span ng-show="loginfail"><div class="alert alert-error">Wrong username/password</div></span>
+      </span>
+      <span ng-show="forgotlogin">
+		<form novalidate class="form-inline">
+		    <input type="email" title="Email" placeholder="Email" ng-model="email"  class="span2">
+		    <button class="btn" ng-click="forgotlogin=false">Email It!</button> 
+		</form>
+      </span>
     </div>
   </div>
 </div>

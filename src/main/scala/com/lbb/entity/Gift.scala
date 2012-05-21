@@ -19,6 +19,9 @@ import net.liftweb.common.Box
 import net.liftweb.mapper.KeyObfuscator
 import net.liftweb.json.JsonAST.JBool
 import net.liftweb.mapper.MappedLongIndex
+import scala.collection.mutable.ListBuffer
+import net.liftweb.mapper.MappedDateTime
+import java.util.Date
 
 class Gift extends LongKeyedMapper[Gift] {
   def getSingleton = Gift
@@ -30,6 +33,9 @@ class Gift extends LongKeyedMapper[Gift] {
   object circle extends MappedLongForeignKey(this, Circle)
   object sender extends MappedLongForeignKey(this, User)
   object addedBy extends MappedLongForeignKey(this, User)
+  object dateCreated extends MappedDateTime(this) {
+    override def dbColumnName = "date_created"
+  }
 
   // define an additional field for a personal essay
   object description extends MappedTextareaExtended(this, 2048) {
@@ -98,6 +104,21 @@ class Gift extends LongKeyedMapper[Gift] {
   
   def addRecipient(u:User) = {
     Recipient.create.person(u).gift(this).save
+  }
+  
+  val recipientsToSave:ListBuffer[Long] = ListBuffer()
+  
+  // TODO Don't like using a var but not sure how else to set recipients before the gift is saved
+  def addRecipient(l:Long) = {
+    recipientsToSave.append(l)
+  }
+  
+  override def save() = {
+    if(dateCreated.is==null) dateCreated(new Date())
+    val saved = super.save();
+    recipientsToSave foreach { r => {val rsaved = Recipient.create.person(r).gift(this).save;  println("Gift.save:  r="+r)} }
+    recipientsToSave.drop(0)
+    saved
   }
   
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {

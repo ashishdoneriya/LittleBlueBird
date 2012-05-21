@@ -1,12 +1,27 @@
 package com.lbb.entity
 import java.text.SimpleDateFormat
 import java.util.Date
+import scala.xml.Elem
+import scala.xml.NodeSeq
 import scala.xml.Text
 import org.joda.time.DateTime
+import com.lbb.gui.MappedDateExtended
+import com.lbb.gui.MappedStringExtended
 import com.lbb.Emailer
+import com.lbb.TypeOfCircle
+import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
+import net.liftweb.http.js.JE.JsArray
+import net.liftweb.http.js.JsExp
+import net.liftweb.http.S
+import net.liftweb.http.SHtml
+import net.liftweb.json.JsonAST.JField
+import net.liftweb.json.JsonAST.JInt
+import net.liftweb.json.JsonAST.JObject
+import net.liftweb.json.JsonAST.JString
 import net.liftweb.mapper.By
+import net.liftweb.mapper.KeyObfuscator
 import net.liftweb.mapper.LongKeyedMapper
 import net.liftweb.mapper.LongKeyedMetaMapper
 import net.liftweb.mapper.MappedBoolean
@@ -14,17 +29,8 @@ import net.liftweb.mapper.MappedDate
 import net.liftweb.mapper.MappedLongIndex
 import net.liftweb.mapper.MappedString
 import net.liftweb.util.FieldError
-import com.lbb.gui.MappedStringExtended
-import com.lbb.gui.MappedDateExtended
-import scala.xml.NodeSeq
-import net.liftweb.common.Box
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
-import com.lbb.TypeOfCircle
-import scala.xml.Elem
-import net.liftweb.http.js.JsExp
-import net.liftweb.mapper.KeyObfuscator
-import net.liftweb.http.js.JE.JsArray
+import net.liftweb.json.JsonAST.JValue
+import net.liftweb.json.JsonAST.JArray
 
 
 class Circle extends LongKeyedMapper[Circle] { 
@@ -145,12 +151,6 @@ class Circle extends LongKeyedMapper[Circle] {
     val justreceivers = recipients.filter(r => r.isReceiver(this))
     justreceivers.size == recipients.size
   }
-  
-//  override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
-//    val jsons = participantList.map(_.asJs)
-//    val jsArr = JsArray(jsons)
-//    List(("participants", jsArr))        
-//  }
 }
 
 object Circle extends Circle with LongKeyedMetaMapper[Circle] {

@@ -3,20 +3,79 @@
 
         <div ng-controller="CurrentCtrl">
           <span ng-show="isExpired()">
-          <div class="row alert alert-success marg10">
+          <div class="row alert alert-success margleft10">
             <div class="span6">
               <h4 class="alert-heading">{{circle.name}} has past</h4>
               This is what {{showUser.first}} got for {{circle.name}}
             </div>
           </div>
           </span>
-        </div>
           
-            
-            
-        <div ng-controller="CircleCtrl">
+          
+          <span ng-hide="gift.adding">
+          <div class="row gift giftadd margleft10"><div class="span6 offset5"><a class="btn btn-success" href="#/giftlist" ng-click="gift.adding=true">+ Add Item</a></div></div>
+          </span>
+          
+          
+          <span ng-show="gift.adding">
+<form novalidate name="addGiftForm">
+          <div class="row gift giftadd margleft10">
+            <div class="span7">
+              <div class="row marg_35">
+                <div class="span4">
+	              <div class="row">
+	                <div class="span1">Item</div>
+	              </div>
+	              <div class="row">
+                      <input type="hidden" name="giftId" ng-model="gift.id" />
+                      <input type="hidden" name="addedby" ng-model="gift.addedby" />
+                      <input type="hidden" name="circle" ng-model="gift.circle" />
+	                <div class="span4"><textarea class="span4" rows="5" ng-model="gift.description" cols="80" required></textarea></div>
+	              </div>
+	              <div class="row">
+	                <div class="span1">URL</div>
+	              </div>
+	              <div class="row">
+	                <div class="span4"><input class="span4" type="URL" name="url" ng-model="gift.url" /></div>
+	              </div>
+                </div>
+                <div class="span3">
+                  <div class="row marg_35">
+                    <div class="span3">
+                      This item is for<br/>(check all that apply)
+                    </div>
+                  </div>
+                  <div class="row marg_35">
+                    <div class="span3">
+                      <div ng-repeat="receiver in circle.participants.receivers">
+                        <input type="checkbox" ng-model="receiver.checked" name="fooreceivers" ng-checked="receiver.checked"> {{receiver.fullname}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row marg_35">
+                    <div class="span1">
+                      <a href="#/giftlist" class="btn" ng-click="gift.adding=false">Cancel</a>
+                    </div>
+                    <div class="span4">
+                      <div ng-show="addGiftForm.$invalid">
+                        <a ng-disabled="true" class="btn" id="invalidform">Add Item</a>
+                      </div>    
+          
+                      <div ng-hide="addGiftForm.$invalid">
+                        <a href="#/giftlist" class="btn btn-primary" ng-click="savegift(gift)">Add Item</a>
+                      </div>
+                    </div>
+              </div>
+            </div>
+          </div>
+</form>
+          </span>
+
+
           <div ng-repeat="gift in gifts">
-            <div class="row gift marg10">
+            <div class="row gift margleft10">
               
               <span ng-hide="gift.editing">    
                 
@@ -50,7 +109,7 @@
                   <div class="span2 giftcell">
                     <span ng-show="gift.canedit" class="pull-right">
                                  
-                      <a href="javascript:void(0);" ng-click="editgift(gift)"><i class="icon-pencil"></i></a> <i class="icon-remove"></i>
+                      <a href="#/giftlist" ng-click="editgift(gift)"><i class="icon-pencil"></i></a> <i class="icon-remove"></i>
                       
                     </span>
                   </div>
@@ -61,23 +120,31 @@
                   
               <span ng-show="gift.editing">
                 <div class="span7">
-<form novalidate name="giftForm" ng-controller="CircleCtrl">
+<form novalidate name="giftForm">
                   <div class="row">
-                    <div class="span1">Description</div><div class="span2"><input class="input-small" maxlength="140" value="" type="text" name="description" ng-model="gift.description" /></div>
+                    <div class="span1">Description</div>
+                    <div class="span2">
+                      <input type="hidden" name="giftId" ng-model="gift.id" />
+                      <input class="input-small" maxlength="140" value="" type="text" name="description" ng-model="gift.description" />
+                    </div>
                   </div>
                   <div class="row">
                     <div class="span1">URL</div><div class="span2"><input class="input-small" maxlength="140" value="" type="URL" name="url" ng-model="gift.url" /></div>
                   </div>
                   <div class="row">
-                    <div class="span7">
+                    <div class="span1">
+                      <a href="#/giftlist" class="btn" ng-click="canceleditgift(gift)">Cancel</a>
+                    </div>
+                    <div class="span6">
                       <div ng-show="giftForm.$invalid">
                         <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet">Save</a>
                       </div>    
           
-                      <div ng-show="giftForm.$invalid">
-                        <a href="#" class="btn btn-primary" ng-click="savegift(gift)">Save</a>
+                      <div ng-hide="giftForm.$invalid">
+                        <a href="#/giftlist" class="btn btn-primary" ng-click="savegift(gift)">Save</a>
                       </div>
                     </div>
+                    
                   </div>
 </form>
                 </div>

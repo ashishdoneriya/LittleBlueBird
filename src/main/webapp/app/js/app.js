@@ -42,14 +42,14 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
   factory('CircleParticipant', function($resource) {
       var CircleParticipant = $resource('/api/circleparticipants/:circleId', {circleId:'@circleId'}, 
                     {
-                      query: {method:'GET', isArray:true}, 
+                      query: {method:'GET', isArray:false}, 
                       save: {method:'POST'}
                     });
 
       return CircleParticipant;
   }).
   factory('Gift', function($resource) {
-      var Gift = $resource('/api/gifts/:giftId', {giftId:'@id', viewerId:'@viewerId', circleId:'@circleId', recipientId:'@recipientId'}, 
+      var Gift = $resource('/api/gifts/:giftId', {giftId:'@giftId', viewerId:'@viewerId', circleId:'@circleId', recipientId:'@recipientId', description:'@description', url:'@url', receivers:'@receivers', addedby:'@addedby', circle:'@circle'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       save: {method:'POST'}
@@ -75,8 +75,8 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
         restrict: 'E',
         replace: true,
         transclude: true,
+        controller: CurrentCtrl,
         scope: { btnText:'bind' },
-        controller: UserCtrl,
         templateUrl: 'templates/ddbtn-user.html',
         // The linking function will add behavior to the template
         link: function(scope, element, attrs) {
@@ -110,7 +110,21 @@ function MyAccountCtrl( $rootScope, $scope, $cookieStore, User ) {
 
 
 
-function CurrentCtrl($rootScope, $scope, $cookieStore, User, Circle) {
+function CurrentCtrl($rootScope, $scope, $cookieStore, User, Circle, Gift) {
+  
+  // "my wish list" call
+  $scope.mywishlist = function() {
+    alert("$scope.mywishlist");
+    gifts = Gift.query({viewerId:$cookieStore.get("user").id}, 
+                            function() { 
+                              Circle.gifts = gifts; 
+                              Circle.gifts.mylist=true; 
+                              $cookieStore.put("showUser", $cookieStore.get("user")); 
+                              $rootScope.$emit("circlechange");  
+                              $rootScope.$emit("userchange"); 
+                            }, 
+                            function() {alert("Hmmm... Had a problem getting "+$cookieStore.get("user").first+"'s list\n  Try again");});
+  }
 
   $rootScope.$on("userchange", function(event) {
     $scope.showUser = $cookieStore.get("showUser");
@@ -119,15 +133,37 @@ function CurrentCtrl($rootScope, $scope, $cookieStore, User, Circle) {
 
   $rootScope.$on("circlechange", function(event) {
     $scope.circle = Circle.currentCircle;
+    $scope.gifts = Circle.gifts;
   });
   
   $scope.isExpired = function() { 
+    if(!angular.isDefined($scope.circle)) return false;
     return $scope.circle.date < new Date().getTime(); 
   }
 
   $scope.user = $cookieStore.get("user");
   $scope.showUser = $cookieStore.get("showUser");
   $scope.circle = Circle.currentCircle;
+  
+  $scope.editgift = function(gift) {
+    gift.editing = true;
+    $scope.gift = gift;
+    $scope.giftorig = angular.copy(gift);
+  }
+  
+  $scope.canceleditgift = function(gift) {
+    gift.editing=false;
+    $scope.gift.description = $scope.giftorig.description;
+    $scope.gift.url = $scope.giftorig.url;
+  }
+  
+  $scope.savegift = function(gift) {
+    gift.adding = false;
+    gift.editing = false;
+    gift.canedit = true;
+    Gift.save({giftId:gift.id, description:gift.description, url:gift.url, receivers:$scope.circle.participants.receivers, addedby:$scope.user.id, circle:$scope.circle.id},
+              function() {$scope.gifts.reverse();$scope.gifts.push(gift);$scope.gifts.reverse();});
+  }
 }
 
 
@@ -153,12 +189,12 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, Circle, G
   }
 
   $rootScope.$on("circlechange", function(event) {
-    $scope.circle = Circle.currentCircle;
-    $scope.gifts = Circle.gifts;
+    //$scope.circle = Circle.currentCircle;
+    //$scope.gifts = Circle.gifts;
   });
 
   $rootScope.$on("userchange", function(event) {
-    $scope.user = $cookieStore.get("user");
+    //$scope.user = $cookieStore.get("user");
   });
   
   $scope.activeOrNot = function(circle) {
@@ -181,7 +217,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, Circle, G
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 
                             }, 
-                            function() {alert("Hmmm... Had a problem "+participant.first+"'s list\n  Try again");});
+                            function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again");});
   }
   
 }
@@ -216,7 +252,7 @@ function UserCtrl($location, $cookieStore, $scope, User, Gift, CircleParticipant
   }
 }
 
-function LoginCtrl($cookieStore, $scope, $location, User, Circle, CircleParticipant) { 
+function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Circle, CircleParticipant) { 
  
   $scope.login = function() {
     //alert("login:  "+$scope.username+" / "+$scope.password);
@@ -232,9 +268,9 @@ function LoginCtrl($cookieStore, $scope, $location, User, Circle, CircleParticip
                                            $cookieStore.put("user", $scope.users[0]);                                          
                                            $cookieStore.put("showUser", $scope.users[0]);
                                            $rootScope.$emit("userchange");
-                                           for(i=0; i < $scope.users[0].circles.length; i++) {
-                                             $scope.users[0].circles[i].participants = CircleParticipant.query({circleId:$scope.users[0].circles[i].id});
-                                           }
+                                           //for(i=0; i < $scope.users[0].circles.length; i++) {
+                                           //  $scope.users[0].circles[i].participants = CircleParticipant.query({circleId:$scope.users[0].circles[i].id});
+                                           //}
                                           }, 
                                function() {$scope.loginfail=true;}  );
                                

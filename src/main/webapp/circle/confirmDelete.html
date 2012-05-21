@@ -1,0 +1,19 @@
+<!-- https://github.com/lift/examples/blob/master/combo/example/src/main/webapp/simple/delete.html -->
+
+<lift:surround with="default" at="content">
+
+  <span class="lift:Circles.show"/>
+  
+  <div class="alert alert-warning"><h4 class="alert-heading">Delete This Event?</h4>Are You Sure? Once you delete this event, 
+    you won't be able to get it back. We recommend keeping events even after they have past.  That way, if 
+    you need gift ideas, you can see what people got in the past.
+  </div>
+  
+  
+  <form class="lift:Circles.confirmDelete?form=post">
+    <div class="row">
+      <div class="span1"><xmp:keep></xmp:keep></div>
+      <div class="span1"><xmp:delete></xmp:delete></div>
+    </div>
+  </form>
+</lift:surround>

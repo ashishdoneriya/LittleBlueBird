@@ -3,14 +3,24 @@
   <ul ng-repeat="circle in user.circles" ng-class="'nav nav-pills nav-stacked'" style="margin:0px;">
     <li ng-class="activeOrNot(circle)">
       <a href="#/event/{{circle.id}}" ng-click="makeActive(circle);toggleCircle(circle);showParticipants(circle);">
-        <span class="caret"></span> <b>{{circle.name}}</b>
+        <span class="caret" style="margin-top:5px;"></span> <b>{{circle.name}}</b>
       </a>
         <span ng-show="circle.show">
-      <div ng-repeat="participant in circle.participants" style="text-indent:15px;">
-          <a href="#/giftlist" ng-click="giftlist(circle, participant)">
-            {{participant.fullname}}
-          </a> 
-      </div>
+          <div ng-repeat="receiver in circle.participants.receivers" style="margin-left:25px;">
+            <a href="#/giftlist" ng-click="giftlist(circle, receiver)">
+              {{receiver.first}} {{receiver.last}}
+            </a> 
+          </div>
+          
+        <span ng-show="circle.participants.givers.length > 0">
+          <div style="margin-left:25px;font-weight:bold;">
+            Guest List
+          </div>
+        </span> 
+          
+          <div ng-repeat="giver in circle.participants.givers" style="margin-left:25px;">
+            {{giver.first}} {{giver.last}}
+          </div>
         </span> 
     </li>
   </ul>

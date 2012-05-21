@@ -25,12 +25,9 @@ import net.liftweb.util.NamedPF
 import net.liftweb.http.RewriteRequest
 import net.liftweb.http.ParsePath
 import net.liftweb.http.RewriteResponse
-import com.lbb.EventLoc
 import com.lbb.PopulateDb
 import net.liftweb.http.DocType
 import net.liftweb.http.Req
-import com.lbb.EventLocActive
-import com.lbb.EventLocExpired
 import net.liftweb.mapper.MapperRules
 import scala.xml.NodeSeq
 import com.lbb.RestService
@@ -87,65 +84,7 @@ class Boot {
     Schemifier.schemify(true, Schemifier.infoF _, Recipient)
     
     LiftRules.dispatch.append(RestService)
-
-    // where to search snippet
-    LiftRules.addToPackages("com.lbb")
-    
-    LiftRules.rewrite.prepend(NamedPF("CircleRewrite") {        
-      // TODO Are we using this one?
-      case RewriteRequest(ParsePath("circle" :: "view" :: circle :: Nil, _, _,_), _, _) => 
-        RewriteResponse("circle" :: "index" :: Nil, Map("circle" -> circle))
-        
-      case RewriteRequest(ParsePath("circle" :: "addpeoplefrom" :: circle :: Nil, _, _,_), _, _) => 
-        RewriteResponse("circle" :: "addpeoplefromcircle" :: Nil, Map("anothercircle" -> circle))
-        
-      case RewriteRequest(ParsePath("circle" :: "details" :: circle :: Nil, _, _,_), _, _) => 
-        RewriteResponse("circle" :: "index" :: Nil, Map("circle" -> circle))
-        
-      case RewriteRequest(ParsePath("giftlist" :: circle :: recipient :: Nil, _, _,_), _, _) => 
-        RewriteResponse("circle" :: "gifts" :: Nil, Map("circle" -> circle, "recipient" -> recipient))
-    })
-    
-    // https://github.com/lift/framework/blob/master/web/webkit/src/main/scala/net/liftweb/sitemap/Loc.scala
-    val SuperRequired = If(() => com.lbb.snippet.isSuper.get, 
-                                       () => RedirectResponse("/index"))
-                                       
-    val LoggedIn = If(() => com.lbb.snippet.SessionUser.is != Empty, () => RedirectResponse("/index"))
-    val NotLoggedIn = If(() => com.lbb.snippet.SessionUser.is == Empty, () => RedirectResponse("/index"))
-                                       
-
-    // dynamic menu items from db ...try: http://groups.google.com/group/liftweb/msg/f5d03fc3bf446f1c
-    // and...  http://scala-programming-language.1934581.n4.nabble.com/Menu-generated-from-database-td1979930.html
-    val entries = Menu(Loc("HomeLoc", Link(List("index"), true, "/index"), "Home")) ::
-                  Menu(Loc("LoginLoc", Link(List("login"), true, "/login"), "Login", NotLoggedIn, Hidden)) ::
-                  Menu(Loc("LogoutLoc", Link(List("logout"), true, "/logout"), "Logout", LoggedIn, Hidden)) ::
-                  Menu(Loc("Register", "user"::"add"::Nil, "Register")) ::
-                  Menu(Loc("CircleView", "circle"::"index"::Nil, "View Circles", Hidden)) ::
-                  Menu(Loc("CircleAdd", "circle"::"add"::Nil, "Add Event", LoggedIn)) ::
-                  Menu(new EventLocActive) ::
-                  Menu(new EventLocExpired) ::
-                  Menu(Loc("CircleEdit", "circle"::"edit"::Nil, "Edit Circle", LoggedIn, Hidden)) ::
-                  Menu(Loc("CircleConfirmDelete", "circle"::"confirmDelete"::Nil, "Delete Circle", LoggedIn, Hidden)) ::
-                  Menu(Loc("CircleDeleted", "circle"::"deleted"::Nil, "Circle Deleted", LoggedIn, Hidden)) ::
-                  Menu(Loc("CircleDetails", ("circle"::"details" :: Nil) -> true, "CircleDetails", LoggedIn, Hidden)) ::
-                  Menu(Loc("CircleAddPeopleByName", ("circle"::"addpeoplebyname" :: Nil) -> true, "By Name", LoggedIn, Hidden)) ::
-                  Menu(Loc("CircleAddPeopleFromCircle", ("circle"::"addpeoplefromcircle" :: Nil) -> true, "From Another Event", LoggedIn, Hidden)) ::
-                  Menu(Loc("static", ("static" :: Nil) -> true, "static", Hidden)) ::
-                  Menu(Loc("Y", ("giftlist" :: Nil) -> true, "Y", LoggedIn, Hidden)) ::
-                  Menu(Loc("X", ("circle"::"gifts" :: Nil) -> true, "X", LoggedIn, Hidden)) ::
-                  //Menu(Loc("Z", ("circle"::"deletepeople" :: Nil) -> true, "Z", LoggedIn, Hidden)) ::
-                  // admin: user mgmt
-                  Menu(Loc("User", "user"::"admin"::Nil, "Admin: Users", SuperRequired)) :: 
-                  Menu(Loc("MyAccount", "user"::"index"::Nil, "My Account", LoggedIn, Hidden)) :: 
-                  Menu(Loc("EditUser", "user"::"edit"::Nil, "Edit User", SuperRequired, Hidden)) :: 
-                  Menu(Loc("DeleteUser", "user"::"delete"::Nil, "Delete User", SuperRequired, Hidden)) :: 
-                  Menu(Loc("CircleAdmin", "circle"::"admin"::Nil, "Admin: Circles", SuperRequired)) ::
-                  // other
-                  Menu(Loc("Logmein", "b"::Nil, "Logmein", Hidden)) :: Nil
-                  
-    
-    LiftRules.setSiteMap(SiteMap(entries:_*))
-    
+                              
     Props.mode match {
       case Props.RunModes.Test => println("we are in Test mode")
       case Props.RunModes.Development => println("we are in Development mode")

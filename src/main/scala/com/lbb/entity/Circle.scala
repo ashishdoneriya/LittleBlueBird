@@ -32,6 +32,28 @@ import net.liftweb.util.FieldError
 import net.liftweb.json.JsonAST.JValue
 import net.liftweb.json.JsonAST.JArray
 
+/**
+ * ID
+ * NAME
+ * EXPIRATION_DATE
+ * DATE_DELETED
+ * CUTOFF_DATE
+ * TYPE
+ */
+
+/**
+ * 
+CREATE TABLE IF NOT EXISTS `circles` (
+  `ID` bigint(20) NOT NULL auto_increment,
+  `NAME` varchar(255) default NULL,
+  `EXPIRATION_DATE` datetime default NULL,
+  `DATE_DELETED` date default NULL,
+  `CUTOFF_DATE` datetime default NULL,
+  `type` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=366 ;
+
+ */
 
 class Circle extends LongKeyedMapper[Circle] { 
   
@@ -62,8 +84,18 @@ class Circle extends LongKeyedMapper[Circle] {
     }
   }
   
-  object deleted extends MappedBoolean(this) {
-    override def _toForm:Box[NodeSeq] = Empty
+//  object deleted extends MappedBoolean(this) {
+//    override def _toForm:Box[NodeSeq] = Empty
+//  }
+  
+  // Keep track of the date the circle was deleted, not just the boolean value
+  object date_deleted extends MappedDateExtended(this) {
+    override def dbColumnName = "date_deleted"
+  }
+  
+  // legacy db field - not going anything with this field at this time 5/21/12
+  object cutoff_date extends MappedDateExtended(this) {
+    override def dbColumnName = "cutoff_date"
   }
   
   // https://github.com/lift/framework/blob/master/persistence/mapper/src/main/scala/net/liftweb/mapper/MappedDate.scala
@@ -101,6 +133,7 @@ class Circle extends LongKeyedMapper[Circle] {
   
   object circleType extends MappedString(this, 140) {
     override def displayName = "Type"
+    override def dbColumnName = "type"
     override def dbIndexed_? = true
     
     var chosenType:Box[TypeOfCircle.Value] = Empty
@@ -127,9 +160,14 @@ class Circle extends LongKeyedMapper[Circle] {
     new DateTime(date.is) isBefore(new DateTime())
   }
   
+  def isDeleted = {
+    date_deleted.is != null
+  }
+  
   def add(p:List[User], i:User, receiver:Boolean):Circle = {
     p foreach { u => {
-      val saved = CircleParticipant.create.circle(this).person(u).inviter(i).receiver(receiver).save
+      val participationLevel = if(receiver) {"Receiver"} else {"Giver"}
+      val saved = CircleParticipant.create.circle(this).person(u).inviter(i).participationLevel(participationLevel).save
       saved match {
         case true => Emailer.addedtocircle(u, i, this)
         case false => Emailer.erroradding(i, u, this)
@@ -154,7 +192,7 @@ class Circle extends LongKeyedMapper[Circle] {
 }
 
 object Circle extends Circle with LongKeyedMetaMapper[Circle] {
-  override def dbTableName = "circle" // define the DB table name
+  override def dbTableName = "circles" // define the DB table name
   
   // define the order fields will appear in forms and output
   override def fieldOrder = List(circleType, name, date)

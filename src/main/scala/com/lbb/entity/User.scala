@@ -33,6 +33,64 @@ import net.liftweb.json.JsonAST
 
 
 /**
+ *  Outstanding changes to make:
+ *  PARENT_ID
+ *  DATE_CREATED
+ *  DATE_UPDATED
+ *  SUBSCRIPTION_LEVEL_ID
+ *  SUBSCRIBERS_ALLOWED
+ *  MEMBERSHIP_STATUS_ID
+ *  EXPIRATION_DATE
+ *  GENDER
+ *  CITY
+ *  STATE
+ */
+
+/**
+ * 
+CREATE TABLE IF NOT EXISTS `person` (
+  `ID` bigint(20) NOT NULL auto_increment,
+  `PARENT_ID` bigint(20) default NULL,
+  `FIRSTNAME` varchar(64) default NULL,
+  `LASTNAME` varchar(64) default NULL,
+  `EMAIL` varchar(64) default NULL,
+  `USERNAME` varchar(32) default NULL,
+  `PASSWORD` varchar(255) default NULL,
+  `DATE_CREATED` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `DATE_UPDATED` timestamp NULL default NULL,
+  `SUBSCRIPTION_LEVEL_ID` bigint(20) default NULL,
+  `SUBSCRIBERS_ALLOWED` int(11) NOT NULL default '0',
+  `MEMBERSHIP_STATUS_ID` bigint(20) NOT NULL default '2',
+  `EXPIRATION_DATE` bigint(20) default NULL,
+  `BIO` varchar(2000) default NULL,
+  `GENDER` varchar(8) NOT NULL default 'Female',
+  `DOB` date default NULL,
+  `CITY` varchar(100) default NULL,
+  `STATE` varchar(100) default NULL,
+  `PROFILE_PIC` varchar(1024) default NULL,
+  PRIMARY KEY  (`ID`),
+  UNIQUE KEY `UNIQUE_USERNAME` (`USERNAME`),
+  KEY `SUBSCRIPTION_LEVEL_ID` (`SUBSCRIPTION_LEVEL_ID`),
+  KEY `PARENT_ID` (`PARENT_ID`),
+  KEY `MEMBERSHIP_STATUS_ID` (`MEMBERSHIP_STATUS_ID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=670 ;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `person`
+--
+ALTER TABLE `person`
+  ADD CONSTRAINT `person_ibfk_3` FOREIGN KEY (`PARENT_ID`) REFERENCES `person` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `person_ibfk_4` FOREIGN KEY (`MEMBERSHIP_STATUS_ID`) REFERENCES `membership_status` (`ID`);
+
+ */
+
+// TODO let gender be null
+
+/**
  * An O-R mapped "User" class that includes first name, last name, password and we add a "Personal Essay" to it
  * Lesson:  Don't have to implement validate here - use the inherited validate which will call validate on all the fields
  */
@@ -56,6 +114,7 @@ class User extends LongKeyedMapper[User] {
   
   object first extends MappedStringExtended(this, 140) {
     override def displayName = "First Name"
+    override def dbColumnName = "firstname"
       
     override def _toForm:Box[Elem] = {
       val sup = super._toForm
@@ -67,18 +126,13 @@ class User extends LongKeyedMapper[User] {
   
   object last extends MappedStringExtended(this, 140) {
     override def displayName = "Last Name"
+    override def dbColumnName = "lastname"
   }  
   
   object profilepic extends MappedStringExtended(this, 1028) {
     override def displayName = "Profile Pic"
-  }  
-  
-  def profilepicOrDefault:NodeSeq = {
-    profilepic.is match {
-      case s:String if(s!=null && !s.trim().equals("")) => <img src={profilepic.is}/>
-      case _ => <img src="/images/noprofilepic.jpg"/>
-    }
-  }
+    override def dbColumnName = "profile_pic"
+  } 
   
   object email extends MappedEmailExtended(this, 140) {
     override def displayName = "Email"
@@ -102,6 +156,7 @@ class User extends LongKeyedMapper[User] {
     }
   }
   
+  // TODO mask password when json-ing
   // this was once a MappedPassword, but with angularjs talking over REST, there's no real point
   // Trying to use the db tables I have - not worry about migrating to some new version of tables.
   object password extends MappedStringExtended(this, 140) {
@@ -112,6 +167,7 @@ class User extends LongKeyedMapper[User] {
   object dateOfBirth extends MappedDateExtended(this) {
 
     override def displayName = "Date of Birth"
+    override def dbColumnName = "dob"
       
     var err:List[FieldError] = Nil
     
@@ -174,9 +230,9 @@ class User extends LongKeyedMapper[User] {
   
   // new&improved version of 'circles' above
   // return a List[Circle] not just the fkeys
-  def circleList = circles.map(fk => fk.circle.obj.open_!).filter(c => !c.isExpired)
+  def circleList = circles.map(fk => fk.circle.obj.open_!).filter(c => !c.isExpired && !c.isDeleted)
   
-  def expiredCircles = circles.map(fk => fk.circle.obj.open_!).filter(c => c.isExpired)
+  def expiredCircles = circles.map(fk => fk.circle.obj.open_!).filter(c => c.isExpired && !c.isDeleted)
   
   // For active circles (I think expired circles too)
   def giftlist(viewer:User, circle:Circle) = {     		
@@ -304,7 +360,7 @@ class User extends LongKeyedMapper[User] {
   }
   
   def isReceiver(c:Circle) = CircleParticipant.find(By(CircleParticipant.circle, c.id), By(CircleParticipant.person, this.id)) match {
-    case Full(participant) if(participant.receiver.is) => true
+    case Full(participant) if(participant.isReceiver) => true
     case _ => false
   }
   
@@ -393,7 +449,7 @@ class User extends LongKeyedMapper[User] {
  */
 object User extends User with LongKeyedMetaMapper[User] {
   
-  override def dbTableName = "users" // define the DB table name
+  override def dbTableName = "person" // define the DB table name
   
   // define the order fields will appear in forms and output
   override def fieldOrder = List(id, first, last, email,

@@ -69,23 +69,23 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit {
     assert(anniv.save===true)
     assert(xmas.save===true)
     
-    val me_myBday = CircleParticipant.create.circle(myBday).person(brent).inviter(brent).receiver(true)
-    val tamie_myBday = CircleParticipant.create.circle(myBday).person(tamie).inviter(brent).receiver(true)
-    val kiera_myBday = CircleParticipant.create.circle(myBday).person(kiera).inviter(brent).receiver(true)
+    val me_myBday = CircleParticipant.create.circle(myBday).person(brent).inviter(brent).participationLevel("Receiver")
+    val tamie_myBday = CircleParticipant.create.circle(myBday).person(tamie).inviter(brent).participationLevel("Receiver")
+    val kiera_myBday = CircleParticipant.create.circle(myBday).person(kiera).inviter(brent).participationLevel("Receiver")
     
     assert(me_myBday.save===true)
     assert(tamie_myBday.save===true)
     assert(kiera_myBday.save===true)
     
-    val me_Anniv = CircleParticipant.create.circle(anniv).person(brent).inviter(brent).receiver(true)
-    val tamie_Anniv = CircleParticipant.create.circle(anniv).person(tamie).inviter(brent).receiver(true)
+    val me_Anniv = CircleParticipant.create.circle(anniv).person(brent).inviter(brent).participationLevel("Receiver")
+    val tamie_Anniv = CircleParticipant.create.circle(anniv).person(tamie).inviter(brent).participationLevel("Receiver")
     
     assert(me_Anniv.save===true)
     assert(tamie_Anniv.save===true)
     
-    val me_xmas = CircleParticipant.create.circle(xmas).person(brent).inviter(brent).receiver(true)
-    val tamie_xmas = CircleParticipant.create.circle(xmas).person(tamie).inviter(brent).receiver(true)
-    val kiera_xmas = CircleParticipant.create.circle(xmas).person(kiera).inviter(brent).receiver(true)
+    val me_xmas = CircleParticipant.create.circle(xmas).person(brent).inviter(brent).participationLevel("Receiver")
+    val tamie_xmas = CircleParticipant.create.circle(xmas).person(tamie).inviter(brent).participationLevel("Receiver")
+    val kiera_xmas = CircleParticipant.create.circle(xmas).person(kiera).inviter(brent).participationLevel("Receiver")
     
     assert(me_xmas.save===true)
     assert(tamie_xmas.save===true)
@@ -117,7 +117,7 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit {
     val kiera = UserTest.createKiera
     val truman = UserTest.createTruman
     val jett = UserTest.createJett
-    val status = Map(brent -> true, tamie -> true, kiera -> true, truman -> true, jett -> true)
+    val status = Map(brent -> "Receiver", tamie -> "Receiver", kiera -> "Receiver", truman -> "Receiver", jett -> "Receiver")
     val expectedPeople = List(brent, tamie, kiera, truman, jett)
     val expectedCircle = CircleTest.nextXmas.add(expectedPeople, brent)
     
@@ -155,7 +155,7 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit {
     val kiera = UserTest.createKiera
     val truman = UserTest.createTruman
     val jett = UserTest.createJett
-    val status = Map(brent -> true, tamie -> true, kiera -> false, truman -> false, jett -> false)
+    val status = Map(brent -> "Receiver", tamie -> "Receiver", kiera -> "Giver", truman -> "Giver", jett -> "Giver")
     val expectedReceivers = List(brent, tamie)
     val expectedGivers = List(kiera, truman, jett)
     val expectedCircle = CircleTest.anniv2012.add(expectedReceivers, expectedGivers, brent)
@@ -201,7 +201,7 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit {
     val kiera = UserTest.createKiera
     val truman = UserTest.createTruman
     val jett = UserTest.createJett
-    val status = Map(brent -> true, tamie -> false, kiera -> false, truman -> false, jett -> false)
+    val status = Map(brent -> "Receiver", tamie -> "Giver", kiera -> "Giver", truman -> "Giver", jett -> "Giver")
     val expectedReceivers = List(brent)
     val expectedGivers = List(tamie, kiera, truman, jett)
     val expectedCircle = CircleTest.bday2012.add(expectedReceivers, expectedGivers, brent)
@@ -230,7 +230,7 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit {
                                                        
   }
   
-  def matchPerson(p:CircleParticipant, exp:Map[User, Boolean]) = (p.person.obj openOr Empty, p.receiver.is) match {
+  def matchPerson(p:CircleParticipant, exp:Map[User, String]) = (p.person.obj openOr Empty, p.participationLevel.is) match {
       case (u:User, r) => assert(exp.get(u).getOrElse(false)===r)
       case _ => fail("fail: "+p.person.obj)
     }

@@ -22,6 +22,58 @@ import net.liftweb.mapper.MappedLongIndex
 import scala.collection.mutable.ListBuffer
 import net.liftweb.mapper.MappedDateTime
 import java.util.Date
+import net.liftweb.mapper.MappedInt
+
+/**
+ * 
+CREATE TABLE IF NOT EXISTS `gift` (
+  `ID` bigint(20) NOT NULL auto_increment,
+  `ENTERED_BY` bigint(20) NOT NULL default '0',
+  `CIRCLE_ID` bigint(20) default NULL,
+  `DESCRIPTION` varchar(1024) default NULL,
+  `DELETED` varchar(16) default NULL,
+  `URL` varchar(1024) default NULL,
+  `URL_AFF` varchar(1024) default NULL,
+  `SENDER_ID` bigint(20) default NULL,
+  `SENDER_NAME` varchar(64) default NULL,
+  `STATUS` varchar(64) default NULL,
+  `LIMIT_TO_CIRCLE_ID` bigint(20) NOT NULL default '-1',
+  `REALLY_WANTS` int(11) default '0',
+  `DATE_CREATED` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `DATE_REVIEWED` timestamp NULL default NULL,
+  `RESULTS_OF_REVIEW` varchar(1024) default NULL,
+  `DATE_MODIFIED` timestamp NULL default NULL,
+  `URL_STATE` varchar(64) default NULL,
+  `AFFILIATE_ID` bigint(20) default NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `ENTERED_BY` (`ENTERED_BY`),
+  KEY `CIRCLE_ID` (`CIRCLE_ID`),
+  KEY `STATUS` (`STATUS`),
+  KEY `gift_sender_id_fk` (`SENDER_ID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7287 ;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `gift`
+--
+ALTER TABLE `gift`
+  ADD CONSTRAINT `gift_ibfk_1` FOREIGN KEY (`ENTERED_BY`) REFERENCES `person` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `gift_ibfk_2` FOREIGN KEY (`SENDER_ID`) REFERENCES `person` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ */
+
+/**
+ * Outstanding columns to change/update in Mapper code:
+  `LIMIT_TO_CIRCLE_ID` bigint(20) NOT NULL default '-1',   (may not have to create a field in this class because of this default)
+  `DATE_CREATED` timestamp NOT NULL default CURRENT_TIMESTAMP, (may not have to create a field in this class because of this default)
+  `DATE_REVIEWED` timestamp NULL default NULL,
+  `RESULTS_OF_REVIEW` varchar(1024) default NULL,
+  `DATE_MODIFIED` timestamp NULL default NULL,
+  `URL_STATE` varchar(64) default NULL,
+ */
 
 class Gift extends LongKeyedMapper[Gift] {
   def getSingleton = Gift
@@ -30,11 +82,36 @@ class Gift extends LongKeyedMapper[Gift] {
   
   object id extends MappedLongIndex(this)
   
-  object circle extends MappedLongForeignKey(this, Circle)
-  object sender extends MappedLongForeignKey(this, User)
-  object addedBy extends MappedLongForeignKey(this, User)
+  object circle extends MappedLongForeignKey(this, Circle) {
+    override def dbColumnName = "CIRCLE_ID"
+  }
+  
+  object affiliate extends MappedLongForeignKey(this, User) {
+    override def dbColumnName = "AFFILIATE_ID"
+  }
+  
+  object sender extends MappedLongForeignKey(this, User) {
+    override def dbColumnName = "sender_id"
+  }
+  
+  object sender_name extends MappedStringExtended(this, 1028) {
+  }
+  
+  object status extends MappedStringExtended(this, 1028) {
+  }
+  
+  object reallyWants extends MappedInt(this) {
+    override def dbColumnName = "really_wants"
+  }
+  
+  object addedBy extends MappedLongForeignKey(this, User) {
+    override def dbColumnName = "entered_by"
+  }
   object dateCreated extends MappedDateTime(this) {
     override def dbColumnName = "date_created"
+  }
+  
+  object deleted extends MappedStringExtended(this, 1028) {
   }
 
   // define an additional field for a personal essay
@@ -52,6 +129,7 @@ class Gift extends LongKeyedMapper[Gift] {
   // TODO validate url
   object affiliateUrl extends MappedStringExtended(this, 1028) {
     override def displayName = "Affiliate URL"
+    override def dbColumnName = "URL_AFF"
   }
   
   def recipients = Recipient.findAll(By(Recipient.gift, this.id))

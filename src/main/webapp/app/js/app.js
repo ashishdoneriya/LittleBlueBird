@@ -20,7 +20,7 @@ var app = angular.module('project', ['UserModule']).
 
 angular.module('UserModule', ['ngResource', 'ngCookies']).
   factory('User', function($resource) {
-      var User = $resource('users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic'}, 
+      var User = $resource('/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       find: {method:'GET', isArray:false}, 
@@ -30,7 +30,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
       return User;
   }).
   factory('Circle', function($resource) {
-      var Circle = $resource('circles/:circleId', {circleId:'@circleId', userId:'@userId'}, 
+      var Circle = $resource('/circles/:circleId', {circleId:'@circleId', userId:'@userId'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       activeEvents: {method:'GET', isArray:true}, 
@@ -41,7 +41,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
       return Circle;
   }).
   factory('CircleParticipant', function($resource) {
-      var CircleParticipant = $resource('circleparticipants/:circleId', {circleId:'@circleId'}, 
+      var CircleParticipant = $resource('/circleparticipants/:circleId', {circleId:'@circleId'}, 
                     {
                       query: {method:'GET', isArray:false}, 
                       save: {method:'POST'}
@@ -50,7 +50,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
       return CircleParticipant;
   }).
   factory('Gift', function($resource) {
-      var Gift = $resource('gifts/:giftId', {giftId:'@giftId', viewerId:'@viewerId', circleId:'@circleId', recipientId:'@recipientId', description:'@description', url:'@url', receivers:'@receivers', addedby:'@addedby', circle:'@circle'}, 
+      var Gift = $resource('/gifts/:giftId', {giftId:'@giftId', viewerId:'@viewerId', circleId:'@circleId', recipientId:'@recipientId', description:'@description', url:'@url', receivers:'@receivers', addedby:'@addedby', circle:'@circle'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       save: {method:'POST'}

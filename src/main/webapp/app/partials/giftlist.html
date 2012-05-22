@@ -80,7 +80,7 @@
               <span ng-hide="gift.editing">    
                 
                   <span ng-show="!isExpired() && !gifts.mylist">
-                  <div class="span1 giftcell">
+                  <div class="span1 margleft0">
                     &nbsp;
                     <span ng-show="gift.canbuy">
                       <a class="btn btn-success btn-mini" href="">Buy</a>
@@ -92,12 +92,12 @@
                   </span>
                 
                   <span ng-hide="!isExpired() && !gifts.mylist">
-                  <div class="span1 giftcell">
+                  <div class="span1 margleft0">
                     &nbsp;
                   </div>
                   </span>
                 
-                  <div class="span4 giftcell">
+                  <div class="span4 margleft0">
                     <span class="giftdescription">{{gift.description}}</span>
                     <span ng-show="gift.recipients.length > 1">
                       <br/>
@@ -106,7 +106,7 @@
                     </span>
                   </div>
                   
-                  <div class="span2 giftcell">
+                  <div class="span2 margleft0">
                     <span ng-show="gift.canedit" class="pull-right">
                                  
                       <a href="#/giftlist" ng-click="editgift(gift)"><i class="icon-pencil"></i></a> <i class="icon-remove"></i>

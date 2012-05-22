@@ -2,6 +2,7 @@ var app = angular.module('project', ['UserModule']).
   config(function($routeProvider){
     $routeProvider.
       when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html'}}).
+      when('/addcircle', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circleform.html'}}).
       when('/circles', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html'}}).
       when('/editgift', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html'}}).
       when('/event/:circleId', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html'}}).
@@ -19,7 +20,7 @@ var app = angular.module('project', ['UserModule']).
 
 angular.module('UserModule', ['ngResource', 'ngCookies']).
   factory('User', function($resource) {
-      var User = $resource('/api/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic'}, 
+      var User = $resource('users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       find: {method:'GET', isArray:false}, 
@@ -29,7 +30,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
       return User;
   }).
   factory('Circle', function($resource) {
-      var Circle = $resource('/api/circles/:circleId', {circleId:'@circleId', userId:'@userId'}, 
+      var Circle = $resource('circles/:circleId', {circleId:'@circleId', userId:'@userId'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       activeEvents: {method:'GET', isArray:true}, 
@@ -40,7 +41,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
       return Circle;
   }).
   factory('CircleParticipant', function($resource) {
-      var CircleParticipant = $resource('/api/circleparticipants/:circleId', {circleId:'@circleId'}, 
+      var CircleParticipant = $resource('circleparticipants/:circleId', {circleId:'@circleId'}, 
                     {
                       query: {method:'GET', isArray:false}, 
                       save: {method:'POST'}
@@ -49,7 +50,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
       return CircleParticipant;
   }).
   factory('Gift', function($resource) {
-      var Gift = $resource('/api/gifts/:giftId', {giftId:'@giftId', viewerId:'@viewerId', circleId:'@circleId', recipientId:'@recipientId', description:'@description', url:'@url', receivers:'@receivers', addedby:'@addedby', circle:'@circle'}, 
+      var Gift = $resource('gifts/:giftId', {giftId:'@giftId', viewerId:'@viewerId', circleId:'@circleId', recipientId:'@recipientId', description:'@description', url:'@url', receivers:'@receivers', addedby:'@addedby', circle:'@circle'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       save: {method:'POST'}

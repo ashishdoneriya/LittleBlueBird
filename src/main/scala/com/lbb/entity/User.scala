@@ -236,7 +236,7 @@ class User extends LongKeyedMapper[User] {
   
   // For active circles (I think expired circles too)
   def giftlist(viewer:User, circle:Circle) = {     		
-    val sql = "select g.* from gift g join recipient r on r.gift = g.id where r.person = "+this.id+" order by g.date_created desc"   
+    val sql = "select g.* from gift g join recipient r on r.gift_id = g.id where r.person_id = "+this.id+" order by g.date_created desc"   
     val gifts = Gift.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
     gifts.filter(g => viewer.canSee(this, g, circle)).map(g => {
       g.canedit = viewer.canEdit(g)
@@ -259,7 +259,7 @@ class User extends LongKeyedMapper[User] {
    * want with Tamie.  But "my wish list" should show that stuff.
    */
   def mywishlist = {    		
-    val sql = "select g.* from gift g join recipient r on r.gift = g.id where r.person = "+this.id+" order by g.date_created desc"   
+    val sql = "select g.* from gift g join recipient r on r.gift_id = g.id where r.person_id = "+this.id+" order by g.date_created desc"   
     val gifts = Gift.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
     gifts.filter(g => canSee(g)).map(g => {
       g.canedit = this.canEdit(g)

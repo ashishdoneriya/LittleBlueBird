@@ -23,23 +23,23 @@ object RestService extends RestHelper {
 
   // ref:  http://www.assembla.com/spaces/liftweb/wiki/REST_Web_Services
   serve {
-    case Get("api" :: "users" :: AsLong(userId) :: _, _) => println("RestService.serve:  22222222222222"); findUser(userId)
-    case Get("api" :: "users" :: _, _) => println("RestService.serve:  333333333333333333333333"); findUsers
-    case JsonPost("api" :: "gifts" :: AsLong(giftId) :: _, (json, req)) => println("RestService.serve:  BBBBBBBB"); updateGift(giftId)
-    case JsonPost("api" :: "gifts" :: Nil, (json, req)) => println("RestService.serve:  CCCCCCC"); debug(json); insertGift
-    case JsonPost("api" :: "users" :: AsLong(userId) :: _, (json, req)) => println("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
-    case JsonPost("api" :: "users" :: Nil, (json, req)) => println("RestService.serve:  4444444444444444"); debug(json); insertUser
-    //case Post("api" :: "users" :: Nil, _) => println("RestService.serve:  555555555555555"); insertUser
-    case Post("api" :: "users" :: _, _) => println("RestService.serve:  Post(api :: users  :: _, _)  S.uri="+S.uri); JsonResponse("Post(api :: users  :: _, _)  S.uri="+S.uri)
+    case Get("users" :: AsLong(userId) :: _, _) => println("RestService.serve:  22222222222222"); findUser(userId)
+    case Get("users" :: _, _) => println("RestService.serve:  333333333333333333333333"); findUsers
+    case JsonPost("gifts" :: AsLong(giftId) :: _, (json, req)) => println("RestService.serve:  BBBBBBBB"); updateGift(giftId)
+    case JsonPost("gifts" :: Nil, (json, req)) => println("RestService.serve:  CCCCCCC"); debug(json); insertGift
+    case JsonPost("users" :: AsLong(userId) :: _, (json, req)) => println("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
+    case JsonPost("users" :: Nil, (json, req)) => println("RestService.serve:  4444444444444444"); debug(json); insertUser
+    //case Post("users" :: Nil, _) => println("RestService.serve:  555555555555555"); insertUser
+    case Post("users" :: _, _) => println("RestService.serve:  Post(api :: users  :: _, _)  S.uri="+S.uri); JsonResponse("Post(api :: users  :: _, _)  S.uri="+S.uri)
     case Post(_, _) => println("RestService.serve:  case Post(_, _)"); JsonResponse("Post(_, _)  S.uri="+S.uri)
     
     // circles...
-    case Get("api" :: "circles" :: AsLong(circleId) :: _, _) => println("RestService.serve:  88888888"); findCircle(circleId)
-    case Get("api" :: "circleparticipants" :: AsLong(circleId) :: _, _) => println("RestService.serve:  77777777777"); findCircleParticipants(circleId)
+    case Get("circles" :: AsLong(circleId) :: _, _) => println("RestService.serve:  88888888"); findCircle(circleId)
+    case Get("circleparticipants" :: AsLong(circleId) :: _, _) => println("RestService.serve:  77777777777"); findCircleParticipants(circleId)
     
     // gifts...
-    case Get("api" :: "gifts" :: AsLong(giftId) :: _, _) => println("RestService.serve:  999999999"); findGift(giftId)
-    case Get("api" :: "gifts" :: _, _) => println("RestService.serve:  AAAAAAAAA"); findGifts
+    case Get("gifts" :: AsLong(giftId) :: _, _) => println("RestService.serve:  999999999"); findGift(giftId)
+    case Get("gifts" :: _, _) => println("RestService.serve:  AAAAAAAAA"); findGifts
     
     //case _ => println("RestService.serve:  666666666"); debug
   }

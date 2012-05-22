@@ -43,7 +43,9 @@ body {
 
 .crop { width: 150px; height: 150px; overflow: hidden;  }
 
-.crop img { margin:0px 0px 0px -10px; }
+.crop img { 
+  margin:0px 0px 0px -10px; 
+}
 
 .gift {
   padding: 10px 0px 10px 10px;
@@ -63,10 +65,6 @@ body {
   border-color: #cccccc;
   color: #222222;
   padding: 10px 0px 10px 0px;
-}
-
-.giftcell {
-  margin-left:0px;
 }
 
 .giftdescription {
@@ -113,11 +111,15 @@ body {
   margin-left:10px;
 }
 
+.margtop10 {
+  margin-top:10px;
+}
+
 .pad10 {
   padding:10px;
 }
 
-.userbutton {
+.padtop5 {
   padding-top:5px;
 }
 

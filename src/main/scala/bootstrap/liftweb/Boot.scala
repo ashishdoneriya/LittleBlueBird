@@ -39,7 +39,7 @@ class Boot {
       val vendor = 
 	new StandardDBVendor(Props.get("db.driver") openOr "com.mysql.jdbc.Driver", //"org.h2.Driver", //"com.mysql.jdbc.Driver",
 			     Props.get("db.url") openOr 
-			     "jdbc:mysql://localhost:3306/littlebluebird", //"jdbc:h2:~/test", //"jdbc:mysql://localhost:3306/littlebluebird",
+			     "jdbc:mysql://localhost:3307/bdunklau", //"jdbc:h2:~/test", //"jdbc:mysql://localhost:3306/littlebluebird",
 			     Box(Props.get("db.user") openOr "test"), Box(Props.get("db.pass") openOr "test"))
 
       LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)

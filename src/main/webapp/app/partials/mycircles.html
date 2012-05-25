@@ -1,5 +1,5 @@
 <div ng-controller="CircleCtrl">
-<h4>Events  <a href="#" class="btn btn-mini btn-success">Add Event</a></h4>
+<div class="row"><div class="span1"><h3>Events</h3></div><div class="span1"><btn-add-circle/></div></div>
   <ul ng-repeat="circle in user.circles" ng-class="'nav nav-pills nav-stacked'" style="margin:0px;">
     <li ng-class="activeOrNot(circle)">
       <a href="#/event/{{circle.id}}" ng-click="makeActive(circle);toggleCircle(circle);showParticipants(circle);">

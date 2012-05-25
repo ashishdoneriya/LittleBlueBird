@@ -18,4 +18,18 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
   <url-pattern>/*</url-pattern>
 </filter-mapping>
 
+
+<!-- FOR JETTY ONLY - REMOVE WHEN DEPLOYING TO TOMCAT -->
+<servlet>
+    <!-- Override init parameter to avoid nasty -->
+    <!-- file locking issue on windows.         -->
+    <servlet-name>default</servlet-name>
+    <init-param>
+        <param-name>useFileMappedBuffer</param-name>
+        <param-value>false</param-value>
+    </init-param>
+</servlet>
+
+
+
 </web-app>

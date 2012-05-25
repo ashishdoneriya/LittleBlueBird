@@ -2,12 +2,12 @@ var app = angular.module('project', ['UserModule']).
   config(function($routeProvider){
     $routeProvider.
       when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html'}}).
-      when('/addcircle', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circleform.html'}}).
       when('/circles', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html'}}).
       when('/editgift', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html'}}).
       when('/event/:circleId', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html'}}).
       when('/giftlist', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html'}}).
       when('/myaccount', {templates: {layout: 'layout.html', one: 'partials/myaccountheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/myaccount.html'}}).
+      when('/newchristmas', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/newcircle.html'}}).
       otherwise({redirectTo: '/login', templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html'}});
   }).run(function($route, $rootScope){    
     $rootScope.$on('$beforeRouteChange', function(scope, newRoute){
@@ -18,9 +18,9 @@ var app = angular.module('project', ['UserModule']).
     
 });
 
-angular.module('UserModule', ['ngResource', 'ngCookies']).
+angular.module('UserModule', ['ngResource', 'ngCookies', 'ui']).
   factory('User', function($resource) {
-      var User = $resource('/lbb/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic'}, 
+      var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       find: {method:'GET', isArray:false}, 
@@ -30,7 +30,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
       return User;
   }).
   factory('Circle', function($resource) {
-      var Circle = $resource('/lbb/circles/:circleId', {circleId:'@circleId', userId:'@userId'}, 
+      var Circle = $resource('/gf/circles/:circleId', {circleId:'@circleId', circleType:'@circleType', name:'@name', expirationdate:'@expirationdate', userId:'@userId'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       activeEvents: {method:'GET', isArray:true}, 
@@ -41,7 +41,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
       return Circle;
   }).
   factory('CircleParticipant', function($resource) {
-      var CircleParticipant = $resource('/lbb/circleparticipants/:circleId', {circleId:'@circleId'}, 
+      var CircleParticipant = $resource('/gf/circleparticipants/:circleId', {circleId:'@circleId'}, 
                     {
                       query: {method:'GET', isArray:false}, 
                       save: {method:'POST'}
@@ -50,7 +50,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
       return CircleParticipant;
   }).
   factory('Gift', function($resource) {
-      var Gift = $resource('/lbb/gifts/:giftId', {giftId:'@giftId', viewerId:'@viewerId', circleId:'@circleId', recipientId:'@recipientId', description:'@description', url:'@url', receivers:'@receivers', addedby:'@addedby', circle:'@circle'}, 
+      var Gift = $resource('/gf/gifts/:giftId', {giftId:'@giftId', viewerId:'@viewerId', circleId:'@circleId', recipientId:'@recipientId', description:'@description', url:'@url', receivers:'@receivers', addedby:'@addedby', circle:'@circle'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       save: {method:'POST'}
@@ -82,6 +82,41 @@ angular.module('UserModule', ['ngResource', 'ngCookies']).
         // The linking function will add behavior to the template
         link: function(scope, element, attrs) {
            $('.dropdown-toggle').dropdown();
+        }
+      }
+  })
+  .directive('btnAddCircle', function(){
+      return {
+        restrict: 'E',
+        replace: true,
+        transclude: false,
+        controller: CircleCtrl,
+        scope: false,
+        templateUrl: 'templates/ddbtn-addcircle.html',
+        // The linking function will add behavior to the template
+        link: function(scope, element, attrs) {
+           $('.dropdown-toggle').dropdown();
+        }
+      }
+  })
+  .directive('fldDatepicker', function(){
+      return {
+        replace: false,
+        require: 'ngModel',
+        transclude: false,
+        controller: CircleCtrl,
+        scope: false,
+        templateUrl: 'templates/fld-datepicker.html',
+        // The linking function will add behavior to the template
+        link: function(scope, element, attrs, ngModelCtrl) {
+          $(function() {
+		    $( "#datepicker" ).datepicker({
+				changeYear : true,
+				changeMonth : true,
+				appendText : '(mm/dd/yyyy)',
+				dateFormat : 'mm/dd/yy'});
+	      });
+            
         }
       }
   });
@@ -168,7 +203,8 @@ function CurrentCtrl($rootScope, $scope, $cookieStore, User, Circle, Gift) {
 }
 
 
-function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, Circle, Gift, CircleParticipant, $log) { 
+function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, Circle, Gift, CircleParticipant, $log) {              
+             
   $scope.user = $cookieStore.get("user");
   
   $scope.toggleCircle = function(circle) {
@@ -220,6 +256,21 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, Circle, G
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again");});
   }
+  
+  $scope.save = function(circle) {
+    Circle.save({name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:Circle.circleType});
+  }
+  
+  $scope.type = function(thetype) {
+    Circle.circleType = thetype;
+  }
+  
+  $scope.dateOptions = {
+        changeYear: true,
+        changeMonth: true,
+        yearRange: '1900:-0',
+        dateFormat : 'mm/dd~yy'
+    };
   
 }
 

@@ -29,6 +29,7 @@ object RestService extends RestHelper {
     case JsonPost("gifts" :: Nil, (json, req)) => println("RestService.serve:  CCCCCCC"); debug(json); insertGift
     case JsonPost("users" :: AsLong(userId) :: _, (json, req)) => println("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
     case JsonPost("users" :: Nil, (json, req)) => println("RestService.serve:  4444444444444444"); debug(json); insertUser
+    case JsonPost("circles" :: Nil, (json, req)) => insertCircle
     //case Post("users" :: Nil, _) => println("RestService.serve:  555555555555555"); insertUser
     case Post("users" :: _, _) => println("RestService.serve:  Post(api :: users  :: _, _)  S.uri="+S.uri); JsonResponse("Post(api :: users  :: _, _)  S.uri="+S.uri)
     case Post(_, _) => println("RestService.serve:  case Post(_, _)"); JsonResponse("Post(_, _)  S.uri="+S.uri)
@@ -169,6 +170,45 @@ object RestService extends RestHelper {
     }
     
   }
+  
+  def insertCircle = {
+    S.request match {
+      case Full(req) => {
+        req.json match {
+          case Full(jvalue:JObject) => {
+            println("RestService.insertCircle: jvalue = "+jvalue)
+            val circle = Circle.create
+            jvalue.values foreach {kv => (kv._1, kv._2) match {
+              case ("name", s:String) => circle.name(s)
+              case ("expirationdate", s:String) => {
+                if(s!=null && !s.toString().trim().equals("") && !s.toString().trim().equals("0")) {
+                  println("RestService.insertCircle:  s = '"+s+"'");  circle.date(new SimpleDateFormat("MM/dd/yyyy").parse(s.toString())) // not sure about this one yet
+                }
+              } // case ("expirationdate", s:String)
+              case ("expirationdate", b:BigInt) => circle.date(new Date(b.toLong))
+              case ("circleType", s:String) => circle.circleType(s)
+              case _ => println("unhandled:  circle."+kv._1)
+              
+            } // kv => (kv._1, kv._2) match
+            
+            } // jvalue.values foreach {kv => (kv._1, kv._2) match
+            
+            circle.save()
+            JsonResponse(circle.asJs)
+            
+          } // case Full(jvalue:JObject)
+          
+          case _ => BadResponse()
+          
+        } // req.json match
+        
+      } // case Full(req)
+          
+      case _ => BadResponse()
+      
+    } // S.request match
+    
+  } // insertCircle
   
   def findCircle(id:Long) = {
     println("RestService.findCircle:  id="+id)

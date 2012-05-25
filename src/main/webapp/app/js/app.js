@@ -98,27 +98,6 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui']).
            $('.dropdown-toggle').dropdown();
         }
       }
-  })
-  .directive('fldDatepicker', function(){
-      return {
-        replace: false,
-        require: 'ngModel',
-        transclude: false,
-        controller: CircleCtrl,
-        scope: false,
-        templateUrl: 'templates/fld-datepicker.html',
-        // The linking function will add behavior to the template
-        link: function(scope, element, attrs, ngModelCtrl) {
-          $(function() {
-		    $( "#datepicker" ).datepicker({
-				changeYear : true,
-				changeMonth : true,
-				appendText : '(mm/dd/yyyy)',
-				dateFormat : 'mm/dd/yy'});
-	      });
-            
-        }
-      }
   });
 
   

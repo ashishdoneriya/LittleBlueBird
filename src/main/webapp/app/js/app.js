@@ -248,7 +248,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, Circle, G
         changeYear: true,
         changeMonth: true,
         yearRange: '1900:-0',
-        dateFormat : 'mm/dd~yy'
+        dateFormat : 'mm/dd/yy'
     };
   
 }

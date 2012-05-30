@@ -1,37 +1,23 @@
 package com.lbb
-import org.scalatest.junit.AssertionsForJUnit
-import org.scalatest.FunSuite
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
-import com.lbb.util.RequestHelper
-import com.lbb.entity.User
-import scala.annotation.target.field
-import net.liftweb.common.Full
-import net.liftweb.common.Empty
-import com.lbb.util.MapperHelper
-import org.joda.time.DateTime
 import java.util.Date
-import java.util.GregorianCalendar
-import java.text.SimpleDateFormat
-import net.liftweb.mapper.MappedString
-import net.liftweb.mapper.MappedDate
-import net.liftweb.mapper.Mapper
-import net.liftweb.mapper.MappedField
+import scala.annotation.target.field
+import org.junit.runner.RunWith
+import org.scalatest.junit.AssertionsForJUnit
+import org.scalatest.junit.JUnitRunner
+import org.scalatest.FunSuite
+import com.lbb.entity.User
 import com.lbb.gui.MappedDateExtended
-import net.liftweb.mapper.MappedPassword
-import net.liftweb.mapper.Cmp
-import net.liftweb.mapper.OprEnum
-import net.liftweb.mapper.By
-import net.liftweb.util.BaseField
-import net.liftweb.mapper.QueryParam
-import net.liftweb.json.JsonAST.JField
-import net.liftweb.json.JsonAST.JString
-import net.liftweb.json.JsonAST
-import net.liftweb.http.js.JE.Str
-import net.liftweb.http.js.JsExp
-import com.lbb.entity.Gift
+import com.lbb.util.MapperHelper
+import com.lbb.util.RequestHelper
 import net.liftweb.common.Box
-import com.lbb.entity.Circle
+import net.liftweb.mapper.Cmp
+import net.liftweb.mapper.MappedDate
+import net.liftweb.mapper.MappedField
+import net.liftweb.mapper.MappedString
+import net.liftweb.mapper.Mapper
+import net.liftweb.mapper.QueryParam
+import net.liftweb.util.BaseField
+import net.liftweb.common.Full
 
 @RunWith(classOf[JUnitRunner])
 class MiscTest extends FunSuite with AssertionsForJUnit {
@@ -95,4 +81,54 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
   test("date") {
     println("1324792800 = "+new Date(1324792800L))
   }
+  
+  test("2 search terms") {
+    val s = Full("bre   dun")
+    val terms = RequestHelper.searchTerms(s)
+    assert(terms.size===2)
+    assert(terms.head==="bre")
+    assert(terms.tail===List("dun"))
+  }
+  
+  test("1 search term") {
+    val s = Full("bre")
+    val terms = RequestHelper.searchTerms(s)
+    assert(terms.size===1)
+    assert(terms.head==="bre")
+    
+    val l = List("a")
+    val h = l.head;
+    val t = l.tail;
+  }
+  
+  test("1 search term + whitespace") {
+    val s = Full("bre  ")
+    val terms = RequestHelper.searchTerms(s)
+    assert(terms.size===1)
+    assert(terms.head==="bre")
+    
+    val l = List("a")
+    val h = l.head;
+    val t = l.tail;
+  }
+  
+  test("space + term + space") {
+    val s = Full("   bre  ")
+    val terms = RequestHelper.searchTerms(s)
+    assert(terms.size===1)
+    assert(terms.head==="bre")
+    
+    val l = List("a")
+    val h = l.head;
+    val t = l.tail;
+  }
+  
+  test("space + term + space + term + space") {
+    val s = Full("  bre   dun  ")
+    val terms = RequestHelper.searchTerms(s)
+    assert(terms.size===2)
+    assert(terms.head==="bre")
+    assert(terms.tail===List("dun"))
+  }
+
 }

@@ -66,14 +66,14 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     
     // this stuff goes in the snippet I guess...
     val user : User = User.create
-    user.first("BRENT").last("Dunklau").username("bdunklau").password("11111").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
+    user.first("BRENT").last("Dunklau").username("bdunklau").password("1").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
     
     val saved : Boolean = user.save
     assert(saved===true)
     assert(User.findAll.size===1)
     
     val user2 : User = User.create
-    user2.first("brent").last("Dunklau").username("bdunklau").password("11111").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
+    user2.first("brent").last("Dunklau").username("bdunklau").password("1").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
     user2.validate match {
       case Nil => {
         println("user2 is valid, saving...")//S.notice(“Person is valid”)
@@ -92,7 +92,7 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     assert(users.size===1)
     assert(users.head.first==="BRENT")
     assert(users.head.age===41)
-    assert(users.head.password==="11111")
+    assert(users.head.password==="1")
   }
   
   test("findBy") {
@@ -104,7 +104,7 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     
     // this stuff goes in the snippet I guess...
     val user : User = User.create
-    user.first("Brent").last("Dunklau").username("bdunklau").password("11111").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
+    user.first("Brent").last("Dunklau").username("bdunklau").password("1").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
     user.save
     
 //  case-insensitive query
@@ -118,7 +118,7 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     println("UserTest: we found exactly 1 User")
     assert(users.head.first==="Brent")
     assert(users.head.age===41)
-    assert(users.head.password==="11111")  
+    assert(users.head.password==="1")  
 
   }
   
@@ -133,7 +133,7 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     
     // this stuff goes in the snippet I guess...
     val user : User = User.create
-    user.first("Brent").last("Dunklau").username("bdunklau").password("11111").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
+    user.first("Brent").last("Dunklau").username("bdunklau").password("1").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
     user.save
      
 //  case-insensitive query
@@ -192,7 +192,7 @@ class UserTest extends FunSuite with AssertionsForJUnit {
 
 object UserTest extends UserTest {
   
-  val brent = ("Brent", "Dunklau", "bdunklau", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"), "http://graph.facebook.com/brentdunklau/picture?type=large")
+  val brent = ("Brent", "Dunklau", "bdunklau", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"), "http://graph.facebook.com/brentdunklau/picture?type=large")
   
   def createBrent = {
     val user = createUser(brent._1, brent._2, brent._3, brent._4, brent._5, brent._6, brent._7, brent._8)
@@ -201,43 +201,43 @@ object UserTest extends UserTest {
   }
   
   def createTamie = {
-    val user = createUser("Tamie", "Dunklau", "tamie", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("10/10/1976"), "http://graph.facebook.com/tamie.dunklau/picture?type=large")
+    val user = createUser("Tamie", "Dunklau", "tamie", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("10/10/1976"), "http://graph.facebook.com/tamie.dunklau/picture?type=large")
     user.save
     user
   }
   
   def createKiera = {
-    val user = createUser("Kiera", "Daniell", "kiera", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/16/2001"), "http://sphotos.xx.fbcdn.net/hphotos-snc6/183574_1872491738760_1435144902_2104548_985622_n.jpg")
+    val user = createUser("Kiera", "Daniell", "kiera", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/16/2001"), "http://sphotos.xx.fbcdn.net/hphotos-snc6/183574_1872491738760_1435144902_2104548_985622_n.jpg")
     user.save
     user
   }
   
   def createTruman = {
-    val user = createUser("Truman", "Dunklau", "truman", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("5/11/2010"), "http://photos-e.ak.fbcdn.net/hphotos-ak-snc6/196448_1912810746710_747329_a.jpg")
+    val user = createUser("Truman", "Dunklau", "truman", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("5/11/2010"), "http://photos-e.ak.fbcdn.net/hphotos-ak-snc6/196448_1912810746710_747329_a.jpg")
     user.save
     user
   }
   
   def createJett = {
-    val user = createUser("Jett", "Dunklau", "jett", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://sphotos.xx.fbcdn.net/hphotos-ash4/398071_2886695213213_1435144902_3059101_376931146_n.jpg")
+    val user = createUser("Jett", "Dunklau", "jett", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://sphotos.xx.fbcdn.net/hphotos-ash4/398071_2886695213213_1435144902_3059101_376931146_n.jpg")
     user.save
     user
   }
   
   def createBrenda1 = {
-    val user = createUser("Brenda", "Dunklau", "brenda1", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/1140124546/picture?type=large")
+    val user = createUser("Brenda", "Dunklau", "brenda1", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/1140124546/picture?type=large")
     user.save
     user
   }
   
   def createBrenda2 = {
-    val user = createUser("Brenda", "Dunklau", "brenda2", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/brenda/picture?type=large")
+    val user = createUser("Brenda", "Dunklau", "brenda2", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/brenda/picture?type=large")
     user.save
     user
   }
   
   def createBill = {
-    val user = createUser("Bill", "Dunklau", "bill", "11111", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/1336420404/picture?type=large")
+    val user = createUser("Bill", "Dunklau", "bill", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/1336420404/picture?type=large")
     user.save
     user
   }

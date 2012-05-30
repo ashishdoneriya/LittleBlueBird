@@ -84,7 +84,7 @@ class Boot {
     Schemifier.schemify(true, Schemifier.infoF _, Recipient)
     
     LiftRules.dispatch.append(RestService)
-                              
+    
     Props.mode match {
       case Props.RunModes.Test => println("we are in Test mode")
       case Props.RunModes.Development => println("we are in Development mode")

@@ -1,4 +1,9 @@
 package com.lbb.util
+import net.liftweb.common.Box
+import net.liftweb.common.Full
+import net.liftweb.http.provider.HTTPCookie
+import com.lbb.entity.User
+import net.liftweb.common.Empty
 
 /**
  * Originally created to identify those request parameters that do NOT have 
@@ -32,5 +37,20 @@ object RequestHelper {
     // to just String by taking the head of the List (which only
     // has one element anyway)
     res2.map(kv => (kv._1 -> res2.get(kv._1).get.head))
+  }
+  
+    val F = """\s*(\w+)\s*""".r
+    val FL = """\s*(\w+)\s+(\w+)\s*""".r
+    
+  def searchTerms(s:Box[String]):List[String] = {
+    s match {
+      case Full(F(f)) => { List(f); }
+      case Full(FL(f, l)) => { List(f, l); }
+      case _ => Nil
+    }
+  }
+    
+  def cookie(name:String, value:User) = {
+    new HTTPCookie(name, Full(value.id.is.toString()), Empty, Empty, Empty, Empty, Empty, Empty)
   }
 }

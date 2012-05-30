@@ -2,8 +2,10 @@ package com.lbb
 import java.text.SimpleDateFormat
 import java.util.Date
 import com.lbb.entity.Circle
+import com.lbb.entity.Gift
 import com.lbb.entity.User
 import com.lbb.util.MapperHelper
+import com.lbb.util.SearchHelper
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
@@ -17,7 +19,8 @@ import net.liftweb.http.Req
 import net.liftweb.http.S
 import net.liftweb.json.JsonAST._
 import net.liftweb.util.BasicTypesHelpers._
-import com.lbb.entity.Gift
+import net.liftweb.http.provider.HTTPCookie
+import com.lbb.util.RequestHelper
 
 object RestService extends RestHelper {
 
@@ -29,8 +32,8 @@ object RestService extends RestHelper {
     case JsonPost("gifts" :: Nil, (json, req)) => println("RestService.serve:  CCCCCCC"); debug(json); insertGift
     case JsonPost("users" :: AsLong(userId) :: _, (json, req)) => println("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
     case JsonPost("users" :: Nil, (json, req)) => println("RestService.serve:  4444444444444444"); debug(json); insertUser
+    case Get("usersearch" :: _, _) => println("RestService.serve:  JsonPost: usersearch"); SearchHelper.usersearch
     case JsonPost("circles" :: Nil, (json, req)) => insertCircle
-    //case Post("users" :: Nil, _) => println("RestService.serve:  555555555555555"); insertUser
     case Post("users" :: _, _) => println("RestService.serve:  Post(api :: users  :: _, _)  S.uri="+S.uri); JsonResponse("Post(api :: users  :: _, _)  S.uri="+S.uri)
     case Post(_, _) => println("RestService.serve:  case Post(_, _)"); JsonResponse("Post(_, _)  S.uri="+S.uri)
     
@@ -42,7 +45,7 @@ object RestService extends RestHelper {
     case Get("gifts" :: AsLong(giftId) :: _, _) => println("RestService.serve:  999999999"); findGift(giftId)
     case Get("gifts" :: _, _) => println("RestService.serve:  AAAAAAAAA"); findGifts
     
-    //case _ => println("RestService.serve:  666666666"); debug
+    case _ => println("RestService.serve:  666666666"); debug
   }
   
   def debug = {
@@ -126,9 +129,9 @@ object RestService extends RestHelper {
   }
   
   def findUser(id:Long) = {
-    println("RestService.findCircle:  id="+id)
+    println("RestService.findUser:  id="+id)
     User.findByKey(id) match {
-      case Full(user) => JsonResponse(user.asJs)
+      case Full(user) => JsonResponse(user.asJs, Nil, List(RequestHelper.cookie("userId", user), RequestHelper.cookie("showUserId", user)), 200)
       case _ => JsonResponse("")
     }
   }
@@ -147,7 +150,7 @@ object RestService extends RestHelper {
             // object, so create a List of one object and do the same thing you do in the regular query block
             val jsons = users.map(_.asJs)
             val jsArr = JsArray(jsons)
-            val r = JsonResponse(jsArr)
+            val r = JsonResponse(jsArr, Nil, List(RequestHelper.cookie("userId", users.head), RequestHelper.cookie("showUserId", users.head)), 200)
             println("RestService.findUsers: JsonResponse(jsArr)=" + r.toString())
             r
           }
@@ -213,7 +216,7 @@ object RestService extends RestHelper {
   def findCircle(id:Long) = {
     println("RestService.findCircle:  id="+id)
     Circle.findByKey(id) match {
-      case Full(circle) => JsonResponse(circle.asJs)
+      case Full(circle) => val r = JsonResponse(circle.asJs); println(r.toString()); r
       case _ => JsonResponse("")
     }
   }
@@ -252,7 +255,7 @@ object RestService extends RestHelper {
         val giftlist = recipient.giftlist(viewer, circle);
         val jsons = giftlist.map(_.asJs)
         val jsArr = JsArray(jsons)
-        val r = JsonResponse(jsArr)
+        val r = JsonResponse(jsArr, Nil, List(RequestHelper.cookie("showUserId", recipient)), 200)
         println("RestService.findGifts: JsonResponse(jsArr)=" + r.toString())
         r
       }
@@ -260,7 +263,7 @@ object RestService extends RestHelper {
         val mywishlist = viewer.mywishlist
         val jsons = mywishlist.map(_.asJs)
         val jsArr = JsArray(jsons)
-        val r = JsonResponse(jsArr)
+        val r = JsonResponse(jsArr, Nil, List(RequestHelper.cookie("showUserId", viewer)), 200)
         println("RestService.findGifts: JsonResponse(jsArr)=" + r.toString())
         r
       }

@@ -23,7 +23,7 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
   def initDb = {
     
     // this stuff goes in Boot.scala
-    val vendor = 
+    val vendor =  
 	new StandardDBVendor(Props.get("db.driver") openOr "com.mysql.jdbc.Driver",
 			     Props.get("db.url") openOr 
 			     "jdbc:mysql://localhost:3307/bdunklau", //"jdbc:h2:~/test", //"jdbc:mysql://localhost:3306/littlebluebird",

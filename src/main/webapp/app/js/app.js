@@ -428,8 +428,8 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Gif
                                         });
   } 
   
-  $scope.logout = function() {
-    User.currentUser = {};
+  $scope.userExists = function() {
+    return angular.isDefined($scope.user.id)
   }
 }
 

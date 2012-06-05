@@ -18,6 +18,7 @@ import net.liftweb.mapper.Mapper
 import net.liftweb.mapper.QueryParam
 import net.liftweb.util.BaseField
 import net.liftweb.common.Full
+import net.liftweb.common.Empty
 
 @RunWith(classOf[JUnitRunner])
 class MiscTest extends FunSuite with AssertionsForJUnit {
@@ -130,5 +131,10 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
     assert(terms.head==="bre")
     assert(terms.tail===List("dun"))
   }
+  
+//  test("map filtering") {
+//    val map = Map("foo" -> Full("bar"), "to" -> Empty, "from" -> Full("lbb.com"), "subject" -> Full("check it out"), "message" -> Full("here's the message"))
+//    val fff = map.filter()
+//  }
 
 }

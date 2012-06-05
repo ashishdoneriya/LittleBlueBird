@@ -1,24 +1,18 @@
 
 
-<div class="row" ng-controller="CurrentCtrl">
 
+<div class="row">
   <div class="span2">
-    <div>
-      <div class="crop">
+      <div class="crop" ng-controller="UserCtrl">
         <img id="profileimg" ng-src="{{showUser.profilepic}}" onerror="this.src='img/noprofilepic.jpg'" />
       </div>
-    </div>
   </div>
 
-  <div class="span6">
-    <div class="row">
-      <div class="span6">
-        <h2>{{showUser.fullname}}'s Wish List</h2>
-      </div>
-    </div>
+  <div class="span5">    
+    <div ng-controller="CircleCtrl">
     <div class="row">
       <div class="span3">
-        <h3>{{circle.name}}</h3>
+        <h2>{{circle.name}}</h2>
       </div>
       <div class="span2">
         <span ng-show="circle!=undefined">
@@ -28,9 +22,12 @@
     </div>
     <div class="row">
       <div class="span3">
-        <h5>{{circle.date | date:'EEE MMM d yyyy'}}</h5>
+        <h3>{{circle.date | date:'EEE MMM d, yyyy'}}</h3>
       </div>
     </div>
+    </div>
+    
+    
   </div>
 </div>
 

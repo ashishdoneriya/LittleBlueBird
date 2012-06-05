@@ -194,7 +194,11 @@ class Gift extends LongKeyedMapper[Gift] {
   override def save() = {
     if(dateCreated.is==null) dateCreated(new Date())
     val saved = super.save();
-    recipientsToSave foreach { r => {val rsaved = Recipient.create.person(r).gift(this).save;  println("Gift.save:  r="+r)} }
+    
+    // delete current recipients before adding the new ones (even though they may be the same)
+    Recipient.findAll(By(Recipient.gift, this)).foreach(_.delete_!)
+    
+    recipientsToSave foreach { r => {val rsaved = Recipient.create.person(r).gift(this).save;} }
     recipientsToSave.drop(0)
     saved
   }
@@ -209,6 +213,32 @@ class Gift extends LongKeyedMapper[Gift] {
   var candelete = false;
   var canbuy = false;
   var canreturn = false;
+  var currentViewer:Box[User] = Empty
+  var currentRecipient:Box[User] = Empty
+  var currentCircle:Box[Circle] = Empty
+  
+  /*
+   *  short for edit,delete,buy,return
+   *  
+   *  This logic was taken from User.giftlist
+   */
+  def edbr = (currentViewer, currentRecipient, currentCircle) match {
+    case (Full(viewer), Full(recipient), Full(circle)) => {
+      canedit = viewer.canSee(recipient, this, circle) && viewer.canEdit(this)
+      candelete = viewer.canSee(recipient, this, circle) && viewer.canDelete(this)
+      canbuy = viewer.canSee(recipient, this, circle) && viewer.canBuy(this)
+      canreturn = viewer.canSee(recipient, this, circle) && viewer.canReturn(this) 
+      println("gift.edbr:  case (Full(viewer), Full(recipient), Full(circle)))")
+    } // case (Full(viewer), Full(recipient), Full(circle))
+    
+    case _ => {
+      canedit = true
+      candelete = true
+      canbuy = false
+      canreturn = false
+      println("gift.edbr:  case _")
+    }
+  }
 }
 
 object Gift extends Gift with LongKeyedMetaMapper[Gift] {
@@ -216,4 +246,11 @@ object Gift extends Gift with LongKeyedMetaMapper[Gift] {
   
   // define the order fields will appear in forms and output
   override def fieldOrder = List(description, url)
+  
+  def delete(id:Long) = {
+    findByKey(id) foreach {g =>
+      Recipient.findAll(By(Recipient.gift, g)).foreach(_.delete_!)
+      g.delete_!
+    }
+  }
 }

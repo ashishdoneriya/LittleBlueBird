@@ -5,7 +5,7 @@
   border:2px solid #006caa;
   padding:5px 18px 5px 5px;
   margin-left:75px;
-  background-color:#006caa;
+  background-color:#cccccc;
   color:#eeeeee;
 }
 
@@ -24,7 +24,7 @@
 .aac {
   padding-bottom:5px;
   font-family:Verdana;
-  font-size:16px;
+  font-size:20px;
 }
 
 .aae {
@@ -41,8 +41,14 @@
   background-color: #000000;
 }
 
-body {
+.body2 {
+  background-color: #ffffff;
+  padding-top:40px;
+}
+
+.body1 {
   background-color: #006caa;
+  padding-top:40px;
 }
 
 .bold { font-weight:bold; }
@@ -54,6 +60,10 @@ body {
 }
 
 .font14 { font-size:14px; }
+
+.font18 { font-size:18px; }
+
+.font24 { font-size:24px; }
 
 .gift {
   padding: 10px 0px 10px 10px;
@@ -127,6 +137,10 @@ body {
   margin-left:-35px;
 }
 
+.margbottom0 {
+  margin-bottom:0px;
+}
+
 .margleft0 {
   margin-left:0;
 }
@@ -139,24 +153,46 @@ body {
   margin-left:10px;
 }
 
-.margtop10 {
-  margin-top:10px;
+.margleft_20 {
+  margin-left:-20px;
 }
 
-.margbottom0 {
-  margin-bottom:0px;
-}
+.margright0 {  margin-right:0; }
 
-.pad2 {
-  padding:2px;
-}
+.margtop5 { margin-top:5px; }
+
+.margtop10 { margin-top:10px; }
+
+.margtop20 { margin-top:20px; }
+
+.normal { font-weight:normal; }
+
+.pad2 { padding:2px; }
+
+.pad5 { padding:5px; }
 
 .pad10 {
   padding:10px;
 }
 
+.padleft0 {
+  padding-left:0;
+}
+
+.padright0 {
+  padding-right:0;
+}
+
 .padtop5 {
   padding-top:5px;
+}
+
+.padtop20 {
+  padding-top:20px;
+}
+
+.padtop50 {
+  padding-top:50px;
 }
 
 .well-tiny {

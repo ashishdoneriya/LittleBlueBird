@@ -1,9 +1,11 @@
 package com.lbb.util
+import com.lbb.entity.User
+
 import net.liftweb.common.Box
+import net.liftweb.common.Empty
 import net.liftweb.common.Full
 import net.liftweb.http.provider.HTTPCookie
-import com.lbb.entity.User
-import net.liftweb.common.Empty
+import net.liftweb.http.S
 
 /**
  * Originally created to identify those request parameters that do NOT have 
@@ -51,6 +53,46 @@ object RequestHelper {
   }
     
   def cookie(name:String, value:User) = {
-    new HTTPCookie(name, Full(value.id.is.toString()), Empty, Empty, Empty, Empty, Empty, Empty)
+    new HTTPCookie(name, Full(value.id.is.toString()), Empty, Empty, Full(24*60*60), Empty, Empty, Empty)
+  }
+  
+  def createEmail = {
+    Email(S.param("to").getOrElse("info@littlebluebird.com"), 
+          S.param("from").getOrElse("info@littlebluebird.com"), 
+          S.param("fromname").getOrElse("LittleBlueBird.com"), 
+          S.param("subject").getOrElse(""), 
+          S.param("message").getOrElse(""),
+          Nil, Nil)
+    
+    //Email.send()
+    
+    
+    
+//    val fff = S.request.map(s => {s.json
+//      //Email(s.json.   .get("to"), s.json.get("from"), s.json.get("subject"), s.json.get("message"))
+//    })
+    
+//    
+//    S.request match {
+//      case Full(req) => {
+//        req.json match {
+//          case Full(jvalue:JObject) => {
+//            val email = Map()
+//            jvalue.values foreach {kv => kv match {
+//                case ("to", s:String) => email.to(s)
+//                case ("from", s:String) => email.from(s)
+//                case ("subject", s:String) => email.subject(s)
+//                case ("message", s:String) => email.message(s)
+//              }
+//            }
+//            user.save()
+//            JsonResponse(user.asJs)
+//          }
+//          case _ => println("RestService.insertUser: case _ :  req.json = "+Empty); BadResponse()
+//        }
+//      }
+//      case _ => BadResponse()
+//    }
+//  
   }
 }

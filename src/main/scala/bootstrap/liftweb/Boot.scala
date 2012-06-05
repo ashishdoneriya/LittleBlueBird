@@ -31,6 +31,7 @@ import net.liftweb.http.Req
 import net.liftweb.mapper.MapperRules
 import scala.xml.NodeSeq
 import com.lbb.RestService
+import com.lbb.util.Emailer
 
 class Boot {
   def boot {
@@ -69,7 +70,7 @@ class Boot {
 //    PopulateDb.doit
 //    println("Boot.boot: db populated with sample data")
     
-    configMailer
+    Emailer.config
     
     // this works
     //sendEMail("bdunklau@yahoo.com", "bdunklau@yahoo.com", "info@littlebluebird.com", "email from Lift", "this email came from LBB:Boot")

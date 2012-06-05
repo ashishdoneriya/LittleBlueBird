@@ -235,6 +235,7 @@ class User extends LongKeyedMapper[User] {
   def expiredCircles = circles.map(fk => fk.circle.obj.open_!).filter(c => c.isExpired && !c.isDeleted)
   
   // For active circles (I think expired circles too)
+  // This canedit/candelete/canbuy/canreturn logic is also being used in Gift.edbr 
   def giftlist(viewer:User, circle:Circle) = {     		
     val sql = "select g.* from gift g join recipient r on r.gift_id = g.id where r.person_id = "+this.id+" order by g.date_created desc"   
     val gifts = Gift.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))

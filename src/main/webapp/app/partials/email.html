@@ -1,0 +1,21 @@
+
+<div ng-controller="EmailCtrl">
+  <div class="row">
+    <div class="span4">
+      <div class="row"><div class="span1">To</div><div class="span3"><input type="text" ng-model="email.to"/></div></div>
+      <div class="row"><div class="span1">Subj</div><div class="span3"><input type="text" ng-model="email.subject"/></div></div>
+      <div class="row"><div class="span1">Message</div></div>
+      <div class="row"><div class="span4"><textarea class="span4" rows="10" ng-model="email.message" cols="80"></textarea></div></div>
+      <div class="row"><div class="span4"><button class="btn btn-primary" ng-click="send()">Send</button></div></div>
+    </div>
+    <div class="span3">
+      <b>Subject:</b>
+      <br/> {{email.subject}}
+      <br/><b> Message:</b>
+      <br/>{{email.message}}
+    </div>
+  </div>
+
+
+
+</div>

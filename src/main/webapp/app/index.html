@@ -21,57 +21,20 @@
     <link rel="stylesheet" media="screen" href="css/bootstrap.css" />
     <link rel="stylesheet" media="screen" href="css/jquery-ui-1.8.20.custom.css" />
     <link rel="stylesheet" media="screen" href="css/lbb.css" />
-    <link rel="stylesheet/less" type="text/css" href="css/variables.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/accordion.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/alerts.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/badges.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/bootstrap.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/breadcrumbs.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/button-groups.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/buttons.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/carousel.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/close.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/code.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/component-animations.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/dropdowns.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/forms.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/grid.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/hero-unit.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/labels.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/layouts.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/mixins.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/modals.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/navbar.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/navs.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/pager.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/pagination.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/popovers.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/progress-bars.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/reset.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/scaffolding.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/sprites.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/tables.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/thumbnails.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/tooltip.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/type.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/utilities.less"/>
-    <link rel="stylesheet/less" type="text/css" href="css/wells.less"/>
     <script src="js/app.js"></script>  
     <script src="js/modal.js"></script>
-            
         
     <script type="text/ng-template" id="layout-nli.html">
+<div ng-include src="templates.four"></div>
+
+<div class="container"> 
   <div class="row">
-    <div class="span12 pad10">    
+    <div class="span12 padtop20">    
         
       <div class="hero-unit hero-logo">
         <div class="row">
-          <div class="span7">    
-		    <h1>LittleBlueBird</h1>
-		    <p>Give what THEY want<br/>Get what YOU want</p>
-		    <p>
-		    <a class="btn btn-primary btn-large">Learn more</a>
-		    </p>
+          <div class="span7"> 
+		    <div ng-include src="templates.three"></div>
 	      </div>
 		  <div class="span3 margleft0">
 		      <div class="row">
@@ -99,25 +62,19 @@
     
     
     <script type="text/ng-template" id="layout.html">
-  <div class="row">
-    <div class="span12 well margtop10">
+  <div ng-include src="templates.five"></div>
+  <div class="row margtop20 margleft5 pad10">
+    <div class="well margbottom0">
       <div class="row">
         <div class="span8">
 	      <div ng-include src="templates.one"></div>
         </div>
-        <div class="span3 padtop5" ng-controller="CurrentCtrl"><btn-user btn-text="{{user.fullname}}"/></div>
       </div> 
     </div> 
   </div>
-  
-  <div class="row">
-    <div class="span12">
-	   &nbsp;<br/>&nbsp;
-    </div> 
-  </div>
 
-  <div class="row">
-    <div class="span2">
+  <div class="row margtop20 margleft5 pad5">
+    <div class="span2 margleft5">
       <div class="row">
         <div class="span2 well well-tiny">
 	      <div ng-include src="templates.three"></div>
@@ -129,7 +86,7 @@
         </div>
       </div>
     </div>
-    <div class="span7">
+    <div class="span7 well well-tiny">
 	  <div ng-include src="templates.four"></div>
     </div>
   </div>
@@ -140,7 +97,7 @@
     
     
     </head>
-    <body>
+    <body class="body1">
       <div class="container"> 
         <div ng-include src="templates.layout" scope=""></div>
       </div>

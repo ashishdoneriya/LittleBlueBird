@@ -7,7 +7,6 @@ import scala.xml.Text
 import org.joda.time.DateTime
 import com.lbb.gui.MappedDateExtended
 import com.lbb.gui.MappedStringExtended
-import com.lbb.Emailer
 import com.lbb.TypeOfCircle
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
@@ -31,6 +30,7 @@ import net.liftweb.mapper.MappedString
 import net.liftweb.util.FieldError
 import net.liftweb.json.JsonAST.JValue
 import net.liftweb.json.JsonAST.JArray
+import com.lbb.util.Emailer
 
 /**
  * ID

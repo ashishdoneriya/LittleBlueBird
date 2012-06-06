@@ -1,11 +1,16 @@
 package com.lbb
 import java.text.SimpleDateFormat
 import java.util.Date
+
 import com.lbb.entity.Circle
 import com.lbb.entity.Gift
 import com.lbb.entity.User
+import com.lbb.util.Email
+import com.lbb.util.Emailer
 import com.lbb.util.MapperHelper
 import com.lbb.util.RequestHelper
+import com.lbb.util.SearchHelper
+
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
@@ -21,9 +26,6 @@ import net.liftweb.http.Req
 import net.liftweb.http.S
 import net.liftweb.json.JsonAST._
 import net.liftweb.util.BasicTypesHelpers._
-import com.lbb.util.Emailer
-import com.lbb.util.Email
-import com.lbb.util.SearchHelper
 
 object RestService extends RestHelper {
 
@@ -31,6 +33,7 @@ object RestService extends RestHelper {
   serve {
     case Get("users" :: AsLong(userId) :: _, _) => println("RestService.serve:  22222222222222"); findUser(userId)
     case Get("users" :: _, _) => println("RestService.serve:  333333333333333333333333"); findUsers
+    case Post("logout" :: _, _) => S.deleteCookie("userId");NoContentResponse()
     case JsonPost("email" :: _, (json, req)) => sendemail 
     case JsonPost("gifts" :: AsLong(giftId) :: _, (json, req)) => println("RestService.serve:  BBBBBBBB"); updateGift(giftId)
     case JsonPost("gifts" :: Nil, (json, req)) => println("RestService.serve:  CCCCCCC"); debug(json); insertGift
@@ -38,7 +41,9 @@ object RestService extends RestHelper {
     case JsonPost("users" :: Nil, (json, req)) => println("RestService.serve:  4444444444444444"); debug(json); insertUser
     case Get("usersearch" :: _, _) => println("RestService.serve:  JsonPost: usersearch"); SearchHelper.usersearch
     case JsonPost("circles" :: Nil, (json, req)) => insertCircle
+    
     case Post("users" :: _, _) => println("RestService.serve:  Post(api :: users  :: _, _)  S.uri="+S.uri); JsonResponse("Post(api :: users  :: _, _)  S.uri="+S.uri)
+    
     case Post(_, _) => println("RestService.serve:  case Post(_, _)"); JsonResponse("Post(_, _)  S.uri="+S.uri)
     
     // circles...
@@ -49,19 +54,28 @@ object RestService extends RestHelper {
     case Get("gifts" :: AsLong(giftId) :: _, _) => println("RestService.serve:  999999999"); findGift(giftId)
     case Get("gifts" :: _, _) => println("RestService.serve:  AAAAAAAAA"); findGifts
     
+    
     case Delete("gifts" :: AsLong(giftId) :: _, _) => deleteGift(giftId)
     case _ => println("RestService.serve:  666666666"); debug
   }
   
   def sendemail = {
-    val email = Email(S.param("to").getOrElse("info@littlebluebird.com"), 
-          S.param("from").getOrElse("info@littlebluebird.com"), 
-          S.param("fromname").getOrElse("LittleBlueBird.com"), 
-          S.param("subject").getOrElse(""), 
-          S.param("message").getOrElse(""),
-          Nil, Nil)
-    Emailer.send(email)
-    NoContentResponse()
+    try {
+      val message = Emailer.createMessage
+    
+      val email = Email(S.param("to").getOrElse("info@littlebluebird.com"),
+                        S.param("from").getOrElse("info@littlebluebird.com"),          
+                        S.param("fromname").getOrElse("LittleBlueBird.com"),          
+                        S.param("subject").getOrElse("Password Recovery"),          
+                        message, Nil, Nil)
+          
+      Emailer.send(email)
+  
+      NoContentResponse()
+    }
+    catch {
+      case e:RuntimeException => BadResponse()
+    }
   }
   
   def debug = {

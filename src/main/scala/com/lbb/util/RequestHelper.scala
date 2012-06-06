@@ -56,13 +56,13 @@ object RequestHelper {
     new HTTPCookie(name, Full(value.id.is.toString()), Empty, Empty, Full(24*60*60), Empty, Empty, Empty)
   }
   
-  def createEmail = {
-    Email(S.param("to").getOrElse("info@littlebluebird.com"), 
-          S.param("from").getOrElse("info@littlebluebird.com"), 
-          S.param("fromname").getOrElse("LittleBlueBird.com"), 
-          S.param("subject").getOrElse(""), 
-          S.param("message").getOrElse(""),
-          Nil, Nil)
+//  def createEmail = {
+//    Email(S.param("to").getOrElse("info@littlebluebird.com"), 
+//          S.param("from").getOrElse("info@littlebluebird.com"), 
+//          S.param("fromname").getOrElse("LittleBlueBird.com"), 
+//          S.param("subject").getOrElse(""), 
+//          S.param("message").getOrElse(""),
+//          Nil, Nil)
     
     //Email.send()
     
@@ -94,5 +94,5 @@ object RequestHelper {
 //      case _ => BadResponse()
 //    }
 //  
-  }
+//  }
 }

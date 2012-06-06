@@ -39,6 +39,10 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
 
       return UserSearch;
   }).
+  factory('Logout', function($resource) {
+      var Logout = $resource('/gf/logout', {}, {logout: {method:'POST'}});
+      return Logout;
+  }).
   factory('Circle', function($resource) {
       var Circle = $resource('/gf/circles/:circleId', {circleId:'@circleId', circleType:'@circleType', name:'@name', expirationdate:'@expirationdate', userId:'@userId'}, 
                     {
@@ -70,7 +74,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return Gift;
   }).
   factory('Email', function($resource) {
-      var Email = $resource('/gf/email', {to:'@to', from:'@from', subject:'@subject', message:'@message'}, 
+      var Email = $resource('/gf/email', {to:'@to', from:'@from', subject:'@subject', message:'@message', passwordrecovery:'@passwordrecovery'}, 
                     {
                       send: {method:'POST'}
                     });
@@ -141,6 +145,7 @@ function RetrieveUser($scope, $cookieStore, User, defaultValue, key) {
   else if(angular.isDefined($cookieStore.get(key))) {
     defaultValue = User.find({userId:$cookieStore.get(key)});
     return defaultValue;
+    //return {};
   }
   else
   {
@@ -433,7 +438,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Gif
   }
 }
 
-function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User, Circle, CircleParticipant) { 
+function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User, Circle, Logout, Email, CircleParticipant) { 
  
   $scope.login = function() {
     //alert("login:  "+$scope.username+" / "+$scope.password);
@@ -454,10 +459,31 @@ function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User,
   }
   
   $scope.logout = function() {
+    Logout.logout({});                                          
+    $rootScope.$emit("userchange");
+    //alert("logout");
     User.currentUser = {};
-    $cookieStore.remove("userId");
   }
   
+  $scope.emailIt = function(email) {
+    Email.send({passwordrecovery:'true', to:email, from:'info@littlebluebird.com', subject:'Password Recovery', message:'Your password is...'}, function() {alert("Your password has been sent to: "+email);}, function() {alert("Email not found: "+email+"\n\nContact us at info@littlebluebird.com for help");});
+  }
+  
+}
+
+function RegisterCtrl($scope, User, $rootScope, $location) {
+  $scope.save = function(user) {
+    $scope.user = User.save({fullname:user.fullname, first:user.first, last:user.last, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirth}, 
+                                  function() {
+                                    $location.url('welcome'); 
+                                  }
+                                );
+  }
+
+  $rootScope.$on("userchange", function(event) {
+    $scope.user = User.currentUser;
+    $scope.showUser = User.showUser;
+  });
 }
 
 function PrimaryReceiverCtrl($scope) {

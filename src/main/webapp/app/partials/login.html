@@ -14,7 +14,7 @@
       <span ng-show="forgotlogin">
 		<form novalidate class="form-inline">
 		    <input type="email" title="Email" placeholder="Email" ng-model="email"  class="span2">
-		    <button class="btn" ng-click="forgotlogin=false">Email It!</button> 
+		    <button class="btn" ng-click="forgotlogin=false;emailIt(email)">Email It!</button> 
 		</form>
       </span>
     </div>

@@ -1,47 +1,35 @@
 package com.lbb.util
-import net.liftweb.util.Mailer
-import net.liftweb.util.Mailer.From
-import net.liftweb.util.Mailer.PlainMailBodyType
-import net.liftweb.util.Mailer.ReplyTo
-import net.liftweb.util.Mailer.Subject
-import net.liftweb.util.Mailer.To
-import net.liftweb.common.Full
-import net.liftweb.util.Props
-import javax.mail.Authenticator
-import javax.mail.PasswordAuthentication
+import scala.xml.NodeSeq
 import com.lbb.entity.Circle
 import com.lbb.entity.User
+import javax.mail.Authenticator
+import javax.mail.PasswordAuthentication
+import net.liftweb.common.Full
+import net.liftweb.util.Mailer
+import net.liftweb.util.Mailer._
+import net.liftweb.util.Props
+import net.liftweb.http.S
+import net.liftweb.mapper.By
+import scala.xml.Text
 
 //case class Email(to:String, fromemail:String, fromname:String, subject:String, message:String, cc:List[String], bcc:List[String])
-case class Email(to:String, fromemail:String, fromname:String, subject:String, message:String, cc:List[String], bcc:List[String])
+case class Email(to:String, fromemail:String, fromname:String, subject:String, message:NodeSeq, cc:List[String], bcc:List[String])
 
 
+/**
+ * When you call Mailer.sendMail, that method calls buildProps.  buildProps reads the .props file.
+ * So any props you set before calling sendMail will just get overwritten.
+ */
 object Emailer {
   
   
   def send(e:Email) = {
-    Mailer.sendMail(From(e.fromemail), Subject(e.subject),
-      (PlainMailBodyType(e.message) :: To(e.to) :: ReplyTo(e.fromemail) :: Nil) : _*)
-    println("just sent an email #####################################################")
+    Mailer.sendMail(From(e.fromemail), Subject(e.subject), To(e.to), XHTMLMailBodyType(e.message))
+//      (PlainMailBodyType(e.message) :: To(e.to) :: ReplyTo(e.fromemail) :: Nil) : _*)
   }
   
   def config {
     var isAuth = Props.get("mail.smtp.auth", "false").toBoolean
-
-	Mailer.customProperties = Props.get("mail.smtp.host", "localhost") match {
-	  case "smtp.gmail.com" =>
-	    isAuth = true
-	    Map(
-	      "mail.smtp.host" -> "smtp.gmail.com",
-	      "mail.smtp.port" -> "587",
-	      "mail.smtp.auth" -> "true",
-	      "mail.smtp.starttls.enable" -> "true")
-	  case host => Map(
-	    "mail.smtp.host" -> host,
-	    "mail.smtp.port" -> Props.get("mail.smtp.port", "25"),
-	    "mail.smtp.auth" -> isAuth.toString
-	  )
-	}
 	
 	if (isAuth) {
 	  (Props.get("mail.user"), Props.get("mail.password")) match {
@@ -56,7 +44,23 @@ object Emailer {
   }
   
   
-  
+  def createMessage = (S.param("passwordrecovery"), S.param("message")) match {
+      case (Full("true"), _) => {
+        User.findAll(By(User.email, S.param("to").getOrElse("none"))) match {
+          case Nil => throw new RuntimeException("Email address not found: "+S.param("to").getOrElse("none"))
+          case items if(items.size == 1) => { 
+            <html><head> </head><body><table width="100%"><tr><td width="80%" valign="top">{items.head.first.is}, <p>&nbsp;</p><p>Your password is:  {items.head.password.is}</p> </td><td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td></tr></table>    </body></html>
+          }
+          case items if(items.size > 1) => { 
+            <html><head> </head><body><table width="100%"><tr><td width="80%" valign="top">This email address is shared by several users.  Names and passwords are below... {for(i <- items) yield { <p>{i.first.is}: {i.password.is}</p>}} </td><td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td></tr></table>    </body></html>
+          }
+        }
+      } // case (Full("true"), _)
+      case (_, Full(msg)) => {
+        Text(msg)
+      }
+      case _ => Text("")
+  }
   
   
 //  val fromemail = "info@littlebluebird.com"

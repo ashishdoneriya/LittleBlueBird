@@ -73,64 +73,64 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
     val bday2012 = CircleTest.bday2012.add(List(brent), List(tamie, kiera, truman, jett), brent)
     
     // I add to my list
-    val gift1 = Gift.create.description("NO URL 1").circle(nextXmas).addedBy(brent)
+    val gift1 = Gift.create.description("gift1").addedBy(brent)
     
     // I add to someone else's list
-    val gift2 = Gift.create.description("NO URL 2").circle(nextXmas).addedBy(brent)
+    val gift2 = Gift.create.description("gift2").addedBy(brent)
     
     // I add a joint gift to me and tamie
-    val gift3 = Gift.create.description("NO URL 3").circle(nextXmas).addedBy(brent)
+    val gift3 = Gift.create.description("gift3").addedBy(brent)
     
-    // I add a joint gift to for kiera, truman and jett
-    val gift4 = Gift.create.description("gift4").url("http://www.bn.com").circle(nextXmas).addedBy(brent)
-    
-    // more to my list
-    val gift5 = Gift.create.description("gift5").url("http://www.bn.com").circle(nextXmas).addedBy(brent)
+    // I add a joint gift for kiera, truman and jett
+    val gift4 = Gift.create.description("gift4").url("http://www.bn.com").addedBy(brent)
     
     // more to my list
-    val gift6 = Gift.create.description("gift6").url("http://www.bn.com").circle(nextXmas).addedBy(brent)
+    val gift5 = Gift.create.description("gift5").url("http://www.bn.com").addedBy(brent)
     
     // more to my list
-    val gift7 = Gift.create.description("gift7").url("http://www.bn.com").circle(nextXmas).addedBy(brent)
+    val gift6 = Gift.create.description("gift6").url("http://www.bn.com").addedBy(brent)
+    
+    // more to my list
+    val gift7 = Gift.create.description("gift7").url("http://www.bn.com").addedBy(brent)
     
     // anniv gifts
-    val gift8 = Gift.create.description("gift8").url("http://www.bn.com").circle(anniv2012).addedBy(brent)
+    val gift8 = Gift.create.description("gift8").url("http://www.bn.com").addedBy(brent)
     
     // anniv gifts
-    val gift9 = Gift.create.description("gift9").url("http://www.bn.com").circle(anniv2012).addedBy(brent)
+    val gift9 = Gift.create.description("gift9").url("http://www.bn.com").addedBy(brent)
     
     // kiera adds something for me and tamie
-    val gift10 = Gift.create.description("gift10").url("http://www.bn.com").circle(anniv2012).addedBy(kiera)
+    val gift10 = Gift.create.description("gift10").url("http://www.bn.com").addedBy(kiera)
     
     // gifts bought last Xmas
-    val gift11 = Gift.create.description("gift11").url("http://www.bn.com").circle(lastXmas).addedBy(brent)
-    tamie.buy(gift11, lastXmas)
+    val gift11 = Gift.create.description("gift11").url("http://www.bn.com").addedBy(brent)
+    gift11.sender(tamie).circle(lastXmas) // Tamie bought this last xmas
     
     // gifts bought last Xmas
-    val gift12 = Gift.create.description("gift12").url("http://www.bn.com").circle(lastXmas).addedBy(brent)
-    brent.buy(gift12, lastXmas)
+    val gift12 = Gift.create.description("gift12").url("http://www.bn.com").addedBy(brent)
+    gift12.sender(brent).circle(lastXmas) // Brent bought this last xmas
     
     // gifts bought last Xmas
-    val gift13 = Gift.create.description("gift13").url("http://www.bn.com").circle(lastXmas).addedBy(brent)
-    brent.buy(gift13, lastXmas)
+    val gift13 = Gift.create.description("gift13").url("http://www.bn.com").addedBy(brent)
+    gift13.sender(brent).circle(lastXmas) // Brent bought this last xmas
     
     // gifts bought last Xmas
-    val gift14 = Gift.create.description("gift14").url("http://www.bn.com").circle(lastXmas).addedBy(brent)
-    kiera.buy(gift14, lastXmas)
+    val gift14 = Gift.create.description("gift14").url("http://www.bn.com").addedBy(brent)
+    gift14.sender(kiera).circle(lastXmas) // kiera bought this last xmas
     
     // gifts bought last Xmas
-    val gift15 = Gift.create.description("gift15").url("http://www.bn.com").circle(lastXmas).addedBy(brent)
-    truman.buy(gift15, lastXmas)
+    val gift15 = Gift.create.description("gift15").url("http://www.bn.com").addedBy(brent)
+    gift15.sender(truman).circle(lastXmas) // truman bought this last xmas
     
     // gifts bought THIS Xmas - so they should appear on the recipients list when the viewer is the recipient
     // but the gift should not appear when the viewer is not the recipient
-    val gift16 = Gift.create.description("gift16").url("http://www.bn.com").circle(nextXmas).addedBy(brent)
-    tamie.buy(gift16, nextXmas)
+    val gift16 = Gift.create.description("gift16").url("http://www.bn.com").addedBy(brent)
+    gift16.sender(tamie).circle(nextXmas) // tamie bought this for this xmas
     
     // gifts bought THIS Xmas - so they should appear on the recipients list when the viewer is the recipient
     // but the gift should not appear when the viewer is not the recipient
-    val gift17 = Gift.create.description("gift17").url("http://www.bn.com").circle(nextXmas).addedBy(brent)
-    kiera.buy(gift17, nextXmas)
+    val gift17 = Gift.create.description("gift17").url("http://www.bn.com").addedBy(brent)
+    gift17.sender(kiera).circle(nextXmas) // kiera bought this for this xmas
     
     // "my wish list" gifts.  This series of gifts has no circle.  And each is added by the recipient.
     // And all gifts in this series are not bought
@@ -209,7 +209,8 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
                              (gift3, canEdit, canDelete, cannotBuy, cannotReturn), 
                              (gift8, canEdit, canDelete, cannotBuy, cannotReturn), 
                              (gift9, canEdit, canDelete, cannotBuy, cannotReturn), 
-                             (gift17, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift16, cannotEdit, cannotDelete, cannotBuy, canReturn), 
+                             (gift17, canEdit, canDelete, cannotBuy, cannotReturn),
                              (gift100, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 tamie -> Seq((gift3, canEdit, canDelete, cannotBuy, cannotReturn), 
                              (gift8, canEdit, canDelete, cannotBuy, cannotReturn), 
@@ -232,13 +233,16 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
                              (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
-                             (gift10, canEdit, canDelete, canBuy, cannotReturn), 
+                             (gift10, canEdit, canDelete, canBuy, cannotReturn),  
+                             (gift16, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
+                             (gift17, cannotEdit, cannotDelete, cannotBuy, canReturn), 
                              (gift100, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 tamie -> Seq((gift2, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift10, canEdit, canDelete, canBuy, cannotReturn),
+                             (gift17, cannotEdit, cannotDelete, cannotBuy, canReturn),
                              (gift101, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 kiera -> Seq((gift102, canEdit, canDelete, cannotBuy, cannotReturn)), 
                 truman -> Seq((gift103, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
@@ -253,12 +257,15 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
                              (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift16, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
+                             (gift17, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
                              (gift100, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 tamie -> Seq((gift2, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn),
+                             (gift17, cannotEdit, cannotDelete, cannotBuy, cannotReturn),
                              (gift101, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 kiera -> Seq((gift102, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 truman -> Seq((gift103, canEdit, canDelete, cannotBuy, cannotReturn)), 
@@ -273,12 +280,15 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
                              (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift16, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
+                             (gift17, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
                              (gift100, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 tamie -> Seq((gift2, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn),
+                             (gift17, cannotEdit, cannotDelete, cannotBuy, cannotReturn), 
                              (gift101, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 kiera -> Seq((gift102, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 truman -> Seq((gift103, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
@@ -360,6 +370,7 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
                              (gift3, canEdit, canDelete, cannotBuy, cannotReturn), 
                              (gift8, canEdit, canDelete, cannotBuy, cannotReturn), 
                              (gift9, canEdit, canDelete, cannotBuy, cannotReturn), 
+                             (gift16, cannotEdit, cannotDelete, cannotBuy, canReturn), // should have a note that this item was bought for another event 
                              (gift17, canEdit, canDelete, cannotBuy, cannotReturn), 
                              (gift100, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 tamie -> Seq((gift3, canEdit, canDelete, cannotBuy, cannotReturn), 
@@ -380,12 +391,15 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
                              (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift10, canEdit, canDelete, canBuy, cannotReturn), 
+                             (gift16, cannotEdit, cannotDelete, cannotBuy, cannotReturn),  // should include a note that this item was bought for another event
+                             (gift17, cannotEdit, cannotDelete, cannotBuy, canReturn),     // should include a note that this item was bought for another event
                              (gift100, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 tamie -> Seq((gift2, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift10, canEdit, canDelete, canBuy, cannotReturn),
+                             (gift17, cannotEdit, cannotDelete, cannotBuy, canReturn), // should include a note that this item was bought for another event
                              (gift101, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 kiera -> Seq(), 
                 truman -> Seq(), 
@@ -399,12 +413,15 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
                              (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift16, cannotEdit, cannotDelete, cannotBuy, cannotReturn),     // should include a note that this item was bought for another event
+                             (gift17, cannotEdit, cannotDelete, cannotBuy, cannotReturn),     // should include a note that this item was bought for another event
                              (gift100, cannotEdit, cannotDelete, canBuy, cannotReturn)),
                 tamie -> Seq((gift2, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn),
+                             (gift17, cannotEdit, cannotDelete, cannotBuy, cannotReturn),     // should include a note that this item was bought for another event
                              (gift101, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 kiera -> Seq(), 
                 truman -> Seq(), 
@@ -419,12 +436,15 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
                              (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift16, cannotEdit, cannotDelete, cannotBuy, cannotReturn),     // should include a note that this item was bought for another event
+                             (gift17, cannotEdit, cannotDelete, cannotBuy, cannotReturn),     // should include a note that this item was bought for another event
                              (gift100, cannotEdit, cannotDelete, canBuy, cannotReturn)),
                 tamie -> Seq((gift2, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift3, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift8, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift9, cannotEdit, cannotDelete, canBuy, cannotReturn), 
                              (gift10, cannotEdit, cannotDelete, canBuy, cannotReturn),
+                             (gift17, cannotEdit, cannotDelete, cannotBuy, cannotReturn),     // should include a note that this item was bought for another event
                              (gift101, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 kiera -> Seq(), 
                 truman -> Seq(), 
@@ -450,6 +470,7 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
                              (gift5, cannotEdit, cannotDelete, canBuy, cannotReturn),
                              (gift6, cannotEdit, cannotDelete, canBuy, cannotReturn),  
                              (gift7, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift16, cannotEdit, cannotDelete, cannotBuy, canReturn),     // should include a note that this item was bought for another event
                              (gift100, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 tamie -> Seq(), 
                 kiera -> Seq(), 
@@ -462,6 +483,7 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
                              (gift5, cannotEdit, cannotDelete, canBuy, cannotReturn),
                              (gift6, cannotEdit, cannotDelete, canBuy, cannotReturn),  
                              (gift7, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift16, cannotEdit, cannotDelete, cannotBuy, cannotReturn),     // should include a note that this item was bought for another event
                              (gift100, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 tamie -> Seq(), 
                 kiera -> Seq(), 
@@ -473,6 +495,7 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
                              (gift5, cannotEdit, cannotDelete, canBuy, cannotReturn),
                              (gift6, cannotEdit, cannotDelete, canBuy, cannotReturn),  
                              (gift7, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift16, cannotEdit, cannotDelete, cannotBuy, cannotReturn),     // should include a note that this item was bought for another event
                              (gift100, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 tamie -> Seq(), 
                 kiera -> Seq(), 
@@ -484,6 +507,7 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
                              (gift5, cannotEdit, cannotDelete, canBuy, cannotReturn),
                              (gift6, cannotEdit, cannotDelete, canBuy, cannotReturn),  
                              (gift7, cannotEdit, cannotDelete, canBuy, cannotReturn), 
+                             (gift16, cannotEdit, cannotDelete, cannotBuy, cannotReturn),     // should include a note that this item was bought for another event
                              (gift100, cannotEdit, cannotDelete, canBuy, cannotReturn)), 
                 tamie -> Seq(), 
                 kiera -> Seq(), 

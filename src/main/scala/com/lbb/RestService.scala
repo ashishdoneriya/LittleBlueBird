@@ -307,6 +307,8 @@ object RestService extends RestHelper {
   
   def updateGift(id:Long) = (Gift.findByKey(id), S.request) match {
     case (Full(gift), Full(req)) => {
+      // TODO hack?  Empty sender then repopulate if it's in the json object
+      gift.sender(Empty).sender_name(Empty)
       req.json match {
         case Full(jvalue:JObject) => {
           jvalue.values foreach {kv => (kv._1, kv._2) match {
@@ -314,7 +316,6 @@ object RestService extends RestHelper {
               case ("description", s:String) => gift.description(s)
               case ("url", s:String) => gift.url(s)
               case ("recipients", l:List[Map[String, Any]]) => {
-                //println("insertGift:  so far so good  kv._2="+kv._2)
                 l.filter(e => e.get("checked").getOrElse(false).equals(true) )
                    .foreach(e => {
                      val boxId = asLong(e.get("id"))
@@ -322,29 +323,25 @@ object RestService extends RestHelper {
                      gift.addRecipient(boxId.getOrElse(-1L)) 
                    })
               }
-              case ("viewerId", a:BigInt) => {
-                User.findByKey(a.toLong) match {
-                  case Full(viewer) => gift.currentViewer = Full(viewer)
-                  case _ => gift.currentViewer = Empty
-                } // User.findByKey(a.toLong) match
-              } // case ("viewerId", a:BigInt)
+                
+	          case ("viewerId", a:BigInt) => {
+	            gift.currentViewer = User.findByKey(a.toLong)
+	          } // case ("viewerId", a:BigInt)
+	            
+	          case ("recipientId", a:BigInt) => {
+	            gift.currentRecipient = User.findByKey(a.toLong)
+	          } // case ("recipientId", a:BigInt)
               
+              case ("circleId", a:BigInt) if(a!=null && a.longValue() != 0 && a.longValue() != -1L) => {
+                gift.circle(a.longValue())
+	            gift.currentCircle = Circle.findByKey(a.toLong)
+              }
               
-              case ("recipientId", a:BigInt) => {
-                User.findByKey(a.toLong) match {
-                  case Full(recipient) => gift.currentRecipient = Full(recipient)
-                  case _ => gift.currentRecipient = Empty
-                } // User.findByKey(a.toLong) match
-              } // case ("recipientId", a:BigInt)
+              case ("senderId", a:BigInt) => {
+                User.findByKey(a.toLong).foreach(s => gift.sender(s))
+              } 
               
-              
-              case ("circleId", a:BigInt) => {
-                Circle.findByKey(a.toLong) match {
-                  case Full(circle) => gift.currentCircle = Full(circle)
-                  case _ => gift.currentCircle = Empty
-                } // Circle.findByKey(a.toLong)
-              } // case ("circleId", a:BigInt)
-              
+              case ("senderName", s:String) => gift.sender_name(s)
               
               case _ => println("updateGift:  Not handled: Gift."+kv._1+" = "+kv._2)
             } // kv => (kv._1, kv._2) match

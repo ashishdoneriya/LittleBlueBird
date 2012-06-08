@@ -3,6 +3,7 @@ var app = angular.module('project', ['UserModule', 'angularBootstrap.modal']).
     $routeProvider.
       when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html', three:'partials/LittleBlueBird.html', four:'partials/navbar.html'}}).
       when('/circles', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html', five:'partials/navbar.html'}}).
+      when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}}).
       when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}}).
       when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}}).
       when('/event/:circleId', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html', five:'partials/navbar.html'}}).
@@ -266,11 +267,30 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
     }
     
     var savedgift = Gift.save({giftId:gift.id, circleId:$scope.circle.id, description:gift.description, url:gift.url, 
-               addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$scope.user.id, recipientId:$scope.showUser.id},
+               addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$scope.user.id, recipientId:$scope.showUser.id, senderId:gift.sender, senderName:gift.sender_name},
                function() {
                  if(remove) $scope.gifts.splice(index, 1);
                  else $scope.gifts.splice(index, 1, savedgift);
                });
+  }
+  
+  
+  $scope.startbuying = function(gift) {
+    gift.buying = true;
+    gift.senderId = $scope.user.id;
+    gift.senderName = $scope.user.first;
+  }
+  
+  
+  $scope.buygift = function(index, gift) {
+    var savedgift = Gift.save({giftId:gift.id, circleId:$scope.circle.id, recipients:gift.recipients, viewerId:$scope.user.id, recipientId:$scope.showUser.id, senderId:gift.senderId, senderName:gift.senderName},
+               function() { $scope.gifts.splice(index, 1, savedgift); });
+  }
+  
+  
+  $scope.returngift = function(index, gift) {
+    var savedgift = Gift.save({giftId:gift.id, circleId:$scope.circle.id, recipients:gift.recipients, viewerId:$scope.user.id, recipientId:$scope.showUser.id},
+               function() { $scope.gifts.splice(index, 1, savedgift); });
   }
     
   

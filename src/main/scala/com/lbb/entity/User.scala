@@ -235,6 +235,8 @@ class User extends LongKeyedMapper[User] {
   def expiredCircles = circles.map(fk => fk.circle.obj.open_!).filter(c => c.isExpired && !c.isDeleted)
   
   // For active circles (I think expired circles too)
+  // Note: You can't put circleid anywhere in the where clause because a gift may have been bought - but not received
+  // in one circle, but it since it hasn't been received, it still needs to show up when looking at any other circle.
   // This canedit/candelete/canbuy/canreturn logic is also being used in Gift.edbr 
   def giftlist(viewer:User, circle:Circle) = {     		
     val sql = "select g.* from gift g join recipient r on r.gift_id = g.id where r.person_id = "+this.id+" order by g.date_created desc"   
@@ -272,6 +274,20 @@ class User extends LongKeyedMapper[User] {
   }
   
   /**
+   * Tells you whether this gift is/was a surprise or not
+   * You know about a gift if:
+   * - you added it (added by 'this')
+   * - the gift was added by a recipient and 'this' is also a recipient
+   * - gift is not for me ('this' is not a recipient)
+   */
+  def knowsAbout(g:Gift) = {
+    val a = this.addedThis(g)
+    val b = g.isFor(this) && g.wasAddedByARecipient
+    val c = !g.isFor(this)
+    a || b || c
+  }
+  
+  /**
    * The gift must be for me.  It must have been added by me, or if it's for 
    * me and someone else, it must have been added by one of us.  And the gift
    * must not have been received yet (received = circle is expired and sender not null)
@@ -291,70 +307,79 @@ class User extends LongKeyedMapper[User] {
     // - and all the recipients are not receivers in the circle
     // Think: Birthdays, Mothers Day, Fathers Day, etc.  Don't show stuff
     // on my birthday list that is for me and Tamie.
-    case(_, _, _, g, c) if(!c.containsAll(g.recipientList)) => false;
+    case(_, _, _, g, c) if(!c.containsAll(g.recipientList)) => false
     
-    // You CAN see the gift in this context of this circle because:
-    // - the circle is still active
-    // - the item hasn't been bought
-    // - and you (the viewer) are the one who added this gift
-    case(v, _, Empty, g, c) if(!c.isExpired && v.addedThis(g)) => {
-      if(gift.description=="gift17") println("case(v, _, Empty, g, c) if(!c.isExpired && v.addedThis(g))")
-      true
-    }
+    // 6/6/2012:  In an active circle, you CAN see the gift
+    // if you know about it AND the gift hasn't been received yet.  
+    // Doesn't matter here if the gift has been bought or not
+    case(v, _, _, g, c) if(!c.isExpired) => v.knowsAbout(g) && !g.hasBeenReceived
     
-    // You CAN see this gift IF
-    // - the circle is still active
-    // - the item hasn't been bought
-    // - you are a recipient of the gift AND the gift was added by another recipient
-    case(v, _, Empty, g, c) if(!c.isExpired && g.isFor(v)) => {
-      if(gift.description=="gift17") println("case(v, _, Empty, g, c) if(!c.isExpired && v.isRecipient(g))")
-      g.wasAddedByARecipient
-    }
+    // 6/6/2012:  In expired circles, you CAN see the gift if it was
+    // received in this circle
+    case(_, _, _, g, c) if(c.isExpired) => g.hasBeenReceivedInCircle(c) //g.hasBeenReceived && g.circle.obj.map(cir => cir.id.is == c.id.is).openOr(false)
     
-    
-    // You CAN see this gift IF
-    // - the circle is still active
-    // - the item hasn't been bought
-    // - you are not the one receiving this gift
-    case(v, _, Empty, g, c) if(!c.isExpired && g.isForSomeoneElse(v)) => {
-      if(gift.description=="gift17") println("case(v, _, Empty, g, c) if(!c.isExpired && !v.isRecipient(g))")
-      true
-    }
-    
-    // This item HAS been bought.  You will be able to see it if...
-    // - the circle is still active
-    // - you added this item to your own list
-    // - and you have not yet received this item
-    case(v, r, s:Full[User], g, c) if(!c.isExpired && v.addedThis(g) && !g.hasBeenReceived) => {
-      if(gift.description=="gift17") println("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.addedThis(g) && !g.hasBeenReceived)")
-      true
-    }
-    
-    // This item HAS been bought.  You will be able to see it if...
-    // - the circle is still active
-    // - and you have not yet received this item
-    case(v, r, s:Full[User], g, c) if(!c.isExpired && g.isFor(v) && g.wasAddedByARecipient && !g.hasBeenReceived) => {
-      if(gift.description=="gift17") println("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.isRecipient(g) && !g.hasBeenReceived)")
-      true
-    }
-    
-    // This item HAS been bought, but you CANNOT see it if...
-    // - the gift is for someone else
-    // - the gift has not been received
-    case(v, _, s:Full[User], g, _) if(g.isForSomeoneElse(v) && !g.hasBeenReceived) => false
-    
-    // This item HAS been bought.  You will be able to see it if...
-    // - the circle is expired
-    // - the gift was bought in the expired circle
-    case(_, _, s:Full[User], g, c) if(c.isExpired && g.circle.obj.map(_.id.is).openOr(-1)==c.id.is) => {
-      if(gift.description=="gift17") println("case(_, _, s:Full[User], g, c) if(c.isExpired && g.circle.obj.map(_.id.is).openOr(-1)==c.id.is)")
-      true
-    }
-    
-    case(_, _, _, g, c) if(c.isExpired && !g.wasBoughtInThisCircle(c)) => false
-    
-    // the gift has been received in another circle, so you cannot see this gift in THIS circle
-    case(_, _, s:Full[User], g, c) if(g.hasBeenReceivedInAnotherCircle(c)) => false
+//    // You CAN see the gift in this context of this circle because:
+//    // - the circle is still active
+//    // - the item hasn't been bought  UPDATE: Bought is ok if not yet rec'd.  Rec'd is ok if rec'd in the given circle 
+//    // - and you (the viewer) are the one who added this gift
+//    case(v, _, Empty, g, c) if(!c.isExpired && v.addedThis(g)) => {
+//      if(gift.description=="gift17") println("case(v, _, Empty, g, c) if(!c.isExpired && v.addedThis(g))")
+//      true
+//    }
+//    
+//    // You CAN see this gift IF
+//    // - the circle is still active
+//    // - the item hasn't been bought
+//    // - you are a recipient of the gift AND the gift was added by another recipient
+//    case(v, _, Empty, g, c) if(!c.isExpired && g.isFor(v)) => {
+//      if(gift.description=="gift17") println("case(v, _, Empty, g, c) if(!c.isExpired && v.isRecipient(g))")
+//      g.wasAddedByARecipient
+//    }
+//    
+//    
+//    // You CAN see this gift IF
+//    // - the circle is still active
+//    // - the item hasn't been bought
+//    // - you are not the one receiving this gift
+//    case(v, _, Empty, g, c) if(!c.isExpired && g.isForSomeoneElse(v)) => {
+//      if(gift.description=="gift17") println("case(v, _, Empty, g, c) if(!c.isExpired && !v.isRecipient(g))")
+//      true
+//    }
+//    
+//    // This item HAS been bought.  You will be able to see it if...
+//    // - the circle is still active
+//    // - you added this item to your own list
+//    // - and you have not yet received this item
+//    case(v, r, s:Full[User], g, c) if(!c.isExpired && v.addedThis(g) && !g.hasBeenReceived) => {
+//      if(gift.description=="gift17") println("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.addedThis(g) && !g.hasBeenReceived)")
+//      true
+//    }
+//    
+//    // This item HAS been bought.  You will be able to see it if...
+//    // - the circle is still active
+//    // - and you have not yet received this item
+//    case(v, r, s:Full[User], g, c) if(!c.isExpired && g.isFor(v) && g.wasAddedByARecipient && !g.hasBeenReceived) => {
+//      if(gift.description=="gift17") println("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.isRecipient(g) && !g.hasBeenReceived)")
+//      true
+//    }
+//    
+//    // This item HAS been bought, but you CANNOT see it if...
+//    // - the gift is for someone else
+//    // - the gift has not been received
+//    case(v, _, s:Full[User], g, _) if(g.isForSomeoneElse(v) && !g.hasBeenReceived) => false
+//    
+//    // This item HAS been bought.  You will be able to see it if...
+//    // - the circle is expired
+//    // - the gift was bought in the expired circle
+//    case(_, _, s:Full[User], g, c) if(c.isExpired && g.circle.obj.map(_.id.is).openOr(-1)==c.id.is) => {
+//      if(gift.description=="gift17") println("case(_, _, s:Full[User], g, c) if(c.isExpired && g.circle.obj.map(_.id.is).openOr(-1)==c.id.is)")
+//      true
+//    }
+//    
+//    case(_, _, _, g, c) if(c.isExpired && !g.wasBoughtInThisCircle(c)) => false
+//    
+//    // the gift has been received in another circle, so you cannot see this gift in THIS circle
+//    case(_, _, s:Full[User], g, c) if(g.hasBeenReceivedInAnotherCircle(c)) => false
     
     case _ => {println("should catch this case"); true}
 
@@ -374,9 +399,18 @@ class User extends LongKeyedMapper[User] {
    * was added to "my wish list".  Or the gift may have been added in the context of
    * one circle but bought in another
    */
-  def buy(g:Gift, c:Circle) = {
-    g.sender(this).circle(c).save()
-  }
+//  def buy(g:Gift, c:Circle) = {
+//    g.sender(this).circle(c).save()
+//  }
+  
+  /**
+   * The opposite of buy() - when the user changes his mind and decides
+   * not to give the gift after all.
+   * Set the circle back to null in this case
+   */
+//  def returngift(g:Gift) = {
+//    g.sender(Empty).circle(Empty).save()
+//  }
   
   def findByName(f:String, l:String) = {
     User.findAll(Cmp(User.first, OprEnum.Like, Full("%"+f.toLowerCase+"%"), Empty, Full("LOWER")),
@@ -388,20 +422,30 @@ class User extends LongKeyedMapper[User] {
     super.toForm(button, f)
   }
   
-  def canEdit(g:Gift):Boolean = {
+  def canEdit(g:Gift) = {
     (iadded(g) || (iamrecipient(g) && g.wasAddedByARecipient)) && !g.hasBeenReceived
   }
   
-  def canDelete(g:Gift):Boolean = {
+  def canDelete(g:Gift) = {
     canEdit(g)
   }
   
-  def canBuy(g:Gift):Boolean = {
+  def canBuy(g:Gift) = {
     !g.isBought && !iamrecipient(g)
   }
   
-  def canReturn(g:Gift):Boolean = {
+  def canReturn(g:Gift) = {
     ibought(g) && !g.hasBeenReceived
+  }
+  
+  /**
+   * Can 'this' user see a gift's "bought" status ?
+   * Depends...
+   * I can see the status of a gift that is for someone else, but if
+   * the gift is for me, then I can't see the status.
+   */
+  def canSeeStatus(g:Gift) = {
+    
   }
   
   private def iadded(g:Gift):Boolean = {

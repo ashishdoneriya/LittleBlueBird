@@ -23,6 +23,8 @@ import scala.collection.mutable.ListBuffer
 import net.liftweb.mapper.MappedDateTime
 import java.util.Date
 import net.liftweb.mapper.MappedInt
+import net.liftweb.mapper.MappedNullableField
+import scala.collection.immutable.List
 
 /**
  * 
@@ -82,6 +84,7 @@ class Gift extends LongKeyedMapper[Gift] {
   
   object id extends MappedLongIndex(this)
   
+  // UPDATE 6/7/2012:  Don't set the circleid until the item has been bought
   object circle extends MappedLongForeignKey(this, Circle) {
     override def dbColumnName = "CIRCLE_ID"
   }
@@ -144,7 +147,12 @@ class Gift extends LongKeyedMapper[Gift] {
    * A gift has been received if the sender is not null and g.circle is expired
    */
   def hasBeenReceived = (this.sender.obj, this.circle.obj) match {
-    case(s:Full[User], c:Full[Circle]) if(c.open_!.isExpired) => true
+    case(Full(s), Full(c)) if(c.isExpired) => true
+    case _ => false
+  }
+  
+  def hasBeenReceivedInCircle(cir:Circle) = (this.sender.obj, this.circle.obj) match {
+    case(Full(s), Full(c)) => c.id.is==cir.id.is
     case _ => false
   }
   
@@ -154,8 +162,8 @@ class Gift extends LongKeyedMapper[Gift] {
     }
     
     this.circle.obj match {
-      case f:Full[Circle] => {
-        val differentCircle = f.open_!.id.is!=c.id.is
+      case Full(f) => {
+        val differentCircle = f.id.is!=c.id.is
         differentCircle
       }
       case _ => false
@@ -195,11 +203,13 @@ class Gift extends LongKeyedMapper[Gift] {
     if(dateCreated.is==null) dateCreated(new Date())
     val saved = super.save();
     
-    // delete current recipients before adding the new ones (even though they may be the same)
-    Recipient.findAll(By(Recipient.gift, this)).foreach(_.delete_!)
+    if(recipientsToSave.size > 0) {
+      // delete current recipients before adding the new ones (even though they may be the same)
+      Recipient.findAll(By(Recipient.gift, this)).foreach(_.delete_!)
+      recipientsToSave foreach { r => {val rsaved = Recipient.create.person(r).gift(this).save;} }
+      recipientsToSave.drop(0)
+    }
     
-    recipientsToSave foreach { r => {val rsaved = Recipient.create.person(r).gift(this).save;} }
-    recipientsToSave.drop(0)
     saved
   }
   

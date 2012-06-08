@@ -121,25 +121,15 @@
   margin:0;
 }
 
-.margleft_5 {
-  margin-left:-5px;
-}
-
-.margtop_5 {
-  margin-top:-5px;
-}
-
 .marg_20 {
   margin:-20px;
-}
-
-.marg_35 {
-  margin-left:-35px;
 }
 
 .margbottom0 {
   margin-bottom:0px;
 }
+
+.margbottom20 { margin-bottom:20px; }
 
 .margleft0 {
   margin-left:0;
@@ -153,11 +143,23 @@
   margin-left:10px;
 }
 
+.margleft_5 {
+  margin-left:-5px;
+}
+
 .margleft_20 {
   margin-left:-20px;
 }
 
+.margleft_35 {
+  margin-left:-35px;
+}
+
 .margright0 {  margin-right:0; }
+
+.margtop_5 {
+  margin-top:-5px;
+}
 
 .margtop5 { margin-top:5px; }
 

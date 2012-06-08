@@ -48,7 +48,7 @@
 <form novalidate name="addGiftForm">
           <div class="row gift giftadd marg0">
             <div class="span7">
-              <div class="row marg_35">
+              <div class="row margleft_35">
                 <div class="span4">
 	              <div class="row">
 	                <div class="span1">Item</div>
@@ -67,12 +67,12 @@
 	              </div>
                 </div>
                 <div class="span3">
-                  <div class="row marg_35">
+                  <div class="row margleft_35">
                     <div class="span3">
                       This item is for<br/>(check all that apply)
                     </div>
                   </div>
-                  <div class="row marg_35">
+                  <div class="row margleft_35">
                     <div class="span3">
                       <div ng-repeat="receiver in newgift.recipients">
                         <input type="checkbox" ng-model="receiver.checked"> {{receiver.fullname}}
@@ -83,7 +83,7 @@
                   
                 </div>
               </div>
-              <div class="row marg_35">
+              <div class="row margleft_35">
                     <div class="span1">
                       <a class="btn" ng-click="$location.url($location.path());gift.adding=false">Cancel</a>
                     </div>
@@ -117,6 +117,9 @@
                     </span>
                     <span ng-show="gift.canreturn">
                       <a class="btn btn-mini" ng-click="$location.url($location.path());returngift($index, gift)">Return</a>
+                    </span>
+                    <span ng-show="!gift.canbuy && !gift.canreturn && gift.canseestatus && gift.isbought">
+                      <a class="btn btn-mini" ng-disabled="true" title="Bought by {{gift.sender_name}}">bought</a>
                     </span>
                   </div>
                   </span>
@@ -156,22 +159,40 @@
 <form novalidate name="buygiftForm"> 
           <div class="row marg0">
             <div class="span7">
-              <div class="row marg_35">
+              <div class="row margleft_35">
                 <div class="span7">
-                  Item: {{gift.description}}
+                  To: {{gift.recipients[0].first}} <span ng-repeat="recipient in gift.recipients.slice(1)"> and {{recipient.first}}</span>
                 </div>
               </div>
-              <div class="row marg_35">
+              <div class="row margleft_35">
                 <div class="span7">
                   <input type="hidden" ng-model="gift.id" />
                   <input type="hidden" ng-model="gift.senderId" />
                   From: <input type="text" ng-model="gift.senderName" />
                 </div>
               </div>
-              <div class="row marg_35">
-                <div class="span7">
+              <div class="row margleft_35 margbottom20">
+                <div class="span7 giftdescription">
+                  {{gift.description}}
+                </div>
+              </div>
+              <div class="row margleft_35">
+                <div class="span1">
+                  <a class="btn" ng-click="$location.url($location.path());gift.buying=false">Cancel</a>
+                </div>
+                
+                <span ng-show="gift.url != undefined">
+                <div class="span1">
+                  <a ng-href="{{gift.url}}" target="new" class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift);">Buy</a>
+                </div>
+                </span>
+                
+                <span ng-hide="gift.url != undefined">
+                <div class="span1">
                   <a class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift);">Buy</a>
                 </div>
+                </span>
+                
               </div>
             </div>
           </div>
@@ -191,7 +212,7 @@
 <form novalidate name="giftForm">
           <div class="row marg0">
             <div class="span7">
-              <div class="row marg_35">
+              <div class="row margleft_35">
                 <div class="span4">
 	              <div class="row">
 	                <div class="span1">Item</div>
@@ -215,12 +236,12 @@
 	              </div>
                 </div>
                 <div class="span3">
-                  <div class="row marg_35">
+                  <div class="row margleft_35">
                     <div class="span3">
                       This item is for<br/>(check all that apply)
                     </div>
                   </div>
-                  <div class="row marg_35">
+                  <div class="row margleft_35">
                     <div class="span3">
                       <div ng-repeat="receiver in gift.possiblerecipients">
                         <input type="checkbox" ng-model="receiver.checked"> {{receiver.fullname}}
@@ -231,7 +252,7 @@
                   
                 </div>
               </div>
-              <div class="row marg_35">
+              <div class="row margleft_35">
                     <div class="span1">
                       <button class="btn" ng-click="canceleditgift(gift)">Cancel</button>
                     </div>

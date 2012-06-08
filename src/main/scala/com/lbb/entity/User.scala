@@ -246,6 +246,7 @@ class User extends LongKeyedMapper[User] {
       g.candelete = viewer.canDelete(g)
       g.canbuy = viewer.canBuy(g)
       g.canreturn = viewer.canReturn(g)
+      g.canseestatus = viewer.canSeeStatus(g)
       g
     })
   }
@@ -269,6 +270,7 @@ class User extends LongKeyedMapper[User] {
       g.candelete = this.canDelete(g)
       g.canbuy = this.canBuy(g)
       g.canreturn = this.canReturn(g)
+      g.canseestatus = this.canSeeStatus(g)
       g
     })
   }
@@ -441,11 +443,14 @@ class User extends LongKeyedMapper[User] {
   /**
    * Can 'this' user see a gift's "bought" status ?
    * Depends...
-   * I can see the status of a gift that is for someone else, but if
-   * the gift is for me, then I can't see the status.
+   * If I am a recipient, I can see the status if the gift has been received
+   * If I am not a recipient, I can see the status anytime
    */
   def canSeeStatus(g:Gift) = {
-    
+    iamrecipient(g) match {
+      case true => g.hasBeenReceived
+      case false => true
+    }
   }
   
   private def iadded(g:Gift):Boolean = {

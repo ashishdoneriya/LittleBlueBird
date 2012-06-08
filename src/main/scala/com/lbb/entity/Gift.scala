@@ -177,7 +177,7 @@ class Gift extends LongKeyedMapper[Gift] {
   }
   
   // TODO do we need to check the circle or just the sender - just checking the sender for now
-  def isBought:Boolean = this.sender.obj match {
+  def isBought = this.sender.obj match {
     case Full(sender) => true
     case _ => false
   }
@@ -216,13 +216,14 @@ class Gift extends LongKeyedMapper[Gift] {
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
     val jsonRecipients = recipientList.map(_.asJs)
     val jsRecipients = JsArray(jsonRecipients)
-    List(("recipients", jsRecipients), ("canedit", JBool(canedit)), ("candelete", JBool(candelete)), ("canbuy", JBool(canbuy)), ("canreturn", JBool(canreturn)))        
+    List(("recipients", jsRecipients), ("canedit", JBool(canedit)), ("candelete", JBool(candelete)), ("canbuy", JBool(canbuy)), ("canreturn", JBool(canreturn)), ("canseestatus", JBool(canseestatus)), ("isbought", JBool(isBought)))        
   }
   
   var canedit = false;
   var candelete = false;
   var canbuy = false;
   var canreturn = false;
+  var canseestatus = false;
   var currentViewer:Box[User] = Empty
   var currentRecipient:Box[User] = Empty
   var currentCircle:Box[Circle] = Empty
@@ -238,6 +239,7 @@ class Gift extends LongKeyedMapper[Gift] {
       candelete = viewer.canSee(recipient, this, circle) && viewer.canDelete(this)
       canbuy = viewer.canSee(recipient, this, circle) && viewer.canBuy(this)
       canreturn = viewer.canSee(recipient, this, circle) && viewer.canReturn(this) 
+      canseestatus = viewer.canSee(recipient, this, circle) && viewer.canSeeStatus(this) 
       println("gift.edbr:  case (Full(viewer), Full(recipient), Full(circle)))")
     } // case (Full(viewer), Full(recipient), Full(circle))
     
@@ -246,6 +248,7 @@ class Gift extends LongKeyedMapper[Gift] {
       candelete = true
       canbuy = false
       canreturn = false
+      canseestatus = false
       println("gift.edbr:  case _")
     }
   }

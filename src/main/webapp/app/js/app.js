@@ -123,6 +123,14 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
         }
       }
   })
+  .directive('giftActions', function(){
+      return {
+        // The linking function will add behavior to the template
+        link: function(scope, element, attrs) {
+           $('.dropdown-toggle').dropdown();
+        }
+      }
+  })
   .directive('keyDown', function(){
       return {
         transclude: false,
@@ -221,6 +229,13 @@ function CurrentCtrl($rootScope, $scope, $cookieStore, User, Circle, Gift, $rout
 
 
 function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) { 
+
+  $scope.toggledetails = function(gift) {
+    if(!angular.isDefined(gift.showdetails))
+      gift.showdetails = false;
+    gift.showdetails = !gift.showdetails;
+    return gift.showdetails;
+  }
   
   $scope.initNewGift = function() {
     $scope.newgift = {addedBy:$scope.user, circle:$scope.circle};

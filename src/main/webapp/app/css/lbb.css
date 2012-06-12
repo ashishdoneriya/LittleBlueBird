@@ -68,7 +68,6 @@
 .gift {
   padding: 10px 0px 10px 10px;
   margin-bottom: 18px;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
   border: 1px solid;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -157,6 +156,8 @@
 
 .margright0 {  margin-right:0; }
 
+.margright50 {  margin-right:50px; }
+
 .margtop_5 {
   margin-top:-5px;
 }
@@ -181,8 +182,16 @@
   padding-left:0;
 }
 
+.padleft15 {
+  padding-left:15px;
+}
+
 .padright0 {
   padding-right:0;
+}
+
+.padright15 {
+  padding-right:15px;
 }
 
 .padtop5 {

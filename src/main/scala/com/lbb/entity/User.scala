@@ -239,7 +239,11 @@ class User extends LongKeyedMapper[User] {
   // in one circle, but it since it hasn't been received, it still needs to show up when looking at any other circle.
   // This canedit/candelete/canbuy/canreturn logic is also being used in Gift.edbr 
   def giftlist(viewer:User, circle:Circle) = {     		
-    val sql = "select g.* from gift g join recipient r on r.gift_id = g.id where r.person_id = "+this.id+" order by g.date_created desc"   
+    //val sql = "select g.* from gift g join recipient r on r.gift_id = g.id where r.person_id = "+this.id+" order by g.date_created desc"   
+    
+    // this sql works but how do I handle the first/last from person table
+    val sql = "select g.*, p.firstname as addedbyFirst, p.lastname as addedbyLast from person p, gift g join recipient r on r.gift_id = g.id where r.person_id = "+this.id+" and g.entered_by = p.id order by g.date_created desc"
+    
     val gifts = Gift.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
     gifts.filter(g => viewer.canSee(this, g, circle)).map(g => {
       g.canedit = viewer.canEdit(g)
@@ -247,6 +251,7 @@ class User extends LongKeyedMapper[User] {
       g.canbuy = viewer.canBuy(g)
       g.canreturn = viewer.canReturn(g)
       g.canseestatus = viewer.canSeeStatus(g)
+      g.issurprise = !this.knowsAbout(g)
       g
     })
   }
@@ -271,6 +276,7 @@ class User extends LongKeyedMapper[User] {
       g.canbuy = this.canBuy(g)
       g.canreturn = this.canReturn(g)
       g.canseestatus = this.canSeeStatus(g)
+      g.issurprise = !this.knowsAbout(g)
       g
     })
   }

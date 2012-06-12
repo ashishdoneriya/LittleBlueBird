@@ -112,6 +112,10 @@ class Gift extends LongKeyedMapper[Gift] {
   }
   object dateCreated extends MappedDateTime(this) {
     override def dbColumnName = "date_created"
+  
+    override def toLong = {
+      super.toLong * 1000L
+    }
   }
   
   object deleted extends MappedStringExtended(this, 1028) {
@@ -138,6 +142,8 @@ class Gift extends LongKeyedMapper[Gift] {
   def recipients = Recipient.findAll(By(Recipient.gift, this.id))
   
   def recipientList = recipients.map(fk => fk.person.obj.open_!)
+  
+  def addedByName = addedBy.obj.map(a => a.first + " " + a.last).getOrElse("n/a")
   
   def wasAddedByARecipient = {
     this.recipients.map(_.person.obj.map(_.id.is) openOr -1).contains(this.addedBy.is)
@@ -216,14 +222,23 @@ class Gift extends LongKeyedMapper[Gift] {
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
     val jsonRecipients = recipientList.map(_.asJs)
     val jsRecipients = JsArray(jsonRecipients)
-    List(("recipients", jsRecipients), ("canedit", JBool(canedit)), ("candelete", JBool(candelete)), ("canbuy", JBool(canbuy)), ("canreturn", JBool(canreturn)), ("canseestatus", JBool(canseestatus)), ("isbought", JBool(isBought)))        
+    List(("recipients", jsRecipients), 
+         ("canedit", JBool(canedit)), 
+         ("candelete", JBool(candelete)), 
+         ("canbuy", JBool(canbuy)), 
+         ("canreturn", JBool(canreturn)), 
+         ("canseestatus", JBool(canseestatus)), 
+         ("isbought", JBool(isBought)),
+         ("issurprise", JBool(issurprise)),
+         ("addedByName", JString(addedByName)))        
   }
   
-  var canedit = false;
-  var candelete = false;
-  var canbuy = false;
-  var canreturn = false;
-  var canseestatus = false;
+  var canedit = false
+  var candelete = false
+  var canbuy = false
+  var canreturn = false
+  var canseestatus = false
+  var issurprise = false
   var currentViewer:Box[User] = Empty
   var currentRecipient:Box[User] = Empty
   var currentCircle:Box[Circle] = Empty
@@ -231,7 +246,7 @@ class Gift extends LongKeyedMapper[Gift] {
   /*
    *  short for edit,delete,buy,return
    *  
-   *  This logic was taken from User.giftlist
+   *  This logic was taken from User.giftlist  Also see User.mywishlist
    */
   def edbr = (currentViewer, currentRecipient, currentCircle) match {
     case (Full(viewer), Full(recipient), Full(circle)) => {
@@ -240,6 +255,7 @@ class Gift extends LongKeyedMapper[Gift] {
       canbuy = viewer.canSee(recipient, this, circle) && viewer.canBuy(this)
       canreturn = viewer.canSee(recipient, this, circle) && viewer.canReturn(this) 
       canseestatus = viewer.canSee(recipient, this, circle) && viewer.canSeeStatus(this) 
+      issurprise = !recipient.knowsAbout(this)
       println("gift.edbr:  case (Full(viewer), Full(recipient), Full(circle)))")
     } // case (Full(viewer), Full(recipient), Full(circle))
     
@@ -249,6 +265,7 @@ class Gift extends LongKeyedMapper[Gift] {
       canbuy = false
       canreturn = false
       canseestatus = false
+      issurprise = false
       println("gift.edbr:  case _")
     }
   }

@@ -1,0 +1,51 @@
+
+                <div class="span7">
+
+<form novalidate name="buygiftForm"> 
+          <div class="row marg0">
+            <div class="span7">
+              <div class="row margleft_35">
+                <div class="span7">
+                  To: {{gift.recipients[0].first}} <span ng-repeat="recipient in gift.recipients.slice(1)"> and {{recipient.first}}</span>
+                </div>
+              </div>
+              <div class="row margleft_35">
+                <div class="span7">
+                  <input type="hidden" ng-model="gift.id" />
+                  <input type="hidden" ng-model="gift.senderId" />
+                  From: <input type="text" ng-model="gift.senderName" />
+                </div>
+              </div>
+              <div class="row margleft_35 margbottom20">
+                <div class="span7 giftdescription">
+                  {{gift.description}}
+                </div>
+              </div>
+              <div class="row margleft_35">
+                <div class="span1">
+                  <a class="btn btn-primary" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift);">Save</a>
+                </div>
+                
+                <span ng-show="gift.url != undefined && gift.url != ''">
+                <div class="span1">
+                  <a ng-href="{{gift.url}}" target="new" class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift);">Buy</a>
+                </div>
+                </span>
+                
+                <span ng-hide="gift.url != undefined && gift.url != ''">
+                <div class="span1">
+                  <a class="btn" ng-disabled="true" title="No link was provided for this item">Buy</a>
+                </div>
+                </span>
+                
+                <div class="span1">
+                  <a class="btn" ng-click="$location.url($location.path());gift.buying=false">Cancel</a>
+                </div>
+              </div>
+              
+              
+            </div>
+          </div>
+</form>
+ 
+                </div>

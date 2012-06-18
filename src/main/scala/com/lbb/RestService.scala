@@ -31,6 +31,14 @@ object RestService extends RestHelper {
 
   // ref:  http://www.assembla.com/spaces/liftweb/wiki/REST_Web_Services
   serve {
+    // gifts...
+    case Get("gifts" :: AsLong(giftId) :: _, _) => println("RestService.serve:  999999999"); findGift(giftId)
+    case Get("gifts" :: _, _) => println("RestService.serve:  AAAAAAAAA"); findGifts
+    
+    case JsonPost("circles" :: AsLong(circleId) :: _, (json, req)) => updateCircle(circleId)
+  }
+  
+  serve {
     case Get("users" :: AsLong(userId) :: _, _) => println("RestService.serve:  22222222222222"); findUser(userId)
     case Get("users" :: _, _) => println("RestService.serve:  333333333333333333333333"); findUsers
     case Post("logout" :: _, _) => S.deleteCookie("userId");NoContentResponse()
@@ -49,11 +57,6 @@ object RestService extends RestHelper {
     // circles...
     case Get("circles" :: AsLong(circleId) :: _, _) => println("RestService.serve:  88888888"); findCircle(circleId)
     case Get("circleparticipants" :: AsLong(circleId) :: _, _) => println("RestService.serve:  77777777777"); findCircleParticipants(circleId)
-    
-    // gifts...
-    case Get("gifts" :: AsLong(giftId) :: _, _) => println("RestService.serve:  999999999"); findGift(giftId)
-    case Get("gifts" :: _, _) => println("RestService.serve:  AAAAAAAAA"); findGifts
-    
     
     case Delete("gifts" :: AsLong(giftId) :: _, _) => deleteGift(giftId)
     case _ => println("RestService.serve:  666666666"); debug
@@ -120,6 +123,29 @@ object RestService extends RestHelper {
       }
       case _ => BadResponse()
     }
+  }
+  
+  def updateCircle(id:Long) = (Circle.findByKey(id), S.request) match {
+    case (Full(circle), Full(req)) => {
+      req.json match {
+        case Full(jvalue:JObject) => {
+          jvalue.values foreach {kv => (kv._1, kv._2) match {
+              case ("circleId", id:BigInt) => { }
+              case ("datedeleted", b:BigInt) => circle.date_deleted(new Date(b.toLong))
+            } // kv => (kv._1, kv._2) match
+          } // jvalue.values foreach
+            
+          circle.save()
+          JsonResponse(circle.asJs)
+            
+        } // case Full(jvalue:JObject)
+        
+        case _ => BadResponse()
+        
+      } // req.json
+    } // case (Full(user), Full(req))
+    
+    case _ => BadResponse()
   }
   
   def updateUser(id:Long) = (User.findByKey(id), S.request) match {
@@ -220,6 +246,19 @@ object RestService extends RestHelper {
               } // case ("expirationdate", s:String)
               case ("expirationdate", b:BigInt) => circle.date(new Date(b.toLong))
               case ("circleType", s:String) => circle.circleType(s)
+              
+              case ("participants", l:List[Map[String, Any]]) => {
+                val ids = for(m <- l;
+                              kv <- m;
+                              if(kv._1.equals("id"))) yield { println("kv._1 = "+kv._1); kv._2 }
+                ids foreach {
+                  case (id:BigInt) => {println("circle.add("+id+")"); circle.add(id.toLong)}
+                  case _ => println("not handling *****************************************************")
+                }
+              }
+              
+              case ("creatorId", i:BigInt) => circle.creator(i.toInt)
+              
               case _ => println("unhandled:  circle."+kv._1)
               
             } // kv => (kv._1, kv._2) match

@@ -13,7 +13,7 @@ var app = angular.module('project', ['UserModule', 'angularBootstrap.modal']).
       when('/welcome', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/welcome.html', five:'partials/navbar.html'}}).
       otherwise({redirectTo: '/login', templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html', three:'partials/LittleBlueBird.html', four:'partials/navbar.html'}});
   }).run(function($route, $rootScope){    
-    $rootScope.$on('$beforeRouteChange', function(scope, newRoute){
+    $rootScope.$on('$routeChangeStart', function(scope, newRoute){
         if (!newRoute || !newRoute.$route) return;
         $rootScope.templates = newRoute.$route.templates;
         $rootScope.layoutController = newRoute.$route.controller;
@@ -45,7 +45,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return Logout;
   }).
   factory('Circle', function($resource) {
-      var Circle = $resource('/gf/circles/:circleId', {circleId:'@circleId', circleType:'@circleType', name:'@name', expirationdate:'@expirationdate', userId:'@userId'}, 
+      var Circle = $resource('/gf/circles/:circleId', {circleId:'@circleId', circleType:'@circleType', name:'@name', expirationdate:'@expirationdate', creatorId:'@creatorId', participants:'@participants', datedeleted:'@datedeleted'}, 
                     {
                       query: {method:'GET', isArray:false}, 
                       activeEvents: {method:'GET', isArray:true}, 
@@ -86,8 +86,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return {
         restrict: 'E',
         replace: true,
-        transclude: true,
-        scope: { },
+        scope: false,
         templateUrl: 'templates/ddbtn-editcircle.html',
         // The linking function will add behavior to the template
         link: function(scope, element, attrs) {
@@ -101,7 +100,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
         replace: true,
         transclude: true,
         controller: UserCtrl,
-        scope: { btnText:'bind' },
+        scope: { btnText:'@' },
         templateUrl: 'templates/ddbtn-user.html',
         // The linking function will add behavior to the template
         link: function(scope, element, attrs) {
@@ -114,9 +113,9 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
         restrict: 'E',
         replace: true,
         transclude: false,
-        controller: CircleCtrl,
+           controller: CircleCtrl,
         scope: false,
-        templateUrl: 'templates/ddbtn-addcircle.html',
+     templateUrl: 'templates/ddbtn-addcircle.html',
         // The linking function will add behavior to the template
         link: function(scope, element, attrs) {
            $('.dropdown-toggle').dropdown();
@@ -131,11 +130,9 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
         }
       }
   })
-  .directive('keyDown', function(){
+  .directive('searchUsers', function(){
       return {
-        transclude: false,
         controller: UserCtrl,
-        scope: false,
         // The linking function will add behavior to the template
         link: function(scope, element, attrs, controller) {
            element.bind("keyup", 
@@ -375,7 +372,8 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     return Circle.currentCircle;
   }
   
-  $scope.makeActive = function(circle) {
+  $scope.makeActive = function(index, circle) {
+    circle.index = index; // for deleting
     Circle.currentCircle = circle;
     Circle.currentCircle.isExpired = circle.date < new Date();
     $rootScope.$emit("circlechange");
@@ -389,6 +387,10 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   $rootScope.$on("userchange", function(event) {
     $scope.user = User.currentUser;
   });
+
+  $rootScope.$on("usersearchresults", function(event) {
+    $scope.people = UserSearch.results;
+  });
   
   $scope.activeOrNot = function(circle) {
     if(!angular.isDefined(circle) || !angular.isDefined(Circle.currentCircle))
@@ -400,14 +402,18 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     circle.participants = CircleParticipant.query({circleId:circle.id});
   }
   
-  $scope.save = function(circle) {
-    Circle.save({name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:Circle.circleType});
-    $location.url('selectmom');
+  $scope.savecircle = function(circle) {
+    var savedcircle = Circle.save({name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:Circle.circleType, 
+                 participants:circle.participants, creatorId:circle.creatorId},
+                 function() {$scope.user.circles.push(savedcircle); User.currentUser=$scope.user; $rootScope.$emit("userchange");});
   }
   
-  $scope.type = function(thetype) {
+  $scope.newcircleFunction = function(thetype) {
+    $scope.search = '';
+    $scope.people = {};
     Circle.circleType = thetype;
     $location.url($location.path());
+    $scope.newcircle = {name:'', creatorId:$scope.user.id, participants:[$scope.user]};          
   }
   
   $scope.getType = function() {return Circle.circleType;}
@@ -419,25 +425,45 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
         dateFormat : 'mm/dd/yy'
     };
     
-  $scope.addparticipant = function(person) {
-    if(!angular.isDefined($scope.circle))
-      $scope.circle = {};
-    if(!angular.isDefined($scope.circle.participants))
-      $scope.circle.participants = [];
-    $scope.circle.participants.push(person);
+  $scope.cancelnewcircle = function() {
+    $scope.circle = {participants:[]};
+  }
+    
+  $scope.addparticipant = function(index, person, circle) {
+    if(!angular.isDefined(circle.participants))
+      circle.participants = [];
+    circle.participants.push(person);
+    $scope.people.splice(index, 1);
   }
   
-  $scope.query = function() {
-    if($scope.search.length > 1)
-      $scope.people = UserSearch.query({search:$scope.search});
-    else {
-      $scope.people = {};
-    }
+  $scope.removeparticipant = function(index, circle) {
+    circle.participants.splice(index, 1)
+  }
+  
+  $scope.deletecircle = function() {
+    Circle.save({circleId:$scope.circle.id, datedeleted:new Date().getTime()},
+                function() {$scope.user.circles.splice(Circle.currentCircle.index, 1); 
+                            User.currentUser=$scope.user; 
+                            if($scope.user.circles.length > 0) {$scope.circle = $scope.user.circles[0]; Circle.currentCircle = $scope.user.circles[0];}
+                            else {$scope.circle = {}; Circle.currentCircle = {};}
+                            $rootScope.$emit("userchange"); 
+                            $rootScope.$emit("circlechange");});
+                
+    $location.url($location.path());
   }
   
 }
 
-function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Gift, CircleParticipant) {
+function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, UserSearch, Gift, CircleParticipant) {
+  
+  $scope.query = function() {
+    if($scope.search.length > 1)
+      UserSearch.results = UserSearch.query({search:$scope.search});
+    else {
+      UserSearch.results = {};
+    }
+    $rootScope.$emit("usersearchresults");
+  }
   
   $scope.save = function(user) {
     $scope.user = User.save({fullname:user.fullname, first:user.first, last:user.last, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirth}, 
@@ -534,4 +560,4 @@ function EmailCtrl($scope, Email) {
   }
 }
 
-  
+function MainCtrl($scope) {}

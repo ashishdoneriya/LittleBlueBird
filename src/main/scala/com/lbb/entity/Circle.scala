@@ -31,6 +31,8 @@ import net.liftweb.util.FieldError
 import net.liftweb.json.JsonAST.JValue
 import net.liftweb.json.JsonAST.JArray
 import com.lbb.util.Emailer
+import scala.collection.mutable.ListBuffer
+import net.liftweb.mapper.MappedInt
 
 /**
  * ID
@@ -82,6 +84,14 @@ class Circle extends LongKeyedMapper[Circle] {
         case _ => super.validate
       }
     }
+  }
+  
+  override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
+    val dateString = date.is match {
+      case null => ""
+      case d:Date => new SimpleDateFormat("M/d/yyyy").format(d)
+    }
+    List(("dateStr", dateString))        
   }
   
 //  object deleted extends MappedBoolean(this) {
@@ -188,6 +198,30 @@ class Circle extends LongKeyedMapper[Circle] {
   def containsAll(recipients:List[User]) = {
     val justreceivers = recipients.filter(r => r.isReceiver(this))
     justreceivers.size == recipients.size
+  }
+  
+  object creator extends MappedInt(this) {
+    override def ignoreField_? = true
+  }
+  
+  val receiversToSave:ListBuffer[Long] = ListBuffer()
+  
+  // TODO Don't like using a var but not sure how else to set participants before the circle is saved
+  def add(id:Long) = {
+    receiversToSave.append(id)
+  }
+  
+  override def save() = {
+    val inserting = id.is == -1
+    
+    val saved = super.save();
+    
+    if(inserting) {
+      receiversToSave foreach { r => {val rsaved = CircleParticipant.create.circle(this).person(r).inviter(creator.is).participationLevel("Receiver").save(); println("circle participant save?:  "+rsaved);} }
+      receiversToSave.drop(0)
+    }
+    
+    saved
   }
 }
 

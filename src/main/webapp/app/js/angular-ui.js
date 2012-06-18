@@ -53,7 +53,7 @@ angular.module('ui', [
     return {
       require: '?ngModel',
       scope: {
-        uiDate: 'evaluate'
+        uiDate: '='
       },
       link: function($scope, element, attrs, controller) {
         var originalRender, updateModel, usersOnSelectHandler;
@@ -188,7 +188,7 @@ angular.module('ui.directives').directive('uiLinky', [function() {
     return {
       require: 'ngModel',
       scope: {
-        uiMask: 'evaluate'
+        uiMask: '='
       },
       link: function($scope, element, attrs, controller) {
         controller.$render = function() {

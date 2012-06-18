@@ -1,24 +1,25 @@
 <div ng-controller="ModalCtrl">
+<div ng-controller="CircleCtrl">
   <div class="btn-group pull-right">
     <a class="btn btn-mini btn-success pull-right font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
     <ul class="dropdown-menu">
-      <li><a ng-click="openModal();type('Christmas')">Christmas</a></li>
-      <li><a ng-click="openModal();type('Birthday')">Birthday</a></li>
-      <li><a ng-click="openModal();type('Anniversary')">Anniversary</a></li>
-      <li><a ng-click="openModal();type('Mothers Day')">Mothers Day</a></li>
-      <li><a ng-click="openModal();type('Fathers Day')">Fathers Day</a></li>
-      <li><a ng-click="openModal();type('Valentines Day')">Valentines Day</a></li>
-      <li><a ng-click="openModal();type('Graduation')">Graduation</a></li>
-      <li><a ng-click="openModal();type('Baby Shower')">Baby Shower</a></li>
-      <li><a ng-click="openModal();type('Other')">Other</a></li>
+      <li><a ng-click="openModal('newCircleModal');newcircleFunction('Christmas')">ChristmasX</a></li>
+      <li><a ng-click="openModal('newCircleModal');newcircleFunction('Birthday')">Birthday</a></li>
+      <li><a ng-click="openModal('newCircleModal');newcircleFunction('Anniversary')">Anniversary</a></li>
+      <li><a ng-click="openModal('newCircleModal');newcircleFunction('Mothers Day')">Mothers Day</a></li>
+      <li><a ng-click="openModal('newCircleModal');newcircleFunction('Fathers Day')">Fathers Day</a></li>
+      <li><a ng-click="openModal('newCircleModal');newcircleFunction('Valentines Day')">Valentines Day</a></li>
+      <li><a ng-click="openModal('newCircleModal');newcircleFunction('Graduation')">Graduation</a></li>
+      <li><a ng-click="openModal('newCircleModal');newcircleFunction('Baby Shower')">Baby Shower</a></li>
+      <li><a ng-click="openModal('newCircleModal');newcircleFunction('Other')">Other</a></li>
     </ul>
   </div>
   
   
 <!-- http://ajoslin.github.com/angular-bootstrap-ui/ -->
 
-		<bootstrap-modal id="aboutModal" effect='slide'>
-<form novalidate name="circleForm" ng-controller="CircleCtrl" class="margbottom0">
+		<bootstrap-modal id="newCircleModal" effect='slide'>
+<form novalidate name="circleForm" class="margbottom0">
 			<div class="modal-header">
 				<button class="close modal-close padtop5"> <i class="icon-remove"></i></button>
 				<h3>New {{getType()}} Event</h3>
@@ -27,15 +28,15 @@
 
   
 	<div class="row">
-	  <div class="span4">Event Name</div>
+	  <div class="span4">Event Name <input type="hidden" ng-model="newcircle.creatorId"></div>
 	  <div class="span1">Date</div>
 	</div>
 	<div class="row">
 	  <div class="span4">
-	    <input class="span4" maxlength="140" value="" type="text" name="name" ng-model="circle.name" ng-required="true" />
+	    <input class="span4" maxlength="140" value="" type="text" name="name" ng-model="newcircle.name" ng-required="true" />
 	  </div>
 	  <div class="span2">
-        <input id="datepicker" ui-date="dateOptions" class="input-small" ng-model="circle.expirationdate" type="text" ng-required="true"></input>
+        <input id="datepicker" ui-date="dateOptions" class="input-small" ng-model="newcircle.expirationdate" type="text" ng-required="true"></input>
 	  </div>
 	</div>
 	
@@ -48,7 +49,7 @@
 	    </div>
 		
 		<div class="row margbottom0">
-		  <div class="span4"><input key-down type="text" class="span4" ng-model="search"></div>
+		  <div class="span4"><input search-users type="text" class="span4" ng-model="search"></div>
 		</div>
 		
 		
@@ -57,7 +58,7 @@
 		<div ng-repeat="person in people" style="border:solid 1px #aaaaaa;">
 		  <div class="row highlight margleft5">
 		    <div class="span1 margleft_5"><img id="profileimg" height=50 width=50 ng-src="{{person.profilepic}}" onerror="this.src='img/noprofilepic.jpg'" /></div>
-		    <div class="span2 padtop5 font14"><a ng-click="$location.url($location.path());addparticipant(person)">{{person.fullname}}</a></div>
+		    <div class="span2 padtop5 font14"><a ng-click="$location.url($location.path());addparticipant($index, person, newcircle)">{{person.fullname}}</a></div>
 		  </div>
 		</div>
 		</div>
@@ -67,24 +68,15 @@
 	  </div>
 	  <div class="span2">
 	    <div class="row">
-	      <div class="span2">Participants</div>
+	      <div class="span2"><b>Participants</b></div>
 	    </div>
-	    <span ng-repeat="participant in circle.participants">
+	    <span ng-repeat="participant in newcircle.participants">
 	    <div class="row">
-	      <div class="span2">{{participant.fullname}}</div>
+	      <div class="span2"><a ng-click="removeparticipant($index, newcircle)"><i class="icon-remove"></i></a>{{participant.fullname}}</div>
 	    </div>
 		</span>
 	  </div>
 	</div>
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -95,13 +87,13 @@
 			</div>
 			<div class="modal-footer"> 
               <div ng-show="circleForm.$invalid" >
-                <a ng-click="$location.url($location.path())" class="btn modal-close">Cancel</a>
+                <a ng-click="$location.url($location.path());cancelnewcircle();" class="btn modal-close">Cancel</a>
                 <a ng-disabled="true" class="btn" id="invalidform">Save</a>
               </div>    
           
               <div ng-show="circleForm.$valid" > 
-              <a ng-click="$location.url($location.path())" class="btn modal-close">Cancel</a> 
-                <a href="#/newcircle" class="btn btn-primary" ng-click="save(circle)">Save</a>
+                <a ng-click="$location.url($location.path())" class="btn modal-close">Cancel</a> 
+                <a class="btn btn-primary modal-close" ng-click="$location.url($location.path());savecircle(newcircle)">Save</a>
               </div>
               
 			</div>
@@ -112,4 +104,5 @@
 
 
 
+</div>
 </div>

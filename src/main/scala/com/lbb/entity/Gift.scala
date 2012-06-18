@@ -143,7 +143,7 @@ class Gift extends LongKeyedMapper[Gift] {
   
   def recipientList = recipients.map(fk => fk.person.obj.open_!)
   
-  def addedByName = addedBy.obj.map(a => a.first + " " + a.last).getOrElse("n/a")
+  def addedByName = addedBy.obj.map(_.first.is).getOrElse("n/a")
   
   def wasAddedByARecipient = {
     this.recipients.map(_.person.obj.map(_.id.is) openOr -1).contains(this.addedBy.is)

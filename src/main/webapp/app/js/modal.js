@@ -114,9 +114,9 @@ angular.module('angularBootstrap.modal', [])
         link: linkFn,
         restrict: 'E',
         scope: {
-            id: 'attribute',
-            onOpen: 'evaluate',
-            onClose: 'evaluate',
+            id: '@',
+            onOpen: '=',
+            onClose: '=',
         },
         template: '<div class="modal hide"><div ng-transclude></div></div>',
         transclude: true
@@ -138,8 +138,8 @@ function ModalCtrl($scope, bootstrapModal) {
 	$scope.effect = '';
 	$scope.effectTime = "250";
 
-	$scope.openModal = function() {
-		bootstrapModal.show('aboutModal', 
+	$scope.openModal = function(name) {
+		bootstrapModal.show(name, 
 		{	backdrop: $scope.opts == "both" || $scope.opts == "backdrop",
 			escapeExit: $scope.opts == "both" || $scope.opts == "escape",
 			effect: $scope.effect, 

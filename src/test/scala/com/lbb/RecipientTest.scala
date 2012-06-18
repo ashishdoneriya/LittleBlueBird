@@ -41,7 +41,7 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
 
   test("create Recipient with Mapper") {
     
-    initDb
+    initDb 
         
     Recipient.findAll.foreach(_.delete_!)
     assert(Recipient.findAll.size===0)

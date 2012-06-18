@@ -3,7 +3,7 @@
 <div class="row"><div class="span1"><h3>Events</h3></div><div class="span1"><btn-add-circle/></div></div>
   <ul ng-repeat="circle in user.circles" ng-class="'nav nav-pills nav-stacked'" style="margin:0px;">
     <li ng-class="activeOrNot(circle)">
-      <a href="#/event/{{circle.id}}" ng-click="makeActive(circle);toggleCircle(circle);showParticipants(circle);">
+      <a href="#/event/{{circle.id}}" ng-click="makeActive($index, circle);toggleCircle(circle);showParticipants(circle);">
         <span class="caret" style="margin-top:5px;"></span> <b>{{circle.name}}</b>
       </a>
         <span ng-show="circle.show">

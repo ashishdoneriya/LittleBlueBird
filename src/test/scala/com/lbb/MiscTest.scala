@@ -132,6 +132,19 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
     assert(terms.tail===List("dun"))
   }
   
+  test("for") {
+    val m1 = Map("id"->1, "name"->"Brent")
+    val m2 = Map("id"->2, "name"->"Brent")
+    val m3 = Map("id"->3, "name"->"Brent")
+    val m4 = Map("name"->"Brent")
+    val l = List(m1, m2, m3, m4)
+    
+    val ids = for(m <- l;
+                  kv <- m if(kv._1 == "id")) yield kv._2
+    val exp = List(1,2,3)
+    assert(ids == exp)
+  }
+  
 //  test("map filtering") {
 //    val map = Map("foo" -> Full("bar"), "to" -> Empty, "from" -> Full("lbb.com"), "subject" -> Full("check it out"), "message" -> Full("here's the message"))
 //    val fff = map.filter()

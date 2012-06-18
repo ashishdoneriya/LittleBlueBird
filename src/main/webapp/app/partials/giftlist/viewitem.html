@@ -51,19 +51,21 @@
   <div class="row" ng-show="gift.showdetails">
     <div class="span4 offset2">
       <div class="row">
-        <div class="span4 margleft_35">
-                      For: {{gift.recipients[0].first}}<span ng-repeat="recipient in gift.recipients.slice(1)">, {{recipient.first}}</span>
-        </div>
-      </div>
-      <div class="row">
-        <div class="span4 margleft_35">
-                      {{gift.addedByName}} added this item on {{gift.dateCreated | date:'MMM dd, yyyy'}}
+        <div ng-show="gift.recipients.length > 1" class="span4 margleft_35">
+                      This item is for {{gift.recipients[0].first}}<span ng-repeat="recipient in gift.recipients.slice(1)"> and {{recipient.first}}</span>
         </div>
       </div>
       
       <div ng-show="gift.issurprise" class="row">
         <div class="span4 margleft_35">
                       <b>This is a SURPRISE! {{showUser.first}} does not know about this item.</b>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="span4 margleft_35">
+                      Added <span ng-show="showUser.id != gift.addedBy">by {{gift.addedByName}}</span> 
+                      on {{gift.dateCreated | date:'MMM dd, yyyy'}}
         </div>
       </div>
       

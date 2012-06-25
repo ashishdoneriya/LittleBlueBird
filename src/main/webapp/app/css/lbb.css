@@ -13,7 +13,6 @@
   -webkit-border-radius: 5px 5px 5px 5px;
   -moz-border-radius: 5px 5px 5px 5px;
   border-radius: 5px 5px 5px 5px;
-  border:2px solid #ffffff;
   background-color:#ffffff;
   color:#333333;
   padding-left:10px;
@@ -53,6 +52,19 @@
 
 .bold { font-weight:bold; }
 
+.box {
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: #f5f5f5;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: 1px 1px 1px 1px #333333;
+  -moz-box-shadow: 1px 1px 1px 1px #333333;
+  box-shadow: 1px 1px 1px 1px #333333;
+}
+
 .crop { width: 150px; height: 150px; overflow: hidden;  }
 
 .crop img { 
@@ -72,8 +84,8 @@
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
+  background-color: #ffffff;
+  border-color: #ffffff;
   color: #3a87ad;
 }
 
@@ -88,6 +100,8 @@
   font-weight:bold;
   font-size:14px;
 }
+
+.gray { background-color:#ededed; }
 
 .header {
   height: 125px;

@@ -1,32 +1,14 @@
 
 
 
-<div class="row">
-  <div class="span2">
-      <div class="crop" ng-controller="UserCtrl">
-        <img id="profileimg" ng-src="{{showUser.profilepic}}" onerror="this.src='img/noprofilepic.jpg'" />
-      </div>
-  </div>
-
-  <div class="span5">    
-    <div ng-controller="CircleCtrl">
+<div class="row" ng-controller="CircleCtrl">
+  <div class="span6"> 
     <div class="row">
-      <div class="span3">
+      <div class="span4">
         <h2>{{circle.name}}</h2>
       </div>
       <div class="span2">
         <span ng-show="circle!=undefined">
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
           
 		        <div btn-edit-circle class="btn-group">
                     <a class="btn dropdown-toggle" data-toggle="dropdown" ng-click="$location.path($location.url());">
@@ -38,8 +20,6 @@
 				      <li><a ng-click="modal2Shown = !modal2Shown">Delete Event</a></li>
 				    </ul>
 				</div>	
-
-
 
 
 
@@ -68,52 +48,14 @@
 						<a class="btn btn-danger" ng-click="$parent.modal2Shown = false;deletecircle();">Delete</a>
 					</div>
 				</div>
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
+				
         </span>
       </div>
+    </div>
+    <div class="row">
       <div class="span3">
-        <h3>{{circle.date | date:'EEE MMM d, yyyy'}}</h3>
+        <h4>{{circle.date | date:'EEE MMM d, yyyy'}}</h4>
       </div>
     </div>
-    </div>
-    
-    
   </div>
 </div>
-

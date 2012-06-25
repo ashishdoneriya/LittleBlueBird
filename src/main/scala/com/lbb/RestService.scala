@@ -35,7 +35,7 @@ object RestService extends RestHelper {
     case Get("gifts" :: AsLong(giftId) :: _, _) => println("RestService.serve:  999999999"); findGift(giftId)
     case Get("gifts" :: _, _) => println("RestService.serve:  AAAAAAAAA"); findGifts
     
-    case JsonPost("circles" :: AsLong(circleId) :: _, (json, req)) => updateCircle(circleId)
+    case JsonPost("circles" :: AsLong(circleId) :: _, (json, req)) => println("updateCircle: "+circleId); updateCircle(circleId)
   }
   
   serve {

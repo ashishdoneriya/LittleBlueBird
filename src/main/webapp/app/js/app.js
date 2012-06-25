@@ -1,6 +1,7 @@
-var app = angular.module('project', ['UserModule', 'angularBootstrap.modal']).
+var app = angular.module('project', ['UserModule', 'datetime']).
   config(function($routeProvider){
     $routeProvider.
+      when('/date', {templates: {layout: 'date.html', one: 'partials/date.html'}}).
       when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html', three:'partials/LittleBlueBird.html', four:'partials/navbar.html'}}).
       when('/circles', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html', five:'partials/navbar.html'}}).
       when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/circleinfo.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}}).
@@ -21,6 +22,19 @@ var app = angular.module('project', ['UserModule', 'angularBootstrap.modal']).
     
 });
 
+angular.module('datetime', [])
+       .directive('datePicker', function () {
+         return function (scope, element, attrs) {
+           var propName = attrs.datePicker;
+           element.val(scope[propName]);
+           element.datepicker().change(function (evt) {
+             scope.$apply(function (scope) {
+               scope[propName] = element.val();
+             });
+           });
+         };
+       }); 
+       
 angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap.modal']).
   factory('User', function($resource) {
       var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic'}, 
@@ -84,10 +98,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
   })
   .directive('btnEditCircle', function(){
       return {
-        restrict: 'E',
-        replace: true,
         scope: false,
-        templateUrl: 'templates/ddbtn-editcircle.html',
         // The linking function will add behavior to the template
         link: function(scope, element, attrs) {
            $('.dropdown-toggle').dropdown();
@@ -402,10 +413,11 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     circle.participants = CircleParticipant.query({circleId:circle.id});
   }
   
-  $scope.savecircle = function(circle) {
+  $scope.savecircle = function(circle, expdate) {
+    circle.expirationdate = new Date(expdate);
     var savedcircle = Circle.save({name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:Circle.circleType, 
                  participants:circle.participants, creatorId:circle.creatorId},
-                 function() {$scope.user.circles.push(savedcircle); User.currentUser=$scope.user; $rootScope.$emit("userchange");});
+                 function() {$scope.user.circles.push(savedcircle); User.currentUser=$scope.user; $rootScope.$emit("userchange");} );
   }
   
   $scope.newcircleFunction = function(thetype) {

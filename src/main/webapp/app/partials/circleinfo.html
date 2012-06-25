@@ -16,7 +16,95 @@
       </div>
       <div class="span2">
         <span ng-show="circle!=undefined">
-          <btn-edit-circle/>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+		        <div btn-edit-circle class="btn-group">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" ng-click="$location.path($location.url());">
+				    Edit Event
+				    <span class="caret"></span>
+				    </a>
+				    <ul class="dropdown-menu">
+				      <li>Edit Event</li>
+				      <li><a ng-click="modal2Shown = !modal2Shown">Delete Event</a></li>
+				    </ul>
+				</div>	
+
+
+
+
+
+				<!--
+				MODAL
+				-->
+				<div id="myModal2" class="modal hide fade" ng-model="modal2Shown">
+					<div class="modal-header">
+						<button class="close padtop5" data-dismiss="modal" ng-click="$parent.modal2Shown = false"><i class="icon-remove"></i></button>
+				        <h3>Delete Event</h3>
+					</div>
+					<div class="modal-body">
+			            Are you sure you want to delete the {{circle.name}} event?
+			            <P/>
+			            This event will also be deleted for the following people:
+			            <P/>
+				        <div class="row" ng-repeat="p in circle.participants.receivers">
+				          <div class="span2">{{p.first}} {{p.last}}</div>
+				        </div>
+				        <div class="row" ng-repeat="p in circle.participants.givers">
+				          <div class="span2">{{p.first}} {{p.last}}</div>
+				        </div>
+					</div>
+					<div class="modal-footer">
+						<a class="btn" ng-click="$parent.modal2Shown = false">Cancel</a>
+						<a class="btn btn-danger" ng-click="$parent.modal2Shown = false;deletecircle();">Delete</a>
+					</div>
+				</div>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
         </span>
       </div>
       <div class="span3">

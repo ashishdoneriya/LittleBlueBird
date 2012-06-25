@@ -35,7 +35,7 @@
         scope: true,
         link: function(scope, elm, attrs, model) {
           $(elm).modal({
-            backdrop: scope.backdrop,
+            backdrop: 'static',
             keyboard: scope.keyboard,
             show: false
           });
@@ -51,12 +51,12 @@
           });
           $(elm).bind('shown', function() {
             return $timeout(function() {
-              return scope.ngModel(true);
+              //return scope.ngModel(true);
             });
           });
           return $(elm).bind('hidden', function() {
             return $timeout(function() {
-              return scope.ngModel(false);
+              //return scope.ngModel(false);
             });
           });
         }

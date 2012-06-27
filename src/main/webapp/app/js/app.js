@@ -1,17 +1,16 @@
 var app = angular.module('project', ['UserModule', 'datetime']).
   config(function($routeProvider){
     $routeProvider.
-      when('/date', {templates: {layout: 'date.html', one: 'partials/date.html'}}).
       when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html', three:'partials/LittleBlueBird.html', four:'partials/navbar.html'}}).
-      when('/circles', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html', five:'partials/navbar.html'}}).
-      when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}}).
-      when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}}).
-      when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}}).
-      when('/event/:circleId', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html', five:'partials/navbar.html'}}).
-      when('/giftlist/:circleId/:showUserId', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}}).
-      when('/myaccount', {templates: {layout: 'layout.html', one: 'partials/myaccountheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/myaccount.html', five:'partials/navbar.html'}}).
-      when('/email', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/email.html', five:'partials/navbar.html'}}).
-      when('/welcome', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/welcome.html', five:'partials/navbar.html'}}).
+      when('/circles', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
+      when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
+      when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
+      when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
+      when('/event/:circleId', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
+      when('/giftlist/:circleId/:showUserId', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
+      when('/myaccount', {templates: {layout: 'layout.html', one: 'partials/myaccountheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/myaccount.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
+      when('/email', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
+      when('/welcome', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       otherwise({redirectTo: '/login', templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html', three:'partials/LittleBlueBird.html', four:'partials/navbar.html'}});
   }).run(function($route, $rootScope){    
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){
@@ -197,7 +196,7 @@ function CurrentCtrl($rootScope, $scope, $cookieStore, User, Circle, Gift, $rout
   
   // "my wish list" call
   $scope.mywishlist = function() {
-    alert("$scope.mywishlist");
+    //alert("$scope.mywishlist");
     gifts = Gift.query({viewerId:User.currentUser.id}, 
                             function() { 
                               Circle.gifts = gifts; 
@@ -261,7 +260,7 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
     for(var i=0; i < gift.recipients.length; i++) {
       if(gift.recipients[i].checked && gift.recipients[i].id == $scope.showUser.id) {
         add = true;
-        alert(" gift.recipients["+i+"].checked="+gift.recipients[i].checked+"\n gift.recipients["+i+"].id="+gift.recipients[i].id+"\n $scope.showUser.id="+$scope.showUser.id);
+        //alert(" gift.recipients["+i+"].checked="+gift.recipients[i].checked+"\n gift.recipients["+i+"].id="+gift.recipients[i].id+"\n $scope.showUser.id="+$scope.showUser.id);
       }
     }
     
@@ -475,6 +474,25 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
       UserSearch.results = {};
     }
     $rootScope.$emit("usersearchresults");
+  }
+  
+  // adjust dims for large profile pics
+  $scope.adjustedheight = function() { 
+    var thresh = $scope.showUser.profilepicheight < $scope.showUser.profilepicwidth ? $scope.showUser.profilepicheight : $scope.showUser.profilepicwidth
+    var ratio = thresh > 200 ? 200 / thresh : 1;
+    return ratio * $scope.showUser.profilepicheight;
+  }
+  
+  $scope.adjustedwidth = function() {
+    var thresh = $scope.showUser.profilepicheight < $scope.showUser.profilepicwidth ? $scope.showUser.profilepicheight : $scope.showUser.profilepicwidth
+    var ratio = thresh > 200 ? 200 / thresh : 1;
+    return ratio * $scope.showUser.profilepicwidth;
+  }
+  
+  $scope.myaccount = function() {
+    User.currentUser = $scope.user;
+    User.showUser = $scope.user;
+    $rootScope.$emit("userchange");
   }
   
   $scope.save = function(user) {

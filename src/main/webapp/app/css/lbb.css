@@ -13,10 +13,9 @@
   -webkit-border-radius: 5px 5px 5px 5px;
   -moz-border-radius: 5px 5px 5px 5px;
   border-radius: 5px 5px 5px 5px;
+  border: 1px solid #aaaaaa;
   background-color:#ffffff;
   color:#333333;
-  padding-left:10px;
-  padding-top:10px;
   overflow:hidden;
 }
 
@@ -68,7 +67,7 @@
 .crop { width: 150px; height: 150px; overflow: hidden;  }
 
 .crop img { 
-  margin:0px 0px 0px -10px; 
+  margin:0px 0px 0px -20px; 
 }
 
 .font14 { font-size:14px; }
@@ -85,7 +84,7 @@
   -moz-border-radius: 4px;
   border-radius: 4px;
   background-color: #ffffff;
-  border-color: #ffffff;
+  border-color: #aaaaaa;
   color: #3a87ad;
 }
 
@@ -130,9 +129,9 @@
   background-color:#eeeeee;
 }
 
-.marg0 {
-  margin:0;
-}
+.marg0 { margin:0; }
+
+.marg5 { margin:5px; }
 
 .marg_20 {
   margin:-20px;
@@ -154,6 +153,10 @@
 
 .margleft10 {
   margin-left:10px;
+}
+
+.margleft30 {
+  margin-left:30px;
 }
 
 .margleft_5 {
@@ -183,6 +186,8 @@
 .margtop20 { margin-top:20px; }
 
 .normal { font-weight:normal; }
+
+.pad0 { padding:0; }
 
 .pad2 { padding:2px; }
 

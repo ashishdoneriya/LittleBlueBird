@@ -27,6 +27,10 @@ import net.liftweb.mapper.MappedNullableField
 import scala.collection.immutable.List
 
 /**
+ * READY TO DEPLOY
+ */
+
+/**
  * 
 CREATE TABLE IF NOT EXISTS `gift` (
   `ID` bigint(20) NOT NULL auto_increment,
@@ -69,12 +73,12 @@ ALTER TABLE `gift`
 
 /**
  * Outstanding columns to change/update in Mapper code:
-  `LIMIT_TO_CIRCLE_ID` bigint(20) NOT NULL default '-1',   (may not have to create a field in this class because of this default)
-  `DATE_CREATED` timestamp NOT NULL default CURRENT_TIMESTAMP, (may not have to create a field in this class because of this default)
-  `DATE_REVIEWED` timestamp NULL default NULL,
-  `RESULTS_OF_REVIEW` varchar(1024) default NULL,
-  `DATE_MODIFIED` timestamp NULL default NULL,
-  `URL_STATE` varchar(64) default NULL,
+  `LIMIT_TO_CIRCLE_ID` - default -1
+  `DATE_CREATED` - default CURRENT_TIMESTAMP,
+  `DATE_REVIEWED` - can be null
+  `RESULTS_OF_REVIEW` - can be null
+  `DATE_MODIFIED` - can be null
+  `URL_STATE` - can be null
  */
 
 class Gift extends LongKeyedMapper[Gift] {

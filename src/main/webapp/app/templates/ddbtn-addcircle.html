@@ -61,7 +61,7 @@
 		    <div class="span4">
 		      <div ng-repeat="person in people" style="border:solid 1px #aaaaaa;">
 		        <div class="row highlight margleft5">
-		          <div class="span1 margleft_5"><img id="profileimg" height=50 width=50 ng-src="{{person.profilepic}}" onerror="this.src='img/noprofilepic.jpg'" /></div>
+		          <div class="span1 margleft_5"><img id="profileimg" height=50 width=50 ng-src="{{person.profilepicUrl}}" /></div>
 		          <div class="span2 padtop5 font14"><a ng-click="$location.url($location.path());addparticipant($index, person, newcircle)">{{person.fullname}}</a></div>
 		        </div>
 		      </div>

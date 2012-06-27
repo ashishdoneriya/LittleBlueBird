@@ -11,6 +11,7 @@ import com.lbb.gui.MappedDateExtended
 import java.util.Date
 
 /**
+ * READY TO DEPLOY
  * All columns match the eatj.com db
  */
 

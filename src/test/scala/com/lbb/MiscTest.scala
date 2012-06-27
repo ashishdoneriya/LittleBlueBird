@@ -19,6 +19,8 @@ import net.liftweb.mapper.QueryParam
 import net.liftweb.util.BaseField
 import net.liftweb.common.Full
 import net.liftweb.common.Empty
+import javax.swing.ImageIcon
+import java.net.URL
 
 @RunWith(classOf[JUnitRunner])
 class MiscTest extends FunSuite with AssertionsForJUnit {
@@ -145,9 +147,19 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
     assert(ids == exp)
   }
   
-//  test("map filtering") {
-//    val map = Map("foo" -> Full("bar"), "to" -> Empty, "from" -> Full("lbb.com"), "subject" -> Full("check it out"), "message" -> Full("here's the message"))
-//    val fff = map.filter()
-//  }
+  test("image size") {
+    val icon = new ImageIcon(new URL("http://profile.ak.fbcdn.net/hprofile-ak-snc4/49942_569956369_5862059_n.jpg"))
+    val h = icon.getIconHeight()
+    val w = icon.getIconWidth()
+    println("h = "+h+"   w = "+w)
+  }
+  
+  test("find noprofilepic") {
+    val url = getClass.getResource("noprofilepic.jpg")
+    val icon = new ImageIcon(url) 
+    val h = icon.getIconHeight()
+    val w = icon.getIconWidth()
+    println("h = "+h+"   w = "+w)
+  }
 
 }

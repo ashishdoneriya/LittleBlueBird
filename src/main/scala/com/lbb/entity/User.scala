@@ -30,20 +30,24 @@ import net.liftweb.json.JsonAST.JValue
 import net.liftweb.json.JsonAST.JObject
 import net.liftweb.json.JsonAST.JInt
 import net.liftweb.json.JsonAST
+import javax.swing.ImageIcon
+import java.net.URL
 
 
 /**
+ * READY TO DEPLOY
+ * 
  *  Outstanding changes to make:
- *  PARENT_ID
- *  DATE_CREATED
- *  DATE_UPDATED
- *  SUBSCRIPTION_LEVEL_ID
- *  SUBSCRIBERS_ALLOWED
- *  MEMBERSHIP_STATUS_ID
- *  EXPIRATION_DATE
- *  GENDER
- *  CITY
- *  STATE
+ *  PARENT_ID - can be null
+ *  DATE_CREATED - mysql provides default
+ *  DATE_UPDATED - can be null
+ *  SUBSCRIPTION_LEVEL_ID - can be null
+ *  SUBSCRIBERS_ALLOWED - mysql provides default of 0
+ *  MEMBERSHIP_STATUS_ID - default is 2
+ *  EXPIRATION_DATE - can be null
+ *  GENDER - changed db at eatj.com to allow null
+ *  CITY - can be null
+ *  STATE - can be null
  */
 
 /**
@@ -473,12 +477,21 @@ class User extends LongKeyedMapper[User] {
   }
   
   def asJsShallow:JValue = {
+    
+    // TODO duplicated code here and in supplementalJs
+    val profilepicUrl = if(profilepic.is==null) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
+    val img = new ImageIcon(profilepicUrl)	
+    val profilepicheight = img.getIconHeight()
+    val profilepicwidth = img.getIconWidth()
+    
     JObject(List(JField("id", JInt(this.id.is)), 
                  JField("first", JString(this.first)), 
                  JField("last", JString(this.last)), 
                  JField("fullname", JString(this.first + " " + this.last)), 
                  JField("username", JString(this.username)), 
-                 JField("profilepic", JString(this.profilepic)),
+                 JField("profilepicUrl", JString(profilepicUrl.toString())),
+                 JField("profilepicheight", JInt(profilepicheight)),
+                 JField("profilepicwidth", JInt(profilepicwidth)),
                  JField("email", JString(this.email)),
                  JField("bio", JString(this.bio)),
                  JField("age", JInt(this.age.is)),
@@ -491,11 +504,21 @@ class User extends LongKeyedMapper[User] {
     val jsActive = JsArray(jsonActiveCircles)
     val jsonExpiredCircles = expiredCircles.map(_.asJs)
     val jsExpired = JsArray(jsonExpiredCircles)
+    val profilepicUrl = if(profilepic.is==null) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
+    val img = new ImageIcon(profilepicUrl)	
+    val profilepicheight = img.getIconHeight()
+    val profilepicwidth = img.getIconWidth()
     val dobString = dateOfBirth.is match {
       case null => ""
       case d:Date => new SimpleDateFormat("M/d/yyyy").format(d)
     }
-    List(("dateOfBirthStr", dobString), ("fullname", JString(first+" "+last)), ("circles", jsActive), ("expiredcircles", jsExpired))        
+    List(("dateOfBirthStr", dobString), 
+         ("fullname", JString(first+" "+last)), 
+         ("circles", jsActive), 
+         ("profilepicUrl", JString(profilepicUrl.toString())), 
+         ("profilepicheight", profilepicheight), 
+         ("profilepicwidth", profilepicwidth), 
+         ("expiredcircles", jsExpired))        
   }
 
 }

@@ -35,6 +35,8 @@ import scala.collection.mutable.ListBuffer
 import net.liftweb.mapper.MappedInt
 
 /**
+ * READY TO DEPLOY
+ * 
  * ID
  * NAME
  * EXPIRATION_DATE

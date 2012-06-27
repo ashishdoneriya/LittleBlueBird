@@ -6,6 +6,10 @@ import net.liftweb.mapper.MappedLongForeignKey
 import scala.xml.Text
 
 /**
+ * READY TO DEPLOY
+ */
+
+/**
  * 
 CREATE TABLE IF NOT EXISTS `recipient` (
   `id` bigint(20) NOT NULL auto_increment,

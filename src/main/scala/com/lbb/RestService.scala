@@ -187,7 +187,7 @@ object RestService extends RestHelper {
   def findUser(id:Long) = {
     println("RestService.findUser:  id="+id)
     User.findByKey(id) match {
-      case Full(user) => JsonResponse(user.asJs, Nil, List(RequestHelper.cookie("userId", user)), 200)
+      case Full(user) => println("RestService.findUser:  user.asJs => "+user.asJs);JsonResponse(user.asJs, Nil, List(RequestHelper.cookie("userId", user)), 200)
       case _ => JsonResponse("")
     }
   }

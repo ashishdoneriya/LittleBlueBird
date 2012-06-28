@@ -2,15 +2,15 @@
 <!--
 <div class="row" ng-controller="UserCtrl">
   <div class="span2 margbottom20">
-      h={{showUser.profilepicheight}} h adj={{adjustedheight()}}
-      <P>w={{showUser.profilepicwidth}} w adj={{adjustedwidth()}}</P>
+      h={{showUser.profilepicheight}} h adj={{adjustedheight(showUser)}}
+      <P>w={{showUser.profilepicwidth}} w adj={{adjustedwidth(showUser)}}</P>
   </div>
 </div>
 -->
 
 <div class="row" ng-controller="UserCtrl">
   <div class="span2 margbottom20">
-        <div class="crop"><img id="profileimg" height="{{adjustedheight()}}" width="{{adjustedwidth()}}" ng-src="{{showUser.profilepicUrl}}"/></div>
+        <div class="crop"><img height="{{adjustedheight(showUser)}}" width="{{adjustedwidth(showUser)}}" ng-src="{{showUser.profilepicUrl}}"/></div>
   </div>
 </div>
 

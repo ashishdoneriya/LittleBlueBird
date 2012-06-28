@@ -54,9 +54,7 @@
           
             <div class="row">
               <div class="span1">
-                <div class="crop">
-                  <img id="profileimg" ng-src="{{user.profilepic}}" onerror="this.src='img/noprofilepic.jpg'" />
-                </div>
+                <div class="crop" ng-controller="UserCtrl"><img height="{{adjustedheight(user)}}" width="{{adjustedwidth(user)}}" ng-src="{{user.profilepicUrl}}"/></div>
               </div>
             </div>
             

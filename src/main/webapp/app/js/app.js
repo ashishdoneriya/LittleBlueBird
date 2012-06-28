@@ -477,16 +477,16 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   }
   
   // adjust dims for large profile pics
-  $scope.adjustedheight = function() { 
-    var thresh = $scope.showUser.profilepicheight < $scope.showUser.profilepicwidth ? $scope.showUser.profilepicheight : $scope.showUser.profilepicwidth
+  $scope.adjustedheight = function(auser) { 
+    var thresh = auser.profilepicheight < auser.profilepicwidth ? auser.profilepicheight : auser.profilepicwidth
     var ratio = thresh > 200 ? 200 / thresh : 1;
-    return ratio * $scope.showUser.profilepicheight;
+    return ratio * auser.profilepicheight;
   }
   
-  $scope.adjustedwidth = function() {
-    var thresh = $scope.showUser.profilepicheight < $scope.showUser.profilepicwidth ? $scope.showUser.profilepicheight : $scope.showUser.profilepicwidth
+  $scope.adjustedwidth = function(auser) {
+    var thresh = auser.profilepicheight < auser.profilepicwidth ? auser.profilepicheight : auser.profilepicwidth
     var ratio = thresh > 200 ? 200 / thresh : 1;
-    return ratio * $scope.showUser.profilepicwidth;
+    return ratio * auser.profilepicwidth;
   }
   
   $scope.myaccount = function() {

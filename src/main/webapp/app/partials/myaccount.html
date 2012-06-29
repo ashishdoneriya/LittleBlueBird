@@ -12,8 +12,11 @@
         <div class="row">
           <div class="span3">
                                       
-            <div class="row"><div class="span1">ID</div><div class="span2"><input class="input-small" maxlength="140" value="" type="text" name="id" ng-model="user.id" /></div></div>
-            <div class="row"><div class="span1">Name</div><div class="span2"><input class="input-small" maxlength="140" value="" type="text" name="fullname" ng-model="user.fullname" /></div></div>
+            <div class="row">
+              <div class="span1">Name</div>
+              <div class="span2"><input class="input-small" maxlength="140" value="" type="text" name="fullname" ng-model="user.fullname" /></div>
+              <input class="input-small" maxlength="140" value="" type="hidden" name="id" ng-model="user.id" />
+            </div>
             <div class="row">
               <div class="span1">Email</div>
               <div class="span2">

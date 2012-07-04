@@ -103,7 +103,7 @@ object RestService extends RestHelper {
           case Full(jvalue:JObject) => {
             println("RestService.insertUser: jvalue = "+jvalue)
             val user = User.create
-            jvalue.values foreach {kv => (kv._1, kv._2) match {
+            jvalue.values foreach {kv => kv match {
                 case ("fullname", s:String) => user.name(s)
                 case ("first", s:String) => user.first(s)
                 case ("last", s:String) => user.last(s)
@@ -112,11 +112,13 @@ object RestService extends RestHelper {
                 case ("password", s:String) => user.password(s)
                 case ("bio", s:String) => user.bio(s)
                 case ("profilepic", s:String) => user.profilepic(s)
-                case ("dateOfBirth", s:String) => user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s)) // not sure about this on yet
+                case ("dateOfBirth", s:String) => user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s)) // not sure about this one yet
+                case _ => println("RestService.insertUser:  unhandled: "+kv._1+" = "+kv._2)
               }
             }
             user.save()
-            JsonResponse(user.asJs)
+            val cookies = S.param("login").filter(p => p.equals("true")).map(s => RequestHelper.cookie("userId", user))
+            JsonResponse(user.asJs, Nil, cookies.toList, 200)
           }
           case _ => println("RestService.insertUser: case _ :  req.json = "+Empty); BadResponse()
         }

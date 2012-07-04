@@ -67,6 +67,139 @@
 		      </div>
 		    </div>
 	      </div>
+	      
+	      
+		  <span ng-show="people.length == 0 && showRegister!=true">
+	      <div class="row">
+	        <div class="span3">No one found &nbsp;&nbsp; <a ng-click="beginnewuser();">Create Account for this Person</a></div>
+	      </div>
+		  </span>
+	      
+	      
+	      <!-- begin create on the fly -->
+		  <span ng-show="showRegister">
+<!-- See:  http://docs-next.angularjs.org/guide/dev_guide.forms 
+This page is a copy of register.html except the title here is Create Account
+and on register.html it's Sign Up.   Also the save button here creates a new
+user but doesn't the user to the welcome screen like in register.html
+-->
+
+
+    <div class="row">
+      <div class="span3 well well-small" ng-form="newuserform">
+
+
+        <div class="row"><div class="span3"><h3>Create Account</h3></div></div>
+    
+
+
+            <div class="row">
+              <div class="span3">newuser.fullname: {{newuser.fullname}}</div>
+            </div>
+
+            <div class="row">
+              <div class="span3">newusercopy.fullname: {{newusercopy.fullname}}</div>
+            </div>
+
+
+            <div class="row">
+              <div class="span1">Name</div>
+              <div class="span2 margleft0">
+                <input class="span2" maxlength="140" value="" type="text" name="fullname" ng-model="newuser.fullname" required />
+              </div>
+              <div class="span1 w20 margleft0">
+                <span ng-show="newuserform.fullname.$dirty">
+                  <span ng-show="newuserform.fullname.$error.required"><img src="img/red_x.png" id="fullnamerequired" title="Name is required"></span>
+                </span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="span1">Email</div>
+              <div class="span2 margleft0">
+                <input class="span2" maxlength="140" value="" name="email" type="email" ng-model="newuser.email" required>
+              </div>
+              <div class="span1 w20 margleft0">
+                <span ng-show="newuserform.email.$dirty">
+                  <span ng-show="newuserform.email.$error.required"><img src="img/red_x.png" id="emailrequired" title="Email is required"></span>
+                  <span ng-show="newuserform.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
+                </span>
+              </div>
+            </div>  
+            <div class="row">
+              <div class="span1">Username</div>
+              <div class="span2 margleft0">
+                <input class="span2" maxlength="140" value="" name="username" type="text" ng-model="newuser.username" ng-change="isUsernameUnique(newuser, newuserform)" required />
+              </div>
+              <div class="span1 w20 margleft0">
+                <span ng-show="newuserform.username.$dirty">
+                  <span ng-show="newuserform.username.$error.required">
+                    <img src="img/red_x.png" id="invalidusername" title="Username is required">
+                  </span>
+                  <span ng-show="newuserform.username.$error.taken">
+                    <img src="img/red_x.png" id="invalidusername" title="Username is taken">
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="span1">Password</div>
+              <div class="span2 margleft0">
+                <input class="span2" ng-model="newuser.password" type="password" name="password" value="*******" required />
+              </div>
+              <div class="span1 w20 margleft0">
+                <span ng-show="newuserform.password.$dirty">
+                  <span ng-show="newuserform.password.$error.required">
+                    <img src="img/red_x.png" id="invalidpass" title="Password is required">
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="span1">Again</div>
+              <div class="span2 margleft0">
+                <input class="span2" ng-model="newuser.passwordAgain" type="password" name="passwordAgain" value="*******" required />
+              </div>
+              <div class="span1 w20 margleft0">
+                <span ng-show="newuserform.passwordAgain.$dirty">
+                  <span ng-show="newuserform.passwordAgain.$error.required">
+                    <img src="img/red_x.png" id="invalidpassagain" title="Enter password twice">
+                  </span>
+                  <span ng-show="newuser.passwordAgain != newuser.password && !newuserform.passwordAgain.$error.required">
+                    <img src="img/red_x.png" id="passwordsdontmatch" title="Passwords don't match">
+                  </span>
+                </span> 
+              </div>
+            </div>
+
+
+
+
+
+
+        <div class="row">
+          <div class="span2 offset1">    
+          
+            <div ng-hide="userfieldsvalid(newuser)" >
+              <a class="btn" ng-click="resetnewuser(newuserform);">Reset</a>
+              <a class="btn" ng-click="showRegister=false;">Cancel</a>
+              <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet">Save</a>
+            </div>    
+          
+            <div ng-show="userfieldsvalid(newuser)" >
+              <a class="btn" ng-click="cancelnewuser();">Cancel</a>
+              <a class="btn btn-primary" ng-click="showRegister=false;createonthefly(newuser, newcircle)">Save</a>
+            </div>
+      
+          </div>
+    
+        </div>
+
+      </div>
+    </div>
+
+		  </span>
+	      <!-- end create on the fly -->
+	      
 		
         </div>
 	    <div class="span2">
@@ -82,14 +215,14 @@
 	  </div>
 	</div>
 	<div class="modal-footer">
-              <div ng-show="circleForm.$invalid" >
-                <a ng-click="$parent.modalShown = false;$location.url($location.path());cancelnewcircle();" class="btn">Cancel</a>
+              <div ng-show="newuserform.$invalid" >
+                <a ng-click="$parent.modalShown = false;$location.url($location.path());cancelnewcircle();showRegister=false;search='';" class="btn">Cancel</a>
                 <a ng-disabled="true" class="btn" id="invalidform">Save</a>
               </div>    
           
-              <div ng-show="circleForm.$valid" > 
-                <a ng-click="$parent.modalShown = false;$location.url($location.path())" class="btn">Cancel</a> 
-                <a class="btn btn-primary" ng-click="savecircle(newcircle, expdate);$parent.modalShown = false;$location.url($location.path());">Save</a>
+              <div ng-show="newuserform.$valid" > 
+                <a ng-click="$parent.modalShown = false;$location.url($location.path());showRegister=false;search='';" class="btn">Cancel</a> 
+                <a class="btn btn-primary" ng-click="savecircle(newcircle, expdate);$parent.modalShown = false;$location.url($location.path());showRegister=false;search='';">Save</a>
               </div>
 	</div>
   </div>

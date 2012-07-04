@@ -479,7 +479,7 @@ class User extends LongKeyedMapper[User] {
   def asJsShallow:JValue = {
     
     // TODO duplicated code here and in supplementalJs
-    val profilepicUrl = if(profilepic.is==null) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
+    val profilepicUrl = if(profilepic.is==null || profilepic.is.trim().toString().equals("")) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
     val img = new ImageIcon(profilepicUrl)	
     val profilepicheight = img.getIconHeight()
     val profilepicwidth = img.getIconWidth()
@@ -504,7 +504,8 @@ class User extends LongKeyedMapper[User] {
     val jsActive = JsArray(jsonActiveCircles)
     val jsonExpiredCircles = expiredCircles.map(_.asJs)
     val jsExpired = JsArray(jsonExpiredCircles)
-    val profilepicUrl = if(profilepic.is==null) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
+    println("User.suplementalJs:  profilepic.is = '"+profilepic.is+"'")
+    val profilepicUrl = if(profilepic.is==null || profilepic.is.trim().toString().equals("")) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
     val img = new ImageIcon(profilepicUrl)	
     val profilepicheight = img.getIconHeight()
     val profilepicwidth = img.getIconWidth()

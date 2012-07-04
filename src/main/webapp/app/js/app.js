@@ -36,7 +36,7 @@ angular.module('datetime', [])
        
 angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap.modal']).
   factory('User', function($resource) {
-      var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic'}, 
+      var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       find: {method:'GET', isArray:false}, 
@@ -360,7 +360,13 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
 function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearch, Circle, Gift, CircleParticipant, $route) {              
              
   
-  $scope.user = RetrieveUser($scope, $cookieStore, User, User.currentUser, "userId");
+  $scope.user = RetrieveUser($scope, $cookieStore, User, User.currentUser, "userId");$scope.master= {};
+  
+  $scope.reset = function() {
+    $scope.newuser = angular.copy($scope.master);
+  };
+ 
+  $scope.reset();
   
   if(angular.isDefined(Circle.currentCircle)) {
     $scope.circle = Circle.currentCircle; 
@@ -372,6 +378,25 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   
   $scope.toggleCircle = function(circle) {
     circle.show = angular.isDefined(circle.show) ? !circle.show : true;
+  }
+    
+  $scope.beginnewuser = function() {
+    $scope.showRegister = true;
+  }
+  
+  $scope.cancelnewuser = function() {
+    $scope.showRegister = false;
+  }
+  
+  $scope.resetnewuser = function(newuserform) {
+  alert("resetting 2");
+    $scope.reset();
+  }
+  
+  $scope.createonthefly = function(newuser, newcircle) {
+    anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth}, 
+                                  function() {$scope.addparticipant(anewuser, newcircle);newuser={}; }
+                                );
   }
   
   $scope.isExpired = function() { 
@@ -424,7 +449,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     $scope.people = {};
     Circle.circleType = thetype;
     $location.url($location.path());
-    $scope.newcircle = {name:'', creatorId:$scope.user.id, participants:[$scope.user]};          
+    $scope.newcircle = {name:'', creatorId:$scope.user.id, participants:[$scope.user]};   
   }
   
   $scope.getType = function() {return Circle.circleType;}
@@ -446,6 +471,13 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     circle.participants.push(person);
     $scope.people.splice(index, 1);
   }
+    
+  // when you're creating a new user and then immediately adding them to the circle
+  $scope.addparticipant = function(person, circle) {
+    if(!angular.isDefined(circle.participants))
+      circle.participants = [];
+    circle.participants.push(person);
+  }
   
   $scope.removeparticipant = function(index, circle) {
     circle.participants.splice(index, 1)
@@ -463,9 +495,19 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     $location.url($location.path());
   }
   
+  $scope.userfieldsvalid = function(newuser) {
+    var ret = angular.isDefined(newuser) && angular.isDefined(newuser.fullname) && angular.isDefined(newuser.email)
+          && angular.isDefined(newuser.username) && angular.isDefined(newuser.password) 
+          && angular.isDefined(newuser.passwordAgain) && newuser.fullname != '' && newuser.email != '' && newuser.username != ''
+          && newuser.password != '' && newuser.passwordAgain != '' && newuser.password == newuser.passwordAgain;
+    return ret;
+  }
+  
 }
 
 function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, UserSearch, Gift, CircleParticipant) {
+  
+  $scope.showUser = User.showUser;
   
   $scope.query = function() {
     if($scope.search.length > 1)
@@ -478,12 +520,16 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   
   // adjust dims for large profile pics
   $scope.adjustedheight = function(auser) { 
+    if(!angular.isDefined(auser))
+      return -1;
     var thresh = auser.profilepicheight < auser.profilepicwidth ? auser.profilepicheight : auser.profilepicwidth
     var ratio = thresh > 200 ? 200 / thresh : 1;
     return ratio * auser.profilepicheight;
   }
   
   $scope.adjustedwidth = function(auser) {
+    if(!angular.isDefined(auser))
+      return -1;
     var thresh = auser.profilepicheight < auser.profilepicwidth ? auser.profilepicheight : auser.profilepicwidth
     var ratio = thresh > 200 ? 200 / thresh : 1;
     return ratio * auser.profilepicwidth;
@@ -514,9 +560,11 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
     $scope.showUser = User.find({userId:$route.current.params.showUserId}, function() {}, function() {alert("Could not find user "+$route.current.params.showUserId);})
   }
   
+  // duplicated in RegisterCtrl
   $scope.isUsernameUnique = function(user, form) {
-    if(!angular.isDefined(user.username)) 
+    if(!angular.isDefined(user.username)) {
       return;
+    }
     checkUsers = User.query({username:user.username}, 
                                         function() {
                                           if(checkUsers.length > 0) { form.username.$error.taken = 'true'; }
@@ -563,13 +611,28 @@ function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User,
 }
 
 function RegisterCtrl($scope, User, $rootScope, $location) {
-  $scope.save = function(user) {
-    $scope.user = User.save({fullname:user.fullname, first:user.first, last:user.last, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirth}, 
-                                  function() {
-                                    $location.url('welcome'); 
+  $scope.newuser = {fullname:'full name', email:'e@mail.com', username:new Date().getTime()+'', password:'pwd', passwordAgain:'pwd'};
+  $scope.save = function(newuser) {
+    $scope.user = User.save({login:true, fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth}, 
+                                  function() { 
+                                    User.showUser = $scope.user;
+                                    User.currentUser = $scope.user;
+                                    $location.url('welcome');
                                   }
                                 );
   }
+  
+  // duplicated in UserCtrl
+  $scope.isUsernameUnique = function(user, form) {
+    if(!angular.isDefined(user.username)) {
+      return;
+    }
+    checkUsers = User.query({username:user.username}, 
+                                        function() {
+                                          if(checkUsers.length > 0) { form.username.$error.taken = 'true'; }
+                                          else { form.username.$error.taken = 'false'; }
+                                        });
+  } 
 
   $rootScope.$on("userchange", function(event) {
     $scope.user = User.currentUser;
@@ -589,5 +652,3 @@ function EmailCtrl($scope, Email) {
     Email.send({to:$scope.email.to, from:$scope.email.from, subject:$scope.email.subject, message:$scope.email.message});
   }
 }
-
-function MainCtrl($scope) {}

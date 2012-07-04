@@ -7,12 +7,17 @@
 
 <form novalidate name="regForm" ng-controller="RegisterCtrl">
 
-            <div class="row"><div class="span3"><h3>Sign Up</h3></div></div>
+        <div class="row"><div class="span3"><h3>Sign Up</h3></div></div>
     
+
+
+
+
+
             <div class="row">
               <div class="span1">Name</div>
               <div class="span2 margleft0">
-                <input class="span2" maxlength="140" value="" type="text" name="fullname" ng-model="user.fullname" required />
+                <input class="span2" maxlength="140" value="" type="text" name="fullname" ng-model="newuser.fullname" required />
               </div>
               <div class="span1 w20 margleft0">
                 <span ng-show="regForm.fullname.$dirty">
@@ -23,7 +28,7 @@
             <div class="row">
               <div class="span1">Email</div>
               <div class="span2 margleft0">
-                <input class="span2" maxlength="140" value="" name="email" type="email" ng-model="user.email" required>
+                <input class="span2" maxlength="140" value="" name="email" type="email" ng-model="newuser.email" required>
               </div>
               <div class="span1 w20 margleft0">
                 <span ng-show="regForm.email.$dirty">
@@ -35,7 +40,7 @@
             <div class="row">
               <div class="span1">Username</div>
               <div class="span2 margleft0">
-                <input class="span2" maxlength="140" value="" name="username" type="text" ng-model="user.username" ng-change="isUsernameUnique(user, regForm)" required />
+                <input class="span2" maxlength="140" value="" name="username" type="text" ng-model="newuser.username" ng-change="isUsernameUnique(newuser, regForm)" required />
               </div>
               <div class="span1 w20 margleft0">
                 <span ng-show="regForm.username.$dirty">
@@ -51,7 +56,7 @@
             <div class="row">
               <div class="span1">Password</div>
               <div class="span2 margleft0">
-                <input class="span2" ng-model="user.password" type="password" name="password" value="*******" required />
+                <input class="span2" ng-model="newuser.password" type="password" name="password" value="*******" required />
               </div>
               <div class="span1 w20 margleft0">
                 <span ng-show="regForm.password.$dirty">
@@ -64,31 +69,34 @@
             <div class="row">
               <div class="span1">Again</div>
               <div class="span2 margleft0">
-                <input class="span2" ng-model="user.passwordAgain" type="password" name="passwordAgain" value="*******" required />
+                <input class="span2" ng-model="newuser.passwordAgain" type="password" name="passwordAgain" value="*******" required />
               </div>
               <div class="span1 w20 margleft0">
                 <span ng-show="regForm.passwordAgain.$dirty">
                   <span ng-show="regForm.passwordAgain.$error.required">
                     <img src="img/red_x.png" id="invalidpassagain" title="Enter password twice">
                   </span>
-                  <span ng-show="user.passwordAgain != user.password && !regForm.passwordAgain.$error.required">
+                  <span ng-show="newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required">
                     <img src="img/red_x.png" id="passwordsdontmatch" title="Passwords don't match">
                   </span>
                 </span> 
               </div>
             </div>
-  
-  
+
+
+
+
+
 
         <div class="row">
           <div class="span2 offset1">    
           
-            <div ng-show="regForm.$invalid || (user.passwordAgain != user.password && !regForm.passwordAgain.$error.required)" >
+            <div ng-show="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
               <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet">Save</a>
             </div>    
           
-            <div ng-hide="regForm.$invalid || (user.passwordAgain != user.password && !regForm.passwordAgain.$error.required)" >
-              <a href="#" class="btn btn-primary" ng-click="save(user)">Save</a>
+            <div ng-hide="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
+              <a href="#" class="btn btn-primary" ng-click="save(newuser)">Save</a>
             </div>
       
           </div>

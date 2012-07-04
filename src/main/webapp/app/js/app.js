@@ -611,7 +611,6 @@ function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User,
 }
 
 function RegisterCtrl($scope, User, $rootScope, $location) {
-  $scope.newuser = {fullname:'full name', email:'e@mail.com', username:new Date().getTime()+'', password:'pwd', passwordAgain:'pwd'};
   $scope.save = function(newuser) {
     $scope.user = User.save({login:true, fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth}, 
                                   function() { 

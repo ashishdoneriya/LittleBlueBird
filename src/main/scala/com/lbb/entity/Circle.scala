@@ -1,38 +1,27 @@
 package com.lbb.entity
 import java.text.SimpleDateFormat
 import java.util.Date
-import scala.xml.Elem
-import scala.xml.NodeSeq
+import scala.collection.mutable.ListBuffer
 import scala.xml.Text
 import org.joda.time.DateTime
 import com.lbb.gui.MappedDateExtended
 import com.lbb.gui.MappedStringExtended
-import com.lbb.TypeOfCircle
+import com.lbb.util.Emailer
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
-import net.liftweb.http.js.JE.JsArray
 import net.liftweb.http.js.JsExp
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
-import net.liftweb.json.JsonAST.JField
-import net.liftweb.json.JsonAST.JInt
-import net.liftweb.json.JsonAST.JObject
-import net.liftweb.json.JsonAST.JString
 import net.liftweb.mapper.By
 import net.liftweb.mapper.KeyObfuscator
 import net.liftweb.mapper.LongKeyedMapper
 import net.liftweb.mapper.LongKeyedMetaMapper
 import net.liftweb.mapper.MappedBoolean
 import net.liftweb.mapper.MappedDate
+import net.liftweb.mapper.MappedInt
 import net.liftweb.mapper.MappedLongIndex
 import net.liftweb.mapper.MappedString
 import net.liftweb.util.FieldError
-import net.liftweb.json.JsonAST.JValue
-import net.liftweb.json.JsonAST.JArray
-import com.lbb.util.Emailer
-import scala.collection.mutable.ListBuffer
-import net.liftweb.mapper.MappedInt
+import com.lbb.TypeOfCircle
 
 /**
  * READY TO DEPLOY
@@ -58,6 +47,10 @@ CREATE TABLE IF NOT EXISTS `circles` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=366 ;
 
  */
+
+case class CircleType(name:String, receiverLimit:Int)
+
+case class Christmas extends CircleType("Christmas", -1)
 
 class Circle extends LongKeyedMapper[Circle] { 
   
@@ -93,7 +86,7 @@ class Circle extends LongKeyedMapper[Circle] {
       case null => ""
       case d:Date => new SimpleDateFormat("M/d/yyyy").format(d)
     }
-    List(("dateStr", dateString))        
+    List(("dateStr", dateString), ("receiverLimit", receiverLimit))        
   }
   
 //  object deleted extends MappedBoolean(this) {
@@ -148,18 +141,18 @@ class Circle extends LongKeyedMapper[Circle] {
     override def dbColumnName = "type"
     override def dbIndexed_? = true
     
-    var chosenType:Box[TypeOfCircle.Value] = Empty
-    
-    override def _toForm: Box[Elem] = 
-      S.fmapFunc({s: List[String] => this.setFromAny(s)}){funcName =>
-      Full(appendFieldId(SHtml.selectObj[TypeOfCircle.Value](TypeOfCircle.values.toList.map(v => (v,v.toString)),
-          // this 'match' sets the default/selected value of the drop-down
-          TypeOfCircle.values.find(p => p.toString().equals(this.is)) match {
-            case None => Full(TypeOfCircle.christmas)
-            case Some(ctype) => Full(ctype)
-          }, 
-          selected => set(selected.toString()) )))
-    }
+//    var chosenType:Box[TypeOfCircle.Value] = Empty
+//    
+//    override def _toForm: Box[Elem] = 
+//      S.fmapFunc({s: List[String] => this.setFromAny(s)}){funcName =>
+//      Full(appendFieldId(SHtml.selectObj[TypeOfCircle.Value](TypeOfCircle.values.toList.map(v => (v,v.toString)),
+//          // this 'match' sets the default/selected value of the drop-down
+//          TypeOfCircle.values.find(p => p.toString().equals(this.is)) match {
+//            case None => Full(TypeOfCircle.christmas)
+//            case Some(ctype) => Full(ctype)
+//          }, 
+//          selected => set(selected.toString()) )))
+//    }
   }
   
   def participants = CircleParticipant.findAll(By(CircleParticipant.circle, this.id))
@@ -189,7 +182,16 @@ class Circle extends LongKeyedMapper[Circle] {
   }
   
   def add(p:List[User], i:User):Circle = {
-    add(p,i,true)
+    //add(p,i,true)
+    p foreach { u => {
+      val participationLevel = if(limitReached) {"Giver"} else {"Receiver"}
+      val saved = CircleParticipant.create.circle(this).person(u).inviter(i).participationLevel(participationLevel).save
+      saved match {
+        case true => Emailer.addedtocircle(u, i, this)
+        case false => Emailer.erroradding(i, u, this)
+      }
+    } }
+    this
   }
   
   def add(receivers:List[User], givers:List[User], inviter:User):Circle = {
@@ -206,11 +208,15 @@ class Circle extends LongKeyedMapper[Circle] {
     override def ignoreField_? = true
   }
   
-  val receiversToSave:ListBuffer[Long] = ListBuffer()
+  private val receiversToSave:ListBuffer[Long] = ListBuffer()
+  private val giversToSave:ListBuffer[Long] = ListBuffer()
   
-  // TODO Don't like using a var but not sure how else to set participants before the circle is saved
   def add(id:Long) = {
     receiversToSave.append(id)
+  }
+  
+  def addgiver(id:Long) = {
+    giversToSave.append(id)
   }
   
   override def save() = {
@@ -219,11 +225,33 @@ class Circle extends LongKeyedMapper[Circle] {
     val saved = super.save();
     
     if(inserting) {
-      receiversToSave foreach { r => {val rsaved = CircleParticipant.create.circle(this).person(r).inviter(creator.is).participationLevel("Receiver").save(); println("circle participant save?:  "+rsaved);} }
+      val receiverSet = receiversToSave.toSet
+      receiverSet foreach { r => CircleParticipant.create.circle(this).person(r).inviter(creator.is).participationLevel("Receiver").save() }
       receiversToSave.drop(0)
+      
+      val giverSet = giversToSave.toSet
+      giverSet foreach { r => CircleParticipant.create.circle(this).person(r).inviter(creator.is).participationLevel("Giver").save() }
+      giversToSave.drop(0)
     }
     
     saved
+  }
+  
+  private def limitReached = receiverLimit != -1 && receiverCount == receiverLimit
+  
+  private def receiverCount = participantList.filter(_.isReceiver(this)).size
+  
+  def receiverLimit = circleType.is match {
+    case s:String if(s.equals(TypeOfCircle.birthday.toString())) => 1
+    case s:String if(s.equals(TypeOfCircle.christmas.toString())) => -1
+    case s:String if(s.equals(TypeOfCircle.mothersday.toString())) => 1
+    case s:String if(s.equals(TypeOfCircle.fathersday.toString())) => 1
+    case s:String if(s.equals(TypeOfCircle.graduation.toString())) => 1
+    case s:String if(s.equals(TypeOfCircle.babyshower.toString())) => 1
+    case s:String if(s.equals(TypeOfCircle.valentinesday.toString())) => -1
+    case s:String if(s.equals(TypeOfCircle.anniversary.toString())) => 2
+    case s:String if(s.equals(TypeOfCircle.other.toString())) => 1
+    case _ => -1
   }
 }
 

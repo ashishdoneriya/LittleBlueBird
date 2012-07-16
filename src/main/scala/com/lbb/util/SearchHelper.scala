@@ -33,7 +33,7 @@ object SearchHelper {
     	    "p.username like ('%"+s1+"%') or " +
     	    "p.email like ('%"+s1+"%')"
     val users = User.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
-    
+
     JsonResponse(JsArray(users.map(_.asJs)))
   }
 }

@@ -1,8 +1,8 @@
-
+<div ng-controller="UserCtrl">
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
-      <a class="brand" href="/gf/app">LittleBlueBird</a>
+      <a class="brand" ng-click="loginpage();">LittleBlueBird</a>
       <ul class="nav">
         <li class="active">
           <a href="#">What Is It?</a>
@@ -11,9 +11,10 @@
         <li><a href="#">Features</a></li>
       </ul>
       <ul class="nav pull-right">
-        <li ng-controller="UserCtrl"><btn-user btn-text="{{user.fullname}}"/></li>
+        <li><btn-user btn-text="{{user.fullname}}"/></li>
         <li><img ng-src="img/logo.gif"/></li>
       </ul>
     </div>
   </div>
+</div>
 </div>

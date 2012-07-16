@@ -161,5 +161,11 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
     val w = icon.getIconWidth()
     println("h = "+h+"   w = "+w)
   }
+  
+  test("list to set") {
+    val list = List(1, 2, 2, 3, 4)
+    val set = list.toSet
+    println(set)
+  }
 
 }

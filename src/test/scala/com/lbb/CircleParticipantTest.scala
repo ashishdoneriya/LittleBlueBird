@@ -234,4 +234,5 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit {
       case (u:User, r) => assert(exp.get(u).getOrElse(false)===r)
       case _ => fail("fail: "+p.person.obj)
     }
+  
 }

@@ -231,12 +231,10 @@ class User extends LongKeyedMapper[User] {
   
   // query the circle_participant table to find out what circles you belong to
   def circles = CircleParticipant.findAll(By(CircleParticipant.person, this.id))
+
+  def circleList = for(cpid <- circles; c <- cpid.circle.obj; if(!c.isExpired && !c.isDeleted)) yield c
   
-  // new&improved version of 'circles' above
-  // return a List[Circle] not just the fkeys
-  def circleList = circles.map(fk => fk.circle.obj.open_!).filter(c => !c.isExpired && !c.isDeleted)
-  
-  def expiredCircles = circles.map(fk => fk.circle.obj.open_!).filter(c => c.isExpired && !c.isDeleted)
+  def expiredCircles = for(cpid <- circles; c <- cpid.circle.obj; if(c.isExpired && !c.isDeleted)) yield c
   
   // For active circles (I think expired circles too)
   // Note: You can't put circleid anywhere in the where clause because a gift may have been bought - but not received

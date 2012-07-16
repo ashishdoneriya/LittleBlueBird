@@ -9,7 +9,7 @@
   </div>
   <ul ng-repeat="circle in user.circles" ng-class="'nav nav-pills nav-stacked marg0'">
     <li ng-class="activeOrNot(circle)">
-      <a href="#/event/{{circle.id}}" ng-click="makeActive($index, circle);toggleCircle(circle);showParticipants(circle);">
+      <a ng-click="makeActive($index, circle);toggleCircle(circle);showParticipants(circle);">
         <span class="caret margleft_5 margtop5"></span> <b>{{circle.name}}</b>
       </a>
         <span ng-show="circle.show">

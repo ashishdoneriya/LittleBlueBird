@@ -11,6 +11,7 @@ import net.liftweb.util.Props
 import net.liftweb.common.Box
 import java.text.SimpleDateFormat
 import com.lbb.entity.Circle
+import com.lbb.entity.User
 
 @RunWith(classOf[JUnitRunner])
 class CircleTest extends FunSuite with AssertionsForJUnit {
@@ -65,6 +66,18 @@ class CircleTest extends FunSuite with AssertionsForJUnit {
   {
     assert(TypeOfCircle.christmas.toString()==="Christmas")
     assert(TypeOfCircle.anniversary.toString()==="Anniversary")
+  }
+  
+  test("receiver limit") {
+	assert(Circle.create.circleType(TypeOfCircle.birthday.toString()).receiverLimit===1)
+	assert(Circle.create.circleType(TypeOfCircle.christmas.toString()).receiverLimit === -1)
+	assert(Circle.create.circleType(TypeOfCircle.valentinesday.toString()).receiverLimit === -1)
+	assert(Circle.create.circleType(TypeOfCircle.mothersday.toString()).receiverLimit===1)
+	assert(Circle.create.circleType(TypeOfCircle.fathersday.toString()).receiverLimit===1)
+	assert(Circle.create.circleType(TypeOfCircle.graduation.toString()).receiverLimit===1)
+	assert(Circle.create.circleType(TypeOfCircle.babyshower.toString()).receiverLimit===1)
+	assert(Circle.create.circleType(TypeOfCircle.anniversary.toString()).receiverLimit===2)
+	assert(Circle.create.circleType(TypeOfCircle.other.toString()).receiverLimit===1)
   }
 }
 

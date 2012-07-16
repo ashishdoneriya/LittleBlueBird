@@ -249,14 +249,33 @@ object RestService extends RestHelper {
               case ("expirationdate", b:BigInt) => circle.date(new Date(b.toLong))
               case ("circleType", s:String) => circle.circleType(s)
               
-              case ("participants", l:List[Map[String, Any]]) => {
-                val ids = for(m <- l;
-                              kv <- m;
-                              if(kv._1.equals("id"))) yield { println("kv._1 = "+kv._1); kv._2 }
-                ids foreach {
-                  case (id:BigInt) => {println("circle.add("+id+")"); circle.add(id.toLong)}
-                  case _ => println("not handling *****************************************************")
-                }
+//              case ("participants", l:List[Map[String, Any]]) => {
+//                val ids = for(m <- l;
+//                              kv <- m;
+//                              if(kv._1.equals("id"))) yield { println("kv._1 = "+kv._1); kv._2 }
+//                ids foreach {
+//                  case (id:BigInt) => {println("circle.add("+id+")"); circle.add(id.toLong)}
+//                  case _ => println("not handling *****************************************************")
+//                }
+//              }
+              
+              case ("participants", m:Map[String, List[Map[String, Any]]]) => {
+                // look for key 'receivers' and 'givers'
+                val receiverIds = for(kv <- m; 
+                                      if(kv._1.equals("receivers"));
+                                      mapOfReceiverInfo <- kv._2;
+                                      receiverInfo <- mapOfReceiverInfo;
+                                      if(receiverInfo._1.equals("id")) ) yield receiverInfo._2
+                                      
+                receiverIds foreach { case id:BigInt => circle.add(id.toLong) }
+                
+                val giverIds = for(kv <- m; 
+                                 if(kv._1.equals("givers"));
+                                 mapOfGiverInfo <- kv._2;
+                                 giverInfo <- mapOfGiverInfo;
+                                 if(giverInfo._1.equals("id")) ) yield giverInfo._2
+                                 
+                giverIds foreach { case id:BigInt => circle.addgiver(id.toLong) }
               }
               
               case ("creatorId", i:BigInt) => circle.creator(i.toInt)

@@ -68,9 +68,10 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return Circle;
   }).
   factory('CircleParticipant', function($resource) {
-      var CircleParticipant = $resource('/gf/circleparticipants/:circleId', {circleId:'@circleId'}, 
+      var CircleParticipant = $resource('/gf/circleparticipants/:circleId', {circleId:'@circleId', userId:'@userId', inviterId:'@inviterId', participationLevel:'@participationLevel'}, 
                     {
                       query: {method:'GET', isArray:false}, 
+                      delete: {method:'DELETE'},
                       save: {method:'POST'}
                     });
 
@@ -464,9 +465,14 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   
   $scope.savecircle = function(circle, expdate) {
     circle.expirationdate = new Date(expdate);
-    var savedcircle = Circle.save({name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:Circle.circleType, 
+    var savedcircle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:Circle.circleType, 
                  participants:circle.participants, creatorId:circle.creatorId},
-                 function() {$scope.user.circles.push(savedcircle); User.currentUser=$scope.user; $rootScope.$emit("userchange");} );
+                 function() {
+                   if(!angular.isDefined(circle.id))
+                     $scope.user.circles.push(savedcircle); 
+                   User.currentUser=$scope.user; 
+                   $rootScope.$emit("userchange");
+                 } );
   }
   
   $scope.newcircleFunction = function(thetype, limit) {
@@ -475,6 +481,12 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     Circle.circleType = thetype;
     $location.url($location.path());
     $scope.newcircle = {name:'', creatorId:$scope.user.id, receiverLimit:limit, participants:{receivers:[], givers:[]}};   
+  }
+  
+  $scope.editcircleFunction = function(circle) {
+    $scope.thecircle = circle;
+    console.log(circle);
+    $scope.expdate = circle.dateStr;
   }
   
   $scope.addmyselfasreceiver = function() {
@@ -502,22 +514,24 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   $scope.addparticipant = function(index, person, circle) {
     if(!angular.isDefined(circle.participants))
       circle.participants = {receivers:[], givers:[]};
-    if($scope.participationlevel == 'giver')
+    if($scope.participationlevel == 'Giver')
       circle.participants.givers.push(person);
     else circle.participants.receivers.push(person);
-      
-    //var hasLimit = angular.isDefined(circle.receiverLimit) && circle.receiverLimit != -1;
-    //if(hasLimit && circle.participants.receivers.length == circle.receiverLimit)
-    //  circle.participants.givers.push(person);
-    //else circle.participants.receivers.push(person);
+    
     $scope.people[index].hide = true;
+    
+    // if the circle already exists, add the participant to the db immediately
+    if(angular.isDefined(circle.id)) {
+      //alert("circle.id="+circle.id+"\n $scope.participationlevel="+$scope.participationlevel);
+      var newcp = CircleParticipant.save({circleId:circle.id, userId:person.id, participationLevel:$scope.participationlevel}, function() {alert("newcp.id="+newcp.id);});
+    }
   }
     
   // when you're creating a new user and then immediately adding them to the circle
   $scope.addparticipant2 = function(person, circle) {
     if(!angular.isDefined(circle.participants))
       circle.participants = [];
-    if($scope.participationlevel == 'giver')
+    if($scope.participationlevel == 'Giver')
       circle.participants.givers.push(person);
     else circle.participants.receivers.push(person);
     
@@ -540,20 +554,24 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     }
   }
   
-  $scope.canaddreceiver = function() {
-    return $scope.newcircle.receiverLimit == -1 || $scope.newcircle.receiverLimit > $scope.newcircle.participants.receivers.length;
+  $scope.canaddreceiver = function(circle) {
+    console.log("circle.receiverLimit="+circle.receiverLimit);
+    var isdefined = angular.isDefined(circle) && angular.isDefined(circle.receiverLimit) && angular.isDefined(circle.participants.receivers)
+    return isdefined && (circle.receiverLimit == -1 || circle.receiverLimit > circle.participants.receivers.length);
   }
   
-  $scope.removereceiver = function(index, circle) {
+  $scope.removereceiver = function(index, circle, participant) {
     circle.participants.receivers.splice(index, 1)
+    if(angular.isDefined(circle.id)) {
+      CircleParticipant.delete({circleId:circle.id, userId:participant.id});
+    }
   }
   
-  $scope.removegiver = function(index, circle) {
+  $scope.removegiver = function(index, circle, participant) {
     circle.participants.givers.splice(index, 1)
-  }
-  
-  $scope.removegiver = function(index, circle) {
-    circle.participants.givers.splice(index, 1)
+    if(angular.isDefined(circle.id)) {
+      CircleParticipant.delete({circleId:circle.id, userId:participant.id});
+    }
   }
   
   $scope.deletecircle = function() {

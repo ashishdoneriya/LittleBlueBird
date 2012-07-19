@@ -1,7 +1,6 @@
 package com.lbb
 import java.text.SimpleDateFormat
 import java.util.Date
-
 import com.lbb.entity.Circle
 import com.lbb.entity.Gift
 import com.lbb.entity.User
@@ -10,7 +9,6 @@ import com.lbb.util.Emailer
 import com.lbb.util.MapperHelper
 import com.lbb.util.RequestHelper
 import com.lbb.util.SearchHelper
-
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
@@ -26,6 +24,8 @@ import net.liftweb.http.Req
 import net.liftweb.http.S
 import net.liftweb.json.JsonAST._
 import net.liftweb.util.BasicTypesHelpers._
+import com.lbb.entity.CircleParticipant
+import net.liftweb.mapper.By
 
 object RestService extends RestHelper {
 
@@ -36,6 +36,8 @@ object RestService extends RestHelper {
     case Get("gifts" :: _, _) => println("RestService.serve:  AAAAAAAAA"); findGifts
     
     case JsonPost("circles" :: AsLong(circleId) :: _, (json, req)) => println("updateCircle: "+circleId); updateCircle(circleId)
+    case JsonPost("circleparticipants" :: AsLong(circleId) :: _, (json, req)) => insertParticipant(circleId)
+    case Delete("circleparticipants" :: AsLong(circleId) :: _, req) => deleteParticipant(circleId)
   }
   
   serve {
@@ -57,7 +59,6 @@ object RestService extends RestHelper {
     // circles...
     case Get("circles" :: AsLong(circleId) :: _, _) => println("RestService.serve:  88888888"); findCircle(circleId)
     case Get("circleparticipants" :: AsLong(circleId) :: _, _) => println("RestService.serve:  77777777777"); findCircleParticipants(circleId)
-    
     case Delete("gifts" :: AsLong(giftId) :: _, _) => deleteGift(giftId)
     case _ => println("RestService.serve:  666666666"); debug
   }
@@ -96,6 +97,36 @@ object RestService extends RestHelper {
     JsonResponse("???  S.uri=" + S.uri)
   }
   
+  def insertParticipant(circleId:Long) = {
+    val cp = CircleParticipant.create.circle(circleId);
+    val jval = for(req <- S.request; jvalue <- req.json; if(jvalue.isInstanceOf[JObject])) yield {
+      jvalue.asInstanceOf[JObject]
+    }
+    
+    for(jobj <- jval) yield {
+      jobj.values foreach {kv => kv match {
+          case ("userId", u:BigInt) => cp.person(u.toLong)
+          case ("participationLevel", s:String) => cp.participationLevel(s)
+          case ("inviterId", i:BigInt) => cp.inviter(i.toLong)
+          case _ => { /*do nothing*/ }
+        }
+      }
+    }
+    
+    cp.save
+    JsonResponse("")
+  }
+  
+  def deleteParticipant(circleId:Long) = {
+    println("deleteParticipant-----------------------------------------------")
+    for(s <- S.param("userId")) yield {
+      val userId = s.toLong;
+      val cps = CircleParticipant.findAll(By(CircleParticipant.circle, circleId), By(CircleParticipant.person, userId))
+      cps.foreach(_.delete_!)
+    }
+    JsonResponse("")
+  }
+  
   def insertUser = {
     S.request match {
       case Full(req) => {
@@ -127,6 +158,66 @@ object RestService extends RestHelper {
     }
   }
   
+  def insertCircle = {
+    S.request match {
+      case Full(req) => {
+        req.json match {
+          case Full(jvalue:JObject) => {
+            println("RestService.insertCircle: jvalue = "+jvalue)
+            val circle = Circle.create
+            jvalue.values foreach {kv => (kv._1, kv._2) match {
+              case ("name", s:String) => circle.name(s)
+              case ("expirationdate", s:String) => {
+                if(s!=null && !s.toString().trim().equals("") && !s.toString().trim().equals("0")) {
+                  println("RestService.insertCircle:  s = '"+s+"'");  circle.date(new SimpleDateFormat("MM/dd/yyyy").parse(s.toString())) // not sure about this one yet
+                }
+              } // case ("expirationdate", s:String)
+              case ("expirationdate", b:BigInt) => circle.date(new Date(b.toLong))
+              case ("circleType", s:String) => circle.circleType(s)
+              case ("participants", m:Map[String, List[Map[String, Any]]]) => {
+                // look for key 'receivers' and 'givers'
+                val receiverIds = for(kv <- m; 
+                                      if(kv._1.equals("receivers"));
+                                      mapOfReceiverInfo <- kv._2;
+                                      receiverInfo <- mapOfReceiverInfo;
+                                      if(receiverInfo._1.equals("id")) ) yield receiverInfo._2
+                                      
+                receiverIds foreach { case id:BigInt => circle.add(id.toLong) }
+                
+                val giverIds = for(kv <- m; 
+                                 if(kv._1.equals("givers"));
+                                 mapOfGiverInfo <- kv._2;
+                                 giverInfo <- mapOfGiverInfo;
+                                 if(giverInfo._1.equals("id")) ) yield giverInfo._2
+                                 
+                giverIds foreach { case id:BigInt => circle.addgiver(id.toLong) }
+              }
+              
+              case ("creatorId", i:BigInt) => circle.creator(i.toInt)
+              
+              case _ => println("unhandled:  circle."+kv._1)
+              
+            } // kv => (kv._1, kv._2) match
+            
+            } // jvalue.values foreach {kv => (kv._1, kv._2) match
+            
+            circle.save()
+            JsonResponse(circle.asJs)
+            
+          } // case Full(jvalue:JObject)
+          
+          case _ => BadResponse()
+          
+        } // req.json match
+        
+      } // case Full(req)
+          
+      case _ => BadResponse()
+      
+    } // S.request match
+    
+  } // insertCircle
+  
   def updateCircle(id:Long) = (Circle.findByKey(id), S.request) match {
     case (Full(circle), Full(req)) => {
       req.json match {
@@ -134,6 +225,10 @@ object RestService extends RestHelper {
           jvalue.values foreach {kv => (kv._1, kv._2) match {
               case ("circleId", id:BigInt) => { }
               case ("datedeleted", b:BigInt) => circle.date_deleted(new Date(b.toLong))
+              case ("name", s:String) => circle.name(s)
+              case ("expirationdate", b:BigInt) => circle.date(new Date(b.toLong))
+              case ("circleType", s:String) => circle.circleType(s)
+              case ("participants", _) => {/*TODO not sure how to handle participants on an update yet - maybe ignore*/}
             } // kv => (kv._1, kv._2) match
           } // jvalue.values foreach
             
@@ -231,77 +326,6 @@ object RestService extends RestHelper {
     }
     
   }
-  
-  def insertCircle = {
-    S.request match {
-      case Full(req) => {
-        req.json match {
-          case Full(jvalue:JObject) => {
-            println("RestService.insertCircle: jvalue = "+jvalue)
-            val circle = Circle.create
-            jvalue.values foreach {kv => (kv._1, kv._2) match {
-              case ("name", s:String) => circle.name(s)
-              case ("expirationdate", s:String) => {
-                if(s!=null && !s.toString().trim().equals("") && !s.toString().trim().equals("0")) {
-                  println("RestService.insertCircle:  s = '"+s+"'");  circle.date(new SimpleDateFormat("MM/dd/yyyy").parse(s.toString())) // not sure about this one yet
-                }
-              } // case ("expirationdate", s:String)
-              case ("expirationdate", b:BigInt) => circle.date(new Date(b.toLong))
-              case ("circleType", s:String) => circle.circleType(s)
-              
-//              case ("participants", l:List[Map[String, Any]]) => {
-//                val ids = for(m <- l;
-//                              kv <- m;
-//                              if(kv._1.equals("id"))) yield { println("kv._1 = "+kv._1); kv._2 }
-//                ids foreach {
-//                  case (id:BigInt) => {println("circle.add("+id+")"); circle.add(id.toLong)}
-//                  case _ => println("not handling *****************************************************")
-//                }
-//              }
-              
-              case ("participants", m:Map[String, List[Map[String, Any]]]) => {
-                // look for key 'receivers' and 'givers'
-                val receiverIds = for(kv <- m; 
-                                      if(kv._1.equals("receivers"));
-                                      mapOfReceiverInfo <- kv._2;
-                                      receiverInfo <- mapOfReceiverInfo;
-                                      if(receiverInfo._1.equals("id")) ) yield receiverInfo._2
-                                      
-                receiverIds foreach { case id:BigInt => circle.add(id.toLong) }
-                
-                val giverIds = for(kv <- m; 
-                                 if(kv._1.equals("givers"));
-                                 mapOfGiverInfo <- kv._2;
-                                 giverInfo <- mapOfGiverInfo;
-                                 if(giverInfo._1.equals("id")) ) yield giverInfo._2
-                                 
-                giverIds foreach { case id:BigInt => circle.addgiver(id.toLong) }
-              }
-              
-              case ("creatorId", i:BigInt) => circle.creator(i.toInt)
-              
-              case _ => println("unhandled:  circle."+kv._1)
-              
-            } // kv => (kv._1, kv._2) match
-            
-            } // jvalue.values foreach {kv => (kv._1, kv._2) match
-            
-            circle.save()
-            JsonResponse(circle.asJs)
-            
-          } // case Full(jvalue:JObject)
-          
-          case _ => BadResponse()
-          
-        } // req.json match
-        
-      } // case Full(req)
-          
-      case _ => BadResponse()
-      
-    } // S.request match
-    
-  } // insertCircle
   
   def findCircle(id:Long) = {
     println("RestService.findCircle:  id="+id)

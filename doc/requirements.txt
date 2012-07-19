@@ -1,6 +1,6 @@
 Events
-	- changing name and date
-	- adding/removing people
+	- changing name and date: DONE but date change from active to expired (or v.v.) won't put the event in the other category until you hit refresh or login again
+	- adding/removing people: DONE but need to do something about people that have gifts bought for them already.  Prompt the person?  Prevent person from being removed?
 	- add "recurring" attribute to events - db change
 	
 Reminders

@@ -56,7 +56,7 @@
 	          <span ng-show="newcircle.receiverLimit == 1"><b>Honoree</b></span>
 	          <span ng-show="newcircle.receiverLimit > 1"><b>Honorees</b></span>
 	          
-	          <span ng-show="canaddreceiver()">
+	          <span ng-show="canaddreceiver">
                 <div class="btn-group pull-right">
 	              <a class="btn btn-mini btn-success font14 bold dropdown-toggle" 
 	                 data-toggle="dropdown" href="#" 
@@ -70,7 +70,7 @@
 	            </div>
 	          </span>
 	          
-	          <span ng-hide="canaddreceiver()">
+	          <span ng-hide="canaddreceiver">
                 <div class="btn-group pull-right">
 	              <a class="btn btn-mini font14 bold" ng-disabled="true">+</a>
 	            </div>
@@ -81,7 +81,7 @@
 	            <div class="box-white margtop10 margbottom2">
 	              <span ng-repeat="participant in newcircle.participants.receivers">
 	                <div class="row">
-	                  <div class="span2"><a ng-click="removereceiver($index, newcircle)"><i class="icon-remove"></i></a>{{participant.fullname}}</div>
+	                  <div class="span2"><a ng-click="removereceiver($index, newcircle, participant)"><i class="icon-remove"></i></a>{{participant.fullname}}</div>
 	                </div>
 		          </span>
 	            </div>
@@ -110,7 +110,7 @@
 	            <div class="box-white margtop10 margbottom2">
 	              <span ng-repeat="participant in newcircle.participants.givers">
 	                <div class="row">
-	                  <div class="span2"><a ng-click="removegiver($index, newcircle)"><i class="icon-remove"></i></a>{{participant.fullname}}</div>
+	                  <div class="span2"><a ng-click="removegiver($index, newcircle, participant)"><i class="icon-remove"></i></a>{{participant.fullname}}</div>
 	                </div>
 		          </span>
 	            </div>

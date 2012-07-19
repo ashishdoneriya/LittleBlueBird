@@ -8,6 +8,7 @@ var app = angular.module('project', ['UserModule', 'datetime']).
       when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/giftlist/:circleId/:showUserId', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/myaccount', {templates: {layout: 'layout.html', one: 'partials/myaccountheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/myaccount.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
+      when('/mywishlist', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/mywishlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/email', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/welcome', {templates: {layout: 'layout.html', one: 'partials/userheader.html', two: 'partials/myexpiredcircles.html', three: 'partials/mycircles.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       otherwise({redirectTo: '/login', templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html', three:'partials/LittleBlueBird.html', four:'partials/navbar.html'}});
@@ -189,49 +190,6 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, User ) {
                                 );
   }
     
-}
-
-
-function CurrentCtrl($rootScope, $scope, $cookieStore, User, Circle, Gift, $route) {
-  
-  // "my wish list" call
-  $scope.mywishlist = function() {
-    //alert("$scope.mywishlist");
-    gifts = Gift.query({viewerId:User.currentUser.id}, 
-                            function() { 
-                              Circle.gifts = gifts; 
-                              Circle.gifts.mylist=true; 
-                              $rootScope.$emit("circlechange");  
-                              $rootScope.$emit("userchange"); 
-                            }, 
-                            function() {alert("Hmmm... Had a problem getting "+User.currentUser.first+"'s list\n  Try again");});
-  }
-
-  $rootScope.$on("userchange", function(event) {
-    $scope.user = User.currentUser;
-  });
-
-  $rootScope.$on("circlechange", function(event) {
-    $scope.circle = Circle.currentCircle;
-    $scope.gifts = Circle.gifts;
-  });
-  
-  $scope.isExpired = function() { 
-    if(!angular.isDefined($scope.circle)) return false;
-    return $scope.circle.date < new Date().getTime(); 
-  }
-
-  $scope.user = RetrieveUser($scope, $cookieStore, User, User.currentUser, "userId");
-  
-  
-  if(angular.isDefined(Circle.currentCircle)) {
-    $scope.circle = Circle.currentCircle; 
-  }
-  else if(angular.isDefined($route.current.params.circleId)) {
-    $scope.circle = Circle.query({circleId:$route.current.params.circleId}, function() {Circle.currentCircle = $scope.circle;}, function() {alert("Could not find Event "+$route.current.params.circleId);})
-  }
-  
-  
 }
 
 
@@ -615,6 +573,19 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Gif
     var thresh = auser.profilepicheight < auser.profilepicwidth ? auser.profilepicheight : auser.profilepicwidth
     var ratio = thresh > 200 ? 200 / thresh : 1;
     return ratio * auser.profilepicwidth;
+  }
+  
+  // "my wish list" call
+  $scope.mywishlist = function() {
+    //alert("$scope.mywishlist");
+    gifts = Gift.query({viewerId:User.currentUser.id}, 
+                            function() { 
+                              Circle.gifts = gifts; 
+                              Circle.gifts.mylist=true; 
+                              $rootScope.$emit("circlechange");  
+                              $rootScope.$emit("userchange"); 
+                            }, 
+                            function() {alert("Hmmm... Had a problem getting "+User.currentUser.first+"'s list\n  Try again");});
   }
   
   $scope.myaccount = function() {

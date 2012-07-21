@@ -9,7 +9,7 @@ Reminders
 	- let users add/remove reminders for certain people in an event
 	
 Add and Edit Events (2 different modals)
-	- include Past Events - right now, when you add people from another event, the only options are active events
+	- DONE:  include Past Events - right now, when you add people from another event, the only options are active events
 
 Edit Gifts
 	- email buyer if item has been bought - include old and new descriptions and old and new links

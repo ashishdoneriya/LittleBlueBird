@@ -439,13 +439,19 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     Circle.circleType = thetype;
     $location.url($location.path());
     $scope.newcircle = {name:'', creatorId:$scope.user.id, receiverLimit:limit, participants:{receivers:[], givers:[]}};
-    $scope.circlecopies = angular.copy($scope.user.circles);   
+    $scope.circlecopies = angular.copy($scope.user.circles);
+    for(var i=0; i < $scope.user.expiredcircles.length; i++) {
+      $scope.circlecopies.push(angular.copy($scope.user.expiredcircles[i]));
+    }
   }
   
   $scope.editcircleFunction = function(circle) {
     $scope.thecircle = circle;
     $scope.expdate = circle.dateStr;
     $scope.circlecopies = angular.copy($scope.user.circles);
+    for(var i=0; i < $scope.user.expiredcircles.length; i++) {
+      $scope.circlecopies.push(angular.copy($scope.user.expiredcircles[i]));
+    }
   }
   
   $scope.addmyselfasreceiver = function() {

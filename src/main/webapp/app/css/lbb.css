@@ -161,6 +161,12 @@
   border: 1px solid #aaaaaa;
 }
 
+.inset {
+  -webkit-box-shadow: inset 1px 1px 0 0 #333333;
+	   -moz-box-shadow: inset 1px 1px 0 0 #333333;
+	        box-shadow: inset 1px 1px 0 0 #333333;
+}
+
 .marg0 { margin:0; }
 
 .marg5 { margin:5px; }

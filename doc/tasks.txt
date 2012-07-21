@@ -1,0 +1,7 @@
+TASK:  ddbtn-addcircle.html and mycircles.html have the same monstrous bunch of code related to adding participants to circles.
+Not sure what the difference is.  There had to be a reason for duplicating all of this code.  There must be some slight
+variation that kept the code from being reusable - IT'S A LOT OF CODE.
+
+UPDATE 7/20/12:  Don't even go there.  Already tried creating directive to serve both add-event and edit-event function.
+The difference is just enough to where it's easier to have two similar modals.  At least the two modal call a lot of
+the same functions in CircleCtrl (or whatever)

@@ -35,6 +35,8 @@
   height:150px;
 }
 
+.align-right {text-align:right;}
+
 .black {
   background-color: #000000;
 }
@@ -191,6 +193,10 @@
 
 .margleft10 {
   margin-left:10px;
+}
+
+.margleft20 {
+  margin-left:20px;
 }
 
 .margleft30 {

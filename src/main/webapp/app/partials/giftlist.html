@@ -5,13 +5,15 @@
   <div ng-controller="CircleCtrl">
     <div ng-controller="GiftCtrl">
           
-      <span ng-show="isExpired()">
-        <div class="row alert alert-success margleft10">
-          <div class="span6">
-            <h4 class="alert-heading">{{circle.name}} has past</h4>
-            This is what {{showUser.first}} got for {{circle.name}}
+      <span ng-hide="gifts.mylist"> <!-- Hide. Doesn't apply for "my wish list" -->
+        <span ng-show="isExpired()">
+          <div class="row alert alert-success margleft10">
+            <div class="span6">
+              <h4 class="alert-heading">{{circle.name}} has past</h4>
+              This is what {{showUser.first}} got for {{circle.name}}
+            </div>
           </div>
-        </div>
+        </span>
       </span>
           
       <div class="row">

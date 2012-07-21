@@ -1,1 +1,27 @@
-Click a past event and get sent to the login screen  (The Past Events section has really been neglected)
+BUG:  Click a past event and get sent to the login screen  (The Past Events section has really been neglected)
+
+BUG:  New Event: Create a new event.  Create a user on the fly. Save everything.  Create another event.
+Notice how the Create Account form is still displayed from the last time.
+
+BUG:  Edit Event:  Change the name then cancel.  The event name in the list of Events on the left still has the
+name you entered but cancelled out of.
+
+FIXED BUG:  Edit Event:  Create a new user on the fly to add to the event.  Looks like it works but if you look in the db - it doesn't
+The person record is created but not the circle_participant record
+THE FIX:  CircleCtrl's $scope.addparticipant() takes an 'index'.  $scope.addparticipant2() calls $scope.addparticipant()
+with an 'index' value of -1.  But in $scope.addparticipant(), we never check for a value of -1.  We were using the -1
+as an array index which was causing things to blow up behind the scenes.
+
+FIXED BUG:  New Event: Create a new event.  Create a user on the fly.  Notice that if you cancel the new user form, the Save
+button on the New Event form becomes disabled.  At this point, YOU HAVE TO CREATE A NEW USER ACCOUNT JUST TO GET THE 
+OUTER SAVE BUTTON ENABLED.
+THE FIX:  Don't tie the enabled/disabled state of the Save button to circleForm.  Instead, just look at the name and date fields
+They are marked as ng-required="true" so we just check each one to make sure they have something in them.
+
+
+BUG:  New Event: Create a new Christmas event.  Try to add everyone from a birthday event.  Notice how only the honoree is added
+to the list.  The givers are ignored because for Christmas's, there are no givers.
+THE FIX:  In CircleCtrl addparticipants(), it was just the Select All link that wasn't working correctly.  The logic looped 
+through all the givers and assumed that they would be givers in the destination circle.  But now we check to see if
+circle.receiverLimit = -1 and if it is, we know that even 'givers' in the source circle should be made 'receivers'
+in the destination circle

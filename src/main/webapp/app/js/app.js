@@ -438,12 +438,14 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     $scope.people = {};
     Circle.circleType = thetype;
     $location.url($location.path());
-    $scope.newcircle = {name:'', creatorId:$scope.user.id, receiverLimit:limit, participants:{receivers:[], givers:[]}};   
+    $scope.newcircle = {name:'', creatorId:$scope.user.id, receiverLimit:limit, participants:{receivers:[], givers:[]}};
+    $scope.circlecopies = angular.copy($scope.user.circles);   
   }
   
   $scope.editcircleFunction = function(circle) {
     $scope.thecircle = circle;
     $scope.expdate = circle.dateStr;
+    $scope.circlecopies = angular.copy($scope.user.circles);
   }
   
   $scope.addmyselfasreceiver = function() {
@@ -499,7 +501,10 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
       else tocircle.participants.receivers.push(fromcircle.participants.receivers[i]);
     }
     for(var i=0; i < fromcircle.participants.givers.length; i++) {
-      tocircle.participants.givers.push(fromcircle.participants.givers[i]);
+      if(!angular.isDefined(tocircle.receiverLimit) || tocircle.receiverLimit == -1)
+        tocircle.participants.receivers.push(fromcircle.participants.givers[i]);
+      else
+        tocircle.participants.givers.push(fromcircle.participants.givers[i]);
     }
   }
   
@@ -573,6 +578,8 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Gif
                               Circle.gifts.mylist=true;
                               var x;
                               Circle.currentCircle = x; 
+                              User.currentUser = $scope.user;
+                              User.showUser = $scope.user;
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 
                             }, 
@@ -600,6 +607,10 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Gif
   $rootScope.$on("userchange", function(event) {
     $scope.user = User.currentUser;
     $scope.showUser = User.showUser;
+  });
+
+  $rootScope.$on("mywishlist", function(event) {
+    $scope.mywishlist();
   });
   
   $scope.user = RetrieveUser($scope, $cookieStore, User, User.currentUser, "userId");
@@ -639,7 +650,8 @@ function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User,
                                            if($scope.users[0].dateOfBirth == 0) { $scope.users[0].dateOfBirth = ''; }
                                            User.currentUser = $scope.users[0];
                                            User.showUser = User.currentUser;                                           
-                                           $rootScope.$emit("userchange");
+                                           $rootScope.$emit("userchange");                                          
+                                           $rootScope.$emit("mywishlist");
                                            $location.url('mywishlist'); 
                                           }, 
                                function() {$scope.loginfail=true;}  );

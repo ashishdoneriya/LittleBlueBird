@@ -7,6 +7,9 @@ Reminders
 	- define default reminders by event type OR define the same reminders to apply to all events
 	- let users add/remove reminders for everyone in an event
 	- let users add/remove reminders for certain people in an event
+	
+Add and Edit Events (2 different modals)
+	- include Past Events - right now, when you add people from another event, the only options are active events
 
 Edit Gifts
 	- email buyer if item has been bought - include old and new descriptions and old and new links
@@ -17,9 +20,7 @@ Deleting Gifts
 	  Treat all items the same (bought or not)?
 	  
 My Wish List
-	- not yet implemented
-	- User's name pulls down a menu containing My Wish List as a menu item - click it and you get sent to the home page
-	- Should be sent here after logging in (right now, you're sent to the My Account page)
+	- Make refresh go back to My Wish List page
 	
 Users
 	- alert if no email on file 
@@ -40,6 +41,7 @@ Static pages
 	- "What Is It?" page
 	- "Tell Me More" page
 	- "Features" page
+	
 Not sure how many pages I need or their titles.  But I need page(s) that say
 	- What this site is
 	- How it works

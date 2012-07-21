@@ -1,51 +1,49 @@
 
 <div class="span7 marg0">
   <div class="row">
-                  <span ng-show="!isExpired() && !gifts.mylist">
-                  <div class="span2">
-                    &nbsp;
-                    <span ng-show="gift.canbuy">
-                      <a href="#/buy/{{circle.id}}/{{showUser.id}}/{{gift.id}}" class="btn btn-success btn-mini" ng-click="startbuying(gift)">Reserve</a>
-                    </span>
-                    <span ng-show="gift.canreturn">
-                      <a class="btn btn-mini padleft15 padright15" ng-click="$location.url($location.path());returngift($index, gift)">Undo</a>
-                    </span>
-                    <span ng-show="!gift.canbuy && !gift.canreturn && gift.canseestatus && gift.isbought">
-                      <a class="btn btn-mini" ng-disabled="true" title="Bought by {{gift.sender_name}}">bought</a>
-                    </span>
-                  </div>
-                  </span>
-                
-                  <span ng-hide="!isExpired() && !gifts.mylist">
-                  <div class="span2">
-                    &nbsp;
-                  </div>
-                  </span>                  
+    <span ng-hide="isExpired() || gifts.mylist">
+      <div class="span2">
+        &nbsp;
+        <span ng-show="gift.canbuy">
+          <a href="#/buy/{{circle.id}}/{{showUser.id}}/{{gift.id}}" class="btn btn-success btn-mini" ng-click="startbuying(gift)">Reserve</a>
+        </span>
+        <span ng-show="gift.canreturn">
+          <a class="btn btn-mini padleft15 padright15" ng-click="$location.url($location.path());returngift($index, gift)">Undo</a>
+        </span>
+        <span ng-show="!gift.canbuy && !gift.canreturn && gift.canseestatus && gift.isbought">
+          <a class="btn btn-mini" ng-disabled="true" title="Bought by {{gift.sender_name}}">bought</a>
+        </span>
+      </div>
+    </span>
+    
+    <span ng-show="isExpired() || gifts.mylist">
+      <div class="span2">&nbsp;</div>
+    </span>
                   
                   
-                  <span ng-show="gift.url == undefined || gift.url == ''">
-                  <div class="span4 margleft_35 giftdescription" title="no link provided">{{gift.description}}</div>
-                  </span>
+    <span ng-show="gift.url == undefined || gift.url == ''">
+      <div class="span4 margleft_35 giftdescription" title="no link provided">{{gift.description}}</div>
+    </span>
                   
-                  <span ng-hide="gift.url == undefined || gift.url == ''">
-                  <div class="span4 margleft_35 giftdescription"><a ng-href="{{gift.url}}" target="item" title="view item online">{{gift.description}}</a></div>
-                  </span>
+    <span ng-hide="gift.url == undefined || gift.url == ''">
+      <div class="span4 margleft_35 giftdescription"><a ng-href="{{gift.url}}" target="item" title="view item online">{{gift.description}}</a></div>
+    </span>
                   
                   
-                  <div class="span1 pull-right padright15">
-                    <span class="pull-right">
+    <div class="span1 pull-right padright15">
+      <span class="pull-right">
                     
-                    <div gift-actions class="btn-group">
-				      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-asterisk"></i> <span class="caret"></span></a>
-				      <ul class="dropdown-menu">
-				        <span ng-show="gift.canedit"><li><a ng-disabled="true" href="#/editgift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="editgift(gift)"><i class="icon-pencil"></i> Edit</a></li></span> 
-                        <span ng-show="gift.candelete"><li><a href="#/deletegift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="deletegift($index, gift)"><i class="icon-remove"></i> Delete</a></li></span>
-				        <li><a class="white" ng-click="toggledetails(gift)"><i class="icon-list-alt"></i> Details</a></li>
-				     </ul>
-				    </div>
+        <div gift-actions class="btn-group">
+          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-asterisk"></i> <span class="caret"></span></a>
+	      <ul class="dropdown-menu">
+		    <span ng-show="gift.canedit"><li><a ng-disabled="true" href="#/editgift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="editgift(gift)"><i class="icon-pencil"></i> Edit</a></li></span> 
+            <span ng-show="gift.candelete"><li><a href="#/deletegift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="deletegift($index, gift)"><i class="icon-remove"></i> Delete</a></li></span>
+		    <li><a class="white" ng-click="toggledetails(gift)"><i class="icon-list-alt"></i> Details</a></li>
+		  </ul>
+	    </div>
                       
-                    </span>
-                  </div>
+      </span>
+    </div>
   </div>
   
   <div class="row" ng-show="gift.showdetails">
@@ -61,8 +59,7 @@
                       <b>This is a SURPRISE! {{showUser.first}} does not know about this item.</b>
         </div>
       </div>
-      
-      <div class="row">
+            <div class="row">
         <div class="span4 margleft_35">
                       Added <span ng-show="showUser.id != gift.addedBy">by {{gift.addedByName}}</span> 
                       on {{gift.dateCreated | date:'MMM dd, yyyy'}}

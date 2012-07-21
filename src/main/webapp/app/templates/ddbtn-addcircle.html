@@ -34,7 +34,9 @@
 	</div>
 	<div class="modal-body">
 	  <div class="row">
-	    <div class="span3">Event Name<input type="hidden" ng-model="newcircle.creatorId"></div>
+	    <div class="span3">
+	      Event Name<input type="hidden" ng-model="newcircle.creatorId">
+	    </div>
 	    <div class="span2">Date</div>
 	  </div>
 	  <div class="row">
@@ -42,7 +44,7 @@
 	      <input class="span3" maxlength="140" value="" type="text" name="name" ng-model="newcircle.name" ng-required="true" />
 	    </div>
 	    <div class="span2">
-          <input class="input-small" date-picker="expdate" ng-model="expdate" type="text" ng-required="true"></input>
+          <input class="input-small" date-picker="expdate" name="expdate" ng-model="expdate" type="text" ng-required="true"></input>
 	    </div>
 	  </div>
 	
@@ -64,8 +66,8 @@
 	              </a>
 			      <ul class="dropdown-menu">
 			        <li><a ng-click="addmyselfasreceiver()">Add myself</a></li>
-			        <li><a ng-click="addmethod='byname';participationlevel='receiver';">Add by name</a></li>
-			        <li><a ng-click="addmethod='fromanotherevent';participationlevel='receiver';">Add from another event</a></li>
+			        <li><a ng-click="addmethod='byname';participationlevel='Receiver';">Add by name</a></li>
+			        <li><a ng-click="addmethod='fromanotherevent';participationlevel='Receiver';">Add from another event</a></li>
 			      </ul>	
 	            </div>
 	          </span>
@@ -101,8 +103,8 @@
 	            </a>
 			    <ul class="dropdown-menu">
 			      <li><a ng-click="addmyselfasgiver()">Add myself</a></li>
-			      <li><a ng-click="addmethod='byname';participationlevel='giver';">Add by name</a></li>
-			      <li><a ng-click="addmethod='fromanotherevent';participationlevel='giver';">Add from another event</a></li>
+			      <li><a ng-click="addmethod='byname';participationlevel='Giver';">Add by name</a></li>
+			      <li><a ng-click="addmethod='fromanotherevent';participationlevel='Giver';">Add from another event</a></li>
 			    </ul>	
 	          </div>
 	   
@@ -256,7 +258,7 @@
 			      <div class="row">
 			        <div class="span3">
 				      <!-- option a -->
-				      <ul ng-repeat="c in user.circles" ng-class="'nav nav-pills nav-stacked marg0'">
+				      <ul ng-repeat="c in circlecopies" ng-class="'nav nav-pills nav-stacked marg0'">
 				        <li ng-class="activeOrNot(c)">
 				          <a ng-click="makeActive($index, c);toggleCircle(c);showParticipants(c);">
 	                        <span class="caret margleft_5 margtop5"></span>&nbsp;<b>{{c.name}}</b>
@@ -287,13 +289,13 @@
 	  </div>
 	  
 	</div>
-	<div class="modal-footer">
-              <div ng-show="circleForm.$invalid" >
+	<div class="modal-footer">	
+              <div ng-show="circleForm.name.$error.required || circleForm.expdate.$error.required">
                 <a ng-click="$parent.modalShown = false;$location.url($location.path());cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a>
                 <a ng-disabled="true" class="btn" id="invalidform">Save</a>
               </div>    
           
-              <div ng-show="circleForm.$valid" > 
+              <div ng-hide="circleForm.name.$error.required || circleForm.expdate.$error.required">
                 <a ng-click="$parent.modalShown = false;$location.url($location.path());cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a> 
                 <a class="btn btn-primary" ng-click="savecircle(newcircle, expdate);$parent.modalShown = false;$location.url($location.path());showRegister=false;search='';">Save</a>
               </div>

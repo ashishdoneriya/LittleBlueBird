@@ -1,4 +1,6 @@
 BUG:  Click a past event and get sent to the login screen  (The Past Events section has really been neglected)
+THE FIX:  Did away with the Past Events section.  Now, there is just one Events section that shows both active
+and expired events.  See User.circleList.
 
 BUG:  New Event: Create a new event.  Create a user on the fly. Save everything.  Create another event.
 Notice how the Create Account form is still displayed from the last time.

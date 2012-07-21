@@ -241,8 +241,6 @@ class User extends LongKeyedMapper[User] {
     thelist.flatten
   }
   
-  def expiredCircles = for(cpid <- circles; c <- cpid.circle.obj; if(c.isExpired && !c.isDeleted)) yield c
-  
   // For active circles (I think expired circles too)
   // Note: You can't put circleid anywhere in the where clause because a gift may have been bought - but not received
   // in one circle, but it since it hasn't been received, it still needs to show up when looking at any other circle.
@@ -507,9 +505,6 @@ class User extends LongKeyedMapper[User] {
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
     val jsonActiveCircles = circleList.map(_.asJs)
     val jsActive = JsArray(jsonActiveCircles)
-    val jsonExpiredCircles = expiredCircles.map(_.asJs)
-    val jsExpired = JsArray(jsonExpiredCircles)
-    println("User.suplementalJs:  profilepic.is = '"+profilepic.is+"'")
     val profilepicUrl = if(profilepic.is==null || profilepic.is.trim().toString().equals("")) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
     val img = new ImageIcon(profilepicUrl)	
     val profilepicheight = img.getIconHeight()
@@ -523,8 +518,7 @@ class User extends LongKeyedMapper[User] {
          ("circles", jsActive), 
          ("profilepicUrl", JString(profilepicUrl.toString())), 
          ("profilepicheight", profilepicheight), 
-         ("profilepicwidth", profilepicwidth), 
-         ("expiredcircles", jsExpired))        
+         ("profilepicwidth", profilepicwidth))        
   }
 
 }

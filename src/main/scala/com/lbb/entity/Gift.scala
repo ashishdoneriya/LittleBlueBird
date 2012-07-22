@@ -138,9 +138,7 @@ class Gift extends LongKeyedMapper[Gift] {
     val old = description.is
     println("Gift.setDescription:  updater="+updater+"  sender: "+sender.obj.getOrElse("n/a"))
     for(sss <- sender.obj; if(!sss.email.isEmpty()); if(!old.equals(nu))) yield {
-      val msg = Emailer.createDescriptionChangedEmail(sss.first.is, updater, old, nu)
-      val email = Email(sss.email.is, "info@littlebluebird.com", "LittleBlueBird.com", updater+" just changed a gift's description", msg, Nil, Nil)
-      Emailer.send(email)
+      Emailer.sendDescriptionChangedEmail(sss.email.is, sss.first.is, updater, old, nu)
     }
     description(nu)
   }
@@ -293,11 +291,4 @@ object Gift extends Gift with LongKeyedMetaMapper[Gift] {
   
   // define the order fields will appear in forms and output
   override def fieldOrder = List(description, url)
-  
-  def delete(id:Long) = {
-    findByKey(id) foreach {g =>
-      Recipient.findAll(By(Recipient.gift, g)).foreach(_.delete_!)
-      g.delete_!
-    }
-  }
 }

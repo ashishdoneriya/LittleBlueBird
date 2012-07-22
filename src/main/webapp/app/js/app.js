@@ -293,7 +293,7 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
   
   $scope.deletegift = function(index, gift) {
     $scope.gifts.splice(index, 1);
-    Gift.delete({giftId:gift.id});
+    Gift.delete({giftId:gift.id, updater:$scope.user.fullname});
   }
        
   $scope.canceleditgift = function(gift) {

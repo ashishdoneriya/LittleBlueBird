@@ -26,6 +26,7 @@ import net.liftweb.json.JsonAST._
 import net.liftweb.util.BasicTypesHelpers._
 import com.lbb.entity.CircleParticipant
 import net.liftweb.mapper.By
+import com.lbb.entity.Recipient
 
 object RestService extends RestHelper {
 
@@ -38,6 +39,7 @@ object RestService extends RestHelper {
     case JsonPost("circles" :: AsLong(circleId) :: _, (json, req)) => println("updateCircle: "+circleId); updateCircle(circleId)
     case JsonPost("circleparticipants" :: AsLong(circleId) :: _, (json, req)) => insertParticipant(circleId)
     case Delete("circleparticipants" :: AsLong(circleId) :: _, req) => deleteParticipant(circleId)
+    case Delete("gifts" :: AsLong(giftId) :: deleter :: _, _) => deleteGift(giftId, deleter)
   }
   
   serve {
@@ -59,7 +61,6 @@ object RestService extends RestHelper {
     // circles...
     case Get("circles" :: AsLong(circleId) :: _, _) => println("RestService.serve:  88888888"); findCircle(circleId)
     case Get("circleparticipants" :: AsLong(circleId) :: _, _) => println("RestService.serve:  77777777777"); findCircleParticipants(circleId)
-    case Delete("gifts" :: AsLong(giftId) :: _, _) => deleteGift(giftId)
     case _ => println("RestService.serve:  666666666"); debug
   }
   
@@ -443,8 +444,16 @@ object RestService extends RestHelper {
   }
   
   
-  def deleteGift(id:Long) = {
-    Gift.delete(id)
+  def deleteGift(id:Long, deleter:String) = {
+    val giftBox = Gift.findByKey(id)
+    for(gift <- giftBox) yield {
+      for(sender <- gift.sender; if(!sender.email.isEmpty())) yield {
+        val salut = sender.first.is + " " + sender.last.is
+        Emailer.sendDeletedGiftEmail(sender.email.is, salut, deleter, gift.description.is)
+      }
+      Recipient.findAll(By(Recipient.gift, gift)).foreach(_.delete_!)
+      gift.delete_!
+    }
     NoContentResponse()
   }
   

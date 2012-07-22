@@ -81,6 +81,36 @@ object Emailer {
     </html>
   }
   
+  def sendDescriptionChangedEmail(email:String, salut:String, changer:String, old:String, nu:String) = {
+    val msg = createDescriptionChangedEmail(salut, changer, old, nu)
+    val e = Email(email, "info@littlebluebird.com", "LittleBlueBird.com", changer+" just changed a gift's description", msg, Nil, Nil)
+    Emailer.send(e)
+  }
+  
+  def createDeletedGiftEmail(salut:String, deleter:String, desc:String) = {
+    <html>
+      <head></head>
+      <body>
+        <table width="100%">
+          <tr>
+            <td width="80%" valign="top">
+              {salut},
+              <P>{deleter} just deleted a gift that you bought.</P>
+              <P>The gift was: {desc}</P>
+            </td>
+            <td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td>
+          </tr>
+        </table>
+      </body>
+    </html>
+  }
+  
+  def sendDeletedGiftEmail(email:String, salut:String, deleter:String, desc:String) = {
+    val msg = createDeletedGiftEmail(salut, deleter, desc)
+    val e = Email(email, "info@littlebluebird.com", "LittleBlueBird.com", deleter+" just deleted a gift you bought", msg, Nil, Nil)
+    Emailer.send(e)
+  }
+  
   
 //  val fromemail = "info@littlebluebird.com"
 //    

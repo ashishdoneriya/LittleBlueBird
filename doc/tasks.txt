@@ -5,3 +5,80 @@ variation that kept the code from being reusable - IT'S A LOT OF CODE.
 UPDATE 7/20/12:  Don't even go there.  Already tried creating directive to serve both add-event and edit-event function.
 The difference is just enough to where it's easier to have two similar modals.  At least the two modal call a lot of
 the same functions in CircleCtrl (or whatever)
+
+
+Events
+	- changing name and date: DONE but date change from active to expired (or v.v.) won't put the event in the other category until you hit refresh or login again
+	- adding/removing people: DONE but need to do something about people that have gifts bought for them already.  Prompt the person?  Prevent person from being removed?
+	- add "recurring" attribute to events - db change
+	
+Reminders
+	- define default reminders by event type OR define the same reminders to apply to all events
+	- let users add/remove reminders for everyone in an event
+	- let users add/remove reminders for certain people in an event
+	
+Add and Edit Events (2 different modals)
+	- DONE:  include Past Events - right now, when you add people from another event, the only options are active events
+
+Buying Gifts:  The save, buy, cancel buttons need to be looked at
+
+Edit Gifts
+	- email buyer if item has been bought - include old and new descriptions and old and new links
+
+Deleting Gifts
+	- email buyer if item has been bought and then deleted.  
+	  Should the item actually be deleted from the db or just marked as deleted?
+	  Treat all items the same (bought or not)?
+	  
+My Wish List
+	- Make refresh go back to My Wish List page
+	
+Users
+	- alert if no email on file 
+	  needed for password recovery, also see "Email alerts" section below)
+	- Delete account - there is
+	- "change password" not implemented
+	- hide password in all query results
+	
+Email alerts
+	- welcome email when you create your account
+	- welcome email when someone creates your account for you
+	- when you have bought a gift that someone later edits or deletes
+	- when someone returns an item that was previously bought
+	- when someone adds you to an event
+	- when someone drops you from an event
+	
+Static pages
+	- "What Is It?" page
+	- "Tell Me More" page
+	- "Features" page
+	
+Not sure how many pages I need or their titles.  But I need page(s) that say
+	- What this site is
+	- How it works
+	- Why it's different
+	
+Welcome page - Right after the user creates his account, what does he see?
+	- needs to be prompted to create events
+	- needs to be prompted to add people to events
+	- needs to be prompted to create his wish list
+
+Affiliate program
+	- detect amazon url's and modify with my tag
+	
+Browser button - crossrider.com - "Add to Wish List" button
+
+Facebook
+	- share an item on fb
+	- share my list on fb
+	
+Customize viewing rules - Right now, the site determines when to show you an item and when 
+to allow you to edit it and delete it.  These rules don't always make sense though.  
+When we add items to Kiera's list, sometimes she knows about them.  She should be able to
+see any item she knows about.  But LBB assumes that she doesn't know about them so she can't
+see them
+
+"Buddy List" - Right now, the only way to see someone's list is if they are in an event with you.
+If you have no active events, then you can't update your children's lists.
+
+	

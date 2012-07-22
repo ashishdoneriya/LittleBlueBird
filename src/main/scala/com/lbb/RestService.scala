@@ -44,8 +44,8 @@ object RestService extends RestHelper {
     case Get("users" :: AsLong(userId) :: _, _) => println("RestService.serve:  22222222222222"); findUser(userId)
     case Get("users" :: _, _) => println("RestService.serve:  333333333333333333333333"); findUsers
     case Post("logout" :: _, _) => S.deleteCookie("userId");NoContentResponse()
-    case JsonPost("email" :: _, (json, req)) => sendemail 
-    case JsonPost("gifts" :: AsLong(giftId) :: _, (json, req)) => println("RestService.serve:  BBBBBBBB"); updateGift(giftId)
+    case JsonPost("email" :: _, (json, req)) => sendPasswordRecoveryEmail 
+    case JsonPost("gifts" :: AsLong(giftId) :: updaterName :: _, (json, req)) => println("RestService.serve:  BBBBBBBB"); updateGift(updaterName, giftId)
     case JsonPost("gifts" :: Nil, (json, req)) => println("RestService.serve:  CCCCCCC"); debug(json); insertGift
     case JsonPost("users" :: AsLong(userId) :: _, (json, req)) => println("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
     case JsonPost("users" :: Nil, (json, req)) => println("RestService.serve:  4444444444444444"); debug(json); insertUser
@@ -63,9 +63,9 @@ object RestService extends RestHelper {
     case _ => println("RestService.serve:  666666666"); debug
   }
   
-  def sendemail = {
+  def sendPasswordRecoveryEmail = {
     try {
-      val message = Emailer.createMessage
+      val message = Emailer.createRecoverPasswordMessage
     
       val email = Email(S.param("to").getOrElse("info@littlebluebird.com"),
                         S.param("from").getOrElse("info@littlebluebird.com"),          
@@ -389,15 +389,15 @@ object RestService extends RestHelper {
       }
   }
   
-  def updateGift(id:Long) = (Gift.findByKey(id), S.request) match {
+  def updateGift(updater:String, id:Long) = (Gift.findByKey(id), S.request) match {
     case (Full(gift), Full(req)) => {
       // TODO hack?  Empty sender then repopulate if it's in the json object
-      gift.sender(Empty).sender_name(Empty)
+      //gift.sender(Empty).sender_name(Empty) // WHY ARE WE DOING THIS?
       req.json match {
         case Full(jvalue:JObject) => {
           jvalue.values foreach {kv => (kv._1, kv._2) match {
               case ("giftId", id:BigInt) => { }
-              case ("description", s:String) => gift.description(s)
+              case ("description", s:String) => {gift.setDescription(s, updater)} //gift.description(s)
               case ("url", s:String) => gift.url(s)
               case ("recipients", l:List[Map[String, Any]]) => {
                 l.filter(e => e.get("checked").getOrElse(false).equals(true) )

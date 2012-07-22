@@ -79,7 +79,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return CircleParticipant;
   }).
   factory('Gift', function($resource) {
-      var Gift = $resource('/gf/gifts/:giftId', {giftId:'@giftId', viewerId:'@viewerId', recipientId:'@recipientId', recipients:'@recipients', circleId:'@circleId', description:'@description', url:'@url', addedBy:'@addedBy', status:'@status', senderId:'@senderId', senderName:'@senderName', reallyWants:'@reallyWants', deleted:'@deleted', urlAff:'@urlAff', affiliateId:'@affiliateId'}, 
+      var Gift = $resource('/gf/gifts/:giftId/:updater', {giftId:'@giftId', updater:'@updater', viewerId:'@viewerId', recipientId:'@recipientId', recipients:'@recipients', circleId:'@circleId', description:'@description', url:'@url', addedBy:'@addedBy', status:'@status', senderId:'@senderId', senderName:'@senderName', reallyWants:'@reallyWants', deleted:'@deleted', urlAff:'@urlAff', affiliateId:'@affiliateId'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       delete: {method:'DELETE'},
@@ -246,8 +246,11 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
       }
     }
     
-    var savedgift = Gift.save({giftId:gift.id, circleId:$scope.circle.id, description:gift.description, url:gift.url, 
-               addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$scope.user.id, recipientId:$scope.showUser.id, senderId:gift.sender, senderName:gift.sender_name},
+    alert("$scope.user.fullname="+$scope.user.fullname);
+    
+    var savedgift = Gift.save({giftId:gift.id, updater:$scope.user.fullname, circleId:$scope.circle.id, description:gift.description, url:gift.url, 
+               addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$scope.user.id, recipientId:$scope.showUser.id, 
+               senderId:gift.sender, senderName:gift.sender_name},
                function() {
                  if(remove) $scope.gifts.splice(index, 1);
                  else $scope.gifts.splice(index, 1, savedgift);

@@ -44,7 +44,7 @@ object Emailer {
   }
   
   
-  def createMessage = (S.param("passwordrecovery"), S.param("message")) match {
+  def createRecoverPasswordMessage = (S.param("passwordrecovery"), S.param("message")) match {
       case (Full("true"), _) => {
         User.findAll(By(User.email, S.param("to").getOrElse("none"))) match {
           case Nil => throw new RuntimeException("Email address not found: "+S.param("to").getOrElse("none"))
@@ -60,6 +60,25 @@ object Emailer {
         Text(msg)
       }
       case _ => Text("")
+  }
+  
+  def createDescriptionChangedEmail(salut:String, changer:String, old:String, nu:String) = {
+    <html>
+      <head></head>
+      <body>
+        <table width="100%">
+          <tr>
+            <td width="80%" valign="top">
+              {salut},
+              <P>{changer} just changed the description of an item you are buying.</P>
+              <P>The description was: {old}</P>
+              <P>The description is now: {nu}</P>
+            </td>
+            <td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td>
+          </tr>
+        </table>
+      </body>
+    </html>
   }
   
   

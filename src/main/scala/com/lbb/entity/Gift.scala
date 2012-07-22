@@ -25,6 +25,8 @@ import java.util.Date
 import net.liftweb.mapper.MappedInt
 import net.liftweb.mapper.MappedNullableField
 import scala.collection.immutable.List
+import com.lbb.util.Emailer
+import com.lbb.util.Email
 
 /**
  * READY TO DEPLOY
@@ -130,7 +132,18 @@ class Gift extends LongKeyedMapper[Gift] {
     override def textareaRows  = 10
     override def textareaCols = 50
     override def displayName = "Description"
-  } 
+  }   
+  
+  def setDescription(nu:String, updater:String) = {
+    val old = description.is
+    println("Gift.setDescription:  updater="+updater+"  sender: "+sender.obj.getOrElse("n/a"))
+    for(sss <- sender.obj; if(!sss.email.isEmpty()); if(!old.equals(nu))) yield {
+      val msg = Emailer.createDescriptionChangedEmail(sss.first.is, updater, old, nu)
+      val email = Email(sss.email.is, "info@littlebluebird.com", "LittleBlueBird.com", updater+" just changed a gift's description", msg, Nil, Nil)
+      Emailer.send(email)
+    }
+    description(nu)
+  }
   
   // TODO validate url
   object url extends MappedStringExtended(this, 1028) {

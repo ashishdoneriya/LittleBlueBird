@@ -178,7 +178,7 @@ class Gift extends LongKeyedMapper[Gift] {
     val users = for(user <- all; if(!recipientList.contains(user))) yield {
       user
     }
-    val ret = users.toSet
+    val ret = users.toSet.filter(u => isBought && u.id.is != sender.is)
     ret foreach {u => println("Gift.getEmailListForReturns:  For: "+description.is+":  notify "+u.first.is)}
     ret
   }

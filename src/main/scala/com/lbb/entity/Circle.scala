@@ -48,10 +48,6 @@ CREATE TABLE IF NOT EXISTS `circles` (
 
  */
 
-case class CircleType(name:String, receiverLimit:Int)
-
-case class Christmas extends CircleType("Christmas", -1)
-
 class Circle extends LongKeyedMapper[Circle] { 
   
   def getSingleton = Circle

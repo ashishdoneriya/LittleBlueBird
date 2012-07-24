@@ -231,13 +231,13 @@ class User extends LongKeyedMapper[User] {
   
   // query the circle_participant table to find out what circles you belong to
   def circles = CircleParticipant.findAll(By(CircleParticipant.person, this.id))
+  
+  def activeCircles = for(cpid <- circles; c <- cpid.circle.obj; if(!c.isExpired && !c.isDeleted)) yield c
 
   def circleList = {
-    val activeCircles = for(cpid <- circles; c <- cpid.circle.obj; if(!c.isExpired && !c.isDeleted)) yield c
-    val ac = activeCircles.sortWith(_.date.getTime < _.date.getTime)
     val expiredCircles = for(cpid <- circles; c <- cpid.circle.obj; if(c.isExpired && !c.isDeleted)) yield c
     val ec = expiredCircles.sortWith(_.date.getTime > _.date.getTime)
-    val thelist = ac :: ec :: Nil
+    val thelist = activeCircles.sortWith(_.date.getTime < _.date.getTime) :: ec :: Nil
     thelist.flatten
   }
   

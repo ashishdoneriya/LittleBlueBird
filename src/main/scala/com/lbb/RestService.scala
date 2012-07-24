@@ -1,14 +1,18 @@
 package com.lbb
 import java.text.SimpleDateFormat
 import java.util.Date
+
 import com.lbb.entity.Circle
+import com.lbb.entity.CircleParticipant
 import com.lbb.entity.Gift
+import com.lbb.entity.Recipient
 import com.lbb.entity.User
 import com.lbb.util.Email
 import com.lbb.util.Emailer
 import com.lbb.util.MapperHelper
 import com.lbb.util.RequestHelper
 import com.lbb.util.SearchHelper
+
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
@@ -23,10 +27,8 @@ import net.liftweb.http.NoContentResponse
 import net.liftweb.http.Req
 import net.liftweb.http.S
 import net.liftweb.json.JsonAST._
-import net.liftweb.util.BasicTypesHelpers._
-import com.lbb.entity.CircleParticipant
 import net.liftweb.mapper.By
-import com.lbb.entity.Recipient
+import net.liftweb.util.BasicTypesHelpers._
 
 object RestService extends RestHelper {
 
@@ -119,7 +121,6 @@ object RestService extends RestHelper {
   }
   
   def deleteParticipant(circleId:Long) = {
-    println("deleteParticipant-----------------------------------------------")
     for(s <- S.param("userId")) yield {
       val userId = s.toLong;
       val cps = CircleParticipant.findAll(By(CircleParticipant.circle, circleId), By(CircleParticipant.person, userId))
@@ -129,34 +130,65 @@ object RestService extends RestHelper {
   }
   
   def insertUser = {
-    S.request match {
-      case Full(req) => {
-        req.json match {
-          case Full(jvalue:JObject) => {
-            println("RestService.insertUser: jvalue = "+jvalue)
-            val user = User.create
-            jvalue.values foreach {kv => kv match {
-                case ("fullname", s:String) => user.name(s)
-                case ("first", s:String) => user.first(s)
-                case ("last", s:String) => user.last(s)
-                case ("email", s:String) => user.email(s)
-                case ("username", s:String) => user.username(s)
-                case ("password", s:String) => user.password(s)
-                case ("bio", s:String) => user.bio(s)
-                case ("profilepic", s:String) => user.profilepic(s)
-                case ("dateOfBirth", s:String) => user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s)) // not sure about this one yet
-                case _ => println("RestService.insertUser:  unhandled: "+kv._1+" = "+kv._2)
-              }
-            }
-            user.save()
-            val cookies = S.param("login").filter(p => p.equals("true")).map(s => RequestHelper.cookie("userId", user))
-            JsonResponse(user.asJs, Nil, cookies.toList, 200)
-          }
-          case _ => println("RestService.insertUser: case _ :  req.json = "+Empty); BadResponse()
+    val user = User.create
+    val jval = for(req <- S.request; jvalue <- req.json; if(jvalue.isInstanceOf[JObject])) yield {
+      jvalue.asInstanceOf[JObject]
+    }
+    
+    for(jobj <- jval) yield {
+      jobj.values foreach {
+        kv => kv match {
+          case ("fullname", s:String) => user.name(s)
+          case ("first", s:String) => user.first(s)
+          case ("last", s:String) => user.last(s)
+          case ("email", s:String) => user.email(s)
+          case ("username", s:String) => user.username(s)
+          case ("password", s:String) => user.password(s)
+          case ("bio", s:String) => user.bio(s)
+          case ("profilepic", s:String) => user.profilepic(s)
+          case ("dateOfBirth", s:String) => user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s)) // not sure about this one yet
+          case _ => println("RestService.insertUser:  unhandled: "+kv._1+" = "+kv._2)
         }
       }
-      case _ => BadResponse()
     }
+    user.save()
+    val cookies = S.param("login").filter(p => p.equals("true")).map(s => RequestHelper.cookie("userId", user))
+    
+    println("creatorName = "+S.param("creatorName"))
+    for(creator <- S.param("creatorName")) yield {
+      Emailer.sendAccountCreatedForYouEmail(user, creator)
+    }
+    
+    JsonResponse(user.asJs, Nil, cookies.toList, 200)
+    
+//    S.request match {
+//      case Full(req) => {
+//        req.json match {
+//          case Full(jvalue:JObject) => {
+//            println("RestService.insertUser: jvalue = "+jvalue)
+//            val user = User.create
+//            jvalue.values foreach {kv => kv match {
+//                case ("fullname", s:String) => user.name(s)
+//                case ("first", s:String) => user.first(s)
+//                case ("last", s:String) => user.last(s)
+//                case ("email", s:String) => user.email(s)
+//                case ("username", s:String) => user.username(s)
+//                case ("password", s:String) => user.password(s)
+//                case ("bio", s:String) => user.bio(s)
+//                case ("profilepic", s:String) => user.profilepic(s)
+//                case ("dateOfBirth", s:String) => user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s)) // not sure about this one yet
+//                case _ => println("RestService.insertUser:  unhandled: "+kv._1+" = "+kv._2)
+//              }
+//            }
+//            user.save()
+//            val cookies = S.param("login").filter(p => p.equals("true")).map(s => RequestHelper.cookie("userId", user))
+//            JsonResponse(user.asJs, Nil, cookies.toList, 200)
+//          }
+//          case _ => println("RestService.insertUser: case _ :  req.json = "+Empty); BadResponse()
+//        }
+//      }
+//      case _ => BadResponse()
+//    }
   }
   
   def insertCircle = {
@@ -393,7 +425,8 @@ object RestService extends RestHelper {
   def updateGift(updater:String, id:Long) = (Gift.findByKey(id), S.request) match {
     case (Full(gift), Full(req)) => {
       // TODO hack?  Empty sender then repopulate if it's in the json object
-      //gift.sender(Empty).sender_name(Empty) // WHY ARE WE DOING THIS?
+      //gift.sender(Empty).sender_name(Empty) // this was how we were handling returns - by essentially assuming the gift was being returned and then re-populating the sender down
+      // below if that info happens to be in the request - kinda dumb
       req.json match {
         case Full(jvalue:JObject) => {
           jvalue.values foreach {kv => (kv._1, kv._2) match {
@@ -422,7 +455,13 @@ object RestService extends RestHelper {
 	            gift.currentCircle = Circle.findByKey(a.toLong)
               }
               
-              case ("senderId", a:BigInt) => {
+              // case: returning the gift
+              case ("senderId", a:BigInt) if(a.toLong == -1 && gift.isBought) => {
+                Emailer.sendGiftReturnedEmail(gift)
+                gift.sender(Empty)
+              }
+              
+              case ("senderId", a:BigInt) => { 
                 User.findByKey(a.toLong).foreach(s => gift.sender(s))
               } 
               

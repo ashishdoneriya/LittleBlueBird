@@ -36,7 +36,7 @@ angular.module('datetime', [])
        
 angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap.modal']).
   factory('User', function($resource) {
-      var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login'}, 
+      var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login', creatorId:'@creatorId', creatorName:'@creatorName'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       find: {method:'GET', isArray:false}, 
@@ -83,7 +83,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
                     {
                       query: {method:'GET', isArray:true}, 
                       delete: {method:'DELETE'},
-                      save: {method:'POST'}
+                      save: {method:'POST'},
                     });
 
       return Gift;
@@ -222,7 +222,7 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
       }
     }
     
-    var savedgift = Gift.save({circleId:$scope.circle.id, description:gift.description, url:gift.url, 
+    var savedgift = Gift.save({updater:$scope.user.fullname, circleId:$scope.circle.id, description:gift.description, url:gift.url, 
                addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$scope.user.id, recipientId:$scope.showUser.id},
                function() {
                  if(add) {$scope.gifts.reverse();$scope.gifts.push(savedgift);$scope.gifts.reverse();}
@@ -266,13 +266,14 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
   
   
   $scope.buygift = function(index, gift) {
-    var savedgift = Gift.save({giftId:gift.id, circleId:$scope.circle.id, recipients:gift.recipients, viewerId:$scope.user.id, recipientId:$scope.showUser.id, senderId:gift.senderId, senderName:gift.senderName},
+    var savedgift = Gift.save({giftId:gift.id, updater:$scope.user.fullname, circleId:$scope.circle.id, recipients:gift.recipients, viewerId:$scope.user.id, recipientId:$scope.showUser.id, senderId:gift.senderId, senderName:gift.senderName},
                function() { $scope.gifts.splice(index, 1, savedgift); });
   }
   
   
   $scope.returngift = function(index, gift) {
-    var savedgift = Gift.save({giftId:gift.id, circleId:$scope.circle.id, recipients:gift.recipients, viewerId:$scope.user.id, recipientId:$scope.showUser.id},
+    var savedgift = Gift.save({giftId:gift.id, updater:$scope.user.fullname, circleId:$scope.circle.id, recipients:gift.recipients, viewerId:$scope.user.id, 
+                               recipientId:$scope.showUser.id, senderId:-1, senderName:''},
                function() { $scope.gifts.splice(index, 1, savedgift); });
   }
     
@@ -355,7 +356,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   }
   
   $scope.createonthefly = function(newuser, thecircle) {
-    anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth}, 
+    anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth, creatorId:$scope.user.id, creatorName:$scope.user.fullname}, 
                                   function() {$scope.addparticipant2(anewuser, thecircle); $scope.addmethod = 'byname'; $scope.usersearch = ''; $scope.search = '';}
                                 );
   }

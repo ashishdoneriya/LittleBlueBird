@@ -57,6 +57,53 @@ class CircleTest extends FunSuite with AssertionsForJUnit {
     assert(CircleTest.nextXmas.name==="Christmas 2012")
   }
   
+  test("Intersection of Circles") {
+    
+    initDb 
+        
+    Circle.findAll.foreach(_.delete_!)
+    assert(Circle.findAll.size===0)
+        
+    User.findAll.foreach(_.delete_!)
+    assert(User.findAll.size===0)
+
+    val brent = UserTest.createBrent
+    val tamie = UserTest.createTamie
+    val kiera = UserTest.createKiera
+    val truman = UserTest.createTruman
+    val jett = UserTest.createJett
+    val brenda1 = UserTest.createBrenda1
+    val brenda2 = UserTest.createBrenda2
+    val bill = UserTest.createBill
+    
+    val lastXmas = CircleTest.lastXmas.add(List(brent, tamie, kiera, truman, jett), brent)
+    val nextXmas = CircleTest.nextXmas.add(List(brent, tamie, kiera, truman, jett), brent)
+    val anniv = CircleTest.anniv.add(List(brent, tamie), List(kiera, truman, jett, brenda1), brent)
+    val bday = CircleTest.bday.add(List(brent), List(tamie, kiera, truman, jett, bill), brent)
+    
+    assert(brent.activeCircles.size===3) 
+    val recipientList = for(user <- User.findAll().filter(u => u.first.is.equals("Brent") || u.first.is.equals("Tamie"))) yield {
+      println(user)
+      user
+    }
+    
+    // should be:  kiera, truman, jett, brenda1   NOT bill
+    val emailList = getEmailList(recipientList)
+    
+  }
+  
+  def getEmailList(recipientList:List[User]) = {
+    val xxxx = for(recip <- recipientList; circle <- recip.activeCircles.filter(ccc => recip.isReceiver(ccc))) yield {
+      println("CIRCLE: "+circle.name)
+      circle
+    }
+    
+    val cs = for(ccc <- xxxx; recip <- recipientList; if(recip.isReceiver(ccc))) yield {
+      println("CS: "+ccc.name)
+      ccc
+    }
+  }
+  
   test("test circle types") {
     import com.lbb.TypeOfCircle
     TypeOfCircle.values foreach {t => {println("Circle type:  "+t)}}
@@ -95,13 +142,13 @@ object CircleTest extends CircleTest {
     circle
   }
   
-  def anniv2012 = {
-    val circle = Circle.create.circleType(TypeOfCircle.anniversary.toString()).name("Anniversary 2012").date(new SimpleDateFormat("MM/dd/yyyy").parse("06/28/2012"))
+  def anniv = {
+    val circle = Circle.create.circleType(TypeOfCircle.anniversary.toString()).name("Anniversary 2012").date(new SimpleDateFormat("MM/dd/yyyy").parse("06/28/2013"))
     circle.save
     circle
   }
   
-  def bday2012 = {
+  def bday = {
     val circle = Circle.create.circleType(TypeOfCircle.birthday.toString()).name("BDay 2012").date(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/2012"))
     circle.save
     circle

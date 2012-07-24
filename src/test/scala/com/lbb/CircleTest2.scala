@@ -86,8 +86,8 @@ class CircleTest2 extends FunSuite with AssertionsForJUnit {
     val bill = UserTest.createBill
     
     val xmas = CircleTest.nextXmas.add(List(brent, tamie, kiera, truman, jett), brent)
-    val anniv = CircleTest.anniv2012.add(List(brent, tamie), List(kiera, truman, jett), brent)
-    val bday = CircleTest.bday2012.add(List(brent), List(tamie, kiera, truman, jett, brenda1), brent)
+    val anniv = CircleTest.anniv.add(List(brent, tamie), List(kiera, truman, jett), brent)
+    val bday = CircleTest.bday.add(List(brent), List(tamie, kiera, truman, jett, brenda1), brent)
     
     // for me and Tamie - should appear in the xmas circle but not my bday circle
     val gift1 = Gift.create.description("gift1").url("www.bn.com").circle(xmas).addedBy(brent)

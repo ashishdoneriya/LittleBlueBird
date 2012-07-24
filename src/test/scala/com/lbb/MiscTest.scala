@@ -21,6 +21,8 @@ import net.liftweb.common.Full
 import net.liftweb.common.Empty
 import javax.swing.ImageIcon
 import java.net.URL
+import com.lbb.entity.Gift
+import com.lbb.util.Util
 
 @RunWith(classOf[JUnitRunner])
 class MiscTest extends FunSuite with AssertionsForJUnit {
@@ -154,18 +156,38 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
     println("h = "+h+"   w = "+w)
   }
   
-  test("find noprofilepic") {
-    val url = getClass.getResource("noprofilepic.jpg")
-    val icon = new ImageIcon(url) 
-    val h = icon.getIconHeight()
-    val w = icon.getIconWidth()
-    println("h = "+h+"   w = "+w)
-  }
-  
   test("list to set") {
     val list = List(1, 2, 2, 3, 4)
     val set = list.toSet
     println(set)
   }
+  
+  test("pretty string from List") {
+    assert("one, two, three and four"===Util.toStringPretty(List("one", "two", "three", "four")))
+    assert("one, two and three"===Util.toStringPretty(List("one", "two", "three")))
+    assert("one and two"===Util.toStringPretty(List("one", "two")))
+    assert("one"===Util.toStringPretty(List("one")))
+    assert(""===Util.toStringPretty(List("")))
+    assert(""===Util.toStringPretty(List()))
+    assert(""===Util.toStringPretty(Nil))
+  }
+  
+  test("?") {
+    val list1 = List(1,2,3,4,5)
+    val list2 = List(2,3,4,5,6)
+    val list3 = List(3,4,5,6,7)
+    val list4 = List(4,5,6,7,8)
+    val list = List(list1, list2, list3, list4)
+    
+    val ints = for(ll <- list; ii <- ll) yield {
+      ii
+    }
+    
 
+    val sect = list.foldLeft[List[Int]](ints)((a,b)=>a.intersect(b))
+    println("sect:  "+sect)
+    
+    
+  }
+  
 }

@@ -158,7 +158,7 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit {
     val status = Map(brent -> "Receiver", tamie -> "Receiver", kiera -> "Giver", truman -> "Giver", jett -> "Giver")
     val expectedReceivers = List(brent, tamie)
     val expectedGivers = List(kiera, truman, jett)
-    val expectedCircle = CircleTest.anniv2012.add(expectedReceivers, expectedGivers, brent)
+    val expectedCircle = CircleTest.anniv.add(expectedReceivers, expectedGivers, brent)
     
     // Now check the stuff...
     // Does the circle have 5 participants
@@ -204,7 +204,7 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit {
     val status = Map(brent -> "Receiver", tamie -> "Giver", kiera -> "Giver", truman -> "Giver", jett -> "Giver")
     val expectedReceivers = List(brent)
     val expectedGivers = List(tamie, kiera, truman, jett)
-    val expectedCircle = CircleTest.bday2012.add(expectedReceivers, expectedGivers, brent)
+    val expectedCircle = CircleTest.bday.add(expectedReceivers, expectedGivers, brent)
     
     // Now check the stuff...
     // Does the circle have 5 participants

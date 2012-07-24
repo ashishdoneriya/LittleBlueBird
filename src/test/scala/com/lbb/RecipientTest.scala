@@ -69,8 +69,8 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
     
     val lastXmas = CircleTest.lastXmas.add(List(brent, tamie, kiera, truman, jett), brent)
     val nextXmas = CircleTest.nextXmas.add(List(brent, tamie, kiera, truman, jett), brent)
-    val anniv2012 = CircleTest.anniv2012.add(List(brent, tamie), List(kiera, truman, jett), brent)
-    val bday2012 = CircleTest.bday2012.add(List(brent), List(tamie, kiera, truman, jett), brent)
+    val anniv2012 = CircleTest.anniv.add(List(brent, tamie), List(kiera, truman, jett), brent)
+    val bday2012 = CircleTest.bday.add(List(brent), List(tamie, kiera, truman, jett), brent)
     
     // I add to my list
     val gift1 = Gift.create.description("gift1").addedBy(brent)

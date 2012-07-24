@@ -27,6 +27,7 @@ import net.liftweb.mapper.MappedNullableField
 import scala.collection.immutable.List
 import com.lbb.util.Emailer
 import com.lbb.util.Email
+import com.lbb.util.Util
 
 /**
  * READY TO DEPLOY
@@ -158,6 +159,30 @@ class Gift extends LongKeyedMapper[Gift] {
   
   def recipientList = recipients.map(fk => fk.person.obj.open_!)
   
+  def recipientNames = {
+    val names = recipientList.map(_.first.is)
+    Util.toStringPretty(names)
+  }
+  
+  /**
+   * These are the people to notify when a gift is returned/unbought.
+   * TODO need unit test for this
+   */
+  def getEmailListForReturns = {
+    val circles = for(recip <- recipientList) yield {
+      recip.activeCircles.filter(ccc => recip.isReceiver(ccc))
+    }
+
+    val sect = circles.foldLeft[List[Circle]](circles.flatten)((a,b)=>a.intersect(b))
+    val all = sect.map(ccc => ccc.participantList).flatten
+    val users = for(user <- all; if(!recipientList.contains(user))) yield {
+      user
+    }
+    val ret = users.toSet
+    ret foreach {u => println("Gift.getEmailListForReturns:  For: "+description.is+":  notify "+u.first.is)}
+    ret
+  }
+  
   def addedByName = addedBy.obj.map(_.first.is).getOrElse("n/a")
   
   def wasAddedByARecipient = {
@@ -198,10 +223,7 @@ class Gift extends LongKeyedMapper[Gift] {
   }
   
   // TODO do we need to check the circle or just the sender - just checking the sender for now
-  def isBought = this.sender.obj match {
-    case Full(sender) => true
-    case _ => false
-  }
+  def isBought = this.sender.obj.getOrElse("none") != "none"
   
   def wasBoughtInThisCircle(c:Circle) = (this.sender.obj, this.circle.obj) match {
     case(Empty, _) => false

@@ -11,8 +11,8 @@ import net.liftweb.util.Props
 import net.liftweb.http.S
 import net.liftweb.mapper.By
 import scala.xml.Text
+import com.lbb.entity.Gift
 
-//case class Email(to:String, fromemail:String, fromname:String, subject:String, message:String, cc:List[String], bcc:List[String])
 case class Email(to:String, fromemail:String, fromname:String, subject:String, message:NodeSeq, cc:List[String], bcc:List[String])
 
 
@@ -84,6 +84,65 @@ object Emailer {
   def sendDescriptionChangedEmail(email:String, salut:String, changer:String, old:String, nu:String) = {
     val msg = createDescriptionChangedEmail(salut, changer, old, nu)
     val e = Email(email, "info@littlebluebird.com", "LittleBlueBird.com", changer+" just changed a gift's description", msg, Nil, Nil)
+    Emailer.send(e)
+  }
+  
+  def createGiftReturnedEmail(to:User, g:Gift) = {
+    val sender = for(s <- g.sender.obj) yield {s.first.is + " " + s.last.is}
+    val senderName = sender.getOrElse("Someone")
+    
+    <html>
+      <head></head>
+      <body>
+        <table width="100%">
+          <tr>
+            <td width="80%" valign="top">
+              {to.first.is} {to.last.is},
+              <P>The following item has been returned to {g.recipientNames}'s wish list:</P>
+              <P>Item: {g.description}</P>
+              <P>{senderName} was going to give this item to {g.recipientNames} but has now decided not to.  So this item is available again for someone else to give.</P>
+            </td>
+            <td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td>
+          </tr>
+        </table>
+      </body>
+    </html>
+  }
+  
+  def sendGiftReturnedEmail(g:Gift) = {
+    // determine who to send email to
+    // TODO create a unit test for this
+    val emailList = g.getEmailListForReturns
+    
+    for(p <- emailList; if(!p.email.isEmpty())) yield {
+      val msg = createGiftReturnedEmail(p, g)
+      val e = Email(p.email, "info@littlebluebird.com", "LittleBlueBird.com", "A gift is available again on LittleBlueBird.com", msg, Nil, Nil)
+      Emailer.send(e)
+    }
+  }
+  
+  def createAccountCreatedForYouEmail(newuser:User, creator:String) = {
+    <html>
+      <head></head>
+      <body>
+        <table width="100%">
+          <tr>
+            <td width="80%" valign="top">
+              {newuser.first.is} {newuser.last.is},
+              <P>{creator} just created an account for you on LittleBlueBird.com</P>
+              <P>Your username is: {newuser.username.is}</P>
+              <P>Your password is: {newuser.password.is}</P>
+            </td>
+            <td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td>
+          </tr>
+        </table>
+      </body>
+    </html>
+  }
+  
+  def sendAccountCreatedForYouEmail(newuser:User, creator:String) = {
+    val msg = createAccountCreatedForYouEmail(newuser, creator)
+    val e = Email(newuser.email.is, "info@littlebluebird.com", "LittleBlueBird.com", creator+" created an account for you on LittleBlueBird.com", msg, Nil, Nil)
     Emailer.send(e)
   }
   

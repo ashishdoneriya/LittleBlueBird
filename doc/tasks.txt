@@ -23,12 +23,11 @@ Add and Edit Events (2 different modals)
 Buying Gifts:  The save, buy, cancel buttons need to be looked at
 
 Edit Gifts
-	- email buyer if item has been bought - include old and new descriptions and old and new links
+	- DONE: email buyer if item has been bought - include old and new descriptions and old and new links
 
 Deleting Gifts
-	- email buyer if item has been bought and then deleted.  
-	  Should the item actually be deleted from the db or just marked as deleted?
-	  Treat all items the same (bought or not)?
+	- DONE: email buyer if item has been bought and then deleted.  
+	  The item is actually deleted, not just marked as deleted
 	  
 My Wish List
 	- Make refresh go back to My Wish List page

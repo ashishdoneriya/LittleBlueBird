@@ -26,8 +26,7 @@ Edit Gifts
 	- DONE: email buyer if item has been bought - include old and new descriptions and old and new links
 
 Deleting Gifts
-	- DONE: email buyer if item has been bought and then deleted.  
-	  The item is actually deleted, not just marked as deleted
+	- DONE: email buyer if item has been bought and then deleted. The item is actually deleted, not just marked as deleted
 	  
 My Wish List
 	- Make refresh go back to My Wish List page
@@ -41,11 +40,12 @@ Users
 	
 Email alerts
 	- welcome email when you create your account
-	- welcome email when someone creates your account for you
-	- when you have bought a gift that someone later edits or deletes
-	- when someone returns an item that was previously bought
+	- DONE  welcome email when someone creates your account for you
+	- DONE  when you have bought a gift that someone later edits
+	- DONE  when you have bought a gift that someone later deletes
+	- DONE  when someone returns an item that was previously bought
 	- when someone adds you to an event
-	- when someone drops you from an event
+	- when someone drops you from an event ?
 	
 Static pages
 	- "What Is It?" page

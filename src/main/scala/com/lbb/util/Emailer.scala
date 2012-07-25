@@ -25,7 +25,6 @@ object Emailer {
   
   def send(e:Email) = {
     Mailer.sendMail(From(e.fromemail), Subject(e.subject), To(e.to), XHTMLMailBodyType(e.message))
-//      (PlainMailBodyType(e.message) :: To(e.to) :: ReplyTo(e.fromemail) :: Nil) : _*)
   }
   
   def config {
@@ -81,9 +80,32 @@ object Emailer {
     </html>
   }
   
-  def sendDescriptionChangedEmail(email:String, salut:String, changer:String, old:String, nu:String) = {
+  def notifyGiftDescriptionChanged(email:String, salut:String, changer:String, old:String, nu:String) = {
     val msg = createDescriptionChangedEmail(salut, changer, old, nu)
     val e = Email(email, "info@littlebluebird.com", "LittleBlueBird.com", changer+" just changed a gift's description", msg, Nil, Nil)
+    Emailer.send(e)
+  }
+  
+  def createAddedToCircleEmail(who:String, email:String, circle:String, adder:String) = {
+    <html>
+      <head></head>
+      <body>
+        <table width="100%">
+          <tr>
+            <td width="80%" valign="top">
+              {who},
+              <P>{adder} just included you in the event {circle} at LittleBlueBird.com</P>
+            </td>
+            <td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td>
+          </tr>
+        </table>
+      </body>
+    </html>
+  }
+  
+  def notifyAddedToCircle(who:String, email:String, circle:String, adder:String) = {
+    val msg = createAddedToCircleEmail(who,email,circle,adder)
+    val e = Email(email, "info@littlebluebird.com", "LittleBlueBird.com", adder+" added you to the "+circle+" event at LittleBlueBird.com", msg, Nil, Nil)
     Emailer.send(e)
   }
   
@@ -109,7 +131,7 @@ object Emailer {
     </html>
   }
   
-  def sendGiftReturnedEmail(g:Gift) = {
+  def notifyGiftReturned(g:Gift) = {
     // determine who to send email to
     // TODO create a unit test for this
     val emailList = g.getEmailListForReturns
@@ -140,7 +162,7 @@ object Emailer {
     </html>
   }
   
-  def sendAccountCreatedForYouEmail(newuser:User, creator:String) = {
+  def notifyAccountCreatedForYou(newuser:User, creator:String) = {
     val msg = createAccountCreatedForYouEmail(newuser, creator)
     val e = Email(newuser.email.is, "info@littlebluebird.com", "LittleBlueBird.com", creator+" created an account for you on LittleBlueBird.com", msg, Nil, Nil)
     Emailer.send(e)
@@ -164,7 +186,7 @@ object Emailer {
     </html>
   }
   
-  def sendDeletedGiftEmail(email:String, salut:String, deleter:String, desc:String) = {
+  def notifyGiftDeleted(email:String, salut:String, deleter:String, desc:String) = {
     val msg = createDeletedGiftEmail(salut, deleter, desc)
     val e = Email(email, "info@littlebluebird.com", "LittleBlueBird.com", deleter+" just deleted a gift you bought", msg, Nil, Nil)
     Emailer.send(e)

@@ -69,7 +69,8 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return Circle;
   }).
   factory('CircleParticipant', function($resource) {
-      var CircleParticipant = $resource('/gf/circleparticipants/:circleId', {circleId:'@circleId', userId:'@userId', inviterId:'@inviterId', participationLevel:'@participationLevel'}, 
+      var CircleParticipant = $resource('/gf/circleparticipants/:circleId', {circleId:'@circleId', userId:'@userId', inviterId:'@inviterId', 
+                                         participationLevel:'@participationLevel', who:'@who', email:'@email', circle:'@circle', adder:'@adder'}, 
                     {
                       query: {method:'GET', isArray:false}, 
                       delete: {method:'DELETE'},
@@ -444,18 +445,12 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     $location.url($location.path());
     $scope.newcircle = {name:'', creatorId:$scope.user.id, receiverLimit:limit, participants:{receivers:[], givers:[]}};
     $scope.circlecopies = angular.copy($scope.user.circles);
-    for(var i=0; i < $scope.user.expiredcircles.length; i++) {
-      $scope.circlecopies.push(angular.copy($scope.user.expiredcircles[i]));
-    }
   }
   
   $scope.editcircleFunction = function(circle) {
     $scope.thecircle = circle;
     $scope.expdate = circle.dateStr;
     $scope.circlecopies = angular.copy($scope.user.circles);
-    for(var i=0; i < $scope.user.expiredcircles.length; i++) {
-      $scope.circlecopies.push(angular.copy($scope.user.expiredcircles[i]));
-    }
   }
   
   $scope.addmyselfasreceiver = function() {
@@ -493,7 +488,8 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     // if the circle already exists, add the participant to the db immediately
     if(angular.isDefined(circle.id)) {
       //alert("circle.id="+circle.id+"\n $scope.participationlevel="+$scope.participationlevel);
-      var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:$scope.participationlevel});
+      var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:$scope.participationlevel,
+                                         who:person.fullname, email:person.email, circle:circle.name, adder:$scope.user.fullname});
     }
   }
     

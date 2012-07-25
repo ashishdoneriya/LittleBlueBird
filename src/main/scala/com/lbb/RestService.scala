@@ -117,6 +117,17 @@ object RestService extends RestHelper {
     }
     
     cp.save
+    
+    println("RestService.insertParticipant:  who = "+S.param("who"))
+    println("RestService.insertParticipant:  email = "+S.param("email"))
+    println("RestService.insertParticipant:  circle = "+S.param("circle"))
+    println("RestService.insertParticipant:  adder = "+S.param("adder"))
+    
+    for(who <- S.param("who"); 
+        email <- S.param("email"); 
+        circle <- S.param("circle"); 
+        adder <- S.param("adder")) yield Emailer.notifyAddedToCircle(who, email, circle, adder)
+    
     JsonResponse("")
   }
   
@@ -156,7 +167,7 @@ object RestService extends RestHelper {
     
     println("creatorName = "+S.param("creatorName"))
     for(creator <- S.param("creatorName")) yield {
-      Emailer.sendAccountCreatedForYouEmail(user, creator)
+      Emailer.notifyAccountCreatedForYou(user, creator)
     }
     
     JsonResponse(user.asJs, Nil, cookies.toList, 200)
@@ -457,7 +468,7 @@ object RestService extends RestHelper {
               
               // case: returning the gift
               case ("senderId", a:BigInt) if(a.toLong == -1 && gift.isBought) => {
-                Emailer.sendGiftReturnedEmail(gift)
+                Emailer.notifyGiftReturned(gift)
                 gift.sender(Empty)
               }
               
@@ -488,7 +499,7 @@ object RestService extends RestHelper {
     for(gift <- giftBox) yield {
       for(sender <- gift.sender; if(!sender.email.isEmpty())) yield {
         val salut = sender.first.is + " " + sender.last.is
-        Emailer.sendDeletedGiftEmail(sender.email.is, salut, deleter, gift.description.is)
+        Emailer.notifyGiftDeleted(sender.email.is, salut, deleter, gift.description.is)
       }
       Recipient.findAll(By(Recipient.gift, gift)).foreach(_.delete_!)
       gift.delete_!

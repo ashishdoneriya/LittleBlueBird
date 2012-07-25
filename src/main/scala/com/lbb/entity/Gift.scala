@@ -139,7 +139,7 @@ class Gift extends LongKeyedMapper[Gift] {
     val old = description.is
     println("Gift.setDescription:  updater="+updater+"  sender: "+sender.obj.getOrElse("n/a"))
     for(sss <- sender.obj; if(!sss.email.isEmpty()); if(!old.equals(nu))) yield {
-      Emailer.sendDescriptionChangedEmail(sss.email.is, sss.first.is, updater, old, nu)
+      Emailer.notifyGiftDescriptionChanged(sss.email.is, sss.first.is, updater, old, nu)
     }
     description(nu)
   }

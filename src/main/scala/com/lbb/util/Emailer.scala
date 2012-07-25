@@ -12,6 +12,7 @@ import net.liftweb.http.S
 import net.liftweb.mapper.By
 import scala.xml.Text
 import com.lbb.entity.Gift
+import scala.xml.Elem
 
 case class Email(to:String, fromemail:String, fromname:String, subject:String, message:NodeSeq, cc:List[String], bcc:List[String])
 
@@ -48,10 +49,17 @@ object Emailer {
         User.findAll(By(User.email, S.param("to").getOrElse("none"))) match {
           case Nil => throw new RuntimeException("Email address not found: "+S.param("to").getOrElse("none"))
           case items if(items.size == 1) => { 
-            <html><head> </head><body><table width="100%"><tr><td width="80%" valign="top">{items.head.first.is}, <p>&nbsp;</p><p>Your password is:  {items.head.password.is}</p> </td><td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td></tr></table>    </body></html>
+            createEmail(<div>
+                          {items.head.first.is}, 
+                          <p>&nbsp;</p>
+                          <p>Your password is:  {items.head.password.is}</p> 
+                        </div>)
           }
           case items if(items.size > 1) => { 
-            <html><head> </head><body><table width="100%"><tr><td width="80%" valign="top">This email address is shared by several users.  Names and passwords are below... {for(i <- items) yield { <p>{i.first.is}: {i.password.is}</p>}} </td><td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td></tr></table>    </body></html>
+            createEmail(<div>
+                         This email address is shared by several users.  Names and passwords are below... 
+                         {for(i <- items) yield { <p>{i.first.is}: {i.password.is}</p>}}
+                       </div>)
           }
         }
       } // case (Full("true"), _)
@@ -61,17 +69,23 @@ object Emailer {
       case _ => Text("")
   }
   
-  def createDescriptionChangedEmail(salut:String, changer:String, old:String, nu:String) = {
+  def createDescriptionChangedEmail(salut:String, changer:String, old:String, nu:String) = 
+     createEmail(<div>
+              {salut},
+              <P>{changer} just changed the description of an item you are buying.</P>
+              <P>The description was: {old}</P>
+              <P>The description is now: {nu}</P>
+            </div>)
+  
+  
+  private def createEmail(body:Elem) = {
     <html>
       <head></head>
       <body>
         <table width="100%">
           <tr>
             <td width="80%" valign="top">
-              {salut},
-              <P>{changer} just changed the description of an item you are buying.</P>
-              <P>The description was: {old}</P>
-              <P>The description is now: {nu}</P>
+              + body +
             </td>
             <td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td>
           </tr>
@@ -86,22 +100,10 @@ object Emailer {
     Emailer.send(e)
   }
   
-  def createAddedToCircleEmail(who:String, email:String, circle:String, adder:String) = {
-    <html>
-      <head></head>
-      <body>
-        <table width="100%">
-          <tr>
-            <td width="80%" valign="top">
-              {who},
+  def createAddedToCircleEmail(who:String, email:String, circle:String, adder:String) = 
+     createEmail(<div>{who},
               <P>{adder} just included you in the event {circle} at LittleBlueBird.com</P>
-            </td>
-            <td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td>
-          </tr>
-        </table>
-      </body>
-    </html>
-  }
+            </div>)
   
   def notifyAddedToCircle(who:String, email:String, circle:String, adder:String) = {
     val msg = createAddedToCircleEmail(who,email,circle,adder)
@@ -113,22 +115,11 @@ object Emailer {
     val sender = for(s <- g.sender.obj) yield {s.first.is + " " + s.last.is}
     val senderName = sender.getOrElse("Someone")
     
-    <html>
-      <head></head>
-      <body>
-        <table width="100%">
-          <tr>
-            <td width="80%" valign="top">
-              {to.first.is} {to.last.is},
+    createEmail(<div>{to.first.is} {to.last.is},
               <P>The following item has been returned to {g.recipientNames}'s wish list:</P>
               <P>Item: {g.description}</P>
               <P>{senderName} was going to give this item to {g.recipientNames} but has now decided not to.  So this item is available again for someone else to give.</P>
-            </td>
-            <td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td>
-          </tr>
-        </table>
-      </body>
-    </html>
+            </div>)
   }
   
   def notifyGiftReturned(g:Gift) = {
@@ -143,24 +134,11 @@ object Emailer {
     }
   }
   
-  def createAccountCreatedForYouEmail(newuser:User, creator:String) = {
-    <html>
-      <head></head>
-      <body>
-        <table width="100%">
-          <tr>
-            <td width="80%" valign="top">
+  def createAccountCreatedForYouEmail(newuser:User, creator:String) = createEmail(<div>
               {newuser.first.is} {newuser.last.is},
               <P>{creator} just created an account for you on LittleBlueBird.com</P>
               <P>Your username is: {newuser.username.is}</P>
-              <P>Your password is: {newuser.password.is}</P>
-            </td>
-            <td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td>
-          </tr>
-        </table>
-      </body>
-    </html>
-  }
+              <P>Your password is: {newuser.password.is}</P></div>)
   
   def notifyAccountCreatedForYou(newuser:User, creator:String) = {
     val msg = createAccountCreatedForYouEmail(newuser, creator)
@@ -168,23 +146,9 @@ object Emailer {
     Emailer.send(e)
   }
   
-  def createDeletedGiftEmail(salut:String, deleter:String, desc:String) = {
-    <html>
-      <head></head>
-      <body>
-        <table width="100%">
-          <tr>
-            <td width="80%" valign="top">
-              {salut},
+  def createDeletedGiftEmail(salut:String, deleter:String, desc:String) = createEmail(<div>{salut},
               <P>{deleter} just deleted a gift that you bought.</P>
-              <P>The gift was: {desc}</P>
-            </td>
-            <td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td>
-          </tr>
-        </table>
-      </body>
-    </html>
-  }
+              <P>The gift was: {desc}</P></div>)
   
   def notifyGiftDeleted(email:String, salut:String, deleter:String, desc:String) = {
     val msg = createDeletedGiftEmail(salut, deleter, desc)

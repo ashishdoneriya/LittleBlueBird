@@ -16,6 +16,8 @@ Reminders
 	- define default reminders by event type OR define the same reminders to apply to all events
 	- let users add/remove reminders for everyone in an event
 	- let users add/remove reminders for certain people in an event
+	- The reminder emails should say when the next reminder will be sent
+	- and should give the user the option to stop receiving them
 	
 Add and Edit Events (2 different modals)
 	- DONE:  include Past Events - right now, when you add people from another event, the only options are active events

@@ -229,6 +229,8 @@ class User extends LongKeyedMapper[User] {
     override def displayName = "Bio"
   }
   
+  def reminders = Reminder.findAll(By(Reminder.viewer, this.id))
+  
   // query the circle_participant table to find out what circles you belong to
   def circles = CircleParticipant.findAll(By(CircleParticipant.person, this.id))
   

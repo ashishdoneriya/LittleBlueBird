@@ -1,0 +1,6 @@
+
+<div ng-controller="CircleCtrl">
+  <div ng-repeat="reminder in circle.reminders">
+    <div>{{reminder.remind_date | date:'EEE MMM d, yyyy'}} {{reminder.person.first}} {{reminder.person.last}}</div>
+  </div>
+</div>

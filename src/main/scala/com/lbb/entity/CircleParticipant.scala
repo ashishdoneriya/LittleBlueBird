@@ -9,6 +9,7 @@ import net.liftweb.mapper.MappedBoolean
 import com.lbb.gui.MappedStringExtended
 import com.lbb.gui.MappedDateExtended
 import java.util.Date
+import com.lbb.util.ReminderUtil
 
 /**
  * READY TO DEPLOY
@@ -110,6 +111,32 @@ class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK {
   
   def email(u:MappedLongForeignKey[CircleParticipant, User]) = {
     u.obj.map(_.email.is) openOr ""
+  }
+  
+  /**
+   * override so we can update the reminders when a participant is added
+   */
+  override def save() = {
+    val saved = super.save()
+    saved match {
+      case true => {
+        val box = ReminderUtil.createReminders(circle, person)
+        box.map(reminders => reminders.foreach(_.save))
+      }
+      case _ => {}
+    }
+    saved
+  }
+  
+  override def delete_! = {
+    val deleted = super.delete_!
+    deleted match {
+      case true => {
+        ReminderUtil.deleteReminders(person, circle)
+      }
+      case _ => {}
+    }
+    deleted
   }
 
 }

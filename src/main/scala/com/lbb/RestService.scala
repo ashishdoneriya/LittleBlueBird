@@ -1,7 +1,6 @@
 package com.lbb
 import java.text.SimpleDateFormat
 import java.util.Date
-
 import com.lbb.entity.Circle
 import com.lbb.entity.CircleParticipant
 import com.lbb.entity.Gift
@@ -12,7 +11,6 @@ import com.lbb.util.Emailer
 import com.lbb.util.MapperHelper
 import com.lbb.util.RequestHelper
 import com.lbb.util.SearchHelper
-
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
@@ -29,6 +27,7 @@ import net.liftweb.http.S
 import net.liftweb.json.JsonAST._
 import net.liftweb.mapper.By
 import net.liftweb.util.BasicTypesHelpers._
+import com.lbb.util.ReminderUtil
 
 object RestService extends RestHelper {
 
@@ -116,17 +115,12 @@ object RestService extends RestHelper {
       }
     }
     
-    cp.save
-    
-    println("RestService.insertParticipant:  who = "+S.param("who"))
-    println("RestService.insertParticipant:  email = "+S.param("email"))
-    println("RestService.insertParticipant:  circle = "+S.param("circle"))
-    println("RestService.insertParticipant:  adder = "+S.param("adder"))
+    val saved = cp.save
     
     for(who <- S.param("who"); 
         email <- S.param("email"); 
         circle <- S.param("circle"); 
-        adder <- S.param("adder")) yield Emailer.notifyAddedToCircle(who, email, circle, adder)
+        adder <- S.param("adder"); if(saved)) Emailer.notifyAddedToCircle(who, email, circle, adder)
     
     JsonResponse("")
   }
@@ -382,10 +376,10 @@ object RestService extends RestHelper {
   def findCircleParticipants(circleId:Long) = Circle.findByKey(circleId) match {
     case Full(circle) => {
       
-      val receivers = circle.participantList.filter(_.isReceiver(circle)).map(_.asJsShallow)
+      val receivers = circle.receivers.map(_.asJsShallow)
       val rarr = JArray(receivers)
       
-      val givers = circle.participantList.filter(!_.isReceiver(circle)).map(_.asJsShallow)
+      val givers = circle.givers.map(_.asJsShallow)
       val garr = JArray(givers)
       
       val giverField = JField("givers", garr)

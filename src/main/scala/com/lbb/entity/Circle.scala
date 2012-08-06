@@ -4,12 +4,18 @@ import java.util.Date
 import scala.collection.mutable.ListBuffer
 import scala.xml.Text
 import org.joda.time.DateTime
+import org.joda.time.Days
 import com.lbb.gui.MappedDateExtended
+import com.lbb.gui.MappedDateObservable
 import com.lbb.gui.MappedStringExtended
+import com.lbb.util.DateChangeListener
 import com.lbb.util.Emailer
+import com.lbb.util.ReminderUtil
+import com.lbb.TypeOfCircle
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
+import net.liftweb.http.js.JE.JsArray
 import net.liftweb.http.js.JsExp
 import net.liftweb.mapper.By
 import net.liftweb.mapper.KeyObfuscator
@@ -21,7 +27,7 @@ import net.liftweb.mapper.MappedInt
 import net.liftweb.mapper.MappedLongIndex
 import net.liftweb.mapper.MappedString
 import net.liftweb.util.FieldError
-import com.lbb.TypeOfCircle
+import net.liftweb.json.JsonAST
 
 /**
  * READY TO DEPLOY
@@ -48,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `circles` (
 
  */
 
-class Circle extends LongKeyedMapper[Circle] { 
+class Circle extends LongKeyedMapper[Circle] with DateChangeListener { 
   
   def getSingleton = Circle
   
@@ -82,7 +88,11 @@ class Circle extends LongKeyedMapper[Circle] {
       case null => ""
       case d:Date => new SimpleDateFormat("M/d/yyyy").format(d)
     }
-    List(("dateStr", dateString), ("receiverLimit", receiverLimit))        
+    
+    val jsonReminders = reminders.map(r => {val js = r.asJs;println("reminders.asJs: "+js);js})
+    val jsReminders = JsArray(jsonReminders)
+    
+    List(("dateStr", dateString), ("receiverLimit", receiverLimit), ("reminders", jsReminders))  
   }
   
 //  object deleted extends MappedBoolean(this) {
@@ -102,7 +112,7 @@ class Circle extends LongKeyedMapper[Circle] {
   // https://github.com/lift/framework/blob/master/persistence/mapper/src/main/scala/net/liftweb/mapper/MappedDate.scala
   // TODO duplicated code here and in User
   // TODO must make this a required field
-  object date extends MappedDateExtended(this) {
+  object date extends MappedDateObservable(this, this) {
     override def displayName = "Event Date"
     override def dbColumnName = "expiration_date"
       
@@ -130,25 +140,26 @@ class Circle extends LongKeyedMapper[Circle] {
     
     override def validate:List[FieldError] = err
   
+    override def apply(d:Date) = {
+      println("apply: d = "+d+"  evtlistener="+evtlistener)
+      
+      evtlistener.dateUnset
+      val obj = super.apply(d)
+      evtlistener.dateSet(obj)
+      obj
+    }
+  
   }
   
   object circleType extends MappedString(this, 140) {
     override def displayName = "Type"
     override def dbColumnName = "type"
     override def dbIndexed_? = true
-    
-//    var chosenType:Box[TypeOfCircle.Value] = Empty
-//    
-//    override def _toForm: Box[Elem] = 
-//      S.fmapFunc({s: List[String] => this.setFromAny(s)}){funcName =>
-//      Full(appendFieldId(SHtml.selectObj[TypeOfCircle.Value](TypeOfCircle.values.toList.map(v => (v,v.toString)),
-//          // this 'match' sets the default/selected value of the drop-down
-//          TypeOfCircle.values.find(p => p.toString().equals(this.is)) match {
-//            case None => Full(TypeOfCircle.christmas)
-//            case Some(ctype) => Full(ctype)
-//          }, 
-//          selected => set(selected.toString()) )))
-//    }
+  }
+  
+  def reminders = {
+    import net.liftweb.mapper.{OrderBy, Ascending}
+    Reminder.findAll(By(Reminder.circle, this.id), OrderBy(Reminder.remind_date, Ascending))
   }
   
   def participants = CircleParticipant.findAll(By(CircleParticipant.circle, this.id))
@@ -156,6 +167,9 @@ class Circle extends LongKeyedMapper[Circle] {
   // new&improved version of 'participants' above
   // return a List[User] not just the fkeys
   def participantList = participants.map(fk => fk.person.obj.open_!)
+  
+  def receivers = participantList.filter(_.isReceiver(this))//.map(_.asJsShallow)
+  def givers = participantList.filter(!_.isReceiver(this))//.map(_.asJsShallow)
   
   def isExpired = {
     new DateTime(date.is) isBefore(new DateTime())
@@ -248,6 +262,22 @@ class Circle extends LongKeyedMapper[Circle] {
     case s:String if(s.equals(TypeOfCircle.anniversary.toString())) => 2
     case s:String if(s.equals(TypeOfCircle.other.toString())) => 1
     case _ => -1
+  }
+  
+  def daysaway = {
+    val then = new DateTime(date.is.getTime())
+    val now = new DateTime()
+    Days.daysBetween(now, then).getDays
+  }
+  
+  def dateUnset = {
+    ReminderUtil.deleteReminders(this)
+  }
+  
+  def dateSet(c:Circle) = {
+    println("Circle.dateSet.....")
+    val reminders = ReminderUtil.createReminders(c)
+    reminders.foreach(_.save)
   }
 }
 

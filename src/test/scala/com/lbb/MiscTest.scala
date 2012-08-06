@@ -1,28 +1,24 @@
 package com.lbb
+import java.net.URL
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import java.util.Date
-import scala.annotation.target.field
+import scala.util.Random
+import org.joda.time.DateMidnight
+import org.joda.time.DateTime
+import org.joda.time.Minutes
+import org.joda.time.Seconds
 import org.junit.runner.RunWith
 import org.scalatest.junit.AssertionsForJUnit
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.FunSuite
 import com.lbb.entity.User
-import com.lbb.gui.MappedDateExtended
 import com.lbb.util.MapperHelper
 import com.lbb.util.RequestHelper
-import net.liftweb.common.Box
-import net.liftweb.mapper.Cmp
-import net.liftweb.mapper.MappedDate
-import net.liftweb.mapper.MappedField
-import net.liftweb.mapper.MappedString
-import net.liftweb.mapper.Mapper
-import net.liftweb.mapper.QueryParam
-import net.liftweb.util.BaseField
-import net.liftweb.common.Full
-import net.liftweb.common.Empty
-import javax.swing.ImageIcon
-import java.net.URL
-import com.lbb.entity.Gift
 import com.lbb.util.Util
+import javax.swing.ImageIcon
+import net.liftweb.common.Full
+import org.scalatest.junit.JUnitRunner
+import com.lbb.util.ReminderUtil
 
 @RunWith(classOf[JUnitRunner])
 class MiscTest extends FunSuite with AssertionsForJUnit {
@@ -172,7 +168,7 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
     assert(""===Util.toStringPretty(Nil))
   }
   
-  test("?") {
+  test("determine intersection of lists") {
     val list1 = List(1,2,3,4,5)
     val list2 = List(2,3,4,5,6)
     val list3 = List(3,4,5,6,7)
@@ -182,12 +178,67 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
     val ints = for(ll <- list; ii <- ll) yield {
       ii
     }
-    
 
     val sect = list.foldLeft[List[Int]](ints)((a,b)=>a.intersect(b))
     println("sect:  "+sect)
+  }
+  
+  test("Executors") {
+    val r1 = new Runnable { 
+      def run = println("hi - I'm r1") 
+      override def toString = "the r1 Runnable"
+    }
+    val r2 = new Runnable { def run = println("hi - I'm r2") }
+    val ex = Myex.doit(r1)
+    Thread.sleep(125)
+    val r = ex.shutdownNow()
+    println("just shutdown the first Myex - got r = "+r)
+    println("create another Myex - let it run")
+    Myex.doit(r2)
+    println("done")
+    Thread.sleep(500)
+  }
+  
+  test("add to map") {
+    val map = Map("foo" -> "foovalue", "bar" -> "barvalue", "baz" -> "bazvalue")
+    val newmap = add(("key1", "value1"), map)
+    assert(newmap.contains("foo"))
+    assert(newmap.contains("bar"))
+    assert(newmap.contains("baz"))
+    assert(newmap.contains("key1"))
+    assert(newmap.get("key1").equals(Some("value1")))
+  }
+  
+  def add(tup:(String, String), map:Map[String, String]) = {
+    map + tup
+  }
+  
+  test("random") {
     
+    val nowdt = new DateTime(2012,8,2,10,30,0,0)
+    val now = new Date(nowdt.getMillis())
+    
+    val reminddate = new DateTime(2012,12,22,0,0,0,0)
+    val future = new Date(reminddate.getMillis())
+    
+    val delay = ReminderUtil.calcDelay(now, future)
+    
+    val mm = nowdt.plusMinutes(delay)
+    println("mm = "+new Date(mm.getMillis()))
+    
+    assert(mm === reminddate)
     
   }
   
+}
+
+object Myex {
+  def doit(r:Runnable) = {
+    import java.util.concurrent._
+    import java.util._
+    val ex = Executors.newSingleThreadScheduledExecutor()
+    val delay = 250
+    ex.schedule(r, delay, TimeUnit.MILLISECONDS)
+    ex
+  }
 }

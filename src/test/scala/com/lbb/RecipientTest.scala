@@ -16,12 +16,17 @@ import com.lbb.entity.Gift
 import com.lbb.entity.Recipient
 import com.lbb.entity.User
 
+/**
+ * This test has the added bonus of setting up your db for you.
+ * It will create 3-4 events, populate them, add gifts and reminders
+ * Just run this test to create a nice "starter" db.
+ */
 @RunWith(classOf[JUnitRunner])
 class RecipientTest extends FunSuite with AssertionsForJUnit {
   
   // TODO create a real db pool
   def initDb = {
-    
+     
     // this stuff goes in Boot.scala
     val vendor =  
 	new StandardDBVendor(Props.get("db.driver") openOr "com.mysql.jdbc.Driver",

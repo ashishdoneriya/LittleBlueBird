@@ -45,6 +45,9 @@ class Boot {
       LiftRules.unloadHooks.append(vendor.closeAllConnections_! _)
 
       DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
+      // see https://groups.google.com/forum/?fromgroups#!topic/liftweb/mIeiFDNFoDE
+      // see http://comments.gmane.org/gmane.comp.web.lift/50754
+      S.addAround(DB.buildLoanWrapper())
     }
     
     // to make the container serve a collection of files...

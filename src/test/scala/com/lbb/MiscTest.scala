@@ -19,6 +19,7 @@ import javax.swing.ImageIcon
 import net.liftweb.common.Full
 import org.scalatest.junit.JUnitRunner
 import com.lbb.util.ReminderUtil
+import com.lbb.util.Emailer
 
 @RunWith(classOf[JUnitRunner])
 class MiscTest extends FunSuite with AssertionsForJUnit {
@@ -228,6 +229,11 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
     
     assert(mm === reminddate)
     
+  }
+  
+  test("email content") {
+    val elem = Emailer.createAddedToCircleEmail("brent", "xmas", "jett")
+    println(elem.toString())
   }
   
 }

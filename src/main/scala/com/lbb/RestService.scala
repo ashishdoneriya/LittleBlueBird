@@ -334,6 +334,22 @@ object RestService extends RestHelper {
       // here we're authenticating
       case Full(p) if(p != "undefined") => {
         val queryParams = MapperHelper.convert(S.request.open_!._params, User.queriableFields)
+//        val boxuser = User.find(queryParams: _*)
+//        val res = boxuser match {
+//          case Full(user) => {
+//            val json = user.asJs
+//            val r = JsonResponse(json, Nil, List(RequestHelper.cookie("userId", user)), 200)
+//            println("RestService.findUsers: JsonResponse(json)=" + r.toString())
+//            r
+//          }
+//          case _ => {
+//            println("RestService.findUsers: BadResponse (pass:"+p+")"); 
+//            BadResponse()
+//          }
+//        }
+//        
+//        res
+        
         val users = User.findAll(queryParams: _*)
         users match {
           case l:List[User] if((l.size == 1) && (l.head.password.equals(p))) => {

@@ -85,7 +85,7 @@ object Emailer {
         <table width="100%">
           <tr>
             <td width="80%" valign="top">
-              + body +
+              {body}
             </td>
             <td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td>
           </tr>
@@ -100,13 +100,13 @@ object Emailer {
     Emailer.send(e)
   }
   
-  def createAddedToCircleEmail(who:String, email:String, circle:String, adder:String) = 
+  def createAddedToCircleEmail(who:String, circle:String, adder:String) = 
      createEmail(<div>{who},
-              <P>{adder} just included you in the event {circle} at LittleBlueBird.com</P>
+              <P>{adder} just included you in the event {circle} at <a href="http://www.littlebluebird.com" target="lbb">LittleBlueBird.com</a></P>
             </div>)
   
   def notifyAddedToCircle(who:String, email:String, circle:String, adder:String) = {
-    val msg = createAddedToCircleEmail(who,email,circle,adder)
+    val msg = createAddedToCircleEmail(who,circle,adder)
     val e = Email(email, "info@littlebluebird.com", "LittleBlueBird.com", adder+" added you to the "+circle+" event at LittleBlueBird.com", msg, Nil, Nil)
     Emailer.send(e)
   }

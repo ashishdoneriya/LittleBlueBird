@@ -13,6 +13,7 @@ import net.liftweb.mapper.KeyObfuscator
 import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonAST._
 import com.lbb.gui.MappedDateExtended
+import net.liftweb.common.Full
 
 class Reminder extends LongKeyedMapper[Reminder] { 
   
@@ -57,11 +58,12 @@ class Reminder extends LongKeyedMapper[Reminder] {
     saved
   }
   
-  override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {   
-    List(("person", viewerAsJsExp))
+  override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = { 
+    viewer.map(_.asJsShallow) match {
+      case Full(person) => List(("person", person))
+      case _ => Nil
+    }
   }
-  
-  def viewerAsJsExp:JsExp = viewer.obj.map(_.asJsShallow).openOr[JValue](JNothing)
   
 }
 

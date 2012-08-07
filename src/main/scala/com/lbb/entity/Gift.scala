@@ -28,6 +28,7 @@ import scala.collection.immutable.List
 import com.lbb.util.Emailer
 import com.lbb.util.Email
 import com.lbb.util.Util
+import net.liftweb.json.JsonAST.JArray
 
 /**
  * READY TO DEPLOY
@@ -257,8 +258,8 @@ class Gift extends LongKeyedMapper[Gift] {
   }
   
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
-    val jsonRecipients = recipientList.map(_.asJs)
-    val jsRecipients = JsArray(jsonRecipients)
+    val jsonRecipients = recipientList.map(_.asJsShallow)
+    val jsRecipients = JArray(jsonRecipients)
     List(("recipients", jsRecipients), 
          ("canedit", JBool(canedit)), 
          ("candelete", JBool(candelete)), 

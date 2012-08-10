@@ -37,9 +37,9 @@
 
 .align-right {text-align:right;}
 
-.black {
-  background-color: #000000;
-}
+.black { background-color: #000000; }
+
+.blue { background-color: blue; }
 
 .body2 {
   background-color: #ffffff;
@@ -282,9 +282,9 @@
 }
 
 .shadow {
-  -webkit-box-shadow: 1px 1px 1px 1px #333333;
-  -moz-box-shadow: 1px 1px 1px 1px #333333;
-  box-shadow: 1px 1px 1px 1px #333333;
+  -webkit-box-shadow: 1px 1px 3px 2px #004670;
+  -moz-box-shadow: 1px 1px 3px 2px #004670;
+  box-shadow: 1px 1px 3px 2px #004670;
 }
 
 .well-tiny {

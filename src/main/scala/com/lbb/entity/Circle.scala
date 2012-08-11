@@ -271,12 +271,12 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener {
   }
   
   def dateUnset = {
-    ReminderUtil.deleteReminders(this)
+    Reminder.deleteReminders(this)
   }
   
   def dateSet(c:Circle) = {
     println("Circle.dateSet.....")
-    val reminders = ReminderUtil.createReminders(c)
+    val reminders = Reminder.createReminders(c)
     reminders.foreach(_.save)
   }
 }

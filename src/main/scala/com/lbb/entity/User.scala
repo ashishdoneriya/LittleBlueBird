@@ -1,37 +1,49 @@
 package com.lbb.entity
 
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
+import scala.math.BigInt.int2bigInt
+import scala.math.BigInt.long2bigInt
+import scala.xml.Elem
+import scala.xml.NodeSeq
 import scala.xml.Text
 import org.joda.time.DateMidnight
 import org.joda.time.Years
+import com.lbb.entity.Circle
+import com.lbb.entity.Gift
+import javax.swing.ImageIcon
+import net.liftweb.common.Box.box2Iterable
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
-import net.liftweb.mapper._
-import net.liftweb.util.FieldError
-import scala.xml.NodeSeq
-import scala.xml.Elem
-import net.liftweb.http.S
-import com.lbb.gui.MappedEmailExtended
-import com.lbb.gui.MappedTextareaExtended
-import com.lbb.gui.MappedStringExtended
-import com.lbb.gui.MappedDateExtended
-import net.liftweb.http.js.JsExp
-import net.liftweb.http.JsonResponse
 import net.liftweb.http.js.JE.JsArray
-import net.liftweb.http.js.JE.Str
+import net.liftweb.http.js.JsExp.intToJsExp
+import net.liftweb.http.js.JsExp.jValueToJsExp
+import net.liftweb.http.js.JsExp.strToJsExp
+import net.liftweb.http.js.JsExp
 import net.liftweb.json.JsonAST.JField
-import net.liftweb.json.JsonAST.JString
-import net.liftweb.json.JsonAST.JArray
-import net.liftweb.http.js.JE.JsAnd
-import net.liftweb.json.Serialization
-import net.liftweb.json.JsonAST.JValue
-import net.liftweb.json.JsonAST.JObject
 import net.liftweb.json.JsonAST.JInt
+import net.liftweb.json.JsonAST.JObject
+import net.liftweb.json.JsonAST.JString
+import net.liftweb.json.JsonAST.JValue
 import net.liftweb.json.JsonAST
-import javax.swing.ImageIcon
-import java.net.URL
+import net.liftweb.mapper.MappedField.mapToType
+import net.liftweb.mapper.By
+import net.liftweb.mapper.Cmp
+import net.liftweb.mapper.IHaveValidatedThisSQL
+import net.liftweb.mapper.KeyObfuscator
+import net.liftweb.mapper.LongKeyedMapper
+import net.liftweb.mapper.LongKeyedMetaMapper
+import net.liftweb.mapper.OprEnum
+import net.liftweb.util.FieldError
+import net.liftweb.mapper.MappedInt
+import com.lbb.gui.MappedDateExtended
+import com.lbb.gui.MappedStringExtended
+import com.lbb.gui.MappedTextareaExtended
+import com.lbb.gui.MappedEmailExtended
+import net.liftweb.mapper.MappedLongIndex
+import net.liftweb.json.JsonAST.JBool
 
 
 /**
@@ -266,6 +278,22 @@ class User extends LongKeyedMapper[User] {
   }
   
   /**
+   * Returns a boolean indicating whether or not gifts have already been purchased for
+   * this person in this circle.  Why do we have this method?  It tells us whether or
+   * not a person can be deleted from an event.  We don't want to allow users to be
+   * deleted from events if gifts have already been purchased for this person.
+   */
+  def giftsHaveBeenPurchasedForMe(circle:Circle) = {
+    val sql = "SELECT r.gift_id, g.description, g.sender_id, g.circle_id " +
+    		  "FROM recipient r " +
+    		  "join gift g on g.id = r.gift_id " +
+    		  "join person p on p.id = g.sender_id " +
+    		  "where person_id = " + id.is + " and g.circle_id = " + circle.id.is 
+    val gifts = Gift.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
+    if(gifts.size > 0) true else false
+  }
+  
+  /**
    * "My wish list" is outside the context of any circle and 'this' user is the viewer
    * so there are no arguments to this method.  The gifts returned by this method can
    * have null or non-null circle id's.
@@ -481,13 +509,28 @@ class User extends LongKeyedMapper[User] {
     case _ => false
   }
   
-  def asJsShallow:JValue = {
-    
+  /**
+   * First, there was asJs.  Then I realized I needed a "shallow" version of User
+   * so I created asJsShallow.  Then I needed to pass in Circle to find out if
+   * any gifts have been bought for this user - I needed a view of a User as 
+   * a receiver.  I need to know if any gifts have been bought for this user in
+   * the given circle.  And I need to send this info to the client so I can
+   * allow/prohibit the user from removing a participant from a circle.
+   * Rule:  Only allow a participant to be removed from an event if no gifts
+   * have been bought for that person in the given event.
+   */
+  def asReceiverJs(box:Box[Circle]) = {
+    // this is the same as asJsShallow with one extra boolean field
     // TODO duplicated code here and in supplementalJs
     val profilepicUrl = if(profilepic.is==null || profilepic.is.trim().toString().equals("")) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
     val img = new ImageIcon(profilepicUrl)	
     val profilepicheight = img.getIconHeight()
     val profilepicwidth = img.getIconWidth()
+    
+    val boolornull = box match {
+      case Full(circle) => JBool(giftsHaveBeenPurchasedForMe(circle))
+      case _ => JsonAST.JNull
+    }
     
     JObject(List(JField("id", JInt(this.id.is)), 
                  JField("first", JString(this.first)), 
@@ -500,8 +543,32 @@ class User extends LongKeyedMapper[User] {
                  JField("email", JString(this.email)),
                  JField("bio", JString(this.bio)),
                  JField("age", JInt(this.age.is)),
-                 JField("dateOfBirth", if(this.dateOfBirth.is == null) { JsonAST.JNull } else { JInt(this.dateOfBirth.is.getTime()) } )
+                 JField("dateOfBirth", if(this.dateOfBirth.is == null) { JsonAST.JNull } else { JInt(this.dateOfBirth.is.getTime()) } ),
+                 JField("giftsHaveBeenPurchasedForMe", boolornull)
                  ))
+  }
+  
+  def asJsShallow:JValue = {
+    asReceiverJs(Empty)
+//    // TODO duplicated code here and in supplementalJs
+//    val profilepicUrl = if(profilepic.is==null || profilepic.is.trim().toString().equals("")) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
+//    val img = new ImageIcon(profilepicUrl)	
+//    val profilepicheight = img.getIconHeight()
+//    val profilepicwidth = img.getIconWidth()
+//    
+//    JObject(List(JField("id", JInt(this.id.is)), 
+//                 JField("first", JString(this.first)), 
+//                 JField("last", JString(this.last)), 
+//                 JField("fullname", JString(this.first + " " + this.last)), 
+//                 JField("username", JString(this.username)), 
+//                 JField("profilepicUrl", JString(profilepicUrl.toString())),
+//                 JField("profilepicheight", JInt(profilepicheight)),
+//                 JField("profilepicwidth", JInt(profilepicwidth)),
+//                 JField("email", JString(this.email)),
+//                 JField("bio", JString(this.bio)),
+//                 JField("age", JInt(this.age.is)),
+//                 JField("dateOfBirth", if(this.dateOfBirth.is == null) { JsonAST.JNull } else { JInt(this.dateOfBirth.is.getTime()) } )
+//                 ))
   }
   
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {

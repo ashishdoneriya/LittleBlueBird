@@ -18,8 +18,8 @@ import com.lbb.util.Util
 import javax.swing.ImageIcon
 import net.liftweb.common.Full
 import org.scalatest.junit.JUnitRunner
-import com.lbb.util.ReminderUtil
 import com.lbb.util.Emailer
+import com.lbb.entity.Reminder
 
 @RunWith(classOf[JUnitRunner])
 class MiscTest extends FunSuite with AssertionsForJUnit {
@@ -222,7 +222,7 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
     val reminddate = new DateTime(2012,12,22,0,0,0,0)
     val future = new Date(reminddate.getMillis())
     
-    val delay = ReminderUtil.calcDelay(now, future)
+    val delay = Reminder.calcDelay(now, future)
     
     val mm = nowdt.plusMinutes(delay)
     println("mm = "+new Date(mm.getMillis()))

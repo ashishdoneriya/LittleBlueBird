@@ -9,7 +9,6 @@ import net.liftweb.mapper.MappedBoolean
 import com.lbb.gui.MappedStringExtended
 import com.lbb.gui.MappedDateExtended
 import java.util.Date
-import com.lbb.util.ReminderUtil
 
 /**
  * READY TO DEPLOY
@@ -120,7 +119,7 @@ class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK {
     val saved = super.save()
     saved match {
       case true => {
-        val box = ReminderUtil.createReminders(circle, person)
+        val box = Reminder.createReminders(circle, person)
         box.map(reminders => reminders.foreach(_.save))
       }
       case _ => {}
@@ -132,7 +131,7 @@ class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK {
     val deleted = super.delete_!
     deleted match {
       case true => {
-        ReminderUtil.deleteReminders(person, circle)
+        Reminder.deleteReminders(person, circle)
       }
       case _ => {}
     }

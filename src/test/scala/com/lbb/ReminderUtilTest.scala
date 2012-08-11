@@ -8,7 +8,6 @@ import org.scalatest.FunSuite
 import com.lbb.entity.Circle
 import com.lbb.entity.Reminder
 import com.lbb.entity.User
-import com.lbb.util.ReminderUtil
 import net.liftweb.common.Box
 import net.liftweb.db.DefaultConnectionIdentifier
 import net.liftweb.db.StandardDBVendor
@@ -32,16 +31,79 @@ class ReminderUtilTest extends FunSuite with AssertionsForJUnit {
 
     DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
     
+    Schemifier.schemify(true, Schemifier.infoF _, User)
     Schemifier.schemify(true, Schemifier.infoF _, Circle)
+    Schemifier.schemify(true, Schemifier.infoF _, CircleParticipant)
+    Schemifier.schemify(true, Schemifier.infoF _, Reminder)
   }
 
   test("determine remind date") {
     val daysprior = 7
     
     val from = new DateTime(2012,12,25,0,0,0,0)
-    val act = ReminderUtil.calc(from, daysprior)
+    val act = Reminder.calc(from, daysprior)
     val exp = new DateTime(2012,12,18,0,0,0,0)
     assert(act === exp)
+  }
+  
+  /**
+   * If you're creating an event and some of the reminders are determined to be
+   * in the past, don't even bother creating/saving those
+   */
+  test("don't create reminders in the past") {
+    initDb
+        
+    Reminder.findAll.foreach(_.delete_!)
+    assert(Reminder.findAll.size===0)
+        
+    CircleParticipant.findAll.foreach(_.delete_!)
+    assert(CircleParticipant.findAll.size===0)
+        
+    Circle.findAll.foreach(_.delete_!)
+    assert(Circle.findAll.size===0)
+        
+    User.findAll.foreach(_.delete_!)
+    assert(User.findAll.size===0)
+    
+    val brent = UserTest.createBrent
+    val tamie = UserTest.createTamie
+    val kiera = UserTest.createKiera
+    val now = new DateTime(new DateTime().getYear(), new DateTime().getMonthOfYear(), new DateTime().getDayOfMonth(),0,0,0,0)
+    
+    // Creating an event 8 days out means the 14-day reminder should not be created
+    val expdate = now.plusDays(8)
+    val circle = Circle.create
+    circle.name("xxxx").date(new Date(expdate.getMillis())).save
+    CircleParticipant.create.circle(circle).person(brent).participationLevel("Receiver").inviter(brent).save
+    CircleParticipant.create.circle(circle).person(tamie).participationLevel("Receiver").inviter(brent).save
+    CircleParticipant.create.circle(circle).person(kiera).participationLevel("Receiver").inviter(brent).save
+    
+    val d1 = expdate.minusDays(3)
+    val d2 = expdate.minusDays(7)
+    val dates = List(d1, d2)
+    val exp = Map(brent -> dates, tamie -> dates, kiera -> dates)
+    val exprem = for(kv <- exp) yield {
+      for(date <- kv._2) yield {
+        Reminder.create.viewer(kv._1).circle(circle).remind_date(new Date(date.getMillis()))
+      }
+    }
+    
+    val expectedreminders = exprem.toList.flatten
+    
+    val actualreminders = circle.reminders
+    val actualpeople = actualreminders.map(_.viewer.obj)
+    
+    assert(expectedreminders.size === actualreminders.size)
+    
+    for(ex <- expectedreminders) {
+      //println("actual.contains("+ex+"): "+actual.contains(ex))
+      assert(actualreminders.contains(ex))
+    }
+    
+    for(expectedperson <- List(brent, tamie, kiera)) {
+      assert(actualpeople.contains(expectedperson))
+    }
+    
   }
   
   test("create reminders") {
@@ -49,6 +111,9 @@ class ReminderUtilTest extends FunSuite with AssertionsForJUnit {
         
     Reminder.findAll.foreach(_.delete_!)
     assert(Reminder.findAll.size===0)
+        
+    CircleParticipant.findAll.foreach(_.delete_!)
+    assert(CircleParticipant.findAll.size===0)
         
     Circle.findAll.foreach(_.delete_!)
     assert(Circle.findAll.size===0)
@@ -80,14 +145,14 @@ class ReminderUtilTest extends FunSuite with AssertionsForJUnit {
     
     ////////////////////////////////////////////////////////////////////
     // THIS IS WHAT WE'RE TESTING
-    val actual = ReminderUtil.createReminders(nextXmas)
+    val actual = Reminder.createReminders(nextXmas)
     
     println("ReminderUtilTest: expectedreminders.size="+expectedreminders.size+"  actual.size="+actual.size)
     assert(expectedreminders.size === actual.size)
     
     for(ex <- expectedreminders) {
       //println("actual.contains("+ex+"): "+actual.contains(ex))
-      assert(actual.contains(ex) === true)
+      assert(actual.contains(ex))
     }
     
     // now save the reminders to the db and see if we can query for them
@@ -177,6 +242,9 @@ class ReminderUtilTest extends FunSuite with AssertionsForJUnit {
     Reminder.findAll.foreach(_.delete_!)
     assert(Reminder.findAll.size===0)
         
+    CircleParticipant.findAll.foreach(_.delete_!)
+    assert(CircleParticipant.findAll.size===0)
+        
     Circle.findAll.foreach(_.delete_!)
     assert(Circle.findAll.size===0)
         
@@ -232,6 +300,9 @@ class ReminderUtilTest extends FunSuite with AssertionsForJUnit {
     Reminder.findAll.foreach(_.delete_!)
     assert(Reminder.findAll.size===0)
         
+    CircleParticipant.findAll.foreach(_.delete_!)
+    assert(CircleParticipant.findAll.size===0)
+        
     Circle.findAll.foreach(_.delete_!)
     assert(Circle.findAll.size===0)
         
@@ -270,7 +341,7 @@ class ReminderUtilTest extends FunSuite with AssertionsForJUnit {
     // THIS IS WHAT WE'RE TESTING
     cps.foreach(_.delete_!)
     
-//    make sure that ReminderUtil.scheduledExecutors has the right executors
+//    make sure that Reminder.scheduledExecutors has the right executors
 //    removed from the map
     
     val actualreminders = nextXmas.reminders
@@ -294,6 +365,9 @@ class ReminderUtilTest extends FunSuite with AssertionsForJUnit {
     Reminder.findAll.foreach(_.delete_!)
     assert(Reminder.findAll.size===0)
         
+    CircleParticipant.findAll.foreach(_.delete_!)
+    assert(CircleParticipant.findAll.size===0)
+        
     Circle.findAll.foreach(_.delete_!)
     assert(Circle.findAll.size===0)
         
@@ -307,13 +381,11 @@ class ReminderUtilTest extends FunSuite with AssertionsForJUnit {
     
     val delay = 2
     val runnable = new Runnable {def run = println("runnable run")}
-    ReminderUtil.schedule(delay, runnable)
+    Reminder.schedule(delay, runnable)
     Thread.sleep(delay*1000 + 1000)
     
     // how do you test this?  there's no getters
-    //val reminderExecutor = ReminderUtil.createReminderExecutor(reminder)
-
-    
+    //val reminderExecutor = Reminder.createReminderExecutor(reminder)
     
   }
   

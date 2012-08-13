@@ -20,22 +20,23 @@ import net.liftweb.common.Full
 import org.scalatest.junit.JUnitRunner
 import com.lbb.util.Emailer
 import com.lbb.entity.Reminder
+import com.lbb.util.LbbLogger
 
 @RunWith(classOf[JUnitRunner])
-class MiscTest extends FunSuite with AssertionsForJUnit {
+class MiscTest extends FunSuite with AssertionsForJUnit with LbbLogger {
   
   test("circle type enums") {
     val en = TypeOfCircle.withName("Christmas")
     assert(en===TypeOfCircle.christmas)
     
     TypeOfCircle.values.find(p => p.toString().equals("Christmas")) match {
-      case None => println("MiscTest: did not find Christmas enum")
-      case Some(e) => println("MiscTest: found this enum: "+e)
+      case None => debug("MiscTest: did not find Christmas enum")
+      case Some(e) => debug("MiscTest: found this enum: "+e)
     }
     
     TypeOfCircle.values.find(p => p.toString().equals("xxxxx")) match {
-      case None => println("MiscTest: did not find xxxxx enum")
-      case Some(eee) => println("MiscTest: found this enum: "+eee)
+      case None => debug("MiscTest: did not find xxxxx enum")
+      case Some(eee) => debug("MiscTest: found this enum: "+eee)
     }
   }
   
@@ -66,14 +67,14 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
     assert(expparms.size===queryParams.size)
     
     queryParams.foreach(qp => {
-      println("MiscTest: inputparms.keySet.contains("+qp.field.name+")...")
+      debug("MiscTest: inputparms.keySet.contains("+qp.field.name+")...")
       assert(inputparms.keySet.contains(qp.field.name)===true)
       
       val actvalue = qp.value.openOr("no actual value for field: "+qp.field.name)
       val expvalue = expparms.get(qp.field.name).getOrElse("no expected value for field: "+qp.field.name)
       val sameanddefined = expvalue.equalsIgnoreCase(actvalue) && expvalue != "undefined"      
       
-      println("MiscTest: field: "+qp.field.name+":  actual vs exp values: "+actvalue + " vs " + expvalue)
+      debug("MiscTest: field: "+qp.field.name+":  actual vs exp values: "+actvalue + " vs " + expvalue)
         
       assert(sameanddefined===true)
     })
@@ -81,7 +82,7 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
   }
   
   test("date") {
-    println("1324792800 = "+new Date(1324792800L))
+    debug("1324792800 = "+new Date(1324792800L))
   }
   
   test("2 search terms") {
@@ -150,13 +151,13 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
     val icon = new ImageIcon(new URL("http://profile.ak.fbcdn.net/hprofile-ak-snc4/49942_569956369_5862059_n.jpg"))
     val h = icon.getIconHeight()
     val w = icon.getIconWidth()
-    println("h = "+h+"   w = "+w)
+    debug("h = "+h+"   w = "+w)
   }
   
   test("list to set") {
     val list = List(1, 2, 2, 3, 4)
     val set = list.toSet
-    println(set)
+    debug(set)
   }
   
   test("pretty string from List") {
@@ -181,22 +182,22 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
     }
 
     val sect = list.foldLeft[List[Int]](ints)((a,b)=>a.intersect(b))
-    println("sect:  "+sect)
+    debug("sect:  "+sect)
   }
   
   test("Executors") {
     val r1 = new Runnable { 
-      def run = println("hi - I'm r1") 
+      def run = debug("hi - I'm r1") 
       override def toString = "the r1 Runnable"
     }
-    val r2 = new Runnable { def run = println("hi - I'm r2") }
+    val r2 = new Runnable { def run = debug("hi - I'm r2") }
     val ex = Myex.doit(r1)
     Thread.sleep(125)
     val r = ex.shutdownNow()
-    println("just shutdown the first Myex - got r = "+r)
-    println("create another Myex - let it run")
+    debug("just shutdown the first Myex - got r = "+r)
+    debug("create another Myex - let it run")
     Myex.doit(r2)
-    println("done")
+    debug("done")
     Thread.sleep(500)
   }
   
@@ -225,7 +226,7 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
     val delay = Reminder.calcDelay(now, future)
     
     val mm = nowdt.plusMinutes(delay)
-    println("mm = "+new Date(mm.getMillis()))
+    debug("mm = "+new Date(mm.getMillis()))
     
     assert(mm === reminddate)
     
@@ -233,7 +234,7 @@ class MiscTest extends FunSuite with AssertionsForJUnit {
   
   test("email content") {
     val elem = Emailer.createAddedToCircleEmail("brent", "xmas", "jett")
-    println(elem.toString())
+    debug(elem.toString())
   }
   
 }

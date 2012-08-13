@@ -6,7 +6,6 @@ import net.liftweb.mapper.MappedLongForeignKey
 import net.liftweb.mapper.MappedDate
 import net.liftweb.mapper.By
 import java.util.Date
-import com.lbb.util.ReminderUtil
 import net.liftweb.http.js.JsExp
 import net.liftweb.common.Box
 import net.liftweb.mapper.KeyObfuscator
@@ -21,8 +20,9 @@ import org.joda.time.Minutes
 import scala.util.Random
 import org.joda.time.DateTime
 import scala.collection.mutable.Map
+import com.lbb.util.LbbLogger
 
-class Reminder extends LongKeyedMapper[Reminder] { 
+class Reminder extends LongKeyedMapper[Reminder] with LbbLogger { 
   
   def getSingleton = Reminder
   
@@ -42,13 +42,13 @@ class Reminder extends LongKeyedMapper[Reminder] {
   
   override def hashCode = {
     val hash = viewer.hashCode() + circle.hashCode() + remind_date.hashCode()
-    //println(this.toString()+": hash = "+hash)
+    //debug(this.toString()+": hash = "+hash)
     hash
   }
   
   override def equals(r:Any) = {
     val same = r.hashCode() == this.hashCode()
-    //println("same = "+same)
+    //debug("same = "+same)
     same
   }
   
@@ -59,7 +59,7 @@ class Reminder extends LongKeyedMapper[Reminder] {
   
   override def save = {
     val saved = super.save()
-    println("Reminder.save: Saved Reminder to db: "+this)
+    debug("Saved Reminder to db: "+this)
     val executor = Reminder.createReminderExecutor(this)
     executor.map(ex => if(saved) Reminder.addScheduledReminder(this, ex))
     saved
@@ -85,29 +85,35 @@ object Reminder extends Reminder with LongKeyedMetaMapper[Reminder] {
   def findByNameEventAndDate(userId:Long, circleId:Long, date:Date) = 
     findAll(By(Reminder.viewer, userId), By(Reminder.circle, circleId), By(Reminder.remind_date, date))
     
+  def getScheduledReminders = scheduledReminders
     
+  /**
+   * This is called from Boot.boot.  This method reads in all the reminders from the database and creates
+   * Executors for them.  The reminders and the Executors are put into the map: Reminder.scheduledReminders
+   */
+  def boot = {
+    debug("boot: enter")
+    val reminders = Reminder.findAll()
+    //shutdown any in the map first
+    scheduledReminders.foreach(s => s._2.shutdownNow())
+    scheduledReminders.empty
+    reminders.foreach(r => {
+      val box = createReminderExecutor(r)
+      box.map(ex => addScheduledReminder(r, ex))
+    })
+    debug("boot: exit")
+  }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-  
   def addScheduledReminder(r:Reminder, ex:ScheduledExecutorService) = {
-    scheduledReminders.put(r, ex)
-    println("Reminder.addScheduledReminder: just added this reminder/executor: "+r)
+    val o = scheduledReminders.put(r, ex)
+    o.map(ox => ox.shutdownNow())
+    debug("just added this reminder/executor: "+r)
   }
   
   def removeScheduledReminder(r:Reminder) = {
     val ex = scheduledReminders.remove(r)
     ex.map(e => e.shutdownNow())
-    println("Reminder.removeScheduledReminder: just removed this reminder/executor: "+r)
+    debug("just removed this reminder/executor: "+r)
   }
   
 
@@ -131,7 +137,7 @@ object Reminder extends Reminder with LongKeyedMetaMapper[Reminder] {
     delay
   }
   
-  def createReminderExecutor(r:Reminder) = {
+  private def createReminderExecutor(r:Reminder) = {
     for(circle <- r.circle.obj) yield { 
       // add a random number of minutes so that the reminders won't all fire 
       // at the same time.  rand can be anything between the 0th and the 720th minute
@@ -145,7 +151,7 @@ object Reminder extends Reminder with LongKeyedMetaMapper[Reminder] {
         }
       }
       val time = new Date(new DateTime().plusMinutes(delay+rand).getMillis())
-      println("Reminder.createReminderExecutor: Schedule reminder="+r+" to fire on "+time )
+      debug("Schedule reminder="+r+" to fire on "+time )
       schedule(60*(delay+rand), runnable)
     }
   }
@@ -159,7 +165,6 @@ object Reminder extends Reminder with LongKeyedMetaMapper[Reminder] {
   }
   
   def createReminders(c:Circle) = {
-    println("Reminder.createReminders:  c.date = "+c.date)
     val priors = daysprior(c)
     
     val dates = for(p <- priors) yield {
@@ -174,14 +179,14 @@ object Reminder extends Reminder with LongKeyedMetaMapper[Reminder] {
     }
     
     val peopletonotify = (receivers :: c.givers :: Nil).flatten
-    println("Reminder.createReminders:  peopletonotify = "+peopletonotify.size)
+    debug("peopletonotify = "+peopletonotify.size)
     
     val rem = for(person <- peopletonotify) yield {
       for(d <- dates) yield {
         Reminder.create.viewer(person).circle(c).remind_date(new Date(d.getMillis()))
       }
     }
-    println("Reminder.createReminders:  rem.flatten = "+rem.flatten.size)
+    debug("rem.flatten = "+rem.flatten.size)
     rem.flatten
   }
   

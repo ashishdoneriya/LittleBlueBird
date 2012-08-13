@@ -27,42 +27,60 @@ import net.liftweb.http.S
 import net.liftweb.json.JsonAST._
 import net.liftweb.mapper.By
 import net.liftweb.util.BasicTypesHelpers._
-import com.lbb.util.ReminderUtil
+import com.lbb.util.LbbLogger
 
-object RestService extends RestHelper {
+object RestService extends RestHelper with LbbLogger {
 
   // ref:  http://www.assembla.com/spaces/liftweb/wiki/REST_Web_Services
   serve {
     // gifts...
-    case Get("gifts" :: AsLong(giftId) :: _, _) => println("RestService.serve:  999999999"); findGift(giftId)
-    case Get("gifts" :: _, _) => println("RestService.serve:  AAAAAAAAA"); findGifts
+    case Get("gifts" :: AsLong(giftId) :: _, _) => debug("RestService.serve:  999999999"); findGift(giftId)
+    case Get("gifts" :: _, _) => debug("RestService.serve:  AAAAAAAAA"); findGifts
     
-    case JsonPost("circles" :: AsLong(circleId) :: _, (json, req)) => println("updateCircle: "+circleId); updateCircle(circleId)
+    case JsonPost("circles" :: AsLong(circleId) :: _, (json, req)) => debug("updateCircle: "+circleId); updateCircle(circleId)
     case JsonPost("circleparticipants" :: AsLong(circleId) :: _, (json, req)) => insertParticipant(circleId)
     case Delete("circleparticipants" :: AsLong(circleId) :: _, req) => deleteParticipant(circleId)
     case Delete("gifts" :: AsLong(giftId) :: deleter :: _, _) => deleteGift(giftId, deleter)
+    
+    case Get("reminders" :: AsLong(circleId) :: _, _) => getReminders(circleId)
+    case Delete("reminders" :: AsLong(circleId) :: AsLong(userId) :: _, _) => deleteReminders(circleId, userId)
   }
   
   serve {
-    case Get("users" :: AsLong(userId) :: _, _) => println("RestService.serve:  22222222222222"); findUser(userId)
-    case Get("users" :: _, _) => println("RestService.serve:  333333333333333333333333"); findUsers
+    case Get("users" :: AsLong(userId) :: _, _) => debug("RestService.serve:  22222222222222"); findUser(userId)
+    case Get("users" :: _, _) => debug("RestService.serve:  333333333333333333333333"); findUsers
     case Post("logout" :: _, _) => S.deleteCookie("userId");NoContentResponse()
     case JsonPost("email" :: _, (json, req)) => sendPasswordRecoveryEmail 
-    case JsonPost("gifts" :: AsLong(giftId) :: updaterName :: _, (json, req)) => println("RestService.serve:  BBBBBBBB"); updateGift(updaterName, giftId)
-    case JsonPost("gifts" :: Nil, (json, req)) => println("RestService.serve:  CCCCCCC"); debug(json); insertGift
-    case JsonPost("users" :: AsLong(userId) :: _, (json, req)) => println("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
-    case JsonPost("users" :: Nil, (json, req)) => println("RestService.serve:  4444444444444444"); debug(json); insertUser
-    case Get("usersearch" :: _, _) => println("RestService.serve:  JsonPost: usersearch"); SearchHelper.usersearch
+    case JsonPost("gifts" :: AsLong(giftId) :: updaterName :: _, (json, req)) => debug("RestService.serve:  BBBBBBBB"); updateGift(updaterName, giftId)
+    case JsonPost("gifts" :: Nil, (json, req)) => debug("RestService.serve:  CCCCCCC"); debug(json); insertGift
+    case JsonPost("users" :: AsLong(userId) :: _, (json, req)) => debug("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
+    case JsonPost("users" :: Nil, (json, req)) => debug("RestService.serve:  4444444444444444"); debug(json); insertUser
+    case Get("usersearch" :: _, _) => debug("RestService.serve:  JsonPost: usersearch"); SearchHelper.usersearch
     case JsonPost("circles" :: Nil, (json, req)) => insertCircle
     
-    case Post("users" :: _, _) => println("RestService.serve:  Post(api :: users  :: _, _)  S.uri="+S.uri); JsonResponse("Post(api :: users  :: _, _)  S.uri="+S.uri)
+    case Post("users" :: _, _) => debug("RestService.serve:  Post(api :: users  :: _, _)  S.uri="+S.uri); JsonResponse("Post(api :: users  :: _, _)  S.uri="+S.uri)
     
-    case Post(_, _) => println("RestService.serve:  case Post(_, _)"); JsonResponse("Post(_, _)  S.uri="+S.uri)
+    case Post(_, _) => debug("RestService.serve:  case Post(_, _)"); JsonResponse("Post(_, _)  S.uri="+S.uri)
     
     // circles...
-    case Get("circles" :: AsLong(circleId) :: _, _) => println("RestService.serve:  88888888"); findCircle(circleId)
-    case Get("circleparticipants" :: AsLong(circleId) :: _, _) => println("RestService.serve:  77777777777"); findCircleParticipants(circleId)
-    case _ => println("RestService.serve:  666666666"); debug
+    case Get("circles" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  88888888"); findCircle(circleId)
+    case Get("circleparticipants" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  77777777777"); findCircleParticipants(circleId)
+    case _ => debug("RestService.serve:  666666666"); debugRequest
+  }
+  
+  def deleteReminders(circleId:Long, userId:Long) = {
+    for(circle <- Circle.findByKey(circleId)) {
+      circle.reminders.filter(r => r.viewer.is==userId).foreach(_.delete_!)
+    }
+    NoContentResponse()
+  }
+  
+  def getReminders(circleId:Long) = {
+    val box = Circle.findByKey(circleId).map(c => {
+      val js = c.reminders.map(r => r.asJs)
+      JsonResponse(JsArray(js))
+    })
+    box.openOr(NoContentResponse())
   }
   
   def sendPasswordRecoveryEmail = {
@@ -84,18 +102,18 @@ object RestService extends RestHelper {
     }
   }
   
-  def debug = {
+  def debugRequest = {
     S.request match {
       case Full(req) => 
-        println("RestService.debug: req.request.method = "+req.request.method) 
-      case Empty => println("RestService.debug: NO REQUEST OBJECT - THAT SHOULDN'T HAPPEN")
-      case _ => println("RestService.debug: case _ - THAT SHOULDN'T HAPPEN")
+        debug("RestService.debug: req.request.method = "+req.request.method) 
+      case Empty => debug("RestService.debug: NO REQUEST OBJECT - THAT SHOULDN'T HAPPEN")
+      case _ => debug("RestService.debug: case _ - THAT SHOULDN'T HAPPEN")
     }
     JsonResponse("")
   }
   
-  def debug(json:JValue) = {
-    println("RestService.debug:  json = "+json.toString())
+  def debugRequest(json:JValue) = {
+    debug("RestService.debug:  json = "+json.toString())
     JsonResponse("???  S.uri=" + S.uri)
   }
   
@@ -152,14 +170,14 @@ object RestService extends RestHelper {
           case ("bio", s:String) => user.bio(s)
           case ("profilepic", s:String) => user.profilepic(s)
           case ("dateOfBirth", s:String) => user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s)) // not sure about this one yet
-          case _ => println("RestService.insertUser:  unhandled: "+kv._1+" = "+kv._2)
+          case _ => debug("RestService.insertUser:  unhandled: "+kv._1+" = "+kv._2)
         }
       }
     }
     user.save()
     val cookies = S.param("login").filter(p => p.equals("true")).map(s => RequestHelper.cookie("userId", user))
     
-    println("creatorName = "+S.param("creatorName"))
+    debug("creatorName = "+S.param("creatorName"))
     for(creator <- S.param("creatorName")) yield {
       Emailer.notifyAccountCreatedForYou(user, creator)
     }
@@ -170,7 +188,7 @@ object RestService extends RestHelper {
 //      case Full(req) => {
 //        req.json match {
 //          case Full(jvalue:JObject) => {
-//            println("RestService.insertUser: jvalue = "+jvalue)
+//            debug("RestService.insertUser: jvalue = "+jvalue)
 //            val user = User.create
 //            jvalue.values foreach {kv => kv match {
 //                case ("fullname", s:String) => user.name(s)
@@ -182,14 +200,14 @@ object RestService extends RestHelper {
 //                case ("bio", s:String) => user.bio(s)
 //                case ("profilepic", s:String) => user.profilepic(s)
 //                case ("dateOfBirth", s:String) => user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s)) // not sure about this one yet
-//                case _ => println("RestService.insertUser:  unhandled: "+kv._1+" = "+kv._2)
+//                case _ => debug("RestService.insertUser:  unhandled: "+kv._1+" = "+kv._2)
 //              }
 //            }
 //            user.save()
 //            val cookies = S.param("login").filter(p => p.equals("true")).map(s => RequestHelper.cookie("userId", user))
 //            JsonResponse(user.asJs, Nil, cookies.toList, 200)
 //          }
-//          case _ => println("RestService.insertUser: case _ :  req.json = "+Empty); BadResponse()
+//          case _ => debug("RestService.insertUser: case _ :  req.json = "+Empty); BadResponse()
 //        }
 //      }
 //      case _ => BadResponse()
@@ -201,13 +219,13 @@ object RestService extends RestHelper {
       case Full(req) => {
         req.json match {
           case Full(jvalue:JObject) => {
-            println("RestService.insertCircle: jvalue = "+jvalue)
+            debug("RestService.insertCircle: jvalue = "+jvalue)
             val circle = Circle.create
             jvalue.values foreach {kv => (kv._1, kv._2) match {
               case ("name", s:String) => circle.name(s)
               case ("expirationdate", s:String) => {
                 if(s!=null && !s.toString().trim().equals("") && !s.toString().trim().equals("0")) {
-                  println("RestService.insertCircle:  s = '"+s+"'");  circle.date(new SimpleDateFormat("MM/dd/yyyy").parse(s.toString())) // not sure about this one yet
+                  debug("RestService.insertCircle:  s = '"+s+"'");  circle.date(new SimpleDateFormat("MM/dd/yyyy").parse(s.toString())) // not sure about this one yet
                 }
               } // case ("expirationdate", s:String)
               case ("expirationdate", b:BigInt) => circle.date(new Date(b.toLong))
@@ -233,7 +251,7 @@ object RestService extends RestHelper {
               
               case ("creatorId", i:BigInt) => circle.creator(i.toInt)
               
-              case _ => println("unhandled:  circle."+kv._1)
+              case _ => debug("unhandled:  circle."+kv._1)
               
             } // kv => (kv._1, kv._2) match
             
@@ -299,7 +317,7 @@ object RestService extends RestHelper {
                 case ("profilepic", s:String) => user.profilepic(s)
                 case ("dateOfBirth", s:String) => {
                   if(s!=null && !s.toString().trim().equals("") && !s.toString().trim().equals("0")) {
-                    println("updateUser:  s = '"+s+"'");  user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s.toString())) // not sure about this on yet
+                    debug("updateUser:  s = '"+s+"'");  user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s.toString())) // not sure about this on yet
                   }
                 }
               } // (kv._1, kv._2) match {
@@ -320,15 +338,15 @@ object RestService extends RestHelper {
   }
   
   def findUser(id:Long) = {
-    println("RestService.findUser:  id="+id)
+    debug("RestService.findUser:  id="+id)
     User.findByKey(id) match {
-      case Full(user) => println("RestService.findUser:  user.asJs => "+user.asJs);JsonResponse(user.asJs, Nil, List(RequestHelper.cookie("userId", user)), 200)
+      case Full(user) => debug("RestService.findUser:  user.asJs => "+user.asJs);JsonResponse(user.asJs, Nil, List(RequestHelper.cookie("userId", user)), 200)
       case _ => JsonResponse("")
     }
   }
   
   def findUsers = {
-    println("RestService.findUsers ------------- S.uri = "+S.uri)
+    debug("RestService.findUsers ------------- S.uri = "+S.uri)
     
     S.param("password") match {
       // here we're authenticating
@@ -339,11 +357,11 @@ object RestService extends RestHelper {
 //          case Full(user) => {
 //            val json = user.asJs
 //            val r = JsonResponse(json, Nil, List(RequestHelper.cookie("userId", user)), 200)
-//            println("RestService.findUsers: JsonResponse(json)=" + r.toString())
+//            debug("RestService.findUsers: JsonResponse(json)=" + r.toString())
 //            r
 //          }
 //          case _ => {
-//            println("RestService.findUsers: BadResponse (pass:"+p+")"); 
+//            debug("RestService.findUsers: BadResponse (pass:"+p+")"); 
 //            BadResponse()
 //          }
 //        }
@@ -358,11 +376,11 @@ object RestService extends RestHelper {
             val jsons = users.map(_.asJs)
             val jsArr = JsArray(jsons)
             val r = JsonResponse(jsArr, Nil, List(RequestHelper.cookie("userId", users.head)), 200)
-            println("RestService.findUsers: JsonResponse(jsArr)=" + r.toString())
+            debug("RestService.findUsers: JsonResponse(jsArr)=" + r.toString())
             r
           }
           case _ => {
-            println("RestService.findUsers: BadResponse (pass:"+p+")"); 
+            debug("RestService.findUsers: BadResponse (pass:"+p+")"); 
             BadResponse()
           }
         }
@@ -374,7 +392,7 @@ object RestService extends RestHelper {
         val jsons = users.map(_.asJs)
         val jsArr = JsArray(jsons)
         val r = JsonResponse(jsArr)
-        println("RestService.findUsers: JsonResponse(jsArr)=" + r.toString())
+        debug("RestService.findUsers: JsonResponse(jsArr)=" + r.toString())
         r
       }
     }
@@ -382,9 +400,9 @@ object RestService extends RestHelper {
   }
   
   def findCircle(id:Long) = {
-    println("RestService.findCircle:  id="+id)
+    debug("RestService.findCircle:  id="+id)
     Circle.findByKey(id) match {
-      case Full(circle) => val r = JsonResponse(circle.asJs); println(r.toString()); r
+      case Full(circle) => val r = JsonResponse(circle.asJs); debug(r.toString()); r
       case _ => JsonResponse("")
     }
   }
@@ -392,7 +410,7 @@ object RestService extends RestHelper {
   def findCircleParticipants(circleId:Long) = Circle.findByKey(circleId) match {
     case Full(circle) => {
       
-      val receivers = circle.receivers.map(_.asJsShallow)
+      val receivers = circle.receivers.map(_.asReceiverJs(Full(circle)))
       val rarr = JArray(receivers)
       
       val givers = circle.givers.map(_.asJsShallow)
@@ -405,7 +423,7 @@ object RestService extends RestHelper {
       val jarr = JField("participants", participants)
       
       val r = JsonResponse(participants)
-      println("RestService.findCircleParticipants: JsonResponse(jsArr)=" + r.toString())
+      debug("RestService.findCircleParticipants: JsonResponse(jsArr)=" + r.toString())
       r
     }
     case _ => JsonResponse("")
@@ -424,7 +442,7 @@ object RestService extends RestHelper {
         val jsons = giftlist.map(_.asJs)
         val jsArr = JsArray(jsons)
         val r = JsonResponse(jsArr)
-        println("RestService.findGifts: JsonResponse(jsArr)=" + r.toString())
+        debug("RestService.findGifts: JsonResponse(jsArr)=" + r.toString())
         r
       }
       case (Full(viewer), Empty, Empty) => {
@@ -432,13 +450,13 @@ object RestService extends RestHelper {
         val jsons = mywishlist.map(_.asJs)
         val jsArr = JsArray(jsons)
         val r = JsonResponse(jsArr)
-        println("RestService.findGifts: JsonResponse(jsArr)=" + r.toString())
+        debug("RestService.findGifts: JsonResponse(jsArr)=" + r.toString())
         r
       }
       case _ => {
-        println("RestService.findGifts: S.param(viewerId)=" + S.param("viewerId"))
-        println("RestService.findGifts: S.param(circleId)=" + S.param("circleId"))
-        println("RestService.findGifts: S.param(recipientId)=" + S.param("recipientId"))
+        debug("RestService.findGifts: S.param(viewerId)=" + S.param("viewerId"))
+        debug("RestService.findGifts: S.param(circleId)=" + S.param("circleId"))
+        debug("RestService.findGifts: S.param(recipientId)=" + S.param("recipientId"))
         BadResponse()
       }
   }
@@ -450,7 +468,7 @@ object RestService extends RestHelper {
       // below if that info happens to be in the request - kinda dumb
       req.json match {
         case Full(jvalue:JObject) => {
-          jvalue.values foreach {kv => (kv._1, kv._2) match {
+          jvalue.values foreach {kv => (kv._1, kv._2) match { 
               case ("giftId", id:BigInt) => { }
               case ("description", s:String) => {gift.setDescription(s, updater)} //gift.description(s)
               case ("url", s:String) => gift.url(s)
@@ -458,7 +476,7 @@ object RestService extends RestHelper {
                 l.filter(e => e.get("checked").getOrElse(false).equals(true) )
                    .foreach(e => {
                      val boxId = asLong(e.get("id"))
-                     println("RestService.updateGift: recipient id = " + boxId.getOrElse(-1L))
+                     debug("RestService.updateGift: recipient id = " + boxId.getOrElse(-1L))
                      gift.addRecipient(boxId.getOrElse(-1L)) 
                    })
               }
@@ -488,7 +506,7 @@ object RestService extends RestHelper {
               
               case ("senderName", s:String) => gift.sender_name(s)
               
-              case _ => println("updateGift:  Not handled: Gift."+kv._1+" = "+kv._2)
+              case _ => debug("updateGift:  Not handled: Gift."+kv._1+" = "+kv._2)
             } // kv => (kv._1, kv._2) match
           } // jvalue.values foreach
           
@@ -523,7 +541,7 @@ object RestService extends RestHelper {
       case Full(req) => {
         req.json match {
           case Full(jvalue:JObject) => {
-            println("RestService.insertGift: jvalue = "+jvalue)
+            debug("RestService.insertGift: jvalue = "+jvalue)
             val gift = Gift.create
             jvalue.values foreach {kv => (kv._1, kv._2) match {
                 case ("addedBy", a:BigInt) => gift.addedBy(a.longValue())
@@ -534,11 +552,11 @@ object RestService extends RestHelper {
                 case ("description", s:String) => gift.description(s)
                 case ("url", s:String) => gift.url(s)
                 case ("recipients", l:List[Map[String, Any]]) => {
-                  //println("insertGift:  so far so good  kv._2="+kv._2)
+                  //debug("insertGift:  so far so good  kv._2="+kv._2)
                   l.filter(e => e.get("checked").getOrElse(false).equals(true) )
                      .foreach(e => {
                        val boxId = asLong(e.get("id"))
-                       println("RestService.insertGift: recipient id = " + boxId.getOrElse(-1L))
+                       debug("RestService.insertGift: recipient id = " + boxId.getOrElse(-1L))
                        gift.addRecipient(boxId.getOrElse(-1L)) 
                      })
                 }
@@ -551,14 +569,14 @@ object RestService extends RestHelper {
 	              gift.currentRecipient = User.findByKey(a.toLong)
 	            } // case ("recipientId", a:BigInt)
               
-                case _ => println("insertGift:  Not handled: Gift."+kv._1+" = "+kv._2)
+                case _ => debug("insertGift:  Not handled: Gift."+kv._1+" = "+kv._2)
               } // (kv._1, kv._2) match
             } // jvalue.values foreach
             gift.save
             gift.edbr
             JsonResponse(gift.asJs)
           } // case Full(jvalue:JObject)
-          case _ => println("RestService.insertGift: case _ :  req.json = "+Empty); BadResponse()
+          case _ => debug("RestService.insertGift: case _ :  req.json = "+Empty); BadResponse()
         } // req.json match
       } // case Full(req)
       case _ => BadResponse()

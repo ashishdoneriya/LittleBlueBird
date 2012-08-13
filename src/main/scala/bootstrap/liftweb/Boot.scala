@@ -1,38 +1,30 @@
 package bootstrap.liftweb
 import net.liftweb.db.StandardDBVendor
-import net.liftweb.http.LiftRules
-import net.liftweb.mapper.Schemifier
-import net.liftweb.mapper.DB
-import net.liftweb.db.DefaultConnectionIdentifier
-import net.liftweb.util.Props
-import net.liftweb.common._
-import net.liftweb.sitemap.SiteMap
-import net.liftweb.sitemap.Menu
-import net.liftweb.sitemap.Loc
 import net.liftweb.sitemap.Loc._
 import net.liftweb.util.Mailer._
-import net.liftweb.util.Mailer
-import javax.mail.Authenticator
-import javax.mail.PasswordAuthentication
+import net.liftweb.mapper.MapperRules
+import net.liftweb.util.Props
+import com.lbb.util.Emailer
+import net.liftweb.mapper.Schemifier
+import com.lbb.util.LbbLogger
+import net.liftweb.http.LiftRules
 import net.liftweb.http.S
-import net.liftweb.http.RedirectResponse
-import com.lbb.entity.User
-import com.lbb.entity.CircleParticipant
+import net.liftweb.common.Box
+import net.liftweb.mapper.DB
 import com.lbb.entity.Circle
 import com.lbb.entity.Gift
-import com.lbb.entity.Recipient
-import net.liftweb.util.NamedPF
-import net.liftweb.http.RewriteRequest
-import net.liftweb.http.ParsePath
-import net.liftweb.http.RewriteResponse
-import net.liftweb.http.DocType
 import net.liftweb.http.Req
-import net.liftweb.mapper.MapperRules
-import scala.xml.NodeSeq
+import net.liftweb.db.DefaultConnectionIdentifier
+import com.lbb.entity.CircleParticipant
+import com.lbb.entity.Recipient
 import com.lbb.RestService
-import com.lbb.util.Emailer
+import scala.xml.NodeSeq
+import com.lbb.entity.User
+import net.liftweb.common.Empty
+import net.liftweb.common.Full
+import net.liftweb.http.DocType
 
-class Boot {
+class Boot extends LbbLogger {
   def boot {
     // TODO need real db pool
     if (!DB.jndiJdbcConnAvailable_?) {
@@ -83,12 +75,12 @@ class Boot {
     LiftRules.dispatch.append(RestService)
     
     Props.mode match {
-      case Props.RunModes.Test => println("we are in Test mode")
-      case Props.RunModes.Development => println("we are in Development mode")
-      case Props.RunModes.Pilot => println("we are in Pilot mode")
-      case Props.RunModes.Production => println("we are in Production mode")
-      case Props.RunModes.Staging => println("we are in Staging mode")
-      case _ => println("unknown run mode: "+Props.mode)                                        
+      case Props.RunModes.Test => debug("we are in Test mode")
+      case Props.RunModes.Development => debug("we are in Development mode")
+      case Props.RunModes.Pilot => debug("we are in Pilot mode")
+      case Props.RunModes.Production => debug("we are in Production mode")
+      case Props.RunModes.Staging => debug("we are in Staging mode")
+      case _ => debug("unknown run mode: "+Props.mode)                                        
     }
   }
 }

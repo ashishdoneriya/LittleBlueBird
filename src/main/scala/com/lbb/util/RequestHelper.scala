@@ -88,7 +88,7 @@ object RequestHelper {
 //            user.save()
 //            JsonResponse(user.asJs)
 //          }
-//          case _ => println("RestService.insertUser: case _ :  req.json = "+Empty); BadResponse()
+//          case _ => debug("RestService.insertUser: case _ :  req.json = "+Empty); BadResponse()
 //        }
 //      }
 //      case _ => BadResponse()

@@ -3,7 +3,6 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.FunSuite
-
 import javax.mail.Authenticator
 import javax.mail.PasswordAuthentication
 import net.liftweb.common.Full
@@ -14,17 +13,18 @@ import net.liftweb.util.Mailer.Subject
 import net.liftweb.util.Mailer.To
 import net.liftweb.util.Mailer
 import net.liftweb.util.Props
+import com.lbb.util.LbbLogger
 
 @RunWith(classOf[JUnitRunner])
-class MailerTest extends FunSuite with AssertionsForJUnit {
+class MailerTest extends FunSuite with AssertionsForJUnit with LbbLogger {
 
   test("send email") {
     configMailer()
     sendEMail("bdunklau@yahoo.com", "bdunklau@yahoo.com", "bdunklau@yahoo.com", "email from Lift", "this email came from LittleBlueBird:MailerTest")
     // gotta give the mailer time to send the email
-    println("sleeping")
+    debug("sleeping")
     Thread.sleep(10000)
-    println("done")
+    debug("done")
   }
   
   def configMailer() {

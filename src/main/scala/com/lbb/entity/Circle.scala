@@ -10,7 +10,6 @@ import com.lbb.gui.MappedDateObservable
 import com.lbb.gui.MappedStringExtended
 import com.lbb.util.DateChangeListener
 import com.lbb.util.Emailer
-import com.lbb.util.ReminderUtil
 import com.lbb.TypeOfCircle
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
@@ -28,6 +27,7 @@ import net.liftweb.mapper.MappedLongIndex
 import net.liftweb.mapper.MappedString
 import net.liftweb.util.FieldError
 import net.liftweb.json.JsonAST
+import com.lbb.util.LbbLogger
 
 /**
  * READY TO DEPLOY
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `circles` (
 
  */
 
-class Circle extends LongKeyedMapper[Circle] with DateChangeListener { 
+class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLogger { 
   
   def getSingleton = Circle
   
@@ -63,7 +63,7 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener {
   object id extends MappedLongIndex(this)
   
   override def validate:List[FieldError] = {
-    println("Circle.validate...")
+    debug("Circle.validate...")
     super.validate
   }
   
@@ -89,7 +89,7 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener {
       case d:Date => new SimpleDateFormat("M/d/yyyy").format(d)
     }
     
-    val jsonReminders = reminders.map(r => {val js = r.asJs;println("reminders.asJs: "+js);js})
+    val jsonReminders = reminders.map(r => {val js = r.asJs;debug("reminders.asJs: "+js);js})
     val jsReminders = JsArray(jsonReminders)
     
     List(("dateStr", dateString), ("receiverLimit", receiverLimit), ("reminders", jsReminders))  
@@ -133,15 +133,15 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener {
     val Pat = """(\d){1,2}/(\d){1,2}/(\d){4}""".r
     
     override def parse(s:String) = s match {
-      case Pat(m, d, y) => err = Nil; println("parse: case Pat(m, d, y): errors..."); err.foreach(println(_)); Full(dateFormat.parse(s))
-      case "" => err = FieldError(this, Text(displayName+" is required")) :: Nil; println("parse: case \"\": errors..."); err.foreach(println(_)); this.set(null); Empty
-      case _ => err = FieldError(this, Text(displayName+" must be MM/dd/yyyy format")) :: Nil; println("parse: case _ :  errors..."); err.foreach(println(_)); this.set(null); Empty
+      case Pat(m, d, y) => err = Nil; debug("parse: case Pat(m, d, y): errors..."); err.foreach(debug(_)); Full(dateFormat.parse(s))
+      case "" => err = FieldError(this, Text(displayName+" is required")) :: Nil; debug("parse: case \"\": errors..."); err.foreach(debug(_)); this.set(null); Empty
+      case _ => err = FieldError(this, Text(displayName+" must be MM/dd/yyyy format")) :: Nil; debug("parse: case _ :  errors..."); err.foreach(debug(_)); this.set(null); Empty
     }
     
     override def validate:List[FieldError] = err
   
     override def apply(d:Date) = {
-      println("apply: d = "+d+"  evtlistener="+evtlistener)
+      debug("apply: d = "+d+"  evtlistener="+evtlistener)
       
       evtlistener.dateUnset
       val obj = super.apply(d)
@@ -275,7 +275,7 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener {
   }
   
   def dateSet(c:Circle) = {
-    println("Circle.dateSet.....")
+    debug("Circle.dateSet.....")
     val reminders = Reminder.createReminders(c)
     reminders.foreach(_.save)
   }

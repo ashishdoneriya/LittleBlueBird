@@ -19,6 +19,7 @@ import java.util.Date
 import com.lbb.entity.User
 import net.liftweb.http.js.JsExp
 import com.lbb.util.MapperHelper
+import com.lbb.util.LbbLogger
 
 /**
  * From the project root: sbt
@@ -26,7 +27,7 @@ import com.lbb.util.MapperHelper
  * 'test' will compile test classes and run them
  */
 @RunWith(classOf[JUnitRunner])
-class UserTest extends FunSuite with AssertionsForJUnit {
+class UserTest extends FunSuite with AssertionsForJUnit with LbbLogger {
 
   def initDb = {
     // this stuff goes in Boot.scala
@@ -76,10 +77,10 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     user2.first("brent").last("Dunklau").username("bdunklau").password("1").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
     user2.validate match {
       case Nil => {
-        println("user2 is valid, saving...")//S.notice(“Person is valid”)
+        debug("user2 is valid, saving...")//S.notice(“Person is valid”)
         user2.save
       }
-      case errors:List[FieldError] => errors.foreach(println(_))//S.error(errors)  // S.error will handle this properly
+      case errors:List[FieldError] => errors.foreach(debug(_))//S.error(errors)  // S.error will handle this properly
     }
     
 //  case-insensitive query
@@ -115,7 +116,7 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     
     // only one person with this name because the second didn't get saved 
     assert(users.size===1)
-    println("UserTest: we found exactly 1 User")
+    debug("UserTest: we found exactly 1 User")
     assert(users.head.first==="Brent")
     assert(users.head.age===41)
     assert(users.head.password==="1")  
@@ -185,7 +186,7 @@ class UserTest extends FunSuite with AssertionsForJUnit {
     
     val jsons = User.findAll.map(_.asJs)
     val f = jsons.foldRight("")((a:JsExp, b:String) => a.toString() + "," + b)
-    println(f)
+    debug(f)
   }
 
 }

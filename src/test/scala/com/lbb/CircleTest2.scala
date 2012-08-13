@@ -14,6 +14,7 @@ import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.FunSuite
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+import com.lbb.util.LbbLogger
 
 /**
  * Originally created to test the containsAll() method in Circle.
@@ -22,7 +23,7 @@ import org.scalatest.junit.JUnitRunner
  * RecipientTest
  */
 @RunWith(classOf[JUnitRunner])
-class CircleTest2 extends FunSuite with AssertionsForJUnit {
+class CircleTest2 extends FunSuite with AssertionsForJUnit with LbbLogger {
   
   // TODO create a real db pool
   def initDb = {
@@ -131,7 +132,7 @@ class CircleTest2 extends FunSuite with AssertionsForJUnit {
         val gift = kv._1._1
         val circle = kv._1._2
         val actual = circle.containsAll(gift.recipientList)
-        println("Circle: "+circle.name+"  Gift: "+gift.description+": circle.containsAll()? "+actual+" (expected: "+kv._2+")")
+        debug("Circle: "+circle.name+"  Gift: "+gift.description+": circle.containsAll()? "+actual+" (expected: "+kv._2+")")
         assert(actual===kv._2)
       }
     }

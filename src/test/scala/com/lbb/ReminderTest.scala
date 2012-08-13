@@ -17,9 +17,10 @@ import net.liftweb.mapper.Schemifier
 import net.liftweb.util.Props
 import net.liftweb.mapper.By
 import org.joda.time.DateTime
+import com.lbb.util.LbbLogger
 
 @RunWith(classOf[JUnitRunner])
-class ReminderTest extends FunSuite with AssertionsForJUnit {
+class ReminderTest extends FunSuite with AssertionsForJUnit with LbbLogger {
 
   def initDb = {
     // this stuff goes in Boot.scala
@@ -121,7 +122,7 @@ class ReminderTest extends FunSuite with AssertionsForJUnit {
     assert(expectedreminders.size === actualreminders.size)
     
     for(ex <- expectedreminders) {
-      //println("actual.contains("+ex+"): "+actual.contains(ex))
+      //debug("actual.contains("+ex+"): "+actual.contains(ex))
       assert(actualreminders.contains(ex))
     }
     
@@ -172,11 +173,11 @@ class ReminderTest extends FunSuite with AssertionsForJUnit {
     // THIS IS WHAT WE'RE TESTING
     val actual = Reminder.createReminders(nextXmas)
     
-    println("ReminderUtilTest: expectedreminders.size="+expectedreminders.size+"  actual.size="+actual.size)
+    debug("ReminderUtilTest: expectedreminders.size="+expectedreminders.size+"  actual.size="+actual.size)
     assert(expectedreminders.size === actual.size)
     
     for(ex <- expectedreminders) {
-      //println("actual.contains("+ex+"): "+actual.contains(ex))
+      //debug("actual.contains("+ex+"): "+actual.contains(ex))
       assert(actual.contains(ex))
     }
     
@@ -186,30 +187,30 @@ class ReminderTest extends FunSuite with AssertionsForJUnit {
     
     // make sure we can query by circle...
     val circlerems = nextXmas.reminders
-    println("ReminderUtilTest: expectedreminders.size="+expectedreminders.size+"  circlerems.size="+circlerems.size)
+    debug("ReminderUtilTest: expectedreminders.size="+expectedreminders.size+"  circlerems.size="+circlerems.size)
     assert(expectedreminders.size === circlerems.size)
     circlerems foreach {
       cr => {
-        //println("expectedreminders.contains("+cr+"): "+expectedreminders.contains(cr))
+        //debug("expectedreminders.contains("+cr+"): "+expectedreminders.contains(cr))
         assert(expectedreminders.contains(cr)===true)
       }
     }
     
     // make sure we can query by name...
-    println("ReminderUtilTest: query by name")
+    debug("ReminderUtilTest: query by name")
     val brentrems = brent.reminders
     val expbrent = expectedreminders.filter(ex => ex.viewer.obj.map(_.first.is)=="Brent")
     assert(brentrems.size === expbrent.size)
     brentrems foreach {br => assert(expbrent.contains(br)===true)}
     
     // make sure we can query by name/circle...
-    println("ReminderUtilTest: query by name/circle")
+    debug("ReminderUtilTest: query by name/circle")
     val brentxmasrems = Reminder.findByNameAndEvent(brent.id, nextXmas.id)
     assert(brentxmasrems.size === expbrent.size)
     brentxmasrems foreach {br => assert(expbrent.contains(br)===true)}
     
     // make sure we can query by name/circle/date...
-    println("ReminderUtilTest: query by name/circle/date")
+    debug("ReminderUtilTest: query by name/circle/date")
     val date1 = new Date(d1.getMillis)
     val single = Reminder.findByNameEventAndDate(brent.id, nextXmas.id, date1)
     assert(single.size===1)
@@ -243,15 +244,15 @@ class ReminderTest extends FunSuite with AssertionsForJUnit {
       }
     }
     val newexpectedreminders = newexprem.toList.flatten
-    println("ReminderUtilTest:  newexpectedreminders.size = "+newexpectedreminders.size)
-    println("ReminderUtilTest:  newreminders.size = "+newreminders.size)
+    debug("ReminderUtilTest:  newexpectedreminders.size = "+newexpectedreminders.size)
+    debug("ReminderUtilTest:  newreminders.size = "+newreminders.size)
     
     assert(newexpectedreminders.size === newreminders.size)
     
-    newexpectedreminders.foreach(r => println("newexpectedreminder: "+r))
+    newexpectedreminders.foreach(r => debug("newexpectedreminder: "+r))
     
     newreminders.foreach(r => {
-      println("newexpectedreminders.contains(r): "+newexpectedreminders.contains(r)+" where r = "+r)
+      debug("newexpectedreminders.contains(r): "+newexpectedreminders.contains(r)+" where r = "+r)
       assert(newexpectedreminders.contains(r))
     })
   }	
@@ -379,7 +380,7 @@ class ReminderTest extends FunSuite with AssertionsForJUnit {
     val brentsreminders = expectedreminders.filter(rem => rem.viewer.obj.first.equals("Brent"))
     brentsreminders.foreach(b => {
       val same = actualreminders.contains(b)
-      println("actualreminders.contains(b)"+same+" => "+b)
+      debug("actualreminders.contains(b)"+same+" => "+b)
       assert(!actualreminders.contains(b))
     })
   }
@@ -405,13 +406,69 @@ class ReminderTest extends FunSuite with AssertionsForJUnit {
     val reminder = Reminder.create.viewer(brent).circle(nextXmas).remind_date(new Date(new Date().getTime()+5000))
     
     val delay = 2
-    val runnable = new Runnable {def run = println("runnable run")}
+    val runnable = new Runnable {def run = debug("runnable run")}
     Reminder.schedule(delay, runnable)
     Thread.sleep(delay*1000 + 1000)
     
     // how do you test this?  there's no getters
     //val reminderExecutor = Reminder.createReminderExecutor(reminder)
     
+  }
+  
+  test("boot reminders") {
+    initDb
+        
+    Reminder.findAll.foreach(_.delete_!)
+    assert(Reminder.findAll.size===0)
+        
+    CircleParticipant.findAll.foreach(_.delete_!)
+    assert(CircleParticipant.findAll.size===0)
+        
+    Circle.findAll.foreach(_.delete_!)
+    assert(Circle.findAll.size===0)
+        
+    User.findAll.foreach(_.delete_!)
+    assert(User.findAll.size===0)
+    
+    
+    // just need the user id's
+    val brent = UserTest.createBrent
+    val tamie = UserTest.createTamie
+    
+    // just need the circle id
+    val now = new DateTime(new DateTime().getYear(), new DateTime().getMonthOfYear(), new DateTime().getDayOfMonth(),0,0,0,0)
+    val expdate = now.plusDays(6) // should result in 1 reminder for each person - 3 days out
+    val remdate = expdate.minusDays(3)
+    val circle = Circle.create
+    circle.name("xxxx").date(new Date(expdate.getMillis())).save
+    
+    val r1 = Reminder.create.viewer(brent).circle(circle).remind_date(new Date(remdate.getMillis()))
+    val r2 = Reminder.create.viewer(tamie).circle(circle).remind_date(new Date(remdate.getMillis()))
+    // save ends up populating Reminder.scheduledReminders...
+    r1.save
+    r2.save
+    
+    // so we have to clear out the map first
+    val m = Reminder.getScheduledReminders
+    m.foreach(kv => Reminder.removeScheduledReminder(kv._1))
+    
+    // make sure it's empty
+    assert(Reminder.getScheduledReminders.size === 0)
+    
+    // Now test .boot - this is what we're testing
+    Reminder.boot
+    
+    assert(Reminder.getScheduledReminders.size === 2)
+    
+    Reminder.getScheduledReminders.foreach(kv => assert(List(r1, r2).contains(kv._1)))
+
+    // make sure all the executors got created
+    // delete someone from the circle
+    // make sure the reminders for that person are deleted from the db
+    // and the executors are shutdown
+    
+    // Add someone to the circle that is there already
+    // how do I make sure I don't have a second Executor created?
   }
   
   

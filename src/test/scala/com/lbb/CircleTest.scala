@@ -12,9 +12,10 @@ import net.liftweb.common.Box
 import java.text.SimpleDateFormat
 import com.lbb.entity.Circle
 import com.lbb.entity.User
+import com.lbb.util.LbbLogger
 
 @RunWith(classOf[JUnitRunner])
-class CircleTest extends FunSuite with AssertionsForJUnit {
+class CircleTest extends FunSuite with AssertionsForJUnit with LbbLogger {
 
   def initDb = {
     // this stuff goes in Boot.scala
@@ -83,7 +84,7 @@ class CircleTest extends FunSuite with AssertionsForJUnit {
     
     assert(brent.activeCircles.size===3) 
     val recipientList = for(user <- User.findAll().filter(u => u.first.is.equals("Brent") || u.first.is.equals("Tamie"))) yield {
-      println(user)
+      debug(user)
       user
     }
     
@@ -94,19 +95,19 @@ class CircleTest extends FunSuite with AssertionsForJUnit {
   
   def getEmailList(recipientList:List[User]) = {
     val xxxx = for(recip <- recipientList; circle <- recip.activeCircles.filter(ccc => recip.isReceiver(ccc))) yield {
-      println("CIRCLE: "+circle.name)
+      debug("CIRCLE: "+circle.name)
       circle
     }
     
     val cs = for(ccc <- xxxx; recip <- recipientList; if(recip.isReceiver(ccc))) yield {
-      println("CS: "+ccc.name)
+      debug("CS: "+ccc.name)
       ccc
     }
   }
   
   test("test circle types") {
     import com.lbb.TypeOfCircle
-    TypeOfCircle.values foreach {t => {println("Circle type:  "+t)}}
+    TypeOfCircle.values foreach {t => {debug("Circle type:  "+t)}}
   }
   
   test("type of circle enums")

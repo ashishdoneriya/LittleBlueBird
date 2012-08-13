@@ -15,6 +15,7 @@ import com.lbb.entity.CircleParticipant
 import com.lbb.entity.Gift
 import com.lbb.entity.Recipient
 import com.lbb.entity.User
+import com.lbb.util.LbbLogger
 
 /**
  * This test has the added bonus of setting up your db for you.
@@ -22,7 +23,7 @@ import com.lbb.entity.User
  * Just run this test to create a nice "starter" db.
  */
 @RunWith(classOf[JUnitRunner])
-class RecipientTest extends FunSuite with AssertionsForJUnit {
+class RecipientTest extends FunSuite with AssertionsForJUnit with LbbLogger {
   
   // TODO create a real db pool
   def initDb = {
@@ -592,11 +593,11 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
       val giftlist = recipient.giftlist(viewer, circle)
       val actDescriptions = giftlist.map(_.description.is).sortWith(_ < _)
       
-      println("checking "+viewer.first+"'s view of "+recipient.first+"'s "+circle.name+" list...")
+      debug("checking "+viewer.first+"'s view of "+recipient.first+"'s "+circle.name+" list...")
       
-      expDescriptions foreach {g => println("expected gifts: "+g)}
+      expDescriptions foreach {g => debug("expected gifts: "+g)}
       
-      actDescriptions foreach {g => println("actual gifts: "+g)}
+      actDescriptions foreach {g => debug("actual gifts: "+g)}
       
       assert(expDescriptions===actDescriptions)
       
@@ -611,14 +612,14 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
         // this is what we're testing
         val mywishlist = u.mywishlist
         val actDescriptions = mywishlist.map(_.description.is).sortWith(_ < _)
-        println("checking "+u.first+"'s 'my wish list' ...")
+        debug("checking "+u.first+"'s 'my wish list' ...")
         val expDescriptions = s.toList.map(_._1.description.is).sortWith(_ < _)
         assert(expDescriptions===actDescriptions)
         mywishlist.foreach( g => assertCorrectBooleans(g, s, u))
       } // case Some(s)
       case None => {
-        println("FAIL:  'None' found instead of Some(Seq[(Gift,Boolean,Boolean,Boolean,Boolean)]) for user: "+u.first+" id: "+u.id)
-        println("FAIL:  This means you did not define the expected values for this user")
+        debug("FAIL:  'None' found instead of Some(Seq[(Gift,Boolean,Boolean,Boolean,Boolean)]) for user: "+u.first+" id: "+u.id)
+        debug("FAIL:  This means you did not define the expected values for this user")
         assert(false)
       }
     } // whatisee match
@@ -634,19 +635,19 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
     val expectedCanBuy = expectedGiftInfo._4
     val expectedCanReturn = expectedGiftInfo._5
     val expectedCanSeeStatus = expectedGiftInfo._6
-    println("Can "+viewer.first.is+" edit "+actualGift.description.is+"...")
+    debug("Can "+viewer.first.is+" edit "+actualGift.description.is+"...")
     assert(expectedCanEdit===viewer.canEdit(actualGift))
     
-    println("Can "+viewer.first.is+" delete "+actualGift.description.is+"...")
+    debug("Can "+viewer.first.is+" delete "+actualGift.description.is+"...")
     assert(expectedCanDelete===viewer.canDelete(actualGift))
     
-    println("Can "+viewer.first.is+" buy "+actualGift.description.is+"...")
+    debug("Can "+viewer.first.is+" buy "+actualGift.description.is+"...")
     assert(expectedCanBuy===viewer.canBuy(actualGift))
     
-    println("Can "+viewer.first.is+" return "+actualGift.description.is+"...")
+    debug("Can "+viewer.first.is+" return "+actualGift.description.is+"...")
     assert(expectedCanReturn===viewer.canReturn(actualGift))
     
-    println("Can "+viewer.first.is+" see status of "+actualGift.description.is+"...")
+    debug("Can "+viewer.first.is+" see status of "+actualGift.description.is+"...")
     assert(expectedCanSeeStatus===viewer.canSeeStatus(actualGift))
   }
   
@@ -655,11 +656,11 @@ class RecipientTest extends FunSuite with AssertionsForJUnit {
     
     val actName = g.recipients.map(_.person.obj.map(_.first.is).open_!).sortWith(_ < _)
 
-    println("checking recipients of gift: "+g.description)
+    debug("checking recipients of gift: "+g.description)
     
-    expName foreach {r => println("expected recipient: "+r)}
+    expName foreach {r => debug("expected recipient: "+r)}
 
-    actName foreach {r => println("actual recipient: "+r)}
+    actName foreach {r => debug("actual recipient: "+r)}
     
     assert(expName===actName)
   }

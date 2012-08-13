@@ -29,6 +29,7 @@ import com.lbb.util.Emailer
 import com.lbb.util.Email
 import com.lbb.util.Util
 import net.liftweb.json.JsonAST.JArray
+import com.lbb.util.LbbLogger
 
 /**
  * READY TO DEPLOY
@@ -85,7 +86,7 @@ ALTER TABLE `gift`
   `URL_STATE` - can be null
  */
 
-class Gift extends LongKeyedMapper[Gift] {
+class Gift extends LongKeyedMapper[Gift] with LbbLogger {
   def getSingleton = Gift
   
   def primaryKeyField = id
@@ -138,7 +139,7 @@ class Gift extends LongKeyedMapper[Gift] {
   
   def setDescription(nu:String, updater:String) = {
     val old = description.is
-    println("Gift.setDescription:  updater="+updater+"  sender: "+sender.obj.getOrElse("n/a"))
+    debug("Gift.setDescription:  updater="+updater+"  sender: "+sender.obj.getOrElse("n/a"))
     for(sss <- sender.obj; if(!sss.email.isEmpty()); if(!old.equals(nu))) yield {
       Emailer.notifyGiftDescriptionChanged(sss.email.is, sss.first.is, updater, old, nu)
     }
@@ -180,7 +181,7 @@ class Gift extends LongKeyedMapper[Gift] {
       user
     }
     val ret = users.toSet.filter(u => isBought && u.id.is != sender.is)
-    ret foreach {u => println("Gift.getEmailListForReturns:  For: "+description.is+":  notify "+u.first.is)}
+    ret foreach {u => debug("Gift.getEmailListForReturns:  For: "+description.is+":  notify "+u.first.is)}
     ret
   }
   
@@ -294,7 +295,7 @@ class Gift extends LongKeyedMapper[Gift] {
       canreturn = viewer.canSee(recipient, this, circle) && viewer.canReturn(this) 
       canseestatus = viewer.canSee(recipient, this, circle) && viewer.canSeeStatus(this) 
       issurprise = !recipient.knowsAbout(this)
-      println("gift.edbr:  case (Full(viewer), Full(recipient), Full(circle)))")
+      debug("gift.edbr:  case (Full(viewer), Full(recipient), Full(circle)))")
     } // case (Full(viewer), Full(recipient), Full(circle))
     
     case _ => {
@@ -304,7 +305,7 @@ class Gift extends LongKeyedMapper[Gift] {
       canreturn = false
       canseestatus = false
       issurprise = false
-      println("gift.edbr:  case _")
+      debug("gift.edbr:  case _")
     }
   }
 }

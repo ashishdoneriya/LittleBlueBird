@@ -17,9 +17,10 @@ import org.scalatest.junit.JUnitRunner
 import scala.xml.Text
 import net.liftweb.common.Full
 import net.liftweb.common.Empty
+import com.lbb.util.LbbLogger
 
 @RunWith(classOf[JUnitRunner])
-class CircleParticipantTest extends FunSuite with AssertionsForJUnit {
+class CircleParticipantTest extends FunSuite with AssertionsForJUnit with LbbLogger {
 
   def initDb = {
     // this stuff goes in Boot.scala
@@ -93,10 +94,10 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit {
     
     // brent.circles is a List.  It's all the instances of brent as a participant
     // This is how you find out all the circles brent is a member of
-    brent.circles.foreach(c => println(brent.first+" belongs to " +c.circleName))
+    brent.circles.foreach(c => debug(brent.first+" belongs to " +c.circleName))
     
     // xmas.participants is a List.  It's all participants in a given circle
-    xmas.participants.foreach(p => println(xmas.name+" has these members: " +p.name(p.person)))
+    xmas.participants.foreach(p => debug(xmas.name+" has these members: " +p.name(p.person)))
     
   }
   

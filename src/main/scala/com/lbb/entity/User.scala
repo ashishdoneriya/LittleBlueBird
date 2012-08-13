@@ -10,8 +10,6 @@ import scala.xml.NodeSeq
 import scala.xml.Text
 import org.joda.time.DateMidnight
 import org.joda.time.Years
-import com.lbb.entity.Circle
-import com.lbb.entity.Gift
 import javax.swing.ImageIcon
 import net.liftweb.common.Box.box2Iterable
 import net.liftweb.common.Box
@@ -44,6 +42,7 @@ import com.lbb.gui.MappedTextareaExtended
 import com.lbb.gui.MappedEmailExtended
 import net.liftweb.mapper.MappedLongIndex
 import net.liftweb.json.JsonAST.JBool
+import com.lbb.util.LbbLogger
 
 
 /**
@@ -111,7 +110,7 @@ ALTER TABLE `person`
  * Lesson:  Don't have to implement validate here - use the inherited validate which will call validate on all the fields
  */
 // TODO store user preferences
-class User extends LongKeyedMapper[User] {
+class User extends LongKeyedMapper[User] with LbbLogger {
   def getSingleton = User
   
   def primaryKeyField = id
@@ -134,8 +133,8 @@ class User extends LongKeyedMapper[User] {
       
     override def _toForm:Box[Elem] = {
       val sup = super._toForm
-      println("User.first._toForm: " + sup)
-      println("User.first._toForm: " + this.fieldId)
+      debug("User.first._toForm: " + sup)
+      debug("User.first._toForm: " + this.fieldId)
       sup
     }
   }
@@ -202,9 +201,9 @@ class User extends LongKeyedMapper[User] {
     val Pat = """(\d){1,2}/(\d){1,2}/(\d){4}""".r
     
     override def parse(s:String) = s match {
-      case Pat(m, d, y) => err = Nil; println("parse: case Pat(m, d, y): errors..."); err.foreach(println(_)); Full(dateFormat.parse(s))
-      case "" => err = Nil; println("parse: case \"\": errors..."); err.foreach(println(_)); this.set(null); Empty
-      case _ => err = FieldError(this, Text("Use MM/dd/yyyy format")) :: Nil; println("parse: case _ :  errors..."); err.foreach(println(_)); this.set(null); Empty
+      case Pat(m, d, y) => err = Nil; debug("parse: case Pat(m, d, y): errors..."); err.foreach(debug(_)); Full(dateFormat.parse(s))
+      case "" => err = Nil; debug("parse: case \"\": errors..."); err.foreach(debug(_)); this.set(null); Empty
+      case _ => err = FieldError(this, Text("Use MM/dd/yyyy format")) :: Nil; debug("parse: case _ :  errors..."); err.foreach(debug(_)); this.set(null); Empty
     }
     
     override def validate:List[FieldError] = err
@@ -368,7 +367,7 @@ class User extends LongKeyedMapper[User] {
 //    // - the item hasn't been bought  UPDATE: Bought is ok if not yet rec'd.  Rec'd is ok if rec'd in the given circle 
 //    // - and you (the viewer) are the one who added this gift
 //    case(v, _, Empty, g, c) if(!c.isExpired && v.addedThis(g)) => {
-//      if(gift.description=="gift17") println("case(v, _, Empty, g, c) if(!c.isExpired && v.addedThis(g))")
+//      if(gift.description=="gift17") debug("case(v, _, Empty, g, c) if(!c.isExpired && v.addedThis(g))")
 //      true
 //    }
 //    
@@ -377,7 +376,7 @@ class User extends LongKeyedMapper[User] {
 //    // - the item hasn't been bought
 //    // - you are a recipient of the gift AND the gift was added by another recipient
 //    case(v, _, Empty, g, c) if(!c.isExpired && g.isFor(v)) => {
-//      if(gift.description=="gift17") println("case(v, _, Empty, g, c) if(!c.isExpired && v.isRecipient(g))")
+//      if(gift.description=="gift17") debug("case(v, _, Empty, g, c) if(!c.isExpired && v.isRecipient(g))")
 //      g.wasAddedByARecipient
 //    }
 //    
@@ -387,7 +386,7 @@ class User extends LongKeyedMapper[User] {
 //    // - the item hasn't been bought
 //    // - you are not the one receiving this gift
 //    case(v, _, Empty, g, c) if(!c.isExpired && g.isForSomeoneElse(v)) => {
-//      if(gift.description=="gift17") println("case(v, _, Empty, g, c) if(!c.isExpired && !v.isRecipient(g))")
+//      if(gift.description=="gift17") debug("case(v, _, Empty, g, c) if(!c.isExpired && !v.isRecipient(g))")
 //      true
 //    }
 //    
@@ -396,7 +395,7 @@ class User extends LongKeyedMapper[User] {
 //    // - you added this item to your own list
 //    // - and you have not yet received this item
 //    case(v, r, s:Full[User], g, c) if(!c.isExpired && v.addedThis(g) && !g.hasBeenReceived) => {
-//      if(gift.description=="gift17") println("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.addedThis(g) && !g.hasBeenReceived)")
+//      if(gift.description=="gift17") debug("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.addedThis(g) && !g.hasBeenReceived)")
 //      true
 //    }
 //    
@@ -404,7 +403,7 @@ class User extends LongKeyedMapper[User] {
 //    // - the circle is still active
 //    // - and you have not yet received this item
 //    case(v, r, s:Full[User], g, c) if(!c.isExpired && g.isFor(v) && g.wasAddedByARecipient && !g.hasBeenReceived) => {
-//      if(gift.description=="gift17") println("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.isRecipient(g) && !g.hasBeenReceived)")
+//      if(gift.description=="gift17") debug("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.isRecipient(g) && !g.hasBeenReceived)")
 //      true
 //    }
 //    
@@ -417,7 +416,7 @@ class User extends LongKeyedMapper[User] {
 //    // - the circle is expired
 //    // - the gift was bought in the expired circle
 //    case(_, _, s:Full[User], g, c) if(c.isExpired && g.circle.obj.map(_.id.is).openOr(-1)==c.id.is) => {
-//      if(gift.description=="gift17") println("case(_, _, s:Full[User], g, c) if(c.isExpired && g.circle.obj.map(_.id.is).openOr(-1)==c.id.is)")
+//      if(gift.description=="gift17") debug("case(_, _, s:Full[User], g, c) if(c.isExpired && g.circle.obj.map(_.id.is).openOr(-1)==c.id.is)")
 //      true
 //    }
 //    
@@ -426,7 +425,7 @@ class User extends LongKeyedMapper[User] {
 //    // the gift has been received in another circle, so you cannot see this gift in THIS circle
 //    case(_, _, s:Full[User], g, c) if(g.hasBeenReceivedInAnotherCircle(c)) => false
     
-    case _ => {println("should catch this case"); true}
+    case _ => {debug("should catch this case"); true}
 
   }
   
@@ -463,7 +462,7 @@ class User extends LongKeyedMapper[User] {
   }
   
   override def toForm(button: Box[String], f: User => Any): NodeSeq = {
-    println("User.toForm")
+    debug("User.toForm")
     super.toForm(button, f)
   }
   

@@ -258,11 +258,56 @@ class ReminderTest extends FunSuite with AssertionsForJUnit with LbbLogger {
   }	
   
   /**
+   * Unlike Xmas events, bday events only remind the guests.  No point in 
+   * reminding the bday boy/girl
+   */
+  test("add participant - check reminders in Bday event") {
+    checkRemindersForThisType("Birthday", List("Receiver", "Giver", "Giver"), 2)
+  }
+  
+  test("add participant - check reminders in Anniversary event") {
+    checkRemindersForThisType("Anniversary", List("Receiver", "Receiver", "Giver"), 3)
+  }
+  
+  def checkRemindersForThisType(circleType:String, levels:List[String], expsize:Int) = {
+    initDb
+        
+    Reminder.findAll.foreach(_.delete_!)
+    assert(Reminder.findAll.size===0)
+        
+    CircleParticipant.findAll.foreach(_.delete_!)
+    assert(CircleParticipant.findAll.size===0)
+        
+    Circle.findAll.foreach(_.delete_!)
+    assert(Circle.findAll.size===0)
+        
+    User.findAll.foreach(_.delete_!)
+    assert(User.findAll.size===0)
+    
+    val brent = UserTest.createBrent
+    val tamie = UserTest.createTamie
+    val kiera = UserTest.createKiera
+    
+    val now = new DateTime(new DateTime().getYear(), new DateTime().getMonthOfYear(), new DateTime().getDayOfMonth(),0,0,0,0)
+    val expdate = new Date(now.plusDays(5).getMillis)
+    val bday = Circle.create.circleType(circleType).name("foo").date(expdate)
+    bday.save
+    val cp1 = CircleParticipant.create.circle(bday).person(brent).inviter(brent).participationLevel(levels(0))
+    val cp2 = CircleParticipant.create.circle(bday).person(tamie).inviter(brent).participationLevel(levels(1))
+    val cp3 = CircleParticipant.create.circle(bday).person(kiera).inviter(brent).participationLevel(levels(2))
+    cp1.save
+    cp2.save
+    cp3.save
+    
+    assert(Reminder.getScheduledReminders.size === expsize)
+  }
+  
+  /**
    * We're going to start off with a circle that has some people in it.
    * Then we're going to add Bill and make sure that reminders are created
    * for Bill
    */
-  test("add participant - check reminders") {
+  test("add participant - check reminders in Xmas event") {
     initDb
         
     Reminder.findAll.foreach(_.delete_!)
@@ -461,6 +506,19 @@ class ReminderTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     assert(Reminder.getScheduledReminders.size === 2)
     
     Reminder.getScheduledReminders.foreach(kv => assert(List(r1, r2).contains(kv._1)))
+    
+    // Consider putting some break points around here to watch the current Executors get cancelled as they are removed from the scheduledReminders map
+    // call .boot again and see if there's still only 2 items in the map
+    Reminder.boot
+    
+    assert(Reminder.getScheduledReminders.size === 2)
+    
+    CircleParticipant.create.circle(circle).person(brent).participationLevel("Receiver").save
+    assert(Reminder.getScheduledReminders.size === 2)
+    
+    CircleParticipant.create.circle(circle).person(tamie).participationLevel("Receiver").save
+    assert(Reminder.getScheduledReminders.size === 2)
+    
 
     // make sure all the executors got created
     // delete someone from the circle

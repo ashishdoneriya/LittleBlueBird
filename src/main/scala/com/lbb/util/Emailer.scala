@@ -87,7 +87,7 @@ object Emailer {
             <td width="80%" valign="top">
               {body}
             </td>
-            <td width="20%" valign="top"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/></td>
+            <td width="20%" valign="top"><a href="http://www.littlebluebird.com" target="lbb"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/><p>LittleBlueBird.com</p></a></td>
           </tr>
         </table>
       </body>

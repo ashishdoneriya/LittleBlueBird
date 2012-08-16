@@ -290,10 +290,7 @@ object RestService extends RestHelper with LbbLogger {
         case Full(jvalue:JObject) => {
           jvalue.values foreach {kv => (kv._1, kv._2) match {
               case ("circleId", id:BigInt) => { }
-              case ("datedeleted", b:BigInt) => { 
-                circle.date_deleted(new Date(b.toLong))
-                circle.reminders.foreach(_.delete_!)
-              }
+              case ("datedeleted", b:BigInt) => circle.date_deleted(new Date(b.toLong))
               case ("name", s:String) => circle.name(s)
               case ("expirationdate", b:BigInt) => circle.date(new Date(b.toLong))
               case ("circleType", s:String) => circle.circleType(s)

@@ -7,4 +7,6 @@ trait DateChangeListener {
   def dateSet(c:Circle)
   def dateUnset
   
+  def dateDeletedSet(c:Circle)
+  
 }

@@ -100,8 +100,16 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLog
 //  }
   
   // Keep track of the date the circle was deleted, not just the boolean value
-  object date_deleted extends MappedDateExtended(this) {
+  object date_deleted extends MappedDateObservable(this, this) {
     override def dbColumnName = "date_deleted"
+  
+    override def apply(d:Date) = {
+      debug("apply: d = "+d+"  evtlistener="+evtlistener)
+      
+      val obj = super.apply(d)
+      evtlistener.dateDeletedSet(obj)
+      obj
+    }
   }
   
   // legacy db field - not going anything with this field at this time 5/21/12
@@ -270,15 +278,25 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLog
     Days.daysBetween(now, then).getDays
   }
   
+  /**
+   * Listener event that fires when date is set.  See apply() in date
+   */
   def dateUnset = {
     Reminder.deleteReminders(this)
   }
   
+  /**
+   * Listener event that fires when date is set.  See apply() in date
+   */
   def dateSet(c:Circle) = {
-    debug("Circle.dateSet.....")
     val reminders = Reminder.createReminders(c)
     reminders.foreach(_.save)
   }
+  
+  /**
+   * Listener event that fires when date_deleted is set.  See apply() in date_deleted
+   */
+  def dateDeletedSet(c:Circle) = Reminder.deleteReminders(c)
 }
 
 object Circle extends Circle with LongKeyedMetaMapper[Circle] {

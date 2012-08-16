@@ -60,7 +60,7 @@ class Reminder extends LongKeyedMapper[Reminder] with LbbLogger {
   override def save = {
     val saved = super.save()
     debug("Saved Reminder to db: "+this)
-    val executor = Reminder.createReminderExecutor(this)
+    val executor = createReminderExecutor
     executor.map(ex => if(saved) Reminder.addScheduledReminder(this, ex))
     saved
   }
@@ -70,6 +70,33 @@ class Reminder extends LongKeyedMapper[Reminder] with LbbLogger {
       case Full(person) => List(("person", person))
       case _ => Nil
     }
+  }
+  
+  private def createReminderExecutor = {
+    for(circle <- this.circle.obj) yield { 
+      // add a random number of minutes so that the reminders won't all fire 
+      // at the same time.  rand can be anything between the 0th and the 720th minute
+      // of the day... 0=midnight,  720=noon
+      val rand = new Random().nextInt(12*60)
+      val delay = Reminder.calcDelay(new Date, remind_date)
+      val runnable = new Runnable {
+        def run = {
+          Emailer.notifyEventComingUp(viewer, circle);
+          delete_! 
+        }
+      }
+      val time = new Date(new DateTime().plusMinutes(delay+rand).getMillis())
+      debug("Schedule reminder="+this+" to fire on "+time )
+      schedule(60*(delay+rand), runnable)
+    }
+  }
+  
+  def schedule(secondsfromnow:Int,runnable:Runnable) = {
+    import java.util.concurrent._
+    import java.util._
+    val ex = Executors.newSingleThreadScheduledExecutor()
+    ex.schedule(runnable, secondsfromnow, TimeUnit.SECONDS)
+    ex
   }
   
 }
@@ -98,7 +125,7 @@ object Reminder extends Reminder with LongKeyedMetaMapper[Reminder] {
     scheduledReminders.foreach(s => s._2.shutdownNow())
     scheduledReminders.empty
     reminders.foreach(r => {
-      val box = createReminderExecutor(r)
+      val box = r.createReminderExecutor
       box.map(ex => addScheduledReminder(r, ex))
     })
     debug("boot: exit")
@@ -135,33 +162,6 @@ object Reminder extends Reminder with LongKeyedMetaMapper[Reminder] {
     val m2 = Minutes.minutesBetween(nowmn, nowdt).getMinutes()
     val delay = m1 - m2
     delay
-  }
-  
-  private def createReminderExecutor(r:Reminder) = {
-    for(circle <- r.circle.obj) yield { 
-      // add a random number of minutes so that the reminders won't all fire 
-      // at the same time.  rand can be anything between the 0th and the 720th minute
-      // of the day... 0=midnight,  720=noon
-      val rand = new Random().nextInt(12*60)
-      val delay = calcDelay(new Date, r.remind_date)
-      val runnable = new Runnable {
-        def run = {
-          Emailer.notifyEventComingUp(r.viewer, r.circle);
-          r.delete_! 
-        }
-      }
-      val time = new Date(new DateTime().plusMinutes(delay+rand).getMillis())
-      debug("Schedule reminder="+r+" to fire on "+time )
-      schedule(60*(delay+rand), runnable)
-    }
-  }
-  
-  def schedule(secondsfromnow:Int,runnable:Runnable) = {
-    import java.util.concurrent._
-    import java.util._
-    val ex = Executors.newSingleThreadScheduledExecutor()
-    ex.schedule(runnable, secondsfromnow, TimeUnit.SECONDS)
-    ex
   }
   
   def createReminders(c:Circle) = {

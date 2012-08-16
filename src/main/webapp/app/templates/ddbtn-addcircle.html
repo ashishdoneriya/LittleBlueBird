@@ -65,7 +65,7 @@
 	                 ng-click="$location.path($location.url());">+
 	              </a>
 			      <ul class="dropdown-menu">
-			        <li><a ng-click="addmyselfasreceiver()">Add myself</a></li>
+			        <li><a ng-click="addmyselfasreceiver(newcircle)">Add myself</a></li>
 			        <li><a ng-click="addmethod='byname';participationlevel='Receiver';">Add by name</a></li>
 			        <li><a ng-click="addmethod='fromanotherevent';participationlevel='Receiver';">Add from another event</a></li>
 			      </ul>	
@@ -102,7 +102,7 @@
 	               ng-click="$location.path($location.url());">+
 	            </a>
 			    <ul class="dropdown-menu">
-			      <li><a ng-click="addmyselfasgiver()">Add myself</a></li>
+			      <li><a ng-click="addmyselfasgiver(newcircle)">Add myself</a></li>
 			      <li><a ng-click="addmethod='byname';participationlevel='Giver';">Add by name</a></li>
 			      <li><a ng-click="addmethod='fromanotherevent';participationlevel='Giver';">Add from another event</a></li>
 			    </ul>	

@@ -1,6 +1,30 @@
 
 <div ng-controller="CircleCtrl">
-  <div ng-repeat="reminder in circle.reminders">
-    <div>{{reminder.remind_date | date:'EEE MMM d, yyyy'}} {{reminder.person.first}} {{reminder.person.last}}</div>
+  <div class="row"><div class="span4"><h3>Reminders for {{circle.name}}</h3></div></div>
+
+  <div class="row">
+    <div class="span4 box-white margbottom2">
+      <div ng-repeat="reminder in circle.reminders">
+        <div class="row">
+          <div class="span2"><a ng-click="removereminder(reminder, $index)"><i class="icon-remove"></i></a>{{reminder.remind_date | date:'EEE MMM d, yyyy'}}</div>
+          <div class="span2">{{reminder.person.first}} {{reminder.person.last}}</div>
+        </div>
+      </div>
+    </div>
+    
+    <form novalidate name="addReminderForm">
+    <div class="span2 box-white margbottom2">
+      <div>Date: <input class="input-small" date-picker="remdate" ng-model="remdate" type="text" ng-required="true"></input></div>
+      <div ng-repeat="p in circle.participants.receivers">
+        <input type="checkbox" ng-model="p.checked"> {{p.fullname}}
+      </div>
+      <div ng-repeat="p in circle.participants.givers">
+        <input type="checkbox" ng-model="p.checked"> {{p.fullname}}
+      </div>
+      <div><a class="btn btn-primary" ng-click="addreminder();">Add Reminders</a></div>
+    </div>
+    </form>
+ 
   </div>
+  
 </div>

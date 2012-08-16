@@ -513,16 +513,23 @@ class ReminderTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     
     assert(Reminder.getScheduledReminders.size === 2)
     
-    CircleParticipant.create.circle(circle).person(brent).participationLevel("Receiver").save
+    val brentcp = CircleParticipant.create.circle(circle).person(brent).participationLevel("Receiver")
+    brentcp.save
     assert(Reminder.getScheduledReminders.size === 2)
     
-    CircleParticipant.create.circle(circle).person(tamie).participationLevel("Receiver").save
+    val tamiecp = CircleParticipant.create.circle(circle).person(tamie).participationLevel("Receiver")
+    tamiecp.save
     assert(Reminder.getScheduledReminders.size === 2)
-    
 
-    // make sure all the executors got created
     // delete someone from the circle
+    brentcp.delete_!
+    
     // make sure the reminders for that person are deleted from the db
+    assert(Reminder.getScheduledReminders.size === 1)
+    
+    tamiecp.delete_!
+    assert(Reminder.getScheduledReminders.size === 0)
+    
     // and the executors are shutdown
     
     // Add someone to the circle that is there already

@@ -1,16 +1,20 @@
 package com.lbb
 import java.text.SimpleDateFormat
 import java.util.Date
+
 import com.lbb.entity.Circle
 import com.lbb.entity.CircleParticipant
 import com.lbb.entity.Gift
 import com.lbb.entity.Recipient
+import com.lbb.entity.Reminder
 import com.lbb.entity.User
 import com.lbb.util.Email
 import com.lbb.util.Emailer
+import com.lbb.util.LbbLogger
 import com.lbb.util.MapperHelper
 import com.lbb.util.RequestHelper
 import com.lbb.util.SearchHelper
+
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
@@ -27,7 +31,6 @@ import net.liftweb.http.S
 import net.liftweb.json.JsonAST._
 import net.liftweb.mapper.By
 import net.liftweb.util.BasicTypesHelpers._
-import com.lbb.util.LbbLogger
 
 object RestService extends RestHelper with LbbLogger {
 
@@ -43,7 +46,8 @@ object RestService extends RestHelper with LbbLogger {
     case Delete("gifts" :: AsLong(giftId) :: deleter :: _, _) => deleteGift(giftId, deleter)
     
     case Get("reminders" :: AsLong(circleId) :: _, _) => getReminders(circleId)
-    case Delete("reminders" :: AsLong(circleId) :: AsLong(userId) :: _, _) => deleteReminders(circleId, userId)
+    case Delete("reminders" :: AsLong(circleId) :: _, _) => deleteReminders(circleId)
+    case JsonPost("reminders" :: AsLong(circleId) :: _, (json,req)) => insertReminders(circleId)
   }
   
   serve {
@@ -68,10 +72,17 @@ object RestService extends RestHelper with LbbLogger {
     case _ => debug("RestService.serve:  666666666"); debugRequest
   }
   
-  def deleteReminders(circleId:Long, userId:Long) = {
-    for(circle <- Circle.findByKey(circleId)) {
-      circle.reminders.filter(r => r.viewer.is==userId).foreach(_.delete_!)
-    }
+  def deleteReminders(circleId:Long) = {
+    val bc = Circle.findByKey(circleId).map(cc => By(Reminder.circle, cc) :: Nil)
+    
+    val bu = S.param("userId").map(uu => {By(Reminder.viewer, uu.toLong) :: bc.openOr(Nil)})
+    
+    val bd = S.param("remind_date").map(dd => {By(Reminder.remind_date, new Date(dd.toLong)) :: bu.openOr(Nil) })
+    
+    val boxr = for(list <- bd; if(list.size > 0)) yield {Reminder.findAll(list:_*)}
+    val reminders = boxr.openOr(Nil)
+    reminders.foreach(_.delete_!)
+    
     NoContentResponse()
   }
   
@@ -533,6 +544,43 @@ object RestService extends RestHelper with LbbLogger {
       gift.delete_!
     }
     NoContentResponse()
+  }
+  
+  
+  def insertReminders(circleId:Long) = {
+    debug("S.param(\"people\") = "+S.param("people"));
+    val jval = for(req <- S.request; jvalue <- req.json; if(jvalue.isInstanceOf[JObject])) yield {
+      jvalue.asInstanceOf[JObject]
+    }
+    
+    val box = for(jobj <- jval) yield {
+      debug("jobj = "+jobj)
+      for(map <- jobj.values) debug("map = "+map)
+      val pids = for(map <- jobj.values; if(map._1.equals("people"))) yield {
+        val people = map._2
+        people match {
+          case l:List[Map[String, Any]] => {
+            val ll = l.map(_.get("id").getOrElse(-1L).toString().toLong).filter(xx => xx != -1)
+            debug("ll = "+ll);
+            ll
+          } // case l:List[Map[String, Any]]
+          case _ => debug("people: "+people.getClass.getName); List(-1L)
+        } // people match
+      } // for(map <- jobj.values; if(map._1.equals("people")))
+      
+      val ids = pids.flatten.filter(id => id != -1)
+      
+      val remdate = jobj.values.get("remind_date") match { 
+        case Some(r:BigInt) => r.toLong 
+        case _ => -1L 
+      }
+      
+      ids.map(id => Reminder.create.circle(circleId).viewer(id).remind_date(new Date(remdate)).save )
+    }
+    
+    val box2 = Circle.findByKey(circleId).map(c => c.reminders.map(r => r.asJs))
+    box2.map(l => JsonResponse(JsArray(l))) openOr BadResponse()
+    
   }
   
   

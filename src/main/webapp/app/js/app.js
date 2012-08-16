@@ -80,6 +80,16 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
 
       return CircleParticipant;
   }).
+  factory('Reminder', function($resource) {
+      var Reminder = $resource('/gf/reminders/:circleId', {circleId:'@circleId', userId:'@userId', remind_date:'@remind_date', people:'@people'},
+                     {
+                       query: {method:'GET', isArray:true},
+                       delete: {method:'DELETE'},
+                       save: {method:'POST', isArray:true}
+                     });
+                     
+      return Reminder;
+  }).
   factory('Gift', function($resource) {
       var Gift = $resource('/gf/gifts/:giftId/:updater', {giftId:'@giftId', updater:'@updater', viewerId:'@viewerId', recipientId:'@recipientId', recipients:'@recipients', circleId:'@circleId', description:'@description', url:'@url', addedBy:'@addedBy', status:'@status', senderId:'@senderId', senderName:'@senderName', reallyWants:'@reallyWants', deleted:'@deleted', urlAff:'@urlAff', affiliateId:'@affiliateId'}, 
                     {
@@ -322,7 +332,7 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
 }
 
 
-function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearch, Circle, Gift, CircleParticipant, $route) {              
+function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearch, Circle, Gift, CircleParticipant, Reminder, $route) {              
              
   
   $scope.user = RetrieveUser($scope, $cookieStore, User, User.currentUser, "userId");
@@ -338,6 +348,55 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   }
   else if(angular.isDefined($route.current.params.circleId)) {
     $scope.circle = Circle.query({circleId:$route.current.params.circleId}, function() {Circle.currentCircle = $scope.circle;}, function() {alert("Could not find Event "+$route.current.params.circleId);})
+  }
+  
+  
+  $scope.addreminder = function() {
+    var remind_date = new Date($scope.remdate).getTime();
+    var people = [];
+    for(var i=0; i < $scope.circle.participants.receivers.length; i++) {
+      var p = $scope.circle.participants.receivers[i];
+      if(p.checked) {
+        var contains = false;
+        for(var j=0; j < $scope.circle.reminders.length; j++) {
+          var rem = $scope.circle.reminders[j];
+          if(p.id == rem.person.id && rem.remind_date == remind_date) contains = true;
+        }
+        if(!contains) people.push(angular.copy(p));
+      }
+    }
+    for(var i=0; i < $scope.circle.participants.givers.length; i++) {
+      var p = $scope.circle.participants.givers[i];
+      if(p.checked) {
+        var contains = false;
+        for(var j=0; j < $scope.circle.reminders.length; j++) {
+          var rem = $scope.circle.reminders[j];
+          if(p.id == rem.person.id && rem.remind_date == remind_date) contains = true;
+        }
+        if(!contains) people.push(angular.copy(p));
+      }
+    }
+    
+    for(var i=0; i < $scope.circle.participants.receivers.length; i++) {
+      $scope.circle.participants.receivers[i].checked = false;
+    }
+    for(var i=0; i < $scope.circle.participants.givers.length; i++) {
+      $scope.circle.participants.givers[i].checked = false;
+    }
+    
+    $scope.remdate = '';
+    
+    if(people.length == 0) return;
+    
+    var reminders = Reminder.save({circleId:$scope.circle.id, remind_date:remind_date, people:people}, 
+                                   function(){$scope.circle.reminders = reminders;}, 
+                                   function(){alert("Uh Oh!\nHad a problem updating the reminders")});
+  }
+  
+  
+  $scope.removereminder = function(reminder, index) {
+    $scope.circle.reminders.splice(index, 1)
+    Reminder.delete({circleId:$scope.circle.id, userId:reminder.person.id, remind_date:reminder.remind_date});
   }
     
   
@@ -428,7 +487,9 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   }
   
   $scope.savecircle = function(circle, expdate) {
+    console.log("expdate = "+expdate);
     circle.expirationdate = new Date(expdate);
+    console.log("circle.expirationdate.getTime() = "+circle.expirationdate.getTime());
     var savedcircle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:Circle.circleType, 
                  participants:circle.participants, creatorId:circle.creatorId},
                  function() {
@@ -436,7 +497,9 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
                      $scope.user.circles.push(savedcircle); 
                    User.currentUser=$scope.user; 
                    $rootScope.$emit("userchange");
-                 } );
+                 } 
+               );
+    console.log("end of $scope.savecircle()");
   }
   
   $scope.newcircleFunction = function(thetype, limit) {
@@ -451,15 +514,24 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   $scope.editcircleFunction = function(circle) {
     $scope.thecircle = circle;
     $scope.expdate = circle.dateStr;
+    for(var i=0; i < $scope.thecircle.participants.receivers.length; i++) {
+      console.log($scope.circle.participants.receivers[i]);
+    }
     $scope.circlecopies = angular.copy($scope.user.circles);
   }
   
-  $scope.addmyselfasreceiver = function() {
-    $scope.newcircle.participants.receivers.push($scope.user);
+  // TODO add reminder
+  $scope.addmyselfasreceiver = function(circle) {
+    $scope.participationlevel = 'Receiver'
+    $scope.addparticipant2($scope.user, circle)
+    //circle.participants.receivers.push($scope.user);
   }
   
-  $scope.addmyselfasgiver = function() {
-    $scope.newcircle.participants.givers.push($scope.user);
+  // TODO add reminder
+  $scope.addmyselfasgiver = function(circle) {
+    $scope.participationlevel = 'Giver'
+    $scope.addparticipant2($scope.user, circle)
+    //circle.participants.givers.push($scope.user);
   }
   
   $scope.getType = function() {return Circle.circleType;}
@@ -477,6 +549,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   }
     
   $scope.addparticipant = function(index, person, circle) {
+    //alert("$scope.addparticipant:  person.first="+person.first);
     if(!angular.isDefined(circle.participants))
       circle.participants = {receivers:[], givers:[]};
     if($scope.participationlevel == 'Giver')
@@ -490,7 +563,8 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     if(angular.isDefined(circle.id)) {
       //alert("circle.id="+circle.id+"\n $scope.participationlevel="+$scope.participationlevel);
       var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:$scope.participationlevel,
-                                         who:person.fullname, email:person.email, circle:circle.name, adder:$scope.user.fullname});
+                                         who:person.fullname, email:person.email, circle:circle.name, adder:$scope.user.fullname},
+                                         function() {$scope.circle.reminders = Reminder.query({circleId:$scope.circle.id})});
     }
   }
     
@@ -523,17 +597,33 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   $scope.removereceiver = function(index, circle, participant) {
     circle.participants.receivers.splice(index, 1)
     if(angular.isDefined(circle.id)) {
-      CircleParticipant.delete({circleId:circle.id, userId:participant.id});
+      CircleParticipant.delete({circleId:circle.id, userId:participant.id}, function() {Reminder.delete({circleId:$scope.circle.id, userId:participant.id})});
+      // now remove person from circle.reminders...
+      removeremindersforperson(participant);
     }
   }
   
   $scope.removegiver = function(index, circle, participant) {
     circle.participants.givers.splice(index, 1)
     if(angular.isDefined(circle.id)) {
-      CircleParticipant.delete({circleId:circle.id, userId:participant.id});
+      CircleParticipant.delete({circleId:circle.id, userId:participant.id}, function() {Reminder.delete({circleId:$scope.circle.id, userId:participant.id})});
+      // now remove person from circle.reminders...
+      removeremindersforperson(participant);
     }
   }
   
+  function removeremindersforperson(person) {
+    $scope.circle.newreminders = [];
+    for(var i=0; i < $scope.circle.reminders.length; i++) {
+      if($scope.circle.reminders[i].viewer != person.id) {
+        $scope.circle.newreminders.push(angular.copy($scope.circle.reminders[i]));
+        console.log($scope.circle.reminders[i]);
+      }
+    }
+    $scope.circle.reminders = angular.copy($scope.circle.newreminders);
+  }
+  
+  // TODO delete reminders
   $scope.deletecircle = function(circle, index) {
     Circle.save({circleId:circle.id, datedeleted:new Date().getTime()},
                 function() {$scope.user.circles.splice(index, 1); 

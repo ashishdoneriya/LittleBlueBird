@@ -151,12 +151,11 @@ object Emailer {
               <P>Just a reminder, {circle.name.is} is {circle.daysaway} days away</P>
               </div>)
   
-  def notifyEventComingUp(personId:Long, circleId:Long) = {
+  def notifyEventComingUp(personId:Long, circle:Circle) = {
     // Look up person and circle obj's here at the time the email goes out.
     // It's possible the either one could have changed from the time the 
     // reminder was scheduled
     for(person <- User.findByKey(personId); 
-        circle <- Circle.findByKey(circleId); 
         if(!person.email.isEmpty())) {
       val msg = creatEventComingUpEmail(person, circle)
       val e = Email(person.email.is, "info@littlebluebird.com", "LittleBlueBird.com", circle.name+" Reminder from LittleBlueBird.com", msg, Nil, Nil)

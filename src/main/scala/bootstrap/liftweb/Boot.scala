@@ -23,6 +23,7 @@ import com.lbb.entity.User
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
 import net.liftweb.http.DocType
+import com.lbb.entity.Reminder
 
 class Boot extends LbbLogger {
   def boot {
@@ -71,6 +72,10 @@ class Boot extends LbbLogger {
     Schemifier.schemify(true, Schemifier.infoF _, CircleParticipant)
     Schemifier.schemify(true, Schemifier.infoF _, Gift)
     Schemifier.schemify(true, Schemifier.infoF _, Recipient)
+    Schemifier.schemify(true, Schemifier.infoF _, Reminder)
+    
+    // Read the reminder table and create executors for all the reminders
+    Reminder.boot
     
     LiftRules.dispatch.append(RestService)
     

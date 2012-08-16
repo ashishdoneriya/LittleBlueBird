@@ -16,6 +16,7 @@ import com.lbb.entity.Gift
 import com.lbb.entity.Recipient
 import com.lbb.entity.User
 import com.lbb.util.LbbLogger
+import com.lbb.entity.Reminder
 
 /**
  * This test has the added bonus of setting up your db for you.
@@ -42,6 +43,7 @@ class RecipientTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     Schemifier.schemify(true, Schemifier.infoF _, CircleParticipant)
     Schemifier.schemify(true, Schemifier.infoF _, Gift)
     Schemifier.schemify(true, Schemifier.infoF _, Recipient)
+    Schemifier.schemify(true, Schemifier.infoF _, Reminder)
         
   }
 

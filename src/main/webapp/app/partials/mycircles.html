@@ -18,7 +18,7 @@
 		      <li class="dropdown">
   		        <button class="dropdown-toggle" data-toggle="dropdown"><i class="icon-pencil"></i> <b class="caret"></b></button>
 			    <ul class="dropdown-menu">
-			      <li><a ng-click="editModalShown = !editModalShown;editcircleFunction(circle);">Edit Event</a></li>
+			      <li><a ng-click="classA='span2 offset3';editModalShown = !editModalShown;editcircleFunction(circle);">Edit Event</a></li>
 		          <li><a ng-click="modal2Shown = !modal2Shown;thecircle = circle;">Delete Event</a></li>
 		          <li><a ng-href="#/reminders">Reminders</a></li>
 			    </ul>
@@ -85,81 +85,9 @@
 	
 	
 	  <div class="row margbottom60">
-        
-	    <div class="span3">
-	      <div class="row">
-	        <div class="span3 box shadow well-tiny">
-	          <span ng-show="thecircle.receiverLimit == -1"><b>Participants</b></span>
-	          <span ng-show="thecircle.receiverLimit == 1"><b>Honoree</b></span>
-	          <span ng-show="thecircle.receiverLimit > 1"><b>Honorees</b></span>
-	          
-	          <span ng-show="canaddreceiver(thecircle)">
-                <div class="btn-group pull-right">
-	              <a class="btn btn-mini btn-success font14 bold dropdown-toggle" 
-	                 data-toggle="dropdown" href="#" 
-	                 ng-click="$location.path($location.url());">+
-	              </a>
-			      <ul class="dropdown-menu">
-			        <li><a ng-click="addmyselfasreceiver()">Add myself</a></li>
-			        <li><a ng-click="addmethod='byname';participationlevel='Receiver';">Add by name</a></li>
-			        <li><a ng-click="addmethod='fromanotherevent';participationlevel='Receiver';">Add from another event</a></li>
-			      </ul>	
-	            </div>
-	          </span>
-	          
-	          <span ng-hide="canaddreceiver(thecircle)">
-                <div class="btn-group pull-right">
-	              <a class="btn btn-mini font14 bold" ng-disabled="true">+</a>
-	            </div>
-	          </span>
-	          
-	   
-	          <span ng-show="thecircle.participants.receivers != 0">
-	            <div class="box-white margtop10 margbottom2">
-	              <span ng-repeat="participant in thecircle.participants.receivers">
-	                <div class="row">
-	                  <div class="span2"><a ng-click="removereceiver($index, thecircle, participant)"><i class="icon-remove"></i></a>{{participant.fullname}}</div>
-	                </div>
-		          </span>
-	            </div>
-	          </span>
-	   
-	        </div>
-	      </div>
-	      
-	      
-	      <div class="row" ng-show="thecircle.receiverLimit != -1">
-	        <div class="span3 box shadow well-tiny">
-	          <b>Guests</b>
-              <div class="btn-group pull-right">
-	            <a class="btn btn-mini btn-success font14 bold dropdown-toggle" 
-	               data-toggle="dropdown" href="#" 
-	               ng-click="$location.path($location.url());">+
-	            </a>
-			    <ul class="dropdown-menu">
-			      <li><a ng-click="addmyselfasgiver()">Add myself</a></li>
-			      <li><a ng-click="addmethod='byname';participationlevel='Giver';">Add by name</a></li>
-			      <li><a ng-click="addmethod='fromanotherevent';participationlevel='Giver';">Add from another event</a></li>
-			    </ul>	
-	          </div>
-	   
-	          <span ng-show="thecircle.participants.givers != 0">
-	            <div class="box-white margtop10 margbottom2">
-	              <span ng-repeat="participant in thecircle.participants.givers">
-	                <div class="row">
-	                  <div class="span2"><a ng-click="removegiver($index, thecircle, participant)"><i class="icon-remove"></i></a>{{participant.fullname}}</div>
-	                </div>
-		          </span>
-	            </div>
-	          </span>
-	          
-	        </div>
-	      </div>
-	      
-	    </div>
 	    
 	    <div class="span3">
-	      <div class="box shadow well-tiny margright_5" ng-show="addmethod=='byname'">
+	      <div class="box well-tiny margright_5" ng-show="addmethod=='byname'">
 			      <div class="row">
 			        <div class="span3"><h5>Add by Name</h5></div>
 			      </div>
@@ -196,7 +124,7 @@
 	      </div> <!-- end of div: addmethod='byname' -->
 	      
 	      
-	      <div class="box shadow well-tiny margright_5" ng-show="addmethod=='createaccount'">
+	      <div class="box well-tiny margright_5" ng-show="addmethod=='createaccount'">
             <!-- See:  http://docs-next.angularjs.org/guide/dev_guide.forms 
                  This page is a copy of register.html except the title here is Create Account
                  and on register.html it's Sign Up.   Also the save button here creates a new
@@ -286,7 +214,7 @@
 	      </div> <!-- end of div: addmethod='createaccount' -->
 	      
 	      
-	      <div class="box shadow well-tiny margright_5" ng-show="addmethod=='fromanotherevent'">
+	      <div class="box well-tiny margright_5" ng-show="addmethod=='fromanotherevent'">
 			      <div class="row">
 			        <div class="span3"><h5>Add from another Event</h5></div>
 			      </div>
@@ -320,6 +248,88 @@
 	      </div> <!-- end of div: addmethod='fromanotherevent' -->
 	    
         </div>
+        
+        <!-- begin: the section listing the current participants -->
+	    
+	    <div ng-class="classA">
+	      <div class="row">
+	        <div class="span2 box well-tiny">
+	          <span ng-show="thecircle.receiverLimit == -1"><b>Participants</b></span>
+	          <span ng-show="thecircle.receiverLimit == 1"><b>Honoree</b></span>
+	          <span ng-show="thecircle.receiverLimit > 1"><b>Honorees</b></span>
+	          
+	          <span ng-show="canaddreceiver(thecircle)">
+                <div class="btn-group pull-right">
+	              <a class="btn btn-mini btn-success font14 bold dropdown-toggle" 
+	                 data-toggle="dropdown" href="#" 
+	                 ng-click="$location.path($location.url());">+
+	              </a>
+			      <ul class="dropdown-menu">
+			        <li><a ng-click="addmyselfasreceiver(thecircle)">Add myself</a></li>
+			        <li><a ng-click="classA='span2';addmethod='byname';participationlevel='Receiver';">Add by name</a></li>
+			        <li><a ng-click="classA='span2';addmethod='fromanotherevent';participationlevel='Receiver';">Add from another event</a></li>
+			      </ul>	
+	            </div>
+	          </span>
+	          
+	          <span ng-hide="canaddreceiver(thecircle)">
+                <div class="btn-group pull-right">
+	              <a class="btn btn-mini font14 bold" ng-disabled="true">+</a>
+	            </div>
+	          </span>
+	          
+	   
+	          <span ng-show="thecircle.participants.receivers != 0">
+	            <div class="box-white margtop10 margbottom2">
+	              <span ng-repeat="participant in thecircle.participants.receivers">
+	                <div class="row">
+	                  <div class="span2">
+	                    <!-- to show or not to show: the little x next to someone's name that lets you remove them from the event...
+	                    Rule:  If gifts have been purchased for this person in this event, you cannot delete this person from this event
+	                     -->
+	                    <span ng-hide="participant.giftsHaveBeenPurchasedForMe"><a ng-click="removereceiver($index, thecircle, participant)"><i class="icon-remove"></i></a></span>
+	                    <span ng-show="participant.giftsHaveBeenPurchasedForMe">&nbsp;&nbsp;&nbsp;</span>
+	                    {{participant.fullname}}
+	                  </div>
+	                </div>
+		          </span>
+	            </div>
+	          </span>
+	   
+	        </div>
+	      </div>
+	      
+	      
+	      <div class="row" ng-show="thecircle.receiverLimit != -1">
+	        <div class="span2 box well-tiny">
+	          <b>Guests</b>
+              <div class="btn-group pull-right">
+	            <a class="btn btn-mini btn-success font14 bold dropdown-toggle" 
+	               data-toggle="dropdown" href="#" 
+	               ng-click="$location.path($location.url());">+
+	            </a>
+			    <ul class="dropdown-menu">
+			      <li><a ng-click="addmyselfasgiver(thecircle)">Add myself</a></li>
+			      <li><a ng-click="addmethod='byname';participationlevel='Giver';">Add by name</a></li>
+			      <li><a ng-click="addmethod='fromanotherevent';participationlevel='Giver';">Add from another event</a></li>
+			    </ul>	
+	          </div>
+	   
+	          <span ng-show="thecircle.participants.givers != 0">
+	            <div class="box-white margtop10 margbottom2">
+	              <span ng-repeat="participant in thecircle.participants.givers">
+	                <div class="row">
+	                  <div class="span2"><a ng-click="removegiver($index, thecircle, participant)"><i class="icon-remove"></i></a>{{participant.fullname}}</div>
+	                </div>
+		          </span>
+	            </div>
+	          </span>
+	          
+	        </div>
+	      </div>
+	      
+	    </div>
+	    <!-- end: the section listing all the participants -->
 	    
 	  </div>
 

@@ -1,7 +1,6 @@
 package com.lbb
 import java.text.SimpleDateFormat
 import java.util.Date
-
 import com.lbb.entity.Circle
 import com.lbb.entity.CircleParticipant
 import com.lbb.entity.Gift
@@ -14,7 +13,6 @@ import com.lbb.util.LbbLogger
 import com.lbb.util.MapperHelper
 import com.lbb.util.RequestHelper
 import com.lbb.util.SearchHelper
-
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
@@ -31,6 +29,7 @@ import net.liftweb.http.S
 import net.liftweb.json.JsonAST._
 import net.liftweb.mapper.By
 import net.liftweb.util.BasicTypesHelpers._
+import org.joda.time.DateTime
 
 object RestService extends RestHelper with LbbLogger {
 
@@ -575,7 +574,8 @@ object RestService extends RestHelper with LbbLogger {
         case _ => -1L 
       }
       
-      ids.map(id => Reminder.create.circle(circleId).viewer(id).remind_date(new Date(remdate)).save )
+      ids.filter(id => new DateTime(remdate).isAfterNow())
+         .map(id => Reminder.create.circle(circleId).viewer(id).remind_date(new Date(remdate)).save )
     }
     
     val box2 = Circle.findByKey(circleId).map(c => c.reminders.map(r => r.asJs))

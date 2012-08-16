@@ -574,8 +574,13 @@ object RestService extends RestHelper with LbbLogger {
         case _ => -1L 
       }
       
-      ids.filter(id => new DateTime(remdate).isAfterNow())
-         .map(id => Reminder.create.circle(circleId).viewer(id).remind_date(new Date(remdate)).save )
+      /**
+       * Neat trick for testing:  Comment out the .filter line.  That allows you to create reminders in the past 
+       * which will fire immediately.
+       */
+      ids
+        .filter(id => new DateTime(remdate).isAfterNow())
+        .map(id => Reminder.create.circle(circleId).viewer(id).remind_date(new Date(remdate)).save )
     }
     
     val box2 = Circle.findByKey(circleId).map(c => c.reminders.map(r => r.asJs))

@@ -258,8 +258,6 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
       }
     }
     
-    alert("$scope.user.fullname="+$scope.user.fullname);
-    
     var savedgift = Gift.save({giftId:gift.id, updater:$scope.user.fullname, circleId:$scope.circle.id, description:gift.description, url:gift.url, 
                addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$scope.user.id, recipientId:$scope.showUser.id, 
                senderId:gift.sender, senderName:gift.sender_name},

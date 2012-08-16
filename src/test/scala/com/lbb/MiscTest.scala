@@ -21,6 +21,7 @@ import org.scalatest.junit.JUnitRunner
 import com.lbb.util.Emailer
 import com.lbb.entity.Reminder
 import com.lbb.util.LbbLogger
+import com.lbb.util.AffLinkCreator
 
 @RunWith(classOf[JUnitRunner])
 class MiscTest extends FunSuite with AssertionsForJUnit with LbbLogger {
@@ -232,9 +233,23 @@ class MiscTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     
   }
   
-  test("email content") {
-    val elem = Emailer.createAddedToCircleEmail("brent", "xmas", "jett")
-    debug(elem.toString())
+  // in case the http:// is missing
+  test("create full url") {
+    assert("" === Util.fullurl(""))
+    assert("http://www.yahoo.com" === Util.fullurl("http://www.yahoo.com"))
+    assert("https://www.yahoo.com" === Util.fullurl("https://www.yahoo.com"))
+    assert("http://www.yahoo.com" === Util.fullurl("www.yahoo.com"))
+    assert("http://yahoo.com" === Util.fullurl("yahoo.com"))
+  }
+  
+  test("create affiliate link") {
+    val url = "http://www.amazon.com/Instant-Video/b/ref=MoviesHPBB_Amazon_Instant_Video_Storefront?pf_rd_i=2625373011"
+    val exp = "http://www.amazon.com/Instant-Video/b/ref=MoviesHPBB_Amazon_Instant_Video_Storefront?pf_rd_i=2625373011&tag=wwwlittleb040-20"
+    val affurl = Util.createAffLink(url)
+    assert(exp === affurl)
+    assert("http://amazon.com?tag=wwwlittleb040-20" === Util.createAffLink("amazon.com"))
+    assert("http://amazon.com?&tag=wwwlittleb040-20" === Util.createAffLink("amazon.com?"))
+    assert("http://google.com" === Util.createAffLink("google.com"))
   }
   
 }

@@ -30,6 +30,7 @@ import com.lbb.util.Email
 import com.lbb.util.Util
 import net.liftweb.json.JsonAST.JArray
 import com.lbb.util.LbbLogger
+import com.lbb.util.UrlListener
 
 /**
  * READY TO DEPLOY
@@ -147,8 +148,14 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger {
   }
   
   // TODO validate url
-  object url extends MappedStringExtended(this, 1028) {
+  object url extends MappedStringExtended(this, 1028) with UrlListener {
     override def displayName = "URL"
+  
+    override def apply(s:String) = {
+      val obj = super.apply(s)
+      val o2 = createAffLink(obj)
+      o2
+    }
   }
   
   // TODO validate url

@@ -12,4 +12,23 @@ object Util {
     }
   }
   
+  def fullurl(url:String) = url match {
+    case s:String if(s.startsWith("http://")) => s
+    case s:String if(s.startsWith("https://")) => s
+    case s:String if(s.equals("")) => s
+    case _ => "http://" + url
+  }
+  
+  def createAffLink(url:String) = {
+    val full = fullurl(url)
+    val lc = whichCreator(full)
+    lc.createLink(full)
+  }
+  
+  private def whichCreator(url:String) = url match {
+    // for international amazon sites, you won't get credit for the sale
+    case s:String if(s.contains("amazon")) => AmazonLinkCreator
+    case _ => NoopLinkCreator
+  }
+  
 }

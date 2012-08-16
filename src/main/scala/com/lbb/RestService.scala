@@ -55,7 +55,7 @@ object RestService extends RestHelper with LbbLogger {
     case Post("logout" :: _, _) => S.deleteCookie("userId");NoContentResponse()
     case JsonPost("email" :: _, (json, req)) => sendPasswordRecoveryEmail 
     case JsonPost("gifts" :: AsLong(giftId) :: updaterName :: _, (json, req)) => debug("RestService.serve:  BBBBBBBB"); updateGift(updaterName, giftId)
-    case JsonPost("gifts" :: Nil, (json, req)) => debug("RestService.serve:  CCCCCCC"); debug(json); insertGift
+    case JsonPost("gifts" :: _ :: Nil, (json, req)) => debug("RestService.serve:  CCCCCCC"); debug(json); insertGift
     case JsonPost("users" :: AsLong(userId) :: _, (json, req)) => debug("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
     case JsonPost("users" :: Nil, (json, req)) => debug("RestService.serve:  4444444444444444"); debug(json); insertUser
     case Get("usersearch" :: _, _) => debug("RestService.serve:  JsonPost: usersearch"); SearchHelper.usersearch

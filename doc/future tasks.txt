@@ -1,0 +1,11 @@
+Facebook Integration
+
+Add facebook id to the person table.  Need that to tell if LBB Eric Moore = FB Eric Moore
+
+Uncomment all the facebook stuff in app.js and login.html
+
+
+
+Circles
+
+Add a little checkbox that says "Recurring Event" - have the event auto-create about a month before the event

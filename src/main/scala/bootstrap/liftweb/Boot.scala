@@ -24,9 +24,21 @@ import net.liftweb.common.Empty
 import net.liftweb.common.Full
 import net.liftweb.http.DocType
 import com.lbb.entity.Reminder
+import com.lbb.entity.AuditLog
 
 class Boot extends LbbLogger {
   def boot {
+    
+    debug("check mail.transport.protocol = "+(Props.get("mail.transport.protocol") openOr "not found"))
+    debug("check mail.smtp.starttls.enable = "+(Props.get("mail.smtp.starttls.enable") openOr "not found"))
+    debug("check mail.smtp.auth = "+(Props.get("mail.smtp.auth") openOr "not found"))
+    debug("check mail.smtp.host = "+(Props.get("mail.smtp.host") openOr "not found"))
+    debug("check mail.smtp.port = "+(Props.get("mail.smtp.port") openOr "not found"))
+    debug("check mail.user = "+(Props.get("mail.user") openOr "not found"))
+    debug("check mail.password = "+(Props.get("mail.password") openOr "not found"))
+    debug("check db.user = "+(Props.get("db.user") openOr "not found"))
+    debug("check db.pass = "+(Props.get("db.pass") openOr "not found"))
+    
     // TODO need real db pool
     if (!DB.jndiJdbcConnAvailable_?) {
       val vendor = 
@@ -73,6 +85,7 @@ class Boot extends LbbLogger {
     Schemifier.schemify(true, Schemifier.infoF _, Gift)
     Schemifier.schemify(true, Schemifier.infoF _, Recipient)
     Schemifier.schemify(true, Schemifier.infoF _, Reminder)
+    Schemifier.schemify(true, Schemifier.infoF _, AuditLog)
     
     // Read the reminder table and create executors for all the reminders
     Reminder.boot

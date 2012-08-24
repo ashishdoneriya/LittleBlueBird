@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `person` (
   `MEMBERSHIP_STATUS_ID` bigint(20) NOT NULL default '2',
   `EXPIRATION_DATE` bigint(20) default NULL,
   `BIO` varchar(2000) default NULL,
-  `GENDER` varchar(8) NOT NULL default 'Female',
+  `GENDER` varchar(8) default NULL,
   `DOB` date default NULL,
   `CITY` varchar(100) default NULL,
   `STATE` varchar(100) default NULL,

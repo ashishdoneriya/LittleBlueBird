@@ -1,3 +1,8 @@
+BUG:  8/22/12  When you first create your account, the system logs you in but doesn't write to the audit_log table.
+So if I was trying to figure out who was online at any given time, I would miss someone that had just created
+their account.  ***** BUT IF THE APP IS NOW REST-BASED, DOES IT MATTER ??  I CAN PUSH OUT NEW CODE AND CLIENT
+DOESN'T KNOW OR CARE ************************************************************************
+
 BUG:  Click a past event and get sent to the login screen  (The Past Events section has really been neglected)
 THE FIX:  Did away with the Past Events section.  Now, there is just one Events section that shows both active
 and expired events.  See User.circleList.

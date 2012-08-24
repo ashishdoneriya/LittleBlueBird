@@ -39,7 +39,7 @@ class UserTest extends FunSuite with AssertionsForJUnit with LbbLogger {
 
     DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
     
-    Schemifier.schemify(true, Schemifier.infoF _, User)
+    Schemifier.schemify(true, Schemifier.infoF _, User) 
   }
   
     

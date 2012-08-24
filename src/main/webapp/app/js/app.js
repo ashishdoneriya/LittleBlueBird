@@ -1,4 +1,4 @@
-var app = angular.module('project', ['UserModule', 'datetime']).
+var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']).
   config(function($routeProvider){
     $routeProvider.
       when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html', three:'partials/LittleBlueBird.html', four:'partials/navbar.html'}}).
@@ -464,13 +464,47 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   //});
   
   $scope.usersearch = '';
-  $scope.people;
+  $scope.people = [];
   
   $scope.query = function() {
     $scope.usersearch = 'loading';
-    $scope.people = UserSearch.query({search:$scope.search}, 
-                                     function() {$scope.usersearch = 'loaded'; $scope.noonefound = $scope.people.length==0 ? true : false; }, 
-                                     function() {$scope.people.splice($scope.people.length);$scope.usersearch = '';});
+    var lbbpeople = UserSearch.query({search:$scope.search}, 
+                      function() {
+                        $scope.usersearch = 'loaded'; 
+                        $scope.people.splice(0, $scope.people.length); // effectively refreshes the people list
+                        
+                        // uncomment for facebook integration
+                        //for(var i=0; i < $scope.user.friends.length; i++) {
+                        //  if(!lbbNamesContainFbName(lbbpeople, $scope.user.friends[i].fullname))
+                        //    $scope.people.push($scope.user.friends[i]);
+                        //}
+                        for(var i=0; i < lbbpeople.length; i++) {
+                          $scope.people.push(lbbpeople[i]);
+                        }
+                        $scope.noonefound = $scope.people.length==0 ? true : false; 
+                      }, 
+                      function() {$scope.people.splice(0, $scope.people.length);$scope.usersearch = '';});
+  }
+  
+         
+  // helper function:  If there's overlap between the LBB users and FB friends, we want to know
+  // about it.  Use the LBB user and ignore the FB user.  In the future, we'll want to add to the person table: facebook id
+  // so we can tell for sure if the LBB 'Eric Moore' equals the FB 'Eric Moore'       
+  function lbbNamesContainFbName(lbbnames, fbname) {
+    for(var i=0; i < lbbnames.length; i++) {
+      var convertedFbName = fbNameToLbbName(fbname);
+      var lbbfullname = lbbnames[i].first + " " + lbbnames[i].last;
+      if(lbbfullname == convertedFbName)
+        return true;
+    }
+    return false;
+  }
+  
+  function fbNameToLbbName(fbname) {
+    var n = fbname.split(" ");
+    var first = n[0];
+    var last = n.length == 2 ? n[1] : n[2];
+    return first + " " + last;
   }
   
   $scope.activeOrNot = function(circle) {
@@ -554,8 +588,10 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
       circle.participants.givers.push(person);
     else circle.participants.receivers.push(person);
     
-    if(index != -1)
+    if(index != -1) {
+      console.log("index = "+index);
       $scope.people[index].hide = true;
+    }
     
     // if the circle already exists, add the participant to the db immediately
     if(angular.isDefined(circle.id)) {
@@ -731,7 +767,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Gif
   }
 }
 
-function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User, Circle, Logout, Email, CircleParticipant) { 
+function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User, Circle, Logout, Email, CircleParticipant, facebookFriends) { 
  
   $scope.login = function() {
     //alert("login:  "+$scope.username+" / "+$scope.password);
@@ -743,14 +779,34 @@ function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User,
     $scope.users = User.query({username:$scope.username, password:$scope.password}, 
                                function() {$scope.loginfail=false; 
                                            if($scope.users[0].dateOfBirth == 0) { $scope.users[0].dateOfBirth = ''; }
+                                           
+                                           // uncomment for facebook integration
+                                           //$scope.getfriends($scope.users[0]);
                                            User.currentUser = $scope.users[0];
-                                           User.showUser = User.currentUser;                                           
+                                           User.showUser = User.currentUser;                                         
                                            $rootScope.$emit("userchange");                                          
                                            $rootScope.$emit("mywishlist");
                                            $location.url('mywishlist'); 
                                           }, 
                                function() {$scope.loginfail=true;}  );
                                
+  }
+    
+  // TODO copied in ConnectCtrl
+  $scope.getfriends = function(user) {
+      facebookFriends.getfriends(function(fail){alert(fail);}, 
+                                 function(friends) {
+                                   console.log("friends: success");
+                                   console.log(friends.data);
+                                   if(angular.isDefined(user.friends)) user.friends.splice(0, user.friends.length); else user.friends = [];
+                                   for(var i=0; i < friends.data.length; i++) {
+                                     console.log("friends.data[i].name="+friends.data[i].name);
+                                     friends.data[i].fullname = friends.data[i].name;
+                                     friends.data[i].profilepicUrl = "http://graph.facebook.com/"+friends.data[i].id+"/picture?type=square";
+                                     user.friends.push(friends.data[i]);
+                                   }
+                                 }
+                                )
   }
   
   $scope.logout = function() {
@@ -795,6 +851,7 @@ function RegisterCtrl($scope, User, $rootScope, $location) {
   });
 }
 
+// TODO is this used anywhere
 function PrimaryReceiverCtrl($scope) {
 }
 
@@ -807,3 +864,87 @@ function EmailCtrl($scope, Email) {
     Email.send({to:$scope.email.to, from:$scope.email.from, subject:$scope.email.subject, message:$scope.email.message});
   }
 }
+
+// source:  http://jsfiddle.net/mkotsur/Hxbqd/
+angular.module('FacebookModule', []).factory('facebookConnect', function() {
+    return new function() {
+        this.askFacebookForAuthentication = function(fail, success) {
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    FB.api('/me', success);
+                } else {
+                    fail('User cancelled login or did not fully authorize.');
+                }
+            }, {scope:'email',perms:'publish_stream'});
+        }
+    }
+})
+.factory('facebookFriends', function() {
+  return new function() {
+    this.getfriends = function(fail, success) {
+      FB.api('/me/friends', success);
+    }
+  }
+});
+
+function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $location, $resource, UserSearch, User) {
+
+    $scope.fbuser = {}
+    $scope.error = null;
+    
+    // TODO copied in LoginCtrl
+    $scope.getfriends = function(user) {
+      facebookFriends.getfriends(function(fail){alert(fail);}, 
+                                 function(friends) {
+                                   console.log("friends: success");
+                                   console.log(friends.data);
+                                   if(angular.isDefined(user.friends)) user.friends.splice(0, user.friends.length); else user.friends = [];
+                                   for(var i=0; i < friends.data.length; i++) {
+                                     console.log("friends.data[i].name="+friends.data[i].name);
+                                     friends.data[i].fullname = friends.data[i].name;
+                                     friends.data[i].profilepicUrl = "http://graph.facebook.com/"+friends.data[i].id+"/picture?type=square";
+                                     user.friends.push(friends.data[i]);
+                                   }
+                                 }
+                                )
+    }
+
+    $scope.registerWithFacebook = function() {
+        facebookConnect.askFacebookForAuthentication(
+        function(reason) { // fail
+            $scope.error = reason;
+        }, 
+        function(user) { // success
+            $scope.fbuser = user
+            console.log(user);
+            var users = UserSearch.query({search:user.email}, 
+                                          function(){//console.log(users[0]); 
+                                                     if(users.length > 0) {
+                                                       $scope.getfriends(users[0]);
+                                                       User.currentUser = users[0];
+                                                       $rootScope.$emit("userchange");                                          
+                                                       $rootScope.$emit("mywishlist");
+                                                       $location.url('mywishlist');
+                                                     }
+                                                     else {
+                                                       // need to create account for this person in LBB
+                                                       
+                                                       $scope.user = User.save({login:true, fullname:user.first_name+' '+user.last_name, first:user.first_name, last:user.last_name, username:user.email, email:user.email, password:user.email, bio:'', profilepic:'http://graph.facebook.com/'+user.id+'/picture?type=large'}, 
+                                                                                function() { 
+                                                                                   $scope.getfriends($scope.user);
+                                                                                   User.showUser = $scope.user;
+                                                                                   User.currentUser = $scope.user;
+                                                                                   $rootScope.$emit("userchange");                                           
+                                                                                   $rootScope.$emit("mywishlist"); 
+                                                                                   $location.url('welcome');
+                                                                                }
+                                                                               );
+                                                     } // end else
+                                                    },
+                                          function() {alert("problem with UserSearch.query");});
+            $scope.$digest() // Manual scope evaluation
+        });
+    }
+}
+
+ConnectCtrl.$inject = ['facebookConnect', 'facebookFriends', '$scope', '$rootScope', '$location', '$resource', 'UserSearch', 'User'];

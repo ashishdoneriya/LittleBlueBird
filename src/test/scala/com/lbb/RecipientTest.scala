@@ -17,6 +17,7 @@ import com.lbb.entity.Recipient
 import com.lbb.entity.User
 import com.lbb.util.LbbLogger
 import com.lbb.entity.Reminder
+import com.lbb.entity.AuditLog
 
 /**
  * This test has the added bonus of setting up your db for you.
@@ -44,12 +45,19 @@ class RecipientTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     Schemifier.schemify(true, Schemifier.infoF _, Gift)
     Schemifier.schemify(true, Schemifier.infoF _, Recipient)
     Schemifier.schemify(true, Schemifier.infoF _, Reminder)
+    Schemifier.schemify(true, Schemifier.infoF _, AuditLog)
         
   }
 
   test("create Recipient with Mapper") {
     
     initDb 
+        
+    AuditLog.findAll.foreach(_.delete_!)
+    assert(AuditLog.findAll.size===0)
+        
+    Reminder.findAll.foreach(_.delete_!)
+    assert(Reminder.findAll.size===0)
         
     Recipient.findAll.foreach(_.delete_!)
     assert(Recipient.findAll.size===0)

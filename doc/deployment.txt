@@ -1,0 +1,36 @@
+8/22/12 ----------------------------------------------------------------------------------------
+MODIFY WEB.XML
+See src/main/webapp/web-inf/web.xml:  There's a tag that says FOR JETTY ONLY - REMOVE WHEN DEPLOYING TO TOMCAT
+Delete this tag
+
+MODIFY DEFAULT.PROPS
+change mail.user from bdunklau@yahoo.com to brentdunklau@sbcglobal.net
+change mail.password from e27....  to Pi....
+
+cd lit[tab]
+sbt
+package
+
+Should produce this:
+[info] Packaging C:\Users\bdunklau\LittleBlueBird\target\scala-2.9.1\littlebluebird_2.9.1-1.0.war ...
+[info] Done packaging.
+[success] Total time: 33 s, completed Aug 22, 2012 5:58:19 PM
+
+Rename littlebluebird_2.9.1-1.0.war as gf-yyyy-MM-dd.war for backup purposes
+Rename littlebluebird_2.9.1-1.0.war as gf.war for deployment purposes
+
+DEPLOYING TO LOCALHOST TOMCAT:
+http://localhost:9080/manager/html   (admin/Pi...)
+Undeploy the gf app
+Deploy using the "WAR file to deploy" section
+Tomcat serves the webapp from: C:\Program Files\Apache Software Foundation\Tomcat 5.5\webapps
+
+DEPLOYING TO EATJ.COM TOMCAT
+www.littlebluebird.com/manager/html  (admin/Pi...  also  manager/Pi...)
+
+
+Facebook: https://developers.facebook.com/apps/136122483829
+Change the site URL from localhost to www.littlebluebird.com
+
+
+Emailer:  Change the image of the little blue bird to where it is on the new webapp

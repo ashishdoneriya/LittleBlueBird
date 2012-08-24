@@ -6,6 +6,7 @@ import net.liftweb.mapper.Mapper
 import net.liftweb.http.S
 import net.liftweb.common.Full
 
+// TODO get rid of this class - holdover from the Lift UI days
 class MappedStringExtended[T <: Mapper[T]](towner: T, theMaxLen: Int) extends MappedString[T](towner, theMaxLen) {
 
   override def _toForm: Box[Elem] =

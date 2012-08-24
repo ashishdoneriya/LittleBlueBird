@@ -1,3 +1,16 @@
+Noticed after deploying to eatj.com on 8/23/12: 
+- SPAM FILTER CAUGHT THE WELCOME EMAIL.  Should add an "alert" to the welcome page saying a welcome email was sent, to check for it in spam if necessary and add info@littlebluebird.com contacts
+- Profile pics are smaller than on localhost and some look shifted to the left or chopped off - my dad's especially
+- Event names always wrap - looks horrible.  Either make the font smaller or make the Event section span another column
+- Reminders for [event] wraps to the next line - but there's space on the same line in most cases.  Avoid wrapping.
+- Reminders: When the event is passed, there are no reminders, but there is still an empty white box where the reminders
+  			would have gone and it looks like you can still add reminders.  Get rid of all this when the event has past
+  			Put up a note that says the event has past or disable the reminders link in the Edit Event pull down under 
+  			the event.
+- Past Events:  Need a link to show/hide past events.  Right now, we show everything
+
+
+
 TASK:  ddbtn-addcircle.html and mycircles.html have the same monstrous bunch of code related to adding participants to circles.
 Not sure what the difference is.  There had to be a reason for duplicating all of this code.  There must be some slight
 variation that kept the code from being reusable - IT'S A LOT OF CODE.
@@ -60,6 +73,7 @@ Not sure how many pages I need or their titles.  But I need page(s) that say
 	- Why it's different
 	
 Welcome page - Right after the user creates his account, what does he see?
+	- NEEDS A LOT OF WORK
 	- needs to be prompted to create events
 	- needs to be prompted to add people to events
 	- needs to be prompted to create his wish list

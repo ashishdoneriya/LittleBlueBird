@@ -21,11 +21,13 @@ case class Email(to:String, fromemail:String, fromname:String, subject:String, m
  * When you call Mailer.sendMail, that method calls buildProps.  buildProps reads the .props file.
  * So any props you set before calling sendMail will just get overwritten.
  */
-object Emailer {
+object Emailer extends LbbLogger {
   
   
   def send(e:Email) = {
+    debug("Mailer.sendMail about to be called");
     Mailer.sendMail(From(e.fromemail), Subject(e.subject), To(e.to), XHTMLMailBodyType(e.message))
+    debug("Mailer.sendMail just called");
   }
   
   def config {
@@ -134,15 +136,25 @@ object Emailer {
     }
   }
   
-  def createAccountCreatedForYouEmail(newuser:User, creator:String) = createEmail(<div>
-              {newuser.first.is} {newuser.last.is},
-              <P>{creator} just created an account for you on LittleBlueBird.com</P>
+  def createAccountCreatedForYouEmail(newuser:User, line1:String) = {    
+    val body = <div>{newuser.first.is} {newuser.last.is},
+              <P>{line1}</P>
               <P>Your username is: {newuser.username.is}</P>
-              <P>Your password is: {newuser.password.is}</P></div>)
+              <P>Your password is: {newuser.password.is}</P></div>
+              
+    createEmail(body)
+  }
   
   def notifyAccountCreatedForYou(newuser:User, creator:String) = {
-    val msg = createAccountCreatedForYouEmail(newuser, creator)
-    val e = Email(newuser.email.is, "info@littlebluebird.com", "LittleBlueBird.com", creator+" created an account for you on LittleBlueBird.com", msg, Nil, Nil)
+    debug("newuser = "+newuser)
+    val line1 = creator match {
+      case s:String if(!s.equals("undefined")) => creator+" created an account for you on LittleBlueBird.com"
+      case _ => "Welcome to LittleBlueBird!"
+    }
+    val subj = line1
+    val msg = createAccountCreatedForYouEmail(newuser, line1)
+    debug("createAccountCreatedForYouEmail...  "+msg)
+    val e = Email(newuser.email.is, "info@littlebluebird.com", "LittleBlueBird.com", subj, msg, Nil, Nil)
     Emailer.send(e)
   }
   

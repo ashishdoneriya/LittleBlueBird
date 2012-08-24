@@ -133,8 +133,7 @@
 		            <div class="span3"><input search-users type="text" class="span3" ng-model="search"></div>
 		          </div>
 				  <div class="row">
-				    <div class="span3">
-				    				      
+				    <div class="span3">      
 				      <span ng-show="usersearch=='loaded'">
 	                    <div class="box-white">
 				          <span ng-show="noonefound">
@@ -143,7 +142,7 @@
 			                </div>
 				          </span>
 				          <span ng-hide="noonefound">
-				            <div ng-repeat="person in people">
+				            <div ng-repeat="person in people | filter:search">
 				              <span ng-hide="person.hide">
 				                <div class="row margbottom5 margleft0 highlight-box-white" ng-click="$location.url($location.path());addparticipant($index, person, newcircle)">
 				                  <div class="span1 marg0"><img height=50 width=50 ng-src="{{person.profilepicUrl}}" /></div>

@@ -30,6 +30,7 @@ import net.liftweb.json.JsonAST._
 import net.liftweb.mapper.By
 import net.liftweb.util.BasicTypesHelpers._
 import org.joda.time.DateTime
+import com.lbb.entity.AuditLog
 
 object RestService extends RestHelper with LbbLogger {
 
@@ -52,13 +53,13 @@ object RestService extends RestHelper with LbbLogger {
   serve {
     case Get("users" :: AsLong(userId) :: _, _) => debug("RestService.serve:  22222222222222"); findUser(userId)
     case Get("users" :: _, _) => debug("RestService.serve:  333333333333333333333333"); findUsers
-    case Post("logout" :: _, _) => S.deleteCookie("userId");NoContentResponse()
+    case Post("logout" :: _, _) => logout
     case JsonPost("email" :: _, (json, req)) => sendPasswordRecoveryEmail 
     case JsonPost("gifts" :: AsLong(giftId) :: updaterName :: _, (json, req)) => debug("RestService.serve:  BBBBBBBB"); updateGift(updaterName, giftId)
     case JsonPost("gifts" :: _ :: Nil, (json, req)) => debug("RestService.serve:  CCCCCCC"); debug(json); insertGift
     case JsonPost("users" :: AsLong(userId) :: _, (json, req)) => debug("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
     case JsonPost("users" :: Nil, (json, req)) => debug("RestService.serve:  4444444444444444"); debug(json); insertUser
-    case Get("usersearch" :: _, _) => debug("RestService.serve:  JsonPost: usersearch"); SearchHelper.usersearch
+    case Get("usersearch" :: _, _) => debug("RestService.serve:  Get: usersearch"); SearchHelper.usersearch
     case JsonPost("circles" :: Nil, (json, req)) => insertCircle
     
     case Post("users" :: _, _) => debug("RestService.serve:  Post(api :: users  :: _, _)  S.uri="+S.uri); JsonResponse("Post(api :: users  :: _, _)  S.uri="+S.uri)
@@ -69,6 +70,15 @@ object RestService extends RestHelper with LbbLogger {
     case Get("circles" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  88888888"); findCircle(circleId)
     case Get("circleparticipants" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  77777777777"); findCircleParticipants(circleId)
     case _ => debug("RestService.serve:  666666666"); debugRequest
+  }
+  
+  def logout = {
+    for(idstr <- S.cookieValue("userId"); 
+        user <- User.findByKey(idstr.toLong)){
+      AuditLog.recordLogout(user, S.request)
+    }
+    S.deleteCookie("userId")
+    NoContentResponse()
   }
   
   def deleteReminders(circleId:Long) = {
@@ -356,28 +366,12 @@ object RestService extends RestHelper with LbbLogger {
   }
   
   def findUsers = {
-    debug("RestService.findUsers ------------- S.uri = "+S.uri)
+    debug("findUsers ------------- S.uri = "+S.uri)
     
     S.param("password") match {
       // here we're authenticating
       case Full(p) if(p != "undefined") => {
-        val queryParams = MapperHelper.convert(S.request.open_!._params, User.queriableFields)
-//        val boxuser = User.find(queryParams: _*)
-//        val res = boxuser match {
-//          case Full(user) => {
-//            val json = user.asJs
-//            val r = JsonResponse(json, Nil, List(RequestHelper.cookie("userId", user)), 200)
-//            debug("RestService.findUsers: JsonResponse(json)=" + r.toString())
-//            r
-//          }
-//          case _ => {
-//            debug("RestService.findUsers: BadResponse (pass:"+p+")"); 
-//            BadResponse()
-//          }
-//        }
-//        
-//        res
-        
+        val queryParams = MapperHelper.convert(S.request.open_!._params, User.queriableFields)        
         val users = User.findAll(queryParams: _*)
         users match {
           case l:List[User] if((l.size == 1) && (l.head.password.equals(p))) => {
@@ -386,11 +380,13 @@ object RestService extends RestHelper with LbbLogger {
             val jsons = users.map(_.asJs)
             val jsArr = JsArray(jsons)
             val r = JsonResponse(jsArr, Nil, List(RequestHelper.cookie("userId", users.head)), 200)
-            debug("RestService.findUsers: JsonResponse(jsArr)=" + r.toString())
+            debug("findUsers: JsonResponse(jsArr)=" + r.toString())
+            // record the login in the audit log
+            AuditLog.recordLogin(users.head, S.request)
             r
           }
           case _ => {
-            debug("RestService.findUsers: BadResponse (pass:"+p+")"); 
+            debug("findUsers: BadResponse (pass:"+p+")"); 
             BadResponse()
           }
         }

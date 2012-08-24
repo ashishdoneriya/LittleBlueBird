@@ -41,13 +41,19 @@ object RequestHelper {
     res2.map(kv => (kv._1 -> res2.get(kv._1).get.head))
   }
   
-    val F = """\s*(\w+)\s*""".r
-    val FL = """\s*(\w+)\s+(\w+)\s*""".r
+    val oneword = """\s*(\w+)\s*""".r
+    val twowords = """\s*(\w+)\s+(\w+)\s*""".r
+    val threewords = """\s*(\w+)\s+(\w+)\s+(\w+)\s*""".r
+    val email = """\s*([\w\W]+)\s*""".r
+    // you would think that the pattern we use in email would also work in oneword and twowords, but it doesn't
+    // already tried unit testing with just oneword and twowords using the 'word' pattern from email - didn't work
     
   def searchTerms(s:Box[String]):List[String] = {
     s match {
-      case Full(F(f)) => { List(f); }
-      case Full(FL(f, l)) => { List(f, l); }
+      case Full(oneword(f)) =>  List(f)
+      case Full(twowords(f, l)) =>  List(f, l)
+      case Full(threewords(f, m, l)) =>  List(f, l)
+      case Full(email(e)) => List(e)
       case _ => Nil
     }
   }

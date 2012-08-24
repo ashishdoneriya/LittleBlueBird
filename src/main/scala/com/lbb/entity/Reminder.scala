@@ -21,6 +21,35 @@ import scala.util.Random
 import org.joda.time.DateTime
 import scala.collection.mutable.Map
 import com.lbb.util.LbbLogger
+import net.liftweb.mapper.MappedDateTime
+import com.lbb.gui.MappedDateTimeExtended
+
+/**
+ * 
+ * 
+CREATE TABLE IF NOT EXISTS `reminders` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `viewer_id` bigint(20) NOT NULL,
+  `circle_id` bigint(20) NOT NULL,
+  `remind_date` datetime NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `IDX_UNQ_VIEWER_CIRCLE_DATE` (`viewer_id`,`circle_id`,`remind_date`),
+  KEY `IDX_VIEWER_ID` (`viewer_id`),
+  KEY `IDX_CIRCLE_ID` (`circle_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3374 ;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `reminders`
+--
+ALTER TABLE `reminders`
+  ADD CONSTRAINT `reminders_ibfk_1` FOREIGN KEY (`viewer_id`) REFERENCES `person` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reminders_ibfk_3` FOREIGN KEY (`circle_id`) REFERENCES `circles` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ */
 
 class Reminder extends LongKeyedMapper[Reminder] with LbbLogger { 
   
@@ -38,7 +67,7 @@ class Reminder extends LongKeyedMapper[Reminder] with LbbLogger {
     override def dbColumnName = "circle_id"
   }
   
-  object remind_date extends MappedDateExtended(this)
+  object remind_date extends MappedDateTimeExtended(this)
   
   override def hashCode = {
     val hash = viewer.hashCode() + circle.hashCode() + remind_date.hashCode()

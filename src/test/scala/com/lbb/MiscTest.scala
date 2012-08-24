@@ -94,6 +94,14 @@ class MiscTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     assert(terms.tail===List("dun"))
   }
   
+  test("3 search terms") {
+    val s = Full("Tamie Cocanougher Dunklau")
+    val terms = RequestHelper.searchTerms(s)
+    assert(terms.size===2)
+    assert(terms.head==="Tamie")
+    assert(terms.tail===List("Dunklau"))
+  }
+  
   test("1 search term") {
     val s = Full("bre")
     val terms = RequestHelper.searchTerms(s)
@@ -103,6 +111,22 @@ class MiscTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     val l = List("a")
     val h = l.head;
     val t = l.tail;
+  }
+  
+  test("1 search term: @@@@@") {
+    val s = Full("@@@@@")
+    val terms = RequestHelper.searchTerms(s)
+    println("terms = "+terms)
+    assert(terms.size===1)
+    assert(terms.head==="@@@@@")
+  }
+  
+  test("1 search term: email") {
+    val s = Full("bdunklau@gmail.com")
+    val terms = RequestHelper.searchTerms(s)
+    println("terms = "+terms)
+    assert(terms.size===1)
+    assert(terms.head==="bdunklau@gmail.com")
   }
   
   test("1 search term + whitespace") {

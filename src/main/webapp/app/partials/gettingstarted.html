@@ -1,0 +1,23 @@
+<div ng-controller="GettingStartedCtrl">
+<h1>Getting Started</h1>
+
+<P>&nbsp;</P>
+
+<P class="font16">Here's how you get started with LittleBlueBird...</P>
+
+
+<P>&nbsp;</P>
+
+<h3><a ng-click="createevent = !createevent">Create an Event</a></h3>
+<span ng-show="createevent"><P class="font16">Create an event, like Christmas or someone's birthday.</P></span>
+
+<h3><a ng-click="addyourself = !addyourself">Add Yourself to the Event</a></h3>
+<span ng-show="addyourself"><P class="font16">This is how your wish list become visible to everyone else in the event.</P></span>
+
+<h3><a ng-click="addpeople = !addpeople">Add Friends and Family to the Event</a></h3>
+<span ng-show="addpeople"><P class="font16">This is how you see their wish lists. </P></span>
+
+<h3><a ng-click="additems = !additems">Add Items to Your Wish List</a></h3>
+<span ng-show="additems"><P class="font16">Now start creating your wish list.</P></span>
+
+</div>

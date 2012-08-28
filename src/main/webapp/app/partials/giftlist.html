@@ -16,7 +16,7 @@
         </span>
       </span>
           
-      <div class="row">
+      <div class="row simple-bottom">
         <div class="span5">
           <div ng-include src="'partials/circleinfo.html'"></div>
         </div>
@@ -39,6 +39,7 @@
           </span>
 
           <div ng-repeat="gift in gifts">
+            <!-- review usage of: gift -->
             <div class="row gift marg0 margtop5">
               
               <span ng-hide="gift.editing || gift.buying">    

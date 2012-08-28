@@ -1,14 +1,16 @@
 <div ng-controller="UserCtrl">
+<div ng-controller="NavCtrl">
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
       <a class="brand" ng-click="loginpage();">LittleBlueBird</a>
       <ul class="nav">
-        <li class="active">
-          <a href="#">What Is It?</a>
+        <li ng-class="navstate('classA')">
+          <a href="#/gettingstarted" ng-click="activenav='classA'">Getting Started</a>
         </li>
-        <li><a href="#">Tell Me More</a></li>
-        <li><a href="#">Features</a></li>
+        <li ng-class="navstate('classB')">
+          <a href="#" ng-click="activenav='classB'">Tell Me More</a>
+        </li>
       </ul>
       <ul class="nav pull-right">
         <li><btn-user btn-text="{{user.fullname}}"/></li>
@@ -16,5 +18,6 @@
       </ul>
     </div>
   </div>
+</div>
 </div>
 </div>

@@ -2,17 +2,27 @@
 <div ng-controller="GiftCtrl">
 <div class="row">
   <div class="span1">
-    <h3>Events</h3></div>
-    <div class="span1">
-      <btn-add-circle/>
-    </div>
+    <h3>Events</h3>
   </div>
+  <div class="span1">
+    <btn-add-circle/>
+  </div>
+</div>
+
+<div ng-controller="UserCtrl">
+  <!-- I kept seeing the function flicker in the curly braces so I came up with this: put the function in a span so it gets called
+  but doesn't display the function name for that split second while it's being evaluated  -->
+  <span ng-show="hasActiveCircles()"></span>
+  <span ng-hide="nocirclemessage.message == ''"><div class="alert alert-warning"><strong>{{nocirclemessage.title}}</strong><P>{{nocirclemessage.message}}</P></div></span>
+</div>
+
   <ul ng-repeat="circle in user.circles" ng-class="'nav nav-pills nav-stacked marg0'">
     <li ng-class="activeOrNot(circle)">
       <a ng-click="makeActive($index, circle);toggleCircle(circle);showParticipants(circle);">
         <span class="caret margleft_5 margtop5"></span> <b>{{circle.name}}</b>
       </a>
-        <div ng-show="circle.show" class="box-white inset">
+        <!-- review usage of: box-white inset -->
+        <div ng-show="circle.show" class="box-white">
           <div class="row pull-right">
 		    <ul class="nav">
 		      <li class="dropdown">

@@ -6,6 +6,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
+      when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/giftlist/:circleId/:showUserId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/myaccount', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/myaccount.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/mywishlist', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
@@ -684,6 +685,18 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Gif
   
   $scope.showUser = User.showUser;
   
+  $scope.nocirclemessage = {title:'', message:''};
+  $scope.hasActiveCircles = function() {
+    for(var i=0; i < $scope.user.circles.length; i++) {
+      if($scope.user.circles[i].date > new Date().getTime()) {
+        $scope.nocirclemessage = {title:'', message:''};
+        return;
+      }
+      $scope.nocirclemessage = {title:'All Events Passed', message:'You need to create more events'};
+    }
+    if($scope.nocirclemessage.message == "") $scope.nocirclemessage = {title:'No Events', message:"You need to create some events"};
+  }
+  
   // adjust dims for large profile pics
   $scope.adjustedheight = function(auser) { 
     if(!angular.isDefined(auser))
@@ -786,7 +799,7 @@ function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User,
                                            User.showUser = User.currentUser;                                         
                                            $rootScope.$emit("userchange");                                          
                                            $rootScope.$emit("mywishlist");
-                                           $location.url('mywishlist'); 
+                                           $location.url('gettingstarted'); 
                                           }, 
                                function() {$scope.loginfail=true;}  );
                                
@@ -948,3 +961,16 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
 }
 
 ConnectCtrl.$inject = ['facebookConnect', 'facebookFriends', '$scope', '$rootScope', '$location', '$resource', 'UserSearch', 'User'];
+
+function NavCtrl($scope) {
+  $scope.navstate = function(compare) {
+    return $scope.activenav == compare ? 'active' : '';
+  }
+}
+
+function GettingStartedCtrl($scope) { 
+  $scope.createevent = false;
+  $scope.addyourself = false;
+  $scope.addpeople = false;
+  $scope.additems = false;
+}

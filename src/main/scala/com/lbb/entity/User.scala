@@ -571,8 +571,8 @@ class User extends LongKeyedMapper[User] with LbbLogger {
   }
   
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
-    val jsonActiveCircles = circleList.map(_.asJs)
-    val jsActive = JsArray(jsonActiveCircles)
+    val jsonCircles = circleList.map(_.asJs)
+    val jsCircles = JsArray(jsonCircles)
     val profilepicUrl = if(profilepic.is==null || profilepic.is.trim().toString().equals("")) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
     val img = new ImageIcon(profilepicUrl)	
     val profilepicheight = img.getIconHeight()
@@ -583,7 +583,7 @@ class User extends LongKeyedMapper[User] with LbbLogger {
     }
     List(("dateOfBirthStr", dobString), 
          ("fullname", JString(first+" "+last)), 
-         ("circles", jsActive), 
+         ("circles", jsCircles), 
          ("profilepicUrl", JString(profilepicUrl.toString())), 
          ("profilepicheight", profilepicheight), 
          ("profilepicwidth", profilepicwidth))        

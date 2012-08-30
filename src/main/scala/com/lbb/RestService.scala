@@ -54,7 +54,7 @@ object RestService extends RestHelper with LbbLogger {
     case Get("users" :: AsLong(userId) :: _, _) => debug("RestService.serve:  22222222222222"); findUser(userId)
     case Get("users" :: _, _) => debug("RestService.serve:  333333333333333333333333"); findUsers
     case Post("logout" :: _, _) => logout
-    case JsonPost("email" :: _, (json, req)) => sendPasswordRecoveryEmail 
+    case JsonPost("email" :: _, (json, req)) => email 
     case JsonPost("gifts" :: AsLong(giftId) :: updaterName :: _, (json, req)) => debug("RestService.serve:  BBBBBBBB"); updateGift(updaterName, giftId)
     case JsonPost("gifts" :: _ :: Nil, (json, req)) => debug("RestService.serve:  CCCCCCC"); debug(json); insertGift
     case JsonPost("users" :: AsLong(userId) :: _, (json, req)) => debug("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
@@ -103,7 +103,43 @@ object RestService extends RestHelper with LbbLogger {
     box.openOr(NoContentResponse())
   }
   
-  def sendPasswordRecoveryEmail = {
+  def email = {
+    S.param("type") match {
+      case Full(s) if(s.equals("passwordrecovery")) => sendPasswordRecoveryEmail
+      case Full(s) if(s.equals("welcome")) => sendWelcomeEmail
+      case _ => { debug("email:  BadResponse()"); BadResponse() }
+    }
+  }
+  
+  private def sendWelcomeEmail = {
+        val jval = for(req <- S.request; jvalue <- req.json; if(jvalue.isInstanceOf[JObject])) yield {
+          val vvv = jvalue.asInstanceOf[JObject]
+          val uservalues = vvv.values.get("user") match {
+            case Some(m:Map[String, Any]) => m
+            case _ => Map[String, Any]()
+          }
+          uservalues
+        }
+    
+        for(uservalues <- jval) {
+          val user = User.create
+          uservalues foreach {kv => kv match {
+              case ("first", s:String) => user.first(s)
+              case ("last", s:String) => user.last(s)
+              case ("email", s:String) => user.email(s)
+              case ("username", s:String) => user.username(s)
+              case ("password", s:String) => user.password(s)
+              case _ => debug("kv.1="+kv._1+"  kv.2="+kv._2)
+            } // kv match 
+          } // uservalues foreach {
+      
+          Emailer.notifyWelcome(user)
+      
+        }
+        NoContentResponse()
+  }
+  
+  private def sendPasswordRecoveryEmail = {
     try {
       val message = Emailer.createRecoverPasswordMessage
     

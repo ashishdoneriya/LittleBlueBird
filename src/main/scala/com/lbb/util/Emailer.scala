@@ -46,8 +46,8 @@ object Emailer extends LbbLogger {
   }
   
   
-  def createRecoverPasswordMessage = (S.param("passwordrecovery"), S.param("message")) match {
-      case (Full("true"), _) => {
+  def createRecoverPasswordMessage = (S.param("type"), S.param("message")) match {
+      case (Full("passwordrecovery"), _) => {
         User.findAll(By(User.email, S.param("to").getOrElse("none"))) match {
           case Nil => throw new RuntimeException("Email address not found: "+S.param("to").getOrElse("none"))
           case items if(items.size == 1) => { 
@@ -136,25 +136,28 @@ object Emailer extends LbbLogger {
     }
   }
   
-  def createAccountCreatedForYouEmail(newuser:User, line1:String) = {    
-    val body = <div>{newuser.first.is} {newuser.last.is},
+  def createAccountCreatedForYouEmail(line1:String, first:String, last:String, username:String, password:String) = {    
+    val body = <div>{first} {last},
               <P>{line1}</P>
-              <P>Your username is: {newuser.username.is}</P>
-              <P>Your password is: {newuser.password.is}</P></div>
+              <P>Your username is: {username}</P>
+              <P>Your password is: {password}</P></div>
               
     createEmail(body)
   }
   
-  def notifyAccountCreatedForYou(newuser:User, creator:String) = {
-    debug("newuser = "+newuser)
+  def notifyWelcome(user:User) = {
+    notifyAccountCreatedForYou(user, "undefined")
+  }
+  
+  def notifyAccountCreatedForYou(user:User, creator:String) = {
     val line1 = creator match {
       case s:String if(!s.equals("undefined")) => creator+" created an account for you on LittleBlueBird.com"
       case _ => "Welcome to LittleBlueBird!"
     }
     val subj = line1
-    val msg = createAccountCreatedForYouEmail(newuser, line1)
+    val msg = createAccountCreatedForYouEmail(line1, user.first.is, user.last.is, user.username.is, user.password.is)
     debug("createAccountCreatedForYouEmail...  "+msg)
-    val e = Email(newuser.email.is, "info@littlebluebird.com", "LittleBlueBird.com", subj, msg, Nil, Nil)
+    val e = Email(user.email.is, "info@littlebluebird.com", "LittleBlueBird.com", subj, msg, Nil, Nil)
     Emailer.send(e)
   }
   

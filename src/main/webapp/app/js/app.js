@@ -102,7 +102,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return Gift;
   }).
   factory('Email', function($resource) {
-      var Email = $resource('/gf/email', {to:'@to', from:'@from', subject:'@subject', message:'@message', passwordrecovery:'@passwordrecovery'}, 
+      var Email = $resource('/gf/email', {to:'@to', from:'@from', subject:'@subject', message:'@message', type:'@type', user:'@user'}, 
                     {
                       send: {method:'POST'}
                     });
@@ -681,9 +681,13 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   
 }
 
-function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Gift, Circle, CircleParticipant) {
+function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Email, Gift, Circle, CircleParticipant) {
   
   $scope.showUser = User.showUser;
+  
+  $scope.resendWelcomeEmail = function() {
+    Email.send({type:'welcome', from:'info@littlebluebird.com', user:$scope.user}, function() {}, function() {});
+  }
   
   $scope.nocirclemessage = {title:'', message:''};
   $scope.hasActiveCircles = function() {
@@ -830,7 +834,7 @@ function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User,
   }
   
   $scope.emailIt = function(email) {
-    Email.send({passwordrecovery:'true', to:email, from:'info@littlebluebird.com', subject:'Password Recovery', message:'Your password is...'}, function() {alert("Your password has been sent to: "+email);}, function() {alert("Email not found: "+email+"\n\nContact us at info@littlebluebird.com for help");});
+    Email.send({type:'passwordrecovery', to:email, from:'info@littlebluebird.com', subject:'Password Recovery', message:'Your password is...'}, function() {alert("Your password has been sent to: "+email);}, function() {alert("Email not found: "+email+"\n\nContact us at info@littlebluebird.com for help");});
   }
   
 }

@@ -1,19 +1,25 @@
 
-                <div class="span7">
+                <div class="span7 padtop20">
 
 <form novalidate name="buygiftForm"> 
           <div class="row marg0">
             <div class="span7">
               <div class="row margleft_35">
-                <div class="span7">
-                  To: {{gift.recipients[0].first}} <span ng-repeat="recipient in gift.recipients.slice(1)"> and {{recipient.first}}</span>
+                <div class="span1">
+                  To:
+                </div>
+                <div class="span6">
+                  {{gift.recipients[0].first}} <span ng-repeat="recipient in gift.recipients.slice(1)"> and {{recipient.first}}</span>
                 </div>
               </div>
               <div class="row margleft_35">
-                <div class="span7">
+                <div class="span1">
                   <input type="hidden" ng-model="gift.id" />
                   <input type="hidden" ng-model="gift.senderId" />
-                  From: <input type="text" ng-model="gift.senderName" />
+                  From:
+                </div>
+                <div class="span6">
+                  <input type="text" ng-model="gift.senderName" />
                 </div>
               </div>
               <div class="row margleft_35 margbottom20">
@@ -23,18 +29,18 @@
               </div>
               <div class="row margleft_35">
                 <div class="span1">
-                  <a class="btn btn-primary" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift);">Save</a>
+                  <a class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift);">Reserve</a>
                 </div>
                 
                 <span ng-show="gift.url != undefined && gift.url != ''">
                 <div class="span1">
-                  <a ng-href="{{gift.url}}" target="new" class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift);">Buy</a>
+                  <a ng-href="{{gift.url}}" target="new" class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift);">&nbsp; Buy &nbsp;</a>
                 </div>
                 </span>
                 
                 <span ng-hide="gift.url != undefined && gift.url != ''">
                 <div class="span1">
-                  <a class="btn" ng-disabled="true" title="No link was provided for this item.  Search for this item on Amazon.com">Buy</a>
+                  <a class="btn" ng-disabled="true" title="No link was provided for this item.  Search for this item on Amazon.com">&nbsp; Buy &nbsp;</a>
                 </div>
                 </span>
                 

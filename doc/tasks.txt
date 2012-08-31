@@ -1,8 +1,4 @@
 Noticed after deploying to eatj.com on 8/23/12: 
-- DONE:  SPAM FILTER CAUGHT THE WELCOME EMAIL.  
-    Should add an "alert" to the welcome page saying a welcome email was sent, to check for it in spam if necessary 
-    and add info@littlebluebird.com contacts
-    ALSO ADD A "RESEND EMAIL" LINK TO THIS ALERT SO THE USER CAN VERIFY THAT HE IS RECEIVING EMAILS FROM US
 - Profile pics are smaller than on localhost and some look shifted to the left or chopped off - my dad's especially
 - Event names always wrap - looks horrible.  Either make the font smaller or make the Event section span another column
 - Reminders for [event] wraps to the next line - but there's space on the same line in most cases.  Avoid wrapping.
@@ -24,27 +20,22 @@ the same functions in CircleCtrl (or whatever)
 
 
 Events
-	- changing name and date: DONE but date change from active to expired (or v.v.) won't put the event in the other category until you hit refresh or login again
+	- changing name and date: DONE
 	- adding/removing people: DONE but need to do something about people that have gifts bought for them already.  Prompt the person?  Prevent person from being removed?
 	- add "recurring" attribute to events - db change
 	
 Reminders
-	- define default reminders by event type OR define the same reminders to apply to all events
-	- let users add/remove reminders for everyone in an event
-	- let users add/remove reminders for certain people in an event
+	- just send out one email per event - cc everyone
 	- The reminder emails should say when the next reminder will be sent
 	- and should give the user the option to stop receiving them
 	
 Add and Edit Events (2 different modals)
-	- DONE:  include Past Events - right now, when you add people from another event, the only options are active events
 
 Buying Gifts:  The save, buy, cancel buttons need to be looked at
 
 Edit Gifts
-	- DONE: email buyer if item has been bought - include old and new descriptions and old and new links
 
 Deleting Gifts
-	- DONE: email buyer if item has been bought and then deleted. The item is actually deleted, not just marked as deleted
 	  
 My Wish List
 	- Make refresh go back to My Wish List page
@@ -60,11 +51,6 @@ Users
 	- hide password in all query results
 	
 Email alerts
-	- DONE welcome email when you create your account
-	- DONE  welcome email when someone creates your account for you
-	- DONE  when you have bought a gift that someone later edits
-	- DONE  when you have bought a gift that someone later deletes
-	- DONE  when someone returns an item that was previously bought
 	- when someone adds you to an event
 	- when someone drops you from an event ?
 	- use cc or bcc on reminders to cut down on the number of emails that go out.  No big deal that we can't
@@ -94,7 +80,6 @@ Welcome page - Right after the user creates his account, what does he see?
 	- needs to be prompted to create his wish list
 
 Affiliate program
-	- DONE: detect amazon url's and modify with my tag
 	
 Browser button - crossrider.com - "Add to Wish List" button
 

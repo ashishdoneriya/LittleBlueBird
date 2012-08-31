@@ -86,7 +86,7 @@ object RestService extends RestHelper with LbbLogger {
     
     val bu = S.param("userId").map(uu => {By(Reminder.viewer, uu.toLong) :: bc.openOr(Nil)})
     
-    val bd = S.param("remind_date").map(dd => {By(Reminder.remind_date, new Date(dd.toLong)) :: bu.openOr(Nil) })
+    val bd = S.param("remind_date").filter(ss => !ss.equals("undefined")).map(dd => {By(Reminder.remind_date, new Date(dd.toLong)) :: bu.openOr(Nil) })
     
     val boxr = for(list <- bd; if(list.size > 0)) yield {Reminder.findAll(list:_*)}
     val reminders = boxr.openOr(Nil)

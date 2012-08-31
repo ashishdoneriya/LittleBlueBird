@@ -51,8 +51,7 @@ Users
 	- hide password in all query results
 	
 Email alerts
-	- when someone adds you to an event
-	- when someone drops you from an event ?
+	- when someone drops you from an event ?  WE DON'T WANT TO DO THIS
 	- use cc or bcc on reminders to cut down on the number of emails that go out.  No big deal that we can't
 	     address people by name this way.  Have to see how the Executor is set up... Are the recipients
 	     established when the Executor is created?  Or are the recipients determined when the Executor fires?

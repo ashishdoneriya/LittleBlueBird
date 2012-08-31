@@ -301,14 +301,14 @@
   border-bottom:1px solid #aaaaaa;
 }
 
-.simple-left {
-  padding-left:20px;
-  border-left:1px solid #aaaaaa;
-}
-
 .simple-right {
   padding-right:10px;
   border-right:1px solid #000000;
+}
+
+.simple-top {
+  margin-bottom:10px;
+  border-top:1px solid #aaaaaa;
 }
 
 .spantiny {

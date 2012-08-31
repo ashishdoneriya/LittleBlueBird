@@ -1,5 +1,5 @@
 Noticed after deploying to eatj.com on 8/23/12: 
-- SPAM FILTER CAUGHT THE WELCOME EMAIL.  
+- DONE:  SPAM FILTER CAUGHT THE WELCOME EMAIL.  
     Should add an "alert" to the welcome page saying a welcome email was sent, to check for it in spam if necessary 
     and add info@littlebluebird.com contacts
     ALSO ADD A "RESEND EMAIL" LINK TO THIS ALERT SO THE USER CAN VERIFY THAT HE IS RECEIVING EMAILS FROM US

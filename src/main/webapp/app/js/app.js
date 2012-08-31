@@ -208,12 +208,31 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, User ) {
 
 function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) { 
 
-  $scope.toggledetails = function(gift) {
-    if(!angular.isDefined(gift.showdetails))
-      gift.showdetails = false;
-    gift.showdetails = !gift.showdetails;
-    return gift.showdetails;
+  $scope.popoverOptions = function(gift) {
+    var recipients = [];
+    for(var i=0; i < gift.recipients.length; i++) {
+      recipients.push(gift.recipients[i].first);
+    }
+    
+    var date = new Date(gift.dateCreated);
+    var datestr = date.toString('MMM d, yyyy');
+    var surprise = gift.issurprise ? '<tr><td><B>DON\'T SAY ANYTHING!</B><P><B>'+gift.addedByName+' added this as a surprise</B></P><P>&nbsp;</P></td></tr>' : '';
+    var availability = gift.sender_name!='' ? '<tr><td><P>&nbsp;</P><P><B>Not Available</B></P>This gift has already been bought by: '+gift.sender_name+'</P></td></tr>' : '<tr><td><P>&nbsp;</P><P><B>This item is Available</B></P><P>Reserve this item by clicking "Reserve"</P></td></tr>';
+    var status = gift.canseestatus ? availability : '';
+    var buyonline = gift.affiliateUrl=='' ? '<tr><td><P>&nbsp;</P><P><B>No Link Provided</B></P><P>'+gift.addedByName+' did not provide a link for this item</P></td></tr>' : '<tr><td><P>&nbsp;</P><P><B>Buy Online!</B></P><P>Click the item to buy it online</P></td></tr>'
+     
+    var cnt = '<table border="0" width="100%"><tr><td align="right">Added: '+datestr+'</td></tr>'
+             + surprise
+             + '<tr><td>'+gift.description+'</td></tr>'
+             + status
+             + buyonline
+             +'</table>';
+    return {title:'Gift for '+recipients.join(','), content:cnt}
   }
+  
+  $scope.alertcannotedit = function() {alert('Cannot edit this item because you didn\'t add it');}
+  
+  $scope.alertcannotdelete = function() {alert('Cannot delete this item because you didn\'t add it');}
   
   $scope.initNewGift = function() {
     $scope.newgift = {addedBy:$scope.user, circle:$scope.circle};

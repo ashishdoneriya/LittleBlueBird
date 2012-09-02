@@ -6,8 +6,6 @@ import scala.xml.Text
 import org.joda.time.DateTime
 import org.joda.time.Days
 import com.lbb.gui.MappedDateExtended
-import com.lbb.gui.MappedDateObservable
-import com.lbb.gui.MappedStringExtended
 import com.lbb.util.DateChangeListener
 import com.lbb.util.Emailer
 import com.lbb.TypeOfCircle
@@ -28,6 +26,7 @@ import net.liftweb.mapper.MappedString
 import net.liftweb.util.FieldError
 import net.liftweb.json.JsonAST
 import com.lbb.util.LbbLogger
+import com.lbb.gui.MappedDateObservable
 
 /**
  * READY TO DEPLOY
@@ -67,7 +66,7 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLog
     super.validate
   }
   
-  object name extends MappedStringExtended(this, 140) {
+  object name extends MappedString(this, 140) {
     override def displayName = "Name"
     override def dbIndexed_? = true
     

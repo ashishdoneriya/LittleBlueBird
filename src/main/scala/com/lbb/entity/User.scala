@@ -37,12 +37,12 @@ import net.liftweb.mapper.OprEnum
 import net.liftweb.util.FieldError
 import net.liftweb.mapper.MappedInt
 import com.lbb.gui.MappedDateExtended
-import com.lbb.gui.MappedStringExtended
 import com.lbb.gui.MappedTextareaExtended
 import com.lbb.gui.MappedEmailExtended
 import net.liftweb.mapper.MappedLongIndex
 import net.liftweb.json.JsonAST.JBool
 import com.lbb.util.LbbLogger
+import net.liftweb.mapper.MappedString
 
 
 /**
@@ -127,24 +127,17 @@ class User extends LongKeyedMapper[User] with LbbLogger {
     }
   }
   
-  object first extends MappedStringExtended(this, 140) {
+  object first extends MappedString(this, 140) {
     override def displayName = "First Name"
     override def dbColumnName = "firstname"
-      
-    override def _toForm:Box[Elem] = {
-      val sup = super._toForm
-      debug("User.first._toForm: " + sup)
-      debug("User.first._toForm: " + this.fieldId)
-      sup
-    }
   }
   
-  object last extends MappedStringExtended(this, 140) {
+  object last extends MappedString(this, 140) {
     override def displayName = "Last Name"
     override def dbColumnName = "lastname"
   }  
   
-  object profilepic extends MappedStringExtended(this, 1028) {
+  object profilepic extends MappedString(this, 1028) {
     override def displayName = "Profile Pic"
     override def dbColumnName = "profile_pic"
   } 
@@ -153,7 +146,7 @@ class User extends LongKeyedMapper[User] with LbbLogger {
     override def displayName = "Email"
   }  
   
-  object username extends MappedStringExtended(this, 140) {
+  object username extends MappedString(this, 140) {
     override def displayName = "Username"
     
     // http://scala-tools.org/mvnsites/liftweb-2.4-M4/#net.liftweb.mapper.MappedString
@@ -174,7 +167,7 @@ class User extends LongKeyedMapper[User] with LbbLogger {
   // TODO mask password when json-ing
   // this was once a MappedPassword, but with angularjs talking over REST, there's no real point
   // Trying to use the db tables I have - not worry about migrating to some new version of tables.
-  object password extends MappedStringExtended(this, 140) {
+  object password extends MappedString(this, 140) {
     override def displayName = "Password"
   }
   

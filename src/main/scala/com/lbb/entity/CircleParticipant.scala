@@ -6,9 +6,9 @@ import net.liftweb.mapper.MappedLongForeignKey
 import net.liftweb.mapper.IdPK
 import scala.xml.Text
 import net.liftweb.mapper.MappedBoolean
-import com.lbb.gui.MappedStringExtended
 import com.lbb.gui.MappedDateExtended
 import java.util.Date
+import net.liftweb.mapper.MappedString
 
 /**
  * READY TO DEPLOY
@@ -63,12 +63,12 @@ class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK {
     override def dbColumnName = "invited_by_id"
   }
   
-  object participationLevel extends MappedStringExtended(this, 140) {
+  object participationLevel extends MappedString(this, 140) {
     override def dbColumnName = "participation_level"
     override def dbIndexed_? = true
   }
   
-  object decision extends MappedStringExtended(this, 140) {
+  object decision extends MappedString(this, 140) {
     override def dbColumnName = "decision"
     override def dbIndexed_? = true
   }

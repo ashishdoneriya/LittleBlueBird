@@ -20,8 +20,6 @@ the same functions in CircleCtrl (or whatever)
 
 
 Events
-	- changing name and date: DONE
-	- adding/removing people: DONE but need to do something about people that have gifts bought for them already.  Prompt the person?  Prevent person from being removed?
 	- add "recurring" attribute to events - db change
 	
 Reminders

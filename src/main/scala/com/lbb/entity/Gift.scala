@@ -1,36 +1,33 @@
 package com.lbb.entity
-import net.liftweb.common.Empty
-import net.liftweb.common.Full
-import net.liftweb.mapper.By
-import net.liftweb.mapper.IHaveValidatedThisSQL
-import net.liftweb.mapper.IdPK
-import net.liftweb.mapper.LongKeyedMapper
-import net.liftweb.mapper.LongKeyedMetaMapper
-import net.liftweb.mapper.MappedBoolean
-import net.liftweb.mapper.MappedLongForeignKey
-import net.liftweb.mapper.MappedString
-import net.liftweb.mapper.MappedTextarea
-import com.lbb.gui.MappedTextareaExtended
-import com.lbb.gui.MappedStringExtended
-import net.liftweb.http.js.JsExp
-import net.liftweb.json.JsonAST.JString
-import net.liftweb.http.js.JE.JsArray
-import net.liftweb.common.Box
-import net.liftweb.mapper.KeyObfuscator
-import net.liftweb.json.JsonAST.JBool
-import net.liftweb.mapper.MappedLongIndex
-import scala.collection.mutable.ListBuffer
-import net.liftweb.mapper.MappedDateTime
 import java.util.Date
-import net.liftweb.mapper.MappedInt
-import net.liftweb.mapper.MappedNullableField
 import scala.collection.immutable.List
+import scala.collection.mutable.ListBuffer
+import com.lbb.entity.Circle
+import com.lbb.entity.User
 import com.lbb.util.Emailer
-import com.lbb.util.Email
-import com.lbb.util.Util
-import net.liftweb.json.JsonAST.JArray
 import com.lbb.util.LbbLogger
 import com.lbb.util.UrlListener
+import com.lbb.util.Util
+import net.liftweb.common.Box.box2Option
+import net.liftweb.common.Box
+import net.liftweb.common.Empty
+import net.liftweb.common.Full
+import net.liftweb.http.js.JsExp.jValueToJsExp
+import net.liftweb.http.js.JsExp
+import net.liftweb.json.JsonAST.JArray
+import net.liftweb.json.JsonAST.JBool
+import net.liftweb.json.JsonAST.JString
+import net.liftweb.mapper.MappedField.mapToType
+import net.liftweb.mapper.By
+import net.liftweb.mapper.KeyObfuscator
+import net.liftweb.mapper.LongKeyedMapper
+import net.liftweb.mapper.LongKeyedMetaMapper
+import net.liftweb.mapper.MappedInt
+import net.liftweb.mapper.MappedString
+import net.liftweb.mapper.MappedDateTime
+import com.lbb.gui.MappedTextareaExtended
+import net.liftweb.mapper.MappedLongForeignKey
+import net.liftweb.mapper.MappedLongIndex
 
 /**
  * READY TO DEPLOY
@@ -107,17 +104,17 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger {
     override def dbColumnName = "sender_id"
   }
   
-  object sender_name extends MappedStringExtended(this, 1028) {
+  object sender_name extends MappedString(this, 1028) {
   }
   
-  object status extends MappedStringExtended(this, 1028) {
+  object status extends MappedString(this, 1028) {
   }
   
   object reallyWants extends MappedInt(this) {
     override def dbColumnName = "really_wants"
   }
   
-  object addedBy extends MappedLongForeignKey(this, User) {
+  object addedBy extends MappedLongForeignKey(this, User) { 
     override def dbColumnName = "entered_by"
   }
   object dateCreated extends MappedDateTime(this) {
@@ -128,7 +125,7 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger {
     }
   }
   
-  object deleted extends MappedStringExtended(this, 1028) {
+  object deleted extends MappedString(this, 1028) {
   }
 
   // define an additional field for a personal essay
@@ -148,7 +145,7 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger {
   }
   
   // TODO validate url
-  object url extends MappedStringExtended(this, 1028) with UrlListener {
+  object url extends MappedString(this, 1028) with UrlListener {
     override def displayName = "URL"
   
     override def apply(s:String) = {
@@ -159,7 +156,7 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger {
   }
   
   // TODO validate url
-  object affiliateUrl extends MappedStringExtended(this, 1028) {
+  object affiliateUrl extends MappedString(this, 1028) {
     override def displayName = "Affiliate URL"
     override def dbColumnName = "URL_AFF"
   }

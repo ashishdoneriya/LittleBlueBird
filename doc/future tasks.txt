@@ -1,11 +1,33 @@
+
+****** REQUIRES DATABASE CHANGE **********************************
+Friends&Family table - NEW TABLE
+Call the table 'friends'
+Have a section above/below the Events section called Friends&Family
+Give it the little + sign so people know how to add people to the list
+When people are added to events, check to see if the person is already listed in the friends table
+
+
+
+
+****** REQUIRES DATABASE CHANGE **********************************
 Facebook Integration
 
 Add facebook id to the person table.  Need that to tell if LBB Eric Moore = FB Eric Moore
 
 Uncomment all the facebook stuff in app.js and login.html
 
+Requires mods to My Account page
 
 
+
+****** REQUIRES DATABASE CHANGE **********************************
+Email preferences
+Look at all the notifyXxxxx methods on Emailer
+For every method, create an email preference item that the user can control
+
+
+
+****** REQUIRES DATABASE CHANGE **********************************
 Circles
 
 Add a little checkbox that says "Recurring Event" - have the event auto-create about a month before the event

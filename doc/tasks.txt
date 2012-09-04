@@ -89,8 +89,4 @@ to allow you to edit it and delete it.  These rules don't always make sense thou
 When we add items to Kiera's list, sometimes she knows about them.  She should be able to
 see any item she knows about.  But LBB assumes that she doesn't know about them so she can't
 see them
-
-"Buddy List" - Right now, the only way to see someone's list is if they are in an event with you.
-If you have no active events, then you can't update your children's lists.
-
 	

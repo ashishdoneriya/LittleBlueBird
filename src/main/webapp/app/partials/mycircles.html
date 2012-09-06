@@ -377,7 +377,7 @@
           </span> 
           
           <div ng-repeat="receiver in circle.participants.receivers" class="margleft5">
-            <a href="#/giftlist/{{circle.id}}/{{receiver.id}}" ng-click="giftlist(circle, receiver)">
+            <a href="#/giftlist/{{receiver.id}}/{{circle.id}}" ng-click="giftlist(circle, receiver)">
               {{receiver.first}} {{receiver.last}}
             </a> 
           </div>

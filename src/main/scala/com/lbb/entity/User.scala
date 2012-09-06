@@ -43,6 +43,7 @@ import net.liftweb.mapper.MappedLongIndex
 import net.liftweb.json.JsonAST.JBool
 import com.lbb.util.LbbLogger
 import net.liftweb.mapper.MappedString
+import net.liftweb.json.JsonAST.JArray
 
 
 /**
@@ -171,6 +172,10 @@ class User extends LongKeyedMapper[User] with LbbLogger {
     override def displayName = "Password"
   }
   
+//  object facebookid extends MappedString(this, 140) {
+//    override def dbColumnName = "facebook_id"
+//  }
+  
   // https://github.com/lift/framework/blob/master/persistence/mapper/src/main/scala/net/liftweb/mapper/MappedDate.scala
   object dateOfBirth extends MappedDateExtended(this) {
 
@@ -246,43 +251,27 @@ class User extends LongKeyedMapper[User] with LbbLogger {
     val thelist = activeCircles.sortWith(_.date.getTime < _.date.getTime) :: ec :: Nil
     thelist.flatten
   }
-  
+
   // For active circles (I think expired circles too)
   // Note: You can't put circleid anywhere in the where clause because a gift may have been bought - but not received
   // in one circle, but it since it hasn't been received, it still needs to show up when looking at any other circle.
   // This canedit/candelete/canbuy/canreturn logic is also being used in Gift.edbr 
-  def giftlist(viewer:User, circle:Circle) = {     		
-    //val sql = "select g.* from gift g join recipient r on r.gift_id = g.id where r.person_id = "+this.id+" order by g.date_created desc"   
+  def giftlist(viewer:User, circlebox:Box[Circle]) = {     		
     
     // this sql works but how do I handle the first/last from person table
     val sql = "select g.*, p.firstname as addedbyFirst, p.lastname as addedbyLast from person p, gift g join recipient r on r.gift_id = g.id where r.person_id = "+this.id+" and g.entered_by = p.id order by g.date_created desc"
     
     val gifts = Gift.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
-    gifts.filter(g => viewer.canSee(this, g, circle)).map(g => {
+    gifts.filter(g => viewer.canSee(this, g, circlebox)).map(g => {
       g.canedit = viewer.canEdit(g)
       g.candelete = viewer.canDelete(g)
       g.canbuy = viewer.canBuy(g)
       g.canreturn = viewer.canReturn(g)
       g.canseestatus = viewer.canSeeStatus(g)
       g.issurprise = !this.knowsAbout(g)
+      debug("for gift: "+g.description+": g.canseestatus="+g.canseestatus+", g.canbuy="+g.canbuy);
       g
     })
-  }
-  
-  /**
-   * Returns a boolean indicating whether or not gifts have already been purchased for
-   * this person in this circle.  Why do we have this method?  It tells us whether or
-   * not a person can be deleted from an event.  We don't want to allow users to be
-   * deleted from events if gifts have already been purchased for this person.
-   */
-  def giftsHaveBeenPurchasedForMe(circle:Circle) = {
-    val sql = "SELECT r.gift_id, g.description, g.sender_id, g.circle_id " +
-    		  "FROM recipient r " +
-    		  "join gift g on g.id = r.gift_id " +
-    		  "join person p on p.id = g.sender_id " +
-    		  "where person_id = " + id.is + " and g.circle_id = " + circle.id.is 
-    val gifts = Gift.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
-    if(gifts.size > 0) true else false
   }
   
   /**
@@ -311,6 +300,22 @@ class User extends LongKeyedMapper[User] with LbbLogger {
   }
   
   /**
+   * Returns a boolean indicating whether or not gifts have already been purchased for
+   * this person in this circle.  Why do we have this method?  It tells us whether or
+   * not a person can be deleted from an event.  We don't want to allow users to be
+   * deleted from events if gifts have already been purchased for this person.
+   */
+  def giftsHaveBeenPurchasedForMe(circle:Circle) = {
+    val sql = "SELECT r.gift_id, g.description, g.sender_id, g.circle_id " +
+    		  "FROM recipient r " +
+    		  "join gift g on g.id = r.gift_id " +
+    		  "join person p on p.id = g.sender_id " +
+    		  "where person_id = " + id.is + " and g.circle_id = " + circle.id.is 
+    val gifts = Gift.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
+    if(gifts.size > 0) true else false
+  }
+  
+  /**
    * Tells you whether this gift is/was a surprise or not
    * You know about a gift if:
    * - you added it (added by 'this')
@@ -334,89 +339,43 @@ class User extends LongKeyedMapper[User] with LbbLogger {
   /**
    * 'this' person is the viewer
    */
-  def canSee(recipient:User, gift:Gift, circle:Circle) = (this, recipient, gift.sender.obj, gift, circle) match {
+  def canSee(recipient:User, gift:Gift, circlebox:Box[Circle]) = (this, recipient, gift.sender.obj, gift, circlebox) match {
+    
+    // If circlebox is Empty, then it means 'this' user is looking at someone's wish list outside the ctx of an event
+    // In that case, there are a few cases where I cannot see the item:
+    // I cannot see an item if it is for me also and the adder is not a recipient
+    case (me, _, _, g, Empty) if(g.isFor(me) && !g.wasAddedByARecipient) => false
+    
+    // I cannot see an item that has been received
+    case (_, _, _, g, Empty) if(g.hasBeenReceived) => false
+    
+    // Otherwise, we should fall through to case _ and show item
+    
+    // UNANSWERED QUESTION:  If a gift was bought outside the ctx of an event, how do I go back and see who gave me what?  
+    // Currently, there's no way to review received gifts
+    // that were bought outside the ctx of an event!
+    
+    
     // You can't see the recipient's gift in the context of this circle, because in this circle
     // the 'recipient' is only a 'giver'
-    case(_, r, _, _, c) if(!r.isReceiver(c)) => false 
+    case(_, r, _, _, Full(c)) if(!r.isReceiver(c)) => false 
     
     // You CANNOT see the gift
     // - if it is for more than one person 
     // - and all the recipients are not receivers in the circle
     // Think: Birthdays, Mothers Day, Fathers Day, etc.  Don't show stuff
     // on my birthday list that is for me and Tamie.
-    case(_, _, _, g, c) if(!c.containsAll(g.recipientList)) => false
+    case(_, _, _, g, Full(c)) if(!c.containsAll(g.recipientList)) => false
     
     // 6/6/2012:  In an active circle, you CAN see the gift
     // if you know about it AND the gift hasn't been received yet.  
     // Doesn't matter here if the gift has been bought or not
-    case(v, _, _, g, c) if(!c.isExpired) => v.knowsAbout(g) && !g.hasBeenReceived
+    case(me, _, _, g, Full(c)) if(!c.isExpired) => me.knowsAbout(g) && !g.hasBeenReceived
     
     // 6/6/2012:  In expired circles, you CAN see the gift if it was
     // received in this circle
-    case(_, _, _, g, c) if(c.isExpired) => g.hasBeenReceivedInCircle(c) //g.hasBeenReceived && g.circle.obj.map(cir => cir.id.is == c.id.is).openOr(false)
+    case(_, _, _, g, Full(c)) if(c.isExpired) => g.hasBeenReceivedInCircle(c)
     
-//    // You CAN see the gift in this context of this circle because:
-//    // - the circle is still active
-//    // - the item hasn't been bought  UPDATE: Bought is ok if not yet rec'd.  Rec'd is ok if rec'd in the given circle 
-//    // - and you (the viewer) are the one who added this gift
-//    case(v, _, Empty, g, c) if(!c.isExpired && v.addedThis(g)) => {
-//      if(gift.description=="gift17") debug("case(v, _, Empty, g, c) if(!c.isExpired && v.addedThis(g))")
-//      true
-//    }
-//    
-//    // You CAN see this gift IF
-//    // - the circle is still active
-//    // - the item hasn't been bought
-//    // - you are a recipient of the gift AND the gift was added by another recipient
-//    case(v, _, Empty, g, c) if(!c.isExpired && g.isFor(v)) => {
-//      if(gift.description=="gift17") debug("case(v, _, Empty, g, c) if(!c.isExpired && v.isRecipient(g))")
-//      g.wasAddedByARecipient
-//    }
-//    
-//    
-//    // You CAN see this gift IF
-//    // - the circle is still active
-//    // - the item hasn't been bought
-//    // - you are not the one receiving this gift
-//    case(v, _, Empty, g, c) if(!c.isExpired && g.isForSomeoneElse(v)) => {
-//      if(gift.description=="gift17") debug("case(v, _, Empty, g, c) if(!c.isExpired && !v.isRecipient(g))")
-//      true
-//    }
-//    
-//    // This item HAS been bought.  You will be able to see it if...
-//    // - the circle is still active
-//    // - you added this item to your own list
-//    // - and you have not yet received this item
-//    case(v, r, s:Full[User], g, c) if(!c.isExpired && v.addedThis(g) && !g.hasBeenReceived) => {
-//      if(gift.description=="gift17") debug("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.addedThis(g) && !g.hasBeenReceived)")
-//      true
-//    }
-//    
-//    // This item HAS been bought.  You will be able to see it if...
-//    // - the circle is still active
-//    // - and you have not yet received this item
-//    case(v, r, s:Full[User], g, c) if(!c.isExpired && g.isFor(v) && g.wasAddedByARecipient && !g.hasBeenReceived) => {
-//      if(gift.description=="gift17") debug("case(v, r, s:Full[User], g, c) if(!c.isExpired && v.isRecipient(g) && !g.hasBeenReceived)")
-//      true
-//    }
-//    
-//    // This item HAS been bought, but you CANNOT see it if...
-//    // - the gift is for someone else
-//    // - the gift has not been received
-//    case(v, _, s:Full[User], g, _) if(g.isForSomeoneElse(v) && !g.hasBeenReceived) => false
-//    
-//    // This item HAS been bought.  You will be able to see it if...
-//    // - the circle is expired
-//    // - the gift was bought in the expired circle
-//    case(_, _, s:Full[User], g, c) if(c.isExpired && g.circle.obj.map(_.id.is).openOr(-1)==c.id.is) => {
-//      if(gift.description=="gift17") debug("case(_, _, s:Full[User], g, c) if(c.isExpired && g.circle.obj.map(_.id.is).openOr(-1)==c.id.is)")
-//      true
-//    }
-//    
-//    case(_, _, _, g, c) if(c.isExpired && !g.wasBoughtInThisCircle(c)) => false
-//    
-//    // the gift has been received in another circle, so you cannot see this gift in THIS circle
-//    case(_, _, s:Full[User], g, c) if(g.hasBeenReceivedInAnotherCircle(c)) => false
     
     case _ => {debug("should catch this case"); true}
 
@@ -452,6 +411,28 @@ class User extends LongKeyedMapper[User] with LbbLogger {
   def findByName(f:String, l:String) = {
     User.findAll(Cmp(User.first, OprEnum.Like, Full("%"+f.toLowerCase+"%"), Empty, Full("LOWER")),
         Cmp(User.last, OprEnum.Like, Full("%"+l.toLowerCase+"%"), Empty, Full("LOWER")))
+  }
+  
+  /**
+   * REPLACE THIS WITH A CALL TO THE NEW FRIENDS TABLE WHICH DOESN'T EXIST YET
+   * Find all users connected to 'this' user by events.  These are users that are or were at
+   * one time in an event with 'this' user.
+   */
+  def friendList = {
+    // NOT BAD - but this queries the circle_participants table to create this list
+    // THE USER MAY BE CONFUSED and not know how to get this Friends&Family list populated.  It's not obvious that you FIRST have to create an event
+    // with people in it and that it's THESE people that show up in the F&F list.
+    // IT WOULD BE BETTER to have a Friends&Family section with a little + sign just like the Events section.
+    // Add/Invite people this way and store these people in a NEW TABLE: friends
+    val sql = "select p.* from person p " +
+    		"where p.id in (  " +
+    		"  select cp.person_id from circle_participants cp  " +
+    		"  where cp.circle_id in (    " +
+    		"    select cp2.circle_id from circle_participants cp2 " +
+    		"   where cp2.person_id = "+this.id+" ))" +
+    		" and p.id != "+this.id // don't include yourself in your list of friends
+    
+    User.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
   }
   
   override def toForm(button: Box[String], f: User => Any): NodeSeq = {
@@ -542,30 +523,13 @@ class User extends LongKeyedMapper[User] with LbbLogger {
   
   def asJsShallow:JValue = {
     asReceiverJs(Empty)
-//    // TODO duplicated code here and in supplementalJs
-//    val profilepicUrl = if(profilepic.is==null || profilepic.is.trim().toString().equals("")) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
-//    val img = new ImageIcon(profilepicUrl)	
-//    val profilepicheight = img.getIconHeight()
-//    val profilepicwidth = img.getIconWidth()
-//    
-//    JObject(List(JField("id", JInt(this.id.is)), 
-//                 JField("first", JString(this.first)), 
-//                 JField("last", JString(this.last)), 
-//                 JField("fullname", JString(this.first + " " + this.last)), 
-//                 JField("username", JString(this.username)), 
-//                 JField("profilepicUrl", JString(profilepicUrl.toString())),
-//                 JField("profilepicheight", JInt(profilepicheight)),
-//                 JField("profilepicwidth", JInt(profilepicwidth)),
-//                 JField("email", JString(this.email)),
-//                 JField("bio", JString(this.bio)),
-//                 JField("age", JInt(this.age.is)),
-//                 JField("dateOfBirth", if(this.dateOfBirth.is == null) { JsonAST.JNull } else { JInt(this.dateOfBirth.is.getTime()) } )
-//                 ))
   }
   
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
     val jsonCircles = circleList.map(_.asJs)
     val jsCircles = JsArray(jsonCircles)
+    val jsonFriends = friendList.map(_.asJsShallow)
+    val jsFriends = JArray(jsonFriends)
     val profilepicUrl = if(profilepic.is==null || profilepic.is.trim().toString().equals("")) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
     val img = new ImageIcon(profilepicUrl)	
     val profilepicheight = img.getIconHeight()
@@ -577,6 +541,7 @@ class User extends LongKeyedMapper[User] with LbbLogger {
     List(("dateOfBirthStr", dobString), 
          ("fullname", JString(first+" "+last)), 
          ("circles", jsCircles), 
+         ("friends", jsFriends),
          ("profilepicUrl", JString(profilepicUrl.toString())), 
          ("profilepicheight", profilepicheight), 
          ("profilepicwidth", profilepicwidth))        

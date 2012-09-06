@@ -2,8 +2,6 @@ package com.lbb.entity
 import java.util.Date
 import scala.collection.immutable.List
 import scala.collection.mutable.ListBuffer
-import com.lbb.entity.Circle
-import com.lbb.entity.User
 import com.lbb.util.Emailer
 import com.lbb.util.LbbLogger
 import com.lbb.util.UrlListener
@@ -28,6 +26,8 @@ import net.liftweb.mapper.MappedDateTime
 import com.lbb.gui.MappedTextareaExtended
 import net.liftweb.mapper.MappedLongForeignKey
 import net.liftweb.mapper.MappedLongIndex
+import com.lbb.gui.MappedDateObservable
+import com.lbb.util.DateChangeListener
 
 /**
  * READY TO DEPLOY
@@ -84,7 +84,7 @@ ALTER TABLE `gift`
   `URL_STATE` - can be null
  */
 
-class Gift extends LongKeyedMapper[Gift] with LbbLogger {
+class Gift extends LongKeyedMapper[Gift] with LbbLogger with DateChangeListener {
   def getSingleton = Gift
   
   def primaryKeyField = id
@@ -144,6 +144,10 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger {
     description(nu)
   }
   
+  object receivedate extends MappedDateObservable(this, this) {
+    override def dbColumnName = "receive_date"
+  }
+  
   // TODO validate url
   object url extends MappedString(this, 1028) with UrlListener {
     override def displayName = "URL"
@@ -199,8 +203,15 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger {
    * A gift has been received if the sender is not null and g.circle is expired
    */
   def hasBeenReceived = (this.sender.obj, this.circle.obj) match {
+    case(Full(s), Empty) if(this.receivedate.is != null && this.receivedate.is.before(new Date())) => true
     case(Full(s), Full(c)) if(c.isExpired) => true
-    case _ => false
+    case _ => { 
+      debug("for gift: "+description.is+" - this.sender.obj="+this.sender.obj);
+      debug("for gift: "+description.is+" - this.circle.obj="+this.circle.obj);
+      debug("for gift: "+description.is+" - this.receivedate.is="+this.receivedate.is);
+      if(this.receivedate.is != null) debug("for gift: "+description.is+" - this.receivedate.is.before(new Date())="+ (this.receivedate.is.before(new Date())) )
+      false 
+    }
   }
   
   def hasBeenReceivedInCircle(cir:Circle) = (this.sender.obj, this.circle.obj) match {
@@ -208,18 +219,24 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger {
     case _ => false
   }
   
+  /**
+   * Not necessarily received in another circle, but rather: received AND not received in THIS circle (c)
+   * What's the difference?  It is possible that the gift was received outside the context of ANY circle
+   * This is a new capability as of 9/5/12
+   */
   def hasBeenReceivedInAnotherCircle(c:Circle) = {
-    if(!hasBeenReceived) {
-      false
-    }
-    
-    this.circle.obj match {
-      case Full(f) => {
-        val differentCircle = f.id.is!=c.id.is
-        differentCircle
-      }
-      case _ => false
-    }
+    hasBeenReceived && !hasBeenReceivedInCircle(c)
+//    if(!hasBeenReceived) {
+//      false
+//    }
+//    
+//    this.circle.obj match {
+//      case Full(f) => {
+//        val differentCircle = f.id.is!=c.id.is
+//        differentCircle
+//      }
+//      case _ => false
+//    }
   }
   
   def isForSomeoneElse(u:User) = !isFor(u)
@@ -291,13 +308,13 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger {
    *  
    *  This logic was taken from User.giftlist  Also see User.mywishlist
    */
-  def edbr = (currentViewer, currentRecipient, currentCircle) match {
-    case (Full(viewer), Full(recipient), Full(circle)) => {
-      canedit = viewer.canSee(recipient, this, circle) && viewer.canEdit(this)
-      candelete = viewer.canSee(recipient, this, circle) && viewer.canDelete(this)
-      canbuy = viewer.canSee(recipient, this, circle) && viewer.canBuy(this)
-      canreturn = viewer.canSee(recipient, this, circle) && viewer.canReturn(this) 
-      canseestatus = viewer.canSee(recipient, this, circle) && viewer.canSeeStatus(this) 
+  def edbr = (currentViewer, currentRecipient) match {
+    case (Full(viewer), Full(recipient)) => {
+      canedit = viewer.canSee(recipient, this, currentCircle) && viewer.canEdit(this)
+      candelete = viewer.canSee(recipient, this, currentCircle) && viewer.canDelete(this)
+      canbuy = viewer.canSee(recipient, this, currentCircle) && viewer.canBuy(this)
+      canreturn = viewer.canSee(recipient, this, currentCircle) && viewer.canReturn(this) 
+      canseestatus = viewer.canSee(recipient, this, currentCircle) && viewer.canSeeStatus(this) 
       issurprise = !recipient.knowsAbout(this)
       debug("gift.edbr:  case (Full(viewer), Full(recipient), Full(circle)))")
     } // case (Full(viewer), Full(recipient), Full(circle))
@@ -312,6 +329,23 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger {
       debug("gift.edbr:  case _")
     }
   }
+  
+  
+  /**
+   * Required by DateChangeListener - are we really using this?  not yet
+   */
+  def dateSet(c:Circle) = {}
+  
+  /**
+   * Required by DateChangeListener - are we really using this?  not yet
+   */
+  def dateUnset = {}
+  
+  /**
+   * Required by DateChangeListener - are we really using this?  not yet
+   */
+  def dateDeletedSet(c:Circle) = {}
+  
 }
 
 object Gift extends Gift with LongKeyedMetaMapper[Gift] {

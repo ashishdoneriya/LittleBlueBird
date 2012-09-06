@@ -39,8 +39,8 @@
         <a ng-href="{{gift.affiliateUrl}}" 
            target="item" 
            ui-jq="popover" 
-           ui-options="popoverOptions(gift)">
-          2 {{gift.description}}
+           ui-options="popoverOptions($index, gift)">
+          {{gift.description}}
         </a>
       </div>                
              

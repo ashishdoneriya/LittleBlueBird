@@ -1,6 +1,7 @@
 
 ****** REQUIRES DATABASE CHANGE **********************************
 Friends&Family table - NEW TABLE
+ALTER TABLE: gifts needs a receive_date column for when there's no event
 Call the table 'friends'
 Have a section above/below the Events section called Friends&Family
 Give it the little + sign so people know how to add people to the list
@@ -24,6 +25,25 @@ Requires mods to My Account page
 Email preferences
 Look at all the notifyXxxxx methods on Emailer
 For every method, create an email preference item that the user can control
+
+
+
+****** REQUIRES DATABASE CHANGE **********************************
+"Make Me Searchable"
+
+Now that we're making everyone searchable - some people may not want to be found by everyone
+
+Add column to the person table hold this info
+Update the My Account page to allow the user to control this setting
+
+
+
+****** REQUIRES DATABASE CHANGE **********************************
+Who can add to my list?
+Options could be: anyone, anyone I'm in an event with, any of my FB friends, ?
+
+Maybe you don't want just anyone to be able to add to your list
+Maybe you want to say that you can add it as long as I an see it - or you can add it as long as I can delete it/edit it
 
 
 

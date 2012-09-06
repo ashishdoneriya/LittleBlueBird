@@ -18,6 +18,7 @@ import com.lbb.entity.User
 import com.lbb.util.LbbLogger
 import com.lbb.entity.Reminder
 import com.lbb.entity.AuditLog
+import net.liftweb.common.Full
 
 /**
  * This test has the added bonus of setting up your db for you.
@@ -82,6 +83,14 @@ class RecipientTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     val brenda1 = UserTest.createBrenda1
     val brenda2 = UserTest.createBrenda2
     val bill = UserTest.createBill
+    
+    // don't put these people in a circle with me - testing the user search field at the top of the page
+    // The first people I want to show up in the query results are the people that I have been in a
+    // circle with before
+    val brandon = UserTest.createBrandon
+    val bryan = UserTest.createBryan
+    val allison = UserTest.createAllison
+    
     
     val lastXmas = CircleTest.lastXmas.add(List(brent, tamie, kiera, truman, jett), brent)
     val nextXmas = CircleTest.nextXmas.add(List(brent, tamie, kiera, truman, jett), brent)
@@ -600,7 +609,7 @@ class RecipientTest extends FunSuite with AssertionsForJUnit with LbbLogger {
       val circle = tuple._2
       
       // this is what we're testing
-      val giftlist = recipient.giftlist(viewer, circle)
+      val giftlist = recipient.giftlist(viewer, Full(circle))
       val actDescriptions = giftlist.map(_.description.is).sortWith(_ < _)
       
       debug("checking "+viewer.first+"'s view of "+recipient.first+"'s "+circle.name+" list...")

@@ -1,0 +1,22 @@
+
+<div ng-controller="UserCtrl">
+<div ng-controller="GiftCtrl">
+
+<div class="row">
+  <div class="span2">
+    <h3>Friends&Family</h3>
+  </div>
+</div>
+
+<div class="row" ng-repeat="friend in user.friends">
+  <div class="span2">
+    
+            <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
+              {{friend.fullname}}
+            </a> 
+    
+  </div>
+</div>
+
+</div>
+</div>

@@ -243,6 +243,24 @@ object UserTest extends UserTest {
     user
   }
   
+  def createBrandon = {
+    val user = createUser("Brandon", "Dunklau", "brandon", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/brandon.dunklau1/picture?type=large")
+    user.save
+    user
+  }
+  
+  def createBryan = {
+    val user = createUser("Bryan", "Dunklau", "bryan", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/bdunklau/picture?type=large")
+    user.save
+    user
+  }
+  
+  def createAllison = {
+    val user = createUser("Allison", "Dunklau", "allison", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/allison.dunklau/picture?type=large")
+    user.save
+    user
+  }
+  
   def createUser(f:String, l:String, u:String, p:String, e:String, b:String, d:Date, pic:String) = {
     val user = User.create.first(f).last(l).username(u).password(p).email(e).bio(b).dateOfBirth(d).profilepic(pic)
     user.save

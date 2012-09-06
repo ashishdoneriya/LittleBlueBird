@@ -36,6 +36,7 @@ object RestService extends RestHelper with LbbLogger {
 
   // ref:  http://www.assembla.com/spaces/liftweb/wiki/REST_Web_Services
   serve {
+    
     // gifts...
     case Get("gifts" :: AsLong(giftId) :: _, _) => debug("RestService.serve:  999999999"); findGift(giftId)
     case Get("gifts" :: _, _) => debug("RestService.serve:  AAAAAAAAA"); findGifts
@@ -51,6 +52,10 @@ object RestService extends RestHelper with LbbLogger {
   }
   
   serve {
+    // Get someone's wish list outside the context of any circle
+    // Can't use the url pattern:  gifts/userId because we already have gifts/giftId - would be ambiguous
+    // So we have wishlist/userId - kinda lame
+    case Get("wishlist" :: AsLong(userId) :: _, _) => wishlist(userId)
     case Get("users" :: AsLong(userId) :: _, _) => debug("RestService.serve:  22222222222222"); findUser(userId)
     case Get("users" :: _, _) => debug("RestService.serve:  333333333333333333333333"); findUsers
     case Post("logout" :: _, _) => logout
@@ -70,6 +75,12 @@ object RestService extends RestHelper with LbbLogger {
     case Get("circles" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  88888888"); findCircle(circleId)
     case Get("circleparticipants" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  77777777777"); findCircleParticipants(circleId)
     case _ => debug("RestService.serve:  666666666"); debugRequest
+  }
+  
+  // not just the current user's id - but anybody's id
+  def wishlist(userId:Long) = {
+    val jsongifts = User.findByKey(userId).map(_.mywishlist.map(_.asJs)) openOr Nil
+    JsonResponse(JsArray(jsongifts))
   }
   
   def logout = {
@@ -477,22 +488,22 @@ object RestService extends RestHelper with LbbLogger {
   }
   
   def findGifts = (User.findByKey(asLong(S.param("viewerId") openOr "") openOr -1), 
-                   Circle.findByKey(asLong(S.param("circleId") openOr "") openOr -1), 
                    User.findByKey(asLong(S.param("recipientId") openOr "") openOr -1)) match {
-      case (Full(viewer), Full(circle), Full(recipient)) => {
-        val giftlist = recipient.giftlist(viewer, circle);
+      case (Full(viewer), Full(recipient)) => {
+        val circlebox = Circle.findByKey(asLong(S.param("circleId") openOr "") openOr -1)
+        val giftlist = recipient.giftlist(viewer, circlebox);
         val jsons = giftlist.map(_.asJs)
         val jsArr = JsArray(jsons)
         val r = JsonResponse(jsArr)
-        debug("RestService.findGifts: JsonResponse(jsArr)=" + r.toString())
+        debug("RestService.findGifts: case (Full(viewer), Full(recipient)) => " + r.toString())
         r
       }
-      case (Full(viewer), Empty, Empty) => {
+      case (Full(viewer), Empty) => {
         val mywishlist = viewer.mywishlist
         val jsons = mywishlist.map(_.asJs)
         val jsArr = JsArray(jsons)
         val r = JsonResponse(jsArr)
-        debug("RestService.findGifts: JsonResponse(jsArr)=" + r.toString())
+        debug("RestService.findGifts: case (Full(viewer), Empty) => " + r.toString())
         r
       }
       case _ => {
@@ -540,6 +551,8 @@ object RestService extends RestHelper with LbbLogger {
               case ("senderId", a:BigInt) if(a.toLong == -1 && gift.isBought) => {
                 Emailer.notifyGiftReturned(gift)
                 gift.sender(Empty)
+                gift.circle(Empty)
+                gift.receivedate(null)
               }
               
               case ("senderId", a:BigInt) => { 
@@ -547,6 +560,8 @@ object RestService extends RestHelper with LbbLogger {
               } 
               
               case ("senderName", s:String) => gift.sender_name(s)
+              
+              case ("receivedate", b:BigInt) => gift.receivedate(new Date(b.toLong))
               
               case _ => debug("updateGift:  Not handled: Gift."+kv._1+" = "+kv._2)
             } // kv => (kv._1, kv._2) match

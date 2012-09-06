@@ -1,10 +1,21 @@
+<!-- 
+/buy/:circleId/:showUserId/:giftId
+/editgift/:circleId/:showUserId/:giftId
+/deletegift/:circleId/:showUserId/:giftId
+/giftlist/:circleId/:showUserId
+/mywishlist
+/wishlist/:showUserId
 
+All of the above url's end up including this page.  Need to pull out the parameters here rather
+than relying on ng-click from the calling page.  Using ng-click means the url's can't be made into
+hyperlinks, which is what we want if we want to post items to FB.
+ -->
 
 
 <div ng-controller="UserCtrl">
   <div ng-controller="CircleCtrl">
     <div ng-controller="GiftCtrl">
-          
+    
       <span ng-hide="gifts.mylist"> <!-- Hide. Doesn't apply for "my wish list" -->
         <span ng-show="isExpired()">
           <div class="row alert alert-success margleft10">

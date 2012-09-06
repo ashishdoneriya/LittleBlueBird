@@ -8,9 +8,10 @@
                 <div class="span1">
                   To:
                 </div>
-                <div class="span6">
+                <div class="span3">
                   {{gift.recipients[0].first}} <span ng-repeat="recipient in gift.recipients.slice(1)"> and {{recipient.first}}</span>
                 </div>
+                <div class="span3">Date you are giving this</div>
               </div>
               <div class="row margleft_35">
                 <div class="span1">
@@ -18,8 +19,11 @@
                   <input type="hidden" ng-model="gift.senderId" />
                   From:
                 </div>
-                <div class="span6">
+                <div class="span3">
                   <input type="text" ng-model="gift.senderName" />
+                </div>
+                <div class="span3">
+                  <input class="input-small" date-picker="recdate" name="recdate" ng-model="recdate" type="text"></input>
                 </div>
               </div>
               <div class="row margleft_35 margbottom20">
@@ -29,7 +33,7 @@
               </div>
               <div class="row margleft_35">
                 <div class="span1">
-                  <a class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift);">Reserve</a>
+                  <a class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift, recdate);">Reserve</a>
                 </div>
                 
                 <span ng-show="gift.url != undefined && gift.url != ''">

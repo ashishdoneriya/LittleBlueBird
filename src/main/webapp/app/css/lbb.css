@@ -37,6 +37,8 @@
 
 .align-right {text-align:right;}
 
+.align-top {vertical-align:top;}
+
 .black { background-color: #000000; }
 
 .blue { background-color: blue; }
@@ -76,10 +78,12 @@
 
 .center {text-align:center;}
 
-.crop { width: 150px; height: 150px; overflow: hidden;  }
+.crop100 { width: 100px; height: 100px; overflow: hidden; float:left;  }
 
-.crop img { 
-  margin:0px 0px 0px -20px; 
+.crop150 { width: 150px; height: 150px; overflow: hidden;  }
+
+.crop150 img { 
+  margin:0px 0px 0px 0px; 
 }
 
 .font14 { font-size:14px; }
@@ -252,6 +256,8 @@
 
 .margtop10 { margin-top:10px; }
 
+.margtop_20 { margin-top:-20px; }
+
 .margtop20 { margin-top:20px; }
 
 .normal { font-weight:normal; }
@@ -322,9 +328,11 @@
 }
 
 .simple-top {
-  margin-top:10px;
+  padding-top:10px;
   border-top:1px solid #aaaaaa;
 }
+
+.span150 {width: 150px;}
 
 .spantiny {
   width: 15px;
@@ -341,6 +349,8 @@
   margin-left:0px;
   padding-left:0px;
 }
+
+.whitetext {color:#ffffff;}
 
 .w40 { width: 40px; }
 

@@ -3,20 +3,74 @@
 <div ng-controller="GiftCtrl">
 
 <div class="row">
+  <div class="span5 bold">
+    <h3>Friends</h3>
+  </div>
   <div class="span2">
-    <h3>Friends&Family</h3>
+    <div class="btn-group pull-right">
+      <button class="btn">Friend Stuff</button>
+      <button class="btn dropdown-toggle" data-toggle="dropdown">
+      <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li>Add</li>
+        <li>Delete</li>
+        <li>Import</li>
+      </ul>
+    </div>
+  </div>
+    
+</div>
+
+
+
+
+
+<div class="row">
+  <div class="span7 simple-top">
+    <div class="row">
+      <div class="span3 margbottom5 align-top">
+        <div ng-repeat="friend in user.friends">
+      
+      <span ng-show="$index % 2 == 0">  
+      <div class="row">
+        <div class="span3 margbottom5 align-top">
+          <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
+            <div class="crop100"><img height={{adjustedheight(friend,100)}} width={{adjustedwidth(friend,100)}} ng-src="{{friend.profilepicUrl}}" /></div>
+          </a> 
+  
+          <a class="align-top bold" href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
+            {{friend.fullname}}
+          </a> 
+        </div>
+      </div>
+      </span>
+      
+        </div>
+      </div>
+      <div class="span3 offset1 margbottom5 align-top">
+        <div ng-repeat="friend in user.friends">
+      
+      <span ng-show="$index % 2 == 1">  
+      <div class="row">
+        <div class="span3 margbottom5 align-top">
+          <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
+            <div class="crop100"><img height={{adjustedheight(friend,100)}} width={{adjustedwidth(friend,100)}} ng-src="{{friend.profilepicUrl}}" /></div>
+          </a> 
+  
+          <a class="align-top bold" href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
+            {{friend.fullname}}
+          </a> 
+        </div>
+      </div>
+      </span>
+      
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="row" ng-repeat="friend in user.friends">
-  <div class="span2">
-    
-            <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
-              {{friend.fullname}}
-            </a> 
-    
-  </div>
-</div>
 
 </div>
 </div>

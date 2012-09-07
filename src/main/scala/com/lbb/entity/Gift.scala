@@ -206,10 +206,10 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger with DateChangeListener 
     case(Full(s), Empty) if(this.receivedate.is != null && this.receivedate.is.before(new Date())) => true
     case(Full(s), Full(c)) if(c.isExpired) => true
     case _ => { 
-      debug("for gift: "+description.is+" - this.sender.obj="+this.sender.obj);
-      debug("for gift: "+description.is+" - this.circle.obj="+this.circle.obj);
-      debug("for gift: "+description.is+" - this.receivedate.is="+this.receivedate.is);
-      if(this.receivedate.is != null) debug("for gift: "+description.is+" - this.receivedate.is.before(new Date())="+ (this.receivedate.is.before(new Date())) )
+//      debug("for gift: "+description.is+" - this.sender.obj="+this.sender.obj);
+//      debug("for gift: "+description.is+" - this.circle.obj="+this.circle.obj);
+//      debug("for gift: "+description.is+" - this.receivedate.is="+this.receivedate.is);
+//      if(this.receivedate.is != null) debug("for gift: "+description.is+" - this.receivedate.is.before(new Date())="+ (this.receivedate.is.before(new Date())) )
       false 
     }
   }

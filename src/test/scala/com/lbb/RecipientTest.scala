@@ -19,6 +19,7 @@ import com.lbb.util.LbbLogger
 import com.lbb.entity.Reminder
 import com.lbb.entity.AuditLog
 import net.liftweb.common.Full
+import com.lbb.entity.Friend
 
 /**
  * This test has the added bonus of setting up your db for you.
@@ -47,12 +48,16 @@ class RecipientTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     Schemifier.schemify(true, Schemifier.infoF _, Recipient)
     Schemifier.schemify(true, Schemifier.infoF _, Reminder)
     Schemifier.schemify(true, Schemifier.infoF _, AuditLog)
+    Schemifier.schemify(true, Schemifier.infoF _, Friend)
         
   }
 
   test("create Recipient with Mapper") {
     
     initDb 
+        
+    Friend.findAll.foreach(_.delete_!)
+    assert(Friend.findAll.size===0)
         
     AuditLog.findAll.foreach(_.delete_!)
     assert(AuditLog.findAll.size===0)

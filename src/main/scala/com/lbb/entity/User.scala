@@ -172,9 +172,9 @@ class User extends LongKeyedMapper[User] with LbbLogger {
     override def displayName = "Password"
   }
   
-//  object facebookid extends MappedString(this, 140) {
-//    override def dbColumnName = "facebook_id"
-//  }
+  object facebookId extends MappedString(this, 140) {
+    override def dbColumnName = "facebook_id"
+  }
   
   // https://github.com/lift/framework/blob/master/persistence/mapper/src/main/scala/net/liftweb/mapper/MappedDate.scala
   object dateOfBirth extends MappedDateExtended(this) {
@@ -224,11 +224,12 @@ class User extends LongKeyedMapper[User] with LbbLogger {
   
   def name(s:String) = {
     s match {
-      case F(f) => { first(f); }
-      case FL(f, l) => { first(f); last(l); }
-      case FML(f, m, l) => { first(f); last(l); }
-      case _ => 
+      case F(f) => { first(f) }
+      case FL(f, l) => { first(f); last(l) }
+      case FML(f, m, l) => { first(f); last(l) }
+      case _ => first(s);
     }
+    this
   }
 
   // define an additional field for a personal essay
@@ -419,18 +420,9 @@ class User extends LongKeyedMapper[User] with LbbLogger {
    * one time in an event with 'this' user.
    */
   def friendList = {
-    // NOT BAD - but this queries the circle_participants table to create this list
-    // THE USER MAY BE CONFUSED and not know how to get this Friends&Family list populated.  It's not obvious that you FIRST have to create an event
-    // with people in it and that it's THESE people that show up in the F&F list.
-    // IT WOULD BE BETTER to have a Friends&Family section with a little + sign just like the Events section.
-    // Add/Invite people this way and store these people in a NEW TABLE: friends
     val sql = "select p.* from person p " +
-    		"where p.id in (  " +
-    		"  select cp.person_id from circle_participants cp  " +
-    		"  where cp.circle_id in (    " +
-    		"    select cp2.circle_id from circle_participants cp2 " +
-    		"   where cp2.person_id = "+this.id+" ))" +
-    		" and p.id != "+this.id // don't include yourself in your list of friends
+    		"join friends f on f.friend_id = p.id " +
+    		"where f.user_id = " + this.id
     
     User.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
   }

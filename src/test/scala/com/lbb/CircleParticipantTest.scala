@@ -18,6 +18,7 @@ import scala.xml.Text
 import net.liftweb.common.Full
 import net.liftweb.common.Empty
 import com.lbb.util.LbbLogger
+import com.lbb.entity.Friend
 
 @RunWith(classOf[JUnitRunner])
 class CircleParticipantTest extends FunSuite with AssertionsForJUnit with LbbLogger {
@@ -35,10 +36,14 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit with LbbLog
     Schemifier.schemify(true, Schemifier.infoF _, User)
     Schemifier.schemify(true, Schemifier.infoF _, Circle)
     Schemifier.schemify(true, Schemifier.infoF _, CircleParticipant)
+    Schemifier.schemify(true, Schemifier.infoF _, Friend)
   }
 
   test("create CircleParticipant with Mapper") {
     initDb
+        
+    Friend.findAll.foreach(_.delete_!)
+    assert(Friend.findAll.size===0)
         
     CircleParticipant.findAll.foreach(_.delete_!)
     assert(CircleParticipant.findAll.size===0)
@@ -51,9 +56,9 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit with LbbLog
     
     
     // this stuff goes in the snippet I guess...
-    val brent : User = User.create.first("BRENT").last("Dunklau").username("bdunklau").password("1").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"))
-    val tamie : User = User.create.first("Tamie").last("Dunklau").username("tamie").password("1").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("10/10/1976"))
-    val kiera : User = User.create.first("Kiera").last("Daniell").username("kiera").password("1").email("bdunklau@gmail.com").bio("I am great").dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse("9/16/2001"))
+    val brent = UserTest.createBrent
+    val tamie = UserTest.createTamie
+    val kiera = UserTest.createKiera
     
     assert(brent.save===true)
     assert(tamie.save===true)
@@ -72,17 +77,35 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit with LbbLog
     
     val me_myBday = CircleParticipant.create.circle(myBday).person(brent).inviter(brent).participationLevel("Receiver")
     val tamie_myBday = CircleParticipant.create.circle(myBday).person(tamie).inviter(brent).participationLevel("Receiver")
+    
+    
     val kiera_myBday = CircleParticipant.create.circle(myBday).person(kiera).inviter(brent).participationLevel("Receiver")
     
     assert(me_myBday.save===true)
+    debug("brent's friend list should be 0");
+    assert(brent.friendList.size === 0)
+    
     assert(tamie_myBday.save===true)
+    debug("brent's friend list should be 1");
+    assert(brent.friendList.size === 1)
+    debug("tamie's friend list should be 1");
+    assert(tamie.friendList.size === 1)
+    
     assert(kiera_myBday.save===true)
+    assert(brent.friendList.size === 2)
+    assert(tamie.friendList.size === 2)
+    assert(kiera.friendList.size === 2)
     
     val me_Anniv = CircleParticipant.create.circle(anniv).person(brent).inviter(brent).participationLevel("Receiver")
     val tamie_Anniv = CircleParticipant.create.circle(anniv).person(tamie).inviter(brent).participationLevel("Receiver")
     
     assert(me_Anniv.save===true)
     assert(tamie_Anniv.save===true)
+    
+    // friend relationship has already been established in the prev circle, so no change to the number of friends here
+    assert(brent.friendList.size === 2)
+    assert(tamie.friendList.size === 2)
+    assert(kiera.friendList.size === 2)
     
     val me_xmas = CircleParticipant.create.circle(xmas).person(brent).inviter(brent).participationLevel("Receiver")
     val tamie_xmas = CircleParticipant.create.circle(xmas).person(tamie).inviter(brent).participationLevel("Receiver")
@@ -91,6 +114,11 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit with LbbLog
     assert(me_xmas.save===true)
     assert(tamie_xmas.save===true)
     assert(kiera_xmas.save===true)
+    
+    // friend relationship has already been established in the first circle, so no change to the number of friends here
+    assert(brent.friendList.size === 2)
+    assert(tamie.friendList.size === 2)
+    assert(kiera.friendList.size === 2)
     
     // brent.circles is a List.  It's all the instances of brent as a participant
     // This is how you find out all the circles brent is a member of
@@ -103,6 +131,9 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit with LbbLog
   
   test("populate xmas2012") {
     initDb
+        
+    Friend.findAll.foreach(_.delete_!)
+    assert(Friend.findAll.size===0)
         
     CircleParticipant.findAll.foreach(_.delete_!)
     assert(CircleParticipant.findAll.size===0)
@@ -141,6 +172,9 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit with LbbLog
   
   test("populate anniv2012") {
     initDb
+        
+    Friend.findAll.foreach(_.delete_!)
+    assert(Friend.findAll.size===0)
         
     CircleParticipant.findAll.foreach(_.delete_!)
     assert(CircleParticipant.findAll.size===0)
@@ -187,6 +221,9 @@ class CircleParticipantTest extends FunSuite with AssertionsForJUnit with LbbLog
   
   test("populate bday2012") {
     initDb
+        
+    Friend.findAll.foreach(_.delete_!)
+    assert(Friend.findAll.size===0)
         
     CircleParticipant.findAll.foreach(_.delete_!)
     assert(CircleParticipant.findAll.size===0)

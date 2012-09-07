@@ -31,6 +31,7 @@ import net.liftweb.mapper.By
 import net.liftweb.util.BasicTypesHelpers._
 import org.joda.time.DateTime
 import com.lbb.entity.AuditLog
+import com.lbb.entity.Friend
 
 object RestService extends RestHelper with LbbLogger {
 
@@ -236,6 +237,7 @@ object RestService extends RestHelper with LbbLogger {
           case ("password", s:String) => user.password(s)
           case ("bio", s:String) => user.bio(s)
           case ("profilepic", s:String) => user.profilepic(s)
+          case ("facebookId", s:String) => user.facebookId(s)
           case ("dateOfBirth", s:String) => user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s)) // not sure about this one yet
           case _ => debug("RestService.insertUser:  unhandled: "+kv._1+" = "+kv._2)
         }
@@ -382,6 +384,20 @@ object RestService extends RestHelper with LbbLogger {
                 case ("password", s:String) => user.password(s)
                 case ("bio", s:String) => user.bio(s)
                 case ("profilepic", s:String) => user.profilepic(s)
+                case ("friends", list:List[Map[String, Any]]) => {
+                  for(map <- list; 
+                      name <- map.get("name"); 
+                      facebookId <- map.get("id"); 
+                      profilepicUrl <- map.get("profilepicUrl")) {
+                    val friend = User.create
+                    try {
+                      friend.name(name.toString()).profilepic(profilepicUrl.toString()).facebookId(facebookId.toString()).username(facebookId.toString())
+                      friend.save
+                      Friend.create.userId(id).friendId(friend.id).save
+                    }
+                    catch { case e => debug("Caught error trying to save this 'friend': "+name+"  Error: "+e.getMessage); }
+                  }
+                }
                 case ("dateOfBirth", s:String) => {
                   if(s!=null && !s.toString().trim().equals("") && !s.toString().trim().equals("0")) {
                     debug("updateUser:  s = '"+s+"'");  user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s.toString())) // not sure about this on yet

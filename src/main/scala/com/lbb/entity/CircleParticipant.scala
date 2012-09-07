@@ -9,6 +9,8 @@ import net.liftweb.mapper.MappedBoolean
 import com.lbb.gui.MappedDateExtended
 import java.util.Date
 import net.liftweb.mapper.MappedString
+import net.liftweb.mapper.IHaveValidatedThisSQL
+import com.lbb.util.LbbLogger
 
 /**
  * READY TO DEPLOY
@@ -48,7 +50,7 @@ ALTER TABLE `circle_participants`
  */
 
 
-class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK {
+class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK with LbbLogger {
   def getSingleton = CircleParticipant
     
   // TODO make sure circle/person is unique
@@ -112,6 +114,13 @@ class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK {
     u.obj.map(_.email.is) openOr ""
   }
   
+  def otherParticipants = {
+    val sql = "select cp.* from circle_participants cp " +
+    		"where cp.circle_id = "+circle.is+" and cp.person_id != "+person.is
+    
+    CircleParticipant.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
+  }
+  
   /**
    * override so we can update the reminders when a participant is added
    */
@@ -121,6 +130,10 @@ class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK {
       case true => {
         val box = Reminder.createReminders(circle, person)
         box.map(reminders => reminders.foreach(_.save))
+        
+        // Now we have to associate the new participant with all other participants in the friends table!
+        debug("calling: Friend.createFriends(this).foreach(_.save)");
+        Friend.createFriends(this) foreach {debug("saving friend..."); _.save}
       }
       case _ => {}
     }

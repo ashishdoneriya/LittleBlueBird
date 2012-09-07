@@ -39,6 +39,17 @@
 
 .align-top {vertical-align:top;}
 
+.bggray {
+  background-color: #ffffff;
+  background-image: -moz-linear-gradient(top, #cdcdcd, #9a9a9a);
+  background-image: -ms-linear-gradient(top, #cdcdcd, #9a9a9a);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#cdcdcd), to(#9a9a9a));
+  background-image: -webkit-linear-gradient(top, #cdcdcd, #9a9a9a);
+  background-image: -o-linear-gradient(top, #cdcdcd, #9a9a9a);
+  background-image: linear-gradient(top, #cdcdcd, #9a9a9a);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cdcdcd', endColorstr='#9a9a9a', GradientType=0);
+}
+
 .black { background-color: #000000; }
 
 .blue { background-color: blue; }
@@ -349,10 +360,6 @@
   margin-left:0px;
   padding-left:0px;
 }
-
-.whitetext {color:#ffffff;}
-
-.w40 { width: 40px; }
 
 .w110 {
   width:110px;

@@ -40,7 +40,7 @@ angular.module('datetime', [])
        
 angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap.modal']).
   factory('User', function($resource) {
-      var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login', creatorId:'@creatorId', creatorName:'@creatorName'}, 
+      var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login', creatorId:'@creatorId', creatorName:'@creatorName', facebookId:'@facebookId', friends:'@friends'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       find: {method:'GET', isArray:false}, 
@@ -128,6 +128,16 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
         controller: UserCtrl,
         scope: { btnText:'@' },
         templateUrl: 'templates/ddbtn-user.html',
+        // The linking function will add behavior to the template
+        link: function(scope, element, attrs) {
+           $('.dropdown-toggle').dropdown();
+        }
+      }
+  })
+  .directive('friendStuff', function(){
+      return {
+        replace: false,
+        scope: { },
         // The linking function will add behavior to the template
         link: function(scope, element, attrs) {
            $('.dropdown-toggle').dropdown();
@@ -731,9 +741,9 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Ema
         $scope.nocirclemessage = {title:'', message:''};
         return;
       }
-      $scope.nocirclemessage = {title:'All Events Passed', message:'You need to create more events'};
+      $scope.nocirclemessage = {title:'All Events Passed', message:'Create more events'};
     }
-    if($scope.nocirclemessage.message == "") $scope.nocirclemessage = {title:'No Events', message:"You need to create some events"};
+    if($scope.nocirclemessage.message == "") $scope.nocirclemessage = {title:'No Events', message:"Create some events"};
   }
   
   // adjust dims for large profile pics
@@ -845,23 +855,6 @@ function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User,
                                function() {$scope.loginfail=true;}  );
                                
   }
-    
-  // TODO copied in ConnectCtrl
-  $scope.getfriends = function(user) {
-      facebookFriends.getfriends(function(fail){alert(fail);}, 
-                                 function(friends) {
-                                   console.log("friends: success");
-                                   console.log(friends.data);
-                                   if(angular.isDefined(user.friends)) user.friends.splice(0, user.friends.length); else user.friends = [];
-                                   for(var i=0; i < friends.data.length; i++) {
-                                     console.log("friends.data[i].name="+friends.data[i].name);
-                                     friends.data[i].fullname = friends.data[i].name;
-                                     friends.data[i].profilepicUrl = "http://graph.facebook.com/"+friends.data[i].id+"/picture?type=square";
-                                     user.friends.push(friends.data[i]);
-                                   }
-                                 }
-                                )
-  }
   
   $scope.logout = function() {
     Logout.logout({});                                          
@@ -946,19 +939,22 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
     $scope.fbuser = {}
     $scope.error = null;
     
-    // TODO copied in LoginCtrl
     $scope.getfriends = function(user) {
       facebookFriends.getfriends(function(fail){alert(fail);}, 
                                  function(friends) {
-                                   console.log("friends: success");
-                                   console.log(friends.data);
-                                   if(angular.isDefined(user.friends)) user.friends.splice(0, user.friends.length); else user.friends = [];
+                                   //if(angular.isDefined(user.friends)) user.friends.splice(0, user.friends.length); else user.friends = [];
+                                   var savethesefriends = [];
                                    for(var i=0; i < friends.data.length; i++) {
-                                     console.log("friends.data[i].name="+friends.data[i].name);
+                                     //console.log("friends.data[i].name="+friends.data[i].name);
                                      friends.data[i].fullname = friends.data[i].name;
-                                     friends.data[i].profilepicUrl = "http://graph.facebook.com/"+friends.data[i].id+"/picture?type=square";
-                                     user.friends.push(friends.data[i]);
+                                     friends.data[i].profilepicUrl = "http://graph.facebook.com/"+friends.data[i].id+"/picture?type=large";
+                                     savethesefriends.push(friends.data[i]);
                                    }
+                                   
+                                   console.log("saving friends 1");
+                                   // will write each friend to the person table and write a record to the friends table for each friend to associate the user with all his friends
+                                   User.save({userId:user.id, friends:savethesefriends});
+                                   
                                  }
                                 )
     }
@@ -983,7 +979,7 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
                                                      else {
                                                        // need to create account for this person in LBB
                                                        
-                                                       $scope.user = User.save({login:true, fullname:user.first_name+' '+user.last_name, first:user.first_name, last:user.last_name, username:user.email, email:user.email, password:user.email, bio:'', profilepic:'http://graph.facebook.com/'+user.id+'/picture?type=large'}, 
+                                                       $scope.user = User.save({login:true, fullname:user.first_name+' '+user.last_name, first:user.first_name, last:user.last_name, username:user.email, email:user.email, password:user.email, bio:'', profilepic:'http://graph.facebook.com/'+user.id+'/picture?type=large', facebookId:user.id}, 
                                                                                 function() { 
                                                                                    $scope.getfriends($scope.user);
                                                                                    User.showUser = $scope.user;

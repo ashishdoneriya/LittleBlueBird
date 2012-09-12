@@ -44,6 +44,8 @@ import net.liftweb.json.JsonAST.JBool
 import com.lbb.util.LbbLogger
 import net.liftweb.mapper.MappedString
 import net.liftweb.json.JsonAST.JArray
+import net.liftweb.mapper.In
+import net.liftweb.mapper.ByList
 
 
 /**
@@ -174,6 +176,10 @@ class User extends LongKeyedMapper[User] with LbbLogger {
   
   object facebookId extends MappedString(this, 140) {
     override def dbColumnName = "facebook_id"
+  }
+  
+  object fbreqid extends MappedString(this, 140) {
+    override def dbColumnName = "fb_request_id"
   }
   
   // https://github.com/lift/framework/blob/master/persistence/mapper/src/main/scala/net/liftweb/mapper/MappedDate.scala
@@ -509,6 +515,8 @@ class User extends LongKeyedMapper[User] with LbbLogger {
                  JField("bio", JString(this.bio)),
                  JField("age", JInt(this.age.is)),
                  JField("dateOfBirth", if(this.dateOfBirth.is == null) { JsonAST.JNull } else { JInt(this.dateOfBirth.is.getTime()) } ),
+                 JField("facebookId", JString(this.facebookId)),
+                 JField("fbreqid", JString(this.fbreqid)),
                  JField("giftsHaveBeenPurchasedForMe", boolornull)
                  ))
   }
@@ -538,6 +546,45 @@ class User extends LongKeyedMapper[User] with LbbLogger {
          ("profilepicheight", profilepicheight), 
          ("profilepicwidth", profilepicwidth))        
   }
+  
+  def addfriends(list:List[Map[String, Any]]) = {
+          
+    // This is all your friends from FB
+    // won't remove anyone you have unfriended
+    val allfriendids = for(map <- list; facebookId <- map.get("id")) yield {
+      facebookId.toString
+    }
+    
+    // you have to figure out which of them are already in the person table...
+    val existingLbbUsers = User.findByFacebookId(allfriendids)
+    val eee = existingLbbUsers.map(_.facebookId.is)
+    
+    // these are the fb id's of people that are not yet in the person table
+    val notyetLbbUsers = allfriendids.filter(f => !eee.contains(f))
+    
+    // so save these to the person table...
+    val newusers = for(map <- list; 
+                       name <- map.get("name"); 
+                       facebookId <- map.get("id"); 
+                       profilepicUrl <- map.get("profilepicUrl");
+                       if(notyetLbbUsers.contains(facebookId))) yield {
+      
+      val newperson = User.create
+      newperson.name(name.toString()).profilepic(profilepicUrl.toString()).facebookId(facebookId.toString()).username(facebookId.toString()).email(null)
+      newperson.save
+      debug("saved to person table: "+name+"  FB: "+facebookId)
+      newperson
+    }
+    
+    // now figure out which are already associated with you in the friends table...
+    val intheFriendsTable = this.friendList.map(_.id.is)
+    val inthePersonTable = (existingLbbUsers :: newusers :: Nil).flatten
+    val savetofriendstable = inthePersonTable.filter(f => !intheFriendsTable.contains(f.id.is))
+    for(newfriend <- savetofriendstable) {
+      Friend.associate(newfriend.id.is, this.id.is)
+    }
+                    
+  }
 
 }
 
@@ -553,5 +600,9 @@ object User extends User with LongKeyedMetaMapper[User] {
   username, password, dateOfBirth, profilepic, bio)
   
   // mapper won't let you query by password
-  val queriableFields = List(User.first, User.last, User.username, User.email)
+  val queriableFields = List(User.first, User.last, User.username, User.email, User.facebookId, User.fbreqid)
+  
+  def findByFacebookId(l:List[String]) = {
+    User.findAll(ByList(User.facebookId, l)) 
+  }
 }

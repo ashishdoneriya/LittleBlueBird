@@ -7,8 +7,8 @@
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret pad0"></span></a>
 	      <ul class="dropdown-menu">
-		    <span ng-show="gift.canedit"><li><a href="#/editgift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="editgift(gift)"><i class="icon-pencil"></i> Edit</a></li></span> 
-            <span ng-show="gift.candelete"><li><a href="#/deletegift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="deletegift($index, gift)"><i class="icon-remove"></i> Delete</a></li></span>
+		    <span ng-show="gift.canedit"><li><a href="#/editgift/{{circle.id}}/{{showUserF().id}}/{{gift.id}}" ng-click="editgift(gift)"><i class="icon-pencil"></i> Edit</a></li></span> 
+            <span ng-show="gift.candelete"><li><a href="#/deletegift/{{circle.id}}/{{showUserF().id}}/{{gift.id}}" ng-click="deletegift($index, gift)"><i class="icon-remove"></i> Delete</a></li></span>
 		    <span ng-hide="gift.canedit"><li><a ng-click="alertcannotedit()"><i class="icon-pencil"></i> Edit</a></li></span> 
 		    <span ng-hide="gift.candelete"><li><a ng-click="alertcannotdelete()"><i class="icon-remove"></i> Delete</a></li></span>
 		  </ul>
@@ -20,7 +20,7 @@
     <span ng-hide="isExpired() || gifts.mylist">
       <div class="span1">
         <span ng-show="gift.canbuy">
-          <a href="#/buy/{{circle.id}}/{{showUser.id}}/{{gift.id}}" class="btn btn-success btn-mini" ng-click="startbuying(gift)">Reserve</a>
+          <a href="#/buy/{{circle.id}}/{{showUserF().id}}/{{gift.id}}" class="btn btn-success btn-mini" ng-click="startbuying(gift)">Reserve</a>
         </span>
         <span ng-show="gift.canreturn">
           <a class="btn btn-mini padleft15 padright15" ng-click="$location.url($location.path());returngift($index, gift)">Undo</a>
@@ -56,12 +56,12 @@
       
       <div ng-show="gift.issurprise" class="row">
         <div class="span4 margleft_35">
-                      <b>This is a SURPRISE! {{showUser.first}} does not know about this item.</b>
+                      <b>This is a SURPRISE! {{showUserF().first}} does not know about this item.</b>
         </div>
       </div>
             <div class="row">
         <div class="span4 margleft_35">
-                      Added <span ng-show="showUser.id != gift.addedBy">by {{gift.addedByName}}</span> 
+                      Added <span ng-show="showUserF().id != gift.addedBy">by {{gift.addedByName}}</span> 
                       on {{gift.dateCreated | date:'MMM dd, yyyy'}}
         </div>
       </div>

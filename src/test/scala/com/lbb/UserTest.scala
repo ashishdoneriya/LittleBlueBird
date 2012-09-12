@@ -1,25 +1,28 @@
 package com.lbb
 import java.text.SimpleDateFormat
+import java.util.Date
+
 import org.junit.runner.RunWith
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.FunSuite
+
+import com.lbb.entity.User
+import com.lbb.util.LbbLogger
+import com.lbb.util.MapperHelper
+
 import net.liftweb.common.Box
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
 import net.liftweb.db.DefaultConnectionIdentifier
 import net.liftweb.db.StandardDBVendor
+import net.liftweb.http.js.JsExp
 import net.liftweb.mapper.Cmp
 import net.liftweb.mapper.DB
 import net.liftweb.mapper.OprEnum
 import net.liftweb.mapper.Schemifier
 import net.liftweb.util.FieldError
 import net.liftweb.util.Props
-import java.util.Date
-import com.lbb.entity.User
-import net.liftweb.http.js.JsExp
-import com.lbb.util.MapperHelper
-import com.lbb.util.LbbLogger
 
 /**
  * From the project root: sbt
@@ -193,75 +196,81 @@ class UserTest extends FunSuite with AssertionsForJUnit with LbbLogger {
 
 object UserTest extends UserTest {
   
-  val brent = ("Brent", "Dunklaux", "bdunklaux", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"), "http://graph.facebook.com/bdunklaux/picture?type=large", "bdunklaux")
+  val brent = ("Brent", "Dunklaux", "bdunklaux", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"), Full("http://graph.facebook.com/bdunklaux/picture?type=large"), "bdunklaux")
   
   def createBrent = {
-    val user = createUser(brent._1, brent._2, brent._3, brent._4, brent._5, brent._6, brent._7, brent._8, brent._9)
+    val user = createUser("Brent", "Dunklau", "bdunklau", "1", "bdunklau@yahoo.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"), Empty, Empty)
+    user.save
+    user
+  }
+  
+  def createBrentX = {
+    val user = createUser("Brent", "Dunklaux", "bdunklaux", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("12/15/1970"), Full("http://graph.facebook.com/bdunklaux/picture?type=large"), Full("bdunklaux"))
     user.save
     user
   }
   
   def createTamie = {
-    val user = createUser("Tamie", "Dunklau", "tamie", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("10/10/1976"), "http://graph.facebook.com/tamie.dunklau/picture?type=large", new Date().getTime.toString)
+    val user = createUser("Tamie", "Dunklau", "tamie", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("10/10/1976"), Full("http://graph.facebook.com/tamie.dunklau/picture?type=large"), Full(new Date().getTime.toString))
     user.save
     user
   }
   
   def createKiera = {
-    val user = createUser("Kiera", "Daniell", "kiera", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/16/2001"), "http://sphotos.xx.fbcdn.net/hphotos-snc6/183574_1872491738760_1435144902_2104548_985622_n.jpg", new Date().getTime.toString)
+    val user = createUser("Kiera", "Daniell", "kiera", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/16/2001"), Full("http://sphotos.xx.fbcdn.net/hphotos-snc6/183574_1872491738760_1435144902_2104548_985622_n.jpg"), Empty)
     user.save
     user
   }
   
   def createTruman = {
-    val user = createUser("Truman", "Dunklau", "truman", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("5/11/2010"), "http://photos-e.ak.fbcdn.net/hphotos-ak-snc6/196448_1912810746710_747329_a.jpg", new Date().getTime.toString)
+    val user = createUser("Truman", "Dunklau", "truman", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("5/11/2010"), Full("http://photos-e.ak.fbcdn.net/hphotos-ak-snc6/196448_1912810746710_747329_a.jpg"), Empty)
     user.save
     user
   }
   
   def createJett = {
-    val user = createUser("Jett", "Dunklau", "jett", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://sphotos.xx.fbcdn.net/hphotos-ash4/398071_2886695213213_1435144902_3059101_376931146_n.jpg", new Date().getTime.toString)
+    val user = createUser("Jett", "Dunklau", "jett", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), Full("http://sphotos.xx.fbcdn.net/hphotos-ash4/398071_2886695213213_1435144902_3059101_376931146_n.jpg"), Empty)
     user.save
     user
   }
   
   def createBrenda1 = {
-    val user = createUser("Brenda", "Dunklau", "brenda1", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/1140124546/picture?type=large", new Date().getTime.toString)
+    val user = createUser("Brenda", "Dunklau", "brenda1", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), Full("http://graph.facebook.com/1140124546/picture?type=large"), Full(new Date().getTime.toString))
     user.save
     user
   }
   
   def createBrenda2 = {
-    val user = createUser("Brenda", "Dunklau", "brenda2", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/brenda/picture?type=large", new Date().getTime.toString)
+    val user = createUser("Brenda", "Dunklau", "brenda2", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), Full("http://graph.facebook.com/brenda/picture?type=large"), Full(new Date().getTime.toString))
     user.save
     user
   }
   
   def createBill = {
-    val user = createUser("Bill", "Dunklau", "bill", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/1336420404/picture?type=large", new Date().getTime.toString)
+    val user = createUser("Bill", "Dunklau", "bill", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), Full("http://graph.facebook.com/1336420404/picture?type=large"), Full(new Date().getTime.toString))
     user.save
     user
   }
   
   def createBrandon = {
-    val user = createUser("Brandon", "Dunklau", "brandon", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/brandon.dunklau1/picture?type=large", new Date().getTime.toString)
+    val user = createUser("Brandon", "Dunklau", "brandon", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), Full("http://graph.facebook.com/brandon.dunklau1/picture?type=large"), Full(new Date().getTime.toString))
     user.save
     user
   }
   
   def createBryan = {
-    val user = createUser("Bryan", "Dunklau", "bryan", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/bdunklau/picture?type=large", new Date().getTime.toString)
+    val user = createUser("Bryan", "Dunklau", "bryan", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), Full("http://graph.facebook.com/bdunklau/picture?type=large"), Full(new Date().getTime.toString))
     user.save
     user
   }
   
   def createAllison = {
-    val user = createUser("Allison", "Dunklau", "allison", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), "http://graph.facebook.com/allison.dunklau/picture?type=large", new Date().getTime.toString)
+    val user = createUser("Allison", "Dunklau", "allison", "1", "bdunklau@gmail.com", "i am great", new SimpleDateFormat("MM/dd/yyyy").parse("9/19/2011"), Full("http://graph.facebook.com/allison.dunklau/picture?type=large"), Full(new Date().getTime.toString))
     user.save
     user
   }
   
-  def createUser(f:String, l:String, u:String, p:String, e:String, b:String, d:Date, pic:String, facebookId:String) = {
+  def createUser(f:String, l:String, u:String, p:String, e:String, b:String, d:Date, pic:Box[String], facebookId:Box[String]) = {
     val user = User.create.first(f).last(l).username(u).password(p).email(e).bio(b).dateOfBirth(d).profilepic(pic).facebookId(facebookId)
     user.save
     user

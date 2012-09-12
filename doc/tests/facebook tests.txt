@@ -1,0 +1,72 @@
+user: may or may not have a record in the person table
+      person record may or may not have an email address
+      person record may or may not have fb id
+      person record may have an email address that is shared by other person records
+      
+fb:   user may or may not already be logged in to fb
+      user may not have a fb account
+
+
+Test =====================================================================
+
+User is already logged in to fb
+User has an account in LBB with matching email
+User's LBB account does not have fb id
+User's LBB account does not have profile pic
+
+THIS HAS BEEN TESTED A LOT.  Realized that the $rootScope.$emit() calls were in the wrong place.  They needed
+to be INSIDE the callback function of the User.save call that saves the fb id and profile pic.
+
+Test =====================================================================
+
+User is already logged in to fb
+User does not have an LBB account
+
+9/8/12: This worked 
+
+
+
+Test =====================================================================
+
+The user is not yet in the person table
+The user IS logged in to fb
+
+
+Test =====================================================================
+
+The user IS in the person table, but no fb id
+The user IS logged in to fb
+
+
+
+Test =====================================================================
+
+The user IS in the person table, but no fb id
+The user is not logged in to fb
+
+
+
+Test =====================================================================
+
+
+
+Test =====================================================================
+
+
+
+
+Test =====================================================================
+
+
+
+Test =====================================================================
+
+
+
+Test =====================================================================
+
+
+
+
+Test =====================================================================
+

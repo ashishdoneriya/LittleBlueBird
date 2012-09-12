@@ -2,6 +2,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
   config(function($routeProvider){
     $routeProvider.
       when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html', three:'partials/LittleBlueBird.html', four:'partials/navbar.html'}}).
+      when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', one: 'partials/login.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}}).
       when('/circles', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
@@ -40,7 +41,7 @@ angular.module('datetime', [])
        
 angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap.modal']).
   factory('User', function($resource) {
-      var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login', creatorId:'@creatorId', creatorName:'@creatorName', facebookId:'@facebookId', friends:'@friends'}, 
+      var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login', creatorId:'@creatorId', creatorName:'@creatorName', facebookId:'@facebookId', fbreqid:'@fbreqid', friends:'@friends'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       find: {method:'GET', isArray:false}, 
@@ -137,7 +138,6 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
   .directive('friendStuff', function(){
       return {
         replace: false,
-        scope: { },
         // The linking function will add behavior to the template
         link: function(scope, element, attrs) {
            $('.dropdown-toggle').dropdown();
@@ -365,7 +365,7 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 
                             }, 
-                            function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again");});
+                            function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again  (error code 101)");});
   }
   
   
@@ -381,7 +381,7 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 
                             }, 
-                            function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again");});
+                            function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 201)");});
   }
 }
 
@@ -728,10 +728,46 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
 function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Email, Gift, Circle, CircleParticipant) {
   
   $scope.showUser = User.showUser;
-  $scope.showUserId = $route.current.params.showUserId;
+  $scope.showUserF = function() { return User.showUser; }
+  $scope.multipleusers = function() { console.log("multipleusers() called"); return User.multipleUsers; }
+  $scope.sharedemail = function() { return User.email; }
+  
+  $scope.showaccepted = function() {
+    console.log("$scope.user.friends.length="+$scope.user.friends.length);
+    for(var i=0; i < $scope.user.friends.length; i++) {
+      if($scope.user.friends[i].email != '')
+        $scope.user.friends[i].show = true;
+      else
+        $scope.user.friends[i].show = false;
+    }
+  }
+  
+  $scope.showinvited = function() {
+    for(var i=0; i < $scope.user.friends.length; i++) {
+      if($scope.user.friends[i].fbreqid != '' && $scope.user.friends[i].email == '')
+        $scope.user.friends[i].show = true;
+      else
+        $scope.user.friends[i].show = false;
+    }
+  }
+  
+  $scope.showall = function() {
+    for(var i=0; i < $scope.user.friends.length; i++) {
+      $scope.user.friends[i].show = true;
+    }
+  }
   
   $scope.resendWelcomeEmail = function() {
     Email.send({type:'welcome', from:'info@littlebluebird.com', user:$scope.user}, function() {}, function() {});
+  }
+  
+  $scope.mergeaccount = function(user) {
+    user.facebookId = User.facebookId;
+    User.currentUser = user;
+    User.save({userId:user.id, facebookId:user.facebookId});
+    $rootScope.$emit("userchange");                    
+    $rootScope.$emit("mywishlist");                    
+    $location.url('mywishlist');
   }
   
   $scope.nocirclemessage = {title:'', message:''};
@@ -767,6 +803,8 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Ema
   
   // "my wish list" call
   $scope.mywishlist = function() {
+    console.log("check scope.user.id...");
+    console.log($scope.user.id);
     gifts = Gift.query({viewerId:$scope.user.id}, 
                             function() { 
                               Circle.gifts = gifts; 
@@ -778,7 +816,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Ema
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 
                             }, 
-                            function() {alert("Hmmm... Had a problem getting "+User.currentUser.first+"'s list\n  Try again");});
+                            function() {alert("Hmmm... Had a problem getting "+User.currentUser.first+"'s list\n  Try again  (error code 301)");});
   }
   
   $scope.myaccount = function() {
@@ -831,7 +869,62 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Ema
   }
 }
 
-function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User, Circle, Logout, Email, CircleParticipant, facebookFriends) { 
+// This is LittleBlueBird login - don't confuse with FB login.  FB login goes through ConnectCtrl
+function LoginCtrl($document, $window, $rootScope, $cookieStore, $scope, $location, User, Circle, Logout, Email, CircleParticipant, facebookConnect) { 
+  
+  $scope.comingfromfacebook = function() {
+    if(angular.isDefined($scope.facebookreqids))
+      return;
+    $scope.facebookreqids = [];
+    console.log($scope.facebookreqids);
+    var parms = $window.location.search.split("&")
+    if(parms.length > 0) {
+      for(var i=0; i < parms.length; i++) {
+        if(parms[i].split("=").length > 1 && (parms[i].split("=")[0] == 'request_ids' || parms[i].split("=")[0] == '?request_ids')) {
+          fbreqids_csv = parms[i].split("=")[1].split("%2C")
+          for(var j=0; j < fbreqids_csv.length; j++) {
+            $scope.facebookreqids.push(fbreqids_csv[j]);
+          }  
+        }
+      }
+    }
+  
+    for(var k=0; k < $scope.facebookreqids.length; k++) {
+      console.log("$scope.facebookreqids["+k+"] = "+$scope.facebookreqids[k]);
+    }
+    console.log("here's where we'd call user.query()");
+    if($scope.facebookreqids.length == 0)
+      return;
+    var someusers = User.query({fbreqid:$scope.facebookreqids}, 
+                               function() {
+                                 // TODO might be good to have an "oops" page just in case the request_ids doesn't match anyone - if someone is monkeying with the url
+                                 $scope.user = someusers[0]; 
+                                 
+                                 // We've identified the new user by facebook request id.  Now we're going to go through the FB login process
+                                 // because we know the person is logged in to FB (they just came from there).
+						         facebookConnect.askFacebookForAuthentication(
+						             function(reason) { // fail
+						               $scope.error = reason;
+						             }, 
+						             function(userfromfb) { // success
+						             
+                                       // I only need these 3 parms...
+                                       saveduser = User.save({login:true, userId:$scope.user.id, email:userfromfb.email}, 
+                                                             function() { 
+                                                               User.showUser = saveduser;
+                                                               User.currentUser = saveduser;
+                                                               $rootScope.$emit("userchange"); 
+                                                               $rootScope.$emit("getfriends");                                           
+                                                               $rootScope.$emit("mywishlist"); 
+                                                               $location.url('welcome');
+                                                             });
+
+						             });
+        
+                               }, 
+                               function() {console.log("didn't find anybody")});
+  }
+  
  
   $scope.login = function() {
     //alert("login:  "+$scope.username+" / "+$scope.password);
@@ -844,10 +937,10 @@ function LoginCtrl($document, $rootScope, $cookieStore, $scope, $location, User,
                                function() {$scope.loginfail=false; 
                                            if($scope.users[0].dateOfBirth == 0) { $scope.users[0].dateOfBirth = ''; }
                                            
-                                           // uncomment for facebook integration
-                                           //$scope.getfriends($scope.users[0]);
                                            User.currentUser = $scope.users[0];
-                                           User.showUser = User.currentUser;                                         
+                                           User.showUser = User.currentUser;  
+                                           // uncomment for facebook integration
+                                           //$scope.getfriends(User.currentUser);                                       
                                            $rootScope.$emit("userchange");                                          
                                            $rootScope.$emit("mywishlist");
                                            $location.url('gettingstarted'); 
@@ -898,10 +991,6 @@ function RegisterCtrl($scope, User, $rootScope, $location) {
   });
 }
 
-// TODO is this used anywhere
-function PrimaryReceiverCtrl($scope) {
-}
-
 function EmailCtrl($scope, Email) {
   $scope.email = {to:'bdunklau@yahoo.com', from:'info@littlebluebird.com',
                   subject:'Check out LittleBlueBird.com',
@@ -932,12 +1021,37 @@ angular.module('FacebookModule', []).factory('facebookConnect', function() {
       FB.api('/me/friends', success);
     }
   }
+})
+.factory('facebookAppRequest', function() {
+  return new function() {
+    this.getfriends = function(fail, success) {
+      FB.api('/me/friends', success);
+    }
+  }
 });
 
+
+// see:  http://jsfiddle.net/Hxbqd/6/
 function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $location, $resource, UserSearch, User) {
 
     $scope.fbuser = {}
     $scope.error = null;
+    
+    
+    $scope.fbinvite = function(friend) {
+      FB.ui({method: 'apprequests', to: friend.facebookId, message: 'Check out LittleBlueBird - You\'ll love it!'}, 
+            function callback(response) {
+              // response.to:  an array of fb id's
+              // response.request:  the request id returned by fb
+              friend.fbreqid = response.request;
+              User.save({userId:friend.id, fbreqid:friend.fbreqid});
+            });
+    }
+
+    $rootScope.$on("getfriends", function(event) {
+      $scope.user = User.currentUser;
+      $scope.getfriends($scope.user);
+    });
     
     $scope.getfriends = function(user) {
       facebookFriends.getfriends(function(fail){alert(fail);}, 
@@ -953,7 +1067,8 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
                                    
                                    console.log("saving friends 1");
                                    // will write each friend to the person table and write a record to the friends table for each friend to associate the user with all his friends
-                                   User.save({userId:user.id, friends:savethesefriends});
+                                   var saveduser = User.save({userId:user.id, friends:savethesefriends}, 
+                                             function() {user = saveduser; console.log("user.friends.length="+user.friends.length)});
                                    
                                  }
                                 )
@@ -967,19 +1082,30 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
         function(user) { // success
             $scope.fbuser = user
             console.log(user);
+            console.log("$scope.fbuser.id = "+$scope.fbuser.id);
+            
+            // could get more than one person back - parent + children
             var users = UserSearch.query({search:user.email}, 
                                           function(){//console.log(users[0]); 
-                                                     if(users.length > 0) {
-                                                       $scope.getfriends(users[0]);
-                                                       User.currentUser = users[0];
-                                                       $rootScope.$emit("userchange");                                          
+                                                     // Now look for the user that has the right facebook id.  There might not be one though - if the user hasn't yet "merged" his LBB account with his FB account
+                                                     var mergedaccount = false;
+                                                     for(var i=0; i < users.length; i++) {
+                                                       if(users[i].facebookId == $scope.fbuser.id) {
+                                                         mergedaccount = true;
+                                                         User.currentUser = users[i]; // this is what we want to happen... we found a record in our person table that has this email AND facebookId
+                                                       }
+                                                     }
+                                                     if(mergedaccount) {
+                                                       $scope.getfriends(User.currentUser);
+                                                       $rootScope.$emit("userchange");
                                                        $rootScope.$emit("mywishlist");
                                                        $location.url('mywishlist');
                                                      }
-                                                     else {
-                                                       // need to create account for this person in LBB
+                                                     else { // ...but in the beginning, this is what will happen - no record in our person table contains this facebookId
+                                                       if(users.length == 0) {
+                                                         // need to create account for this person in LBB
                                                        
-                                                       $scope.user = User.save({login:true, fullname:user.first_name+' '+user.last_name, first:user.first_name, last:user.last_name, username:user.email, email:user.email, password:user.email, bio:'', profilepic:'http://graph.facebook.com/'+user.id+'/picture?type=large', facebookId:user.id}, 
+                                                         $scope.user = User.save({login:true, fullname:user.first_name+' '+user.last_name, first:user.first_name, last:user.last_name, username:user.email, email:user.email, password:user.email, bio:'', profilepic:'http://graph.facebook.com/'+user.id+'/picture?type=large', facebookId:user.id}, 
                                                                                 function() { 
                                                                                    $scope.getfriends($scope.user);
                                                                                    User.showUser = $scope.user;
@@ -989,12 +1115,44 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
                                                                                    $location.url('welcome');
                                                                                 }
                                                                                );
-                                                     } // end else
+                                                       }
+                                                       else if(users.length == 1) {  // easy... we found exactly one person with this email - set the facebookid
+                                                         users[0].facebookId = $scope.fbuser.id;
+                                                         User.currentUser = users[0];
+                                                         User.showUser = users[0];
+                                                         $scope.getfriends(User.currentUser);
+                                                         console.log("users[0].profilepicUrl...");
+                                                         console.log(users[0].profilepicUrl);
+                                                         var placeholderPic = "http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg";
+                                                         
+                                                         console.log("users[0].profilepicUrl != placeholderPic...");
+                                                         console.log(users[0].profilepicUrl != placeholderPic);
+                                                         
+                                                         var pic = users[0].profilepicUrl != placeholderPic ? users[0].profilepicUrl : "http://graph.facebook.com/"+$scope.fbuser.id+"/picture?type=large";
+                                                         var uagain = User.save({userId:User.currentUser.id, facebookId:$scope.fbuser.id, profilepic:pic}, 
+                                                                                function() {User.currentUser = uagain; 
+                                                                                            User.showUser = uagain;
+									                                                        $rootScope.$emit("userchange");                                          
+									                                                        $rootScope.$emit("mywishlist");
+									                                                        $location.url('mywishlist');});
+                                                       }
+                                                       else if(users.length > 1) {
+                                                         // And if we happen to find several people all with the same email address and no FB id,
+                                                         // we have to ask the user "who are you" and display all the people that have this email address
+                                                         // "Why are you asking me?"... "What is a 'merged' account?"...  "Why do I need to 'merge' my accounts?"...
+                                                         // These are all things we have to exlain to the user on the mergeaccount page
+                                                         User.multipleUsers = users;
+                                                         User.email = $scope.fbuser.email;
+                                                         User.facebookId = $scope.fbuser.id;
+                                                         $location.url('whoareyou'); 
+                                                       }
+                                                     }
                                                     },
                                           function() {alert("problem with UserSearch.query");});
-            $scope.$digest() // Manual scope evaluation
+            $scope.$apply() // Manual scope evaluation
         });
     }
+    
 }
 
 ConnectCtrl.$inject = ['facebookConnect', 'facebookFriends', '$scope', '$rootScope', '$location', '$resource', 'UserSearch', 'User'];
@@ -1010,4 +1168,6 @@ function GettingStartedCtrl($scope) {
   $scope.addyourself = false;
   $scope.addpeople = false;
   $scope.additems = false;
+  $scope.whydoweneedtoknow = false; // see whoareyou.html
+  $scope.whatifidontwantto = false; // see whoareyou.html
 }

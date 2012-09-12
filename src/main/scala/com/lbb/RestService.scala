@@ -32,6 +32,11 @@ import net.liftweb.util.BasicTypesHelpers._
 import org.joda.time.DateTime
 import com.lbb.entity.AuditLog
 import com.lbb.entity.Friend
+import net.liftweb.mapper.Cmp
+import net.liftweb.mapper.OprEnum
+import net.liftweb.mapper.ByList
+import net.liftweb.mapper.QueryParam
+import net.liftweb.mapper.Ignore
 
 object RestService extends RestHelper with LbbLogger {
 
@@ -238,6 +243,7 @@ object RestService extends RestHelper with LbbLogger {
           case ("bio", s:String) => user.bio(s)
           case ("profilepic", s:String) => user.profilepic(s)
           case ("facebookId", s:String) => user.facebookId(s)
+          case ("fbreqid", s:String) => user.fbreqid(s)
           case ("dateOfBirth", s:String) => user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s)) // not sure about this one yet
           case _ => debug("RestService.insertUser:  unhandled: "+kv._1+" = "+kv._2)
         }
@@ -252,35 +258,6 @@ object RestService extends RestHelper with LbbLogger {
     }
     
     JsonResponse(user.asJs, Nil, cookies.toList, 200)
-    
-//    S.request match {
-//      case Full(req) => {
-//        req.json match {
-//          case Full(jvalue:JObject) => {
-//            debug("RestService.insertUser: jvalue = "+jvalue)
-//            val user = User.create
-//            jvalue.values foreach {kv => kv match {
-//                case ("fullname", s:String) => user.name(s)
-//                case ("first", s:String) => user.first(s)
-//                case ("last", s:String) => user.last(s)
-//                case ("email", s:String) => user.email(s)
-//                case ("username", s:String) => user.username(s)
-//                case ("password", s:String) => user.password(s)
-//                case ("bio", s:String) => user.bio(s)
-//                case ("profilepic", s:String) => user.profilepic(s)
-//                case ("dateOfBirth", s:String) => user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s)) // not sure about this one yet
-//                case _ => debug("RestService.insertUser:  unhandled: "+kv._1+" = "+kv._2)
-//              }
-//            }
-//            user.save()
-//            val cookies = S.param("login").filter(p => p.equals("true")).map(s => RequestHelper.cookie("userId", user))
-//            JsonResponse(user.asJs, Nil, cookies.toList, 200)
-//          }
-//          case _ => debug("RestService.insertUser: case _ :  req.json = "+Empty); BadResponse()
-//        }
-//      }
-//      case _ => BadResponse()
-//    }
   }
   
   def insertCircle = {
@@ -376,6 +353,7 @@ object RestService extends RestHelper with LbbLogger {
         case Full(jvalue:JObject) => {
             jvalue.values foreach {kv => (kv._1, kv._2) match {
                 case ("userId", id:BigInt) => { }
+                case ("login", b:Boolean) => {  }
                 case ("fullname", s:String) => user.name(s)
                 case ("first", s:String) => user.first(s)
                 case ("last", s:String) => user.last(s)
@@ -384,30 +362,31 @@ object RestService extends RestHelper with LbbLogger {
                 case ("password", s:String) => user.password(s)
                 case ("bio", s:String) => user.bio(s)
                 case ("profilepic", s:String) => user.profilepic(s)
-                case ("friends", list:List[Map[String, Any]]) => {
-                  for(map <- list; 
-                      name <- map.get("name"); 
-                      facebookId <- map.get("id"); 
-                      profilepicUrl <- map.get("profilepicUrl")) {
-                    val friend = User.create
-                    try {
-                      friend.name(name.toString()).profilepic(profilepicUrl.toString()).facebookId(facebookId.toString()).username(facebookId.toString())
-                      friend.save
-                      Friend.create.userId(id).friendId(friend.id).save
-                    }
-                    catch { case e => debug("Caught error trying to save this 'friend': "+name+"  Error: "+e.getMessage); }
-                  }
-                }
+                case ("facebookId", a:Any) => user.facebookId(a.toString())
+                case ("fbreqid", a:Any) => user.fbreqid(a.toString())
+                case ("friends", list:List[Map[String, Any]]) => user.addfriends(list)
                 case ("dateOfBirth", s:String) => {
                   if(s!=null && !s.toString().trim().equals("") && !s.toString().trim().equals("0")) {
                     debug("updateUser:  s = '"+s+"'");  user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s.toString())) // not sure about this on yet
                   }
                 }
+                case _ => warn("UNHANDLED key/value pair:  "+kv._1+" = "+kv._2)
               } // (kv._1, kv._2) match {
             } // jvalue.values foreach {
             
+            val login = S.param("login").getOrElse("false").equals("true")
+            
             user.save()
-            JsonResponse(user.asJs)
+            
+            S.param("login") match {
+              case Full("true") => {
+                AuditLog.recordLogin(user, S.request)
+                val r = JsonResponse(user.asJs, Nil, List(RequestHelper.cookie("userId", user)), 200)
+                debug("updateUser: LOGGING IN ======================= JsonResponse=" + r.toString())
+                r
+              }
+              case _ => JsonResponse(user.asJs)
+            }
             
         } // case Full(jvalue:JObject)
         
@@ -428,43 +407,94 @@ object RestService extends RestHelper with LbbLogger {
     }
   }
   
+  /**
+   * Don't allow returning all users
+   */
   def findUsers = {
     debug("findUsers ------------- S.uri = "+S.uri)
     
-    S.param("password") match {
-      // here we're authenticating
-      case Full(p) if(p != "undefined") => {
-        val queryParams = MapperHelper.convert(S.request.open_!._params, User.queriableFields)        
-        val users = User.findAll(queryParams: _*)
+    val lll = S.request.map(_.paramNames) getOrElse Nil
+    val onlydefinedparms = lll.filter(name => {val value = S.param(name) getOrElse "undefined"; value != "undefined" })
+    
+    val login = onlydefinedparms.contains("username") && onlydefinedparms.contains("password")
+    
+    val qparms = onlydefinedparms.map(name => (name, S.param(name)) match {
+      case ("first", Full(value)) => Cmp(User.first, OprEnum.Like, Full(value), Empty, Full("LOWER"))
+      case ("last", Full(value)) => Cmp(User.last, OprEnum.Like, Full(value), Empty, Full("LOWER"))
+      case ("username", Full(value)) => Cmp(User.username, OprEnum.Like, Full(value), Empty, Full("LOWER"))
+      case ("password", Full(value)) => By(User.password, value)
+      case ("email", Full(value)) => Cmp(User.email, OprEnum.Like, Full(value), Empty, Full("LOWER"))
+      case ("facebookId", Full(value)) => Cmp(User.facebookId, OprEnum.Like, Full(value), Empty, Full("LOWER"))
+      case ("fbreqid", Full(value)) => ByList(User.fbreqid, value.split(","))
+      case _ => Ignore[User]()
+    })
+    
+    val qp = qparms.filter(q => !q.equals(Ignore[User]()))
+    
+    (qp, login) match {
+      case (Nil, _) => NoContentResponse() // if there's no query parameters, we're not going to return all users
+      case (_, true) => { // logging in...
+        val users = User.findAll(qp: _*)
         users match {
-          case l:List[User] if((l.size == 1) && (l.head.password.equals(p))) => {
-            // TODO got weird char-by-char json response on the client when I tried to deal with just one
-            // object, so create a List of one object and do the same thing you do in the regular query block
+          case l:List[User] if(l.size == 1) => {
             val jsons = users.map(_.asJs)
             val jsArr = JsArray(jsons)
             val r = JsonResponse(jsArr, Nil, List(RequestHelper.cookie("userId", users.head)), 200)
-            debug("findUsers: JsonResponse(jsArr)=" + r.toString())
+            debug("findUsers: LOGGING IN ======================= JsonResponse(jsArr)=" + r.toString())
             // record the login in the audit log
             AuditLog.recordLogin(users.head, S.request)
             r
-          }
-          case _ => {
-            debug("findUsers: BadResponse (pass:"+p+")"); 
-            BadResponse()
-          }
-        }
-      }
-      // regular query
-      case _ => {
-        val queryParams = MapperHelper.convert(S.request.open_!._params, User.queriableFields)
-        val users = User.findAll(queryParams: _*)
+          } // case l:List[User] if(l.size == 1) 
+          case _ => {debug("findUsers: BadResponse (pass:"+S.param("password")+")"); BadResponse()}
+        } // users match
+      } // case (_, true)
+      case (_, false) => { // typical findUsers function
+        val users = User.findAll(qp: _*)
         val jsons = users.map(_.asJs)
         val jsArr = JsArray(jsons)
         val r = JsonResponse(jsArr)
         debug("RestService.findUsers: JsonResponse(jsArr)=" + r.toString())
+        debug("RestService.findUsers: users.size=" + users.size)
         r
       }
+      case _ => debug("HUH ?!!!!!!!!! => qp="+qp+"   login="+login); BadResponse()
     }
+    
+    
+//    S.param("password") match {
+//      // here we're authenticating
+//      case Full(p) if(p != "undefined") => {
+//        val queryParams = MapperHelper.convert(S.request.open_!._params, User.queriableFields)        
+//        val users = User.findAll(queryParams: _*)
+//        users match {
+//          case l:List[User] if((l.size == 1) && (l.head.password.equals(p))) => {
+//            // TODO got weird char-by-char json response on the client when I tried to deal with just one
+//            // object, so create a List of one object and do the same thing you do in the regular query block
+//            val jsons = users.map(_.asJs)
+//            val jsArr = JsArray(jsons)
+//            val r = JsonResponse(jsArr, Nil, List(RequestHelper.cookie("userId", users.head)), 200)
+//            debug("findUsers: JsonResponse(jsArr)=" + r.toString())
+//            // record the login in the audit log
+//            AuditLog.recordLogin(users.head, S.request)
+//            r
+//          }
+//          case _ => {
+//            debug("findUsers: BadResponse (pass:"+p+")"); 
+//            BadResponse()
+//          }
+//        }
+//      }
+//      // regular query
+//      case _ => {
+//        val queryParams = MapperHelper.convert(S.request.open_!._params, User.queriableFields)
+//        val users = User.findAll(queryParams: _*)
+//        val jsons = users.map(_.asJs)
+//        val jsArr = JsArray(jsons)
+//        val r = JsonResponse(jsArr)
+//        debug("RestService.findUsers: JsonResponse(jsArr)=" + r.toString())
+//        r
+//      }
+//    }
     
   }
   

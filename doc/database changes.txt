@@ -1,0 +1,44 @@
+
+new column:  fb_request_id
+
+
+new table:  friends  Created on eatj.com on 9/7/12
+
+# Done on eatj.com on 9/7/12 - this was done when the table was created
+# Lift/Mapper doesn't create unique constraint on user_id/friend_id - have to do that yourself through mysql
+ALTER TABLE `bdunklau`.`friends` 
+ADD UNIQUE INDEX `user_friend` (`user_id` ASC, `friend_id` ASC) ;
+
+
+
+# Done on eatj.com on 9/7/12
+new column:  person.facebook_id <- needs to be unique but nullable
+
+
+
+# Done on eatj.com on 9/7/12
+# Make facebookid unique
+ALTER TABLE `bdunklau`.`person` 
+ADD UNIQUE INDEX `UNIQUE_FACEBOOKID` (`facebook_id` ASC) ;
+
+
+
+# Done on eatj.com on 9/7/12
+# Run this on eatj.com db...  It populates the new friends table using associations derived from the circle_participants table...
+insert into friends (user_id, friend_id)
+select p1.id, p2.id from person p1, person p2
+where p2.id in (
+    select p.id from person p where p.id in (
+    select cp.person_id from circle_participants cp
+    where cp.circle_id in (
+      select cp2.circle_id from circle_participants cp2
+      where cp2.person_id = p1.id
+    )
+  )
+  and p.id != p1.id
+)
+
+
+
+# Done on eatj.com on 9/7/12
+new column:  gift.receive_date

@@ -15,6 +15,7 @@
     <li class="dropdown">
       <a class="dropdown-toggle" data-toggle="dropdown">Friend Stuff <b class="caret"></b></a>
       <ul class="dropdown-menu">
+        <li><a ng-click="showaccepted()">Show Accepted</li><li><a ng-click="showinvited()">Show Invited</li><li><a ng-click="showall()">Show All</li>
         <li><a ng-href="#/mywishlist" ng-click="mywishlist()"><img ng-src="img/facebook-little.gif"/> Add Facebook Friends</a></li>
         <!-- This is demo code.  I was not planning on putting a Friends link here.  It's just here
         so I can verify friends in FireBug
@@ -41,19 +42,23 @@
     <div class="row">
       <div class="span3 margbottom5 align-top">
         <div ng-repeat="friend in user.friends">
-      
-      <span ng-show="$index % 2 == 0">  
+
+      <span ng-show="$index % 2 == 0 && (friend.show || friend.show==null)">  
       <div class="row">
-        <div class="span3 margbottom5 align-top">
+        <div class="span100 margbottom5 align-top">
           <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
             <div class="crop100"><img height={{adjustedheight(friend,100)}} width={{adjustedwidth(friend,100)}} ng-src="{{friend.profilepicUrl}}" /></div>
           </a> 
-  
+        </div>
+        <div class="span1 align-top">
           <a class="align-top bold" href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
             {{friend.fullname}}
           </a> 
-          <P>h = {{adjustedheight(friend,100)}}</P>
-          <P>w = {{adjustedwidth(friend,100)}}</P>
+          <span ng-show="friend.facebookId != null && friend.facebookId != ''" ng-controller="ConnectCtrl">
+            <span ng-show="friend.fbreqid == ''"><P><a class="uibutton" ng-click="fbinvite(friend)">Invite</a></P></span>
+            <span ng-show="friend.fbreqid != '' && friend.email == ''"><P>Invited</P></span>
+            <span ng-show="friend.email != ''"><P>Accepted</P></span>
+          </span>
         </div>
       </div>
       </span>
@@ -63,16 +68,22 @@
       <div class="span3 offset1 margbottom5 align-top">
         <div ng-repeat="friend in user.friends">
       
-      <span ng-show="$index % 2 == 1">  
+      <span ng-show="$index % 2 == 1 && (friend.show || friend.show==null)">    
       <div class="row">
-        <div class="span3 margbottom5 align-top">
+        <div class="span100 margbottom5 align-top">
           <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
             <div class="crop100"><img height={{adjustedheight(friend,100)}} width={{adjustedwidth(friend,100)}} ng-src="{{friend.profilepicUrl}}" /></div>
           </a> 
-  
+        </div>
+        <div class="span1 align-top">
           <a class="align-top bold" href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
             {{friend.fullname}}
           </a> 
+          <span ng-show="friend.facebookId != null && friend.facebookId != ''" ng-controller="ConnectCtrl">
+            <span ng-show="friend.fbreqid == ''"><P><a class="uibutton" ng-click="fbinvite(friend)">Invite</a></P></span>
+            <span ng-show="friend.fbreqid != '' && friend.email == ''"><P>Invited</P></span>
+            <span ng-show="friend.email != ''"><P>Accepted</P></span>
+          </span>
         </div>
       </div>
       </span>

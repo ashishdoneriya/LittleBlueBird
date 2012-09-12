@@ -1,0 +1,65 @@
+<div ng-controller="UserCtrl">
+
+	<div class="row"><div class="span9"><h1>Link Your Facebook and LittleBlueBird Accounts</h1></div></div>
+	
+	<div class="row">
+	  <div class="span9 font14">We actually have {{multipleusers().length}} people in our system that share
+	    the email address {{sharedemail()}}.
+	    <P class="font14">Before we can complete your login, we need to know who this email address actually belongs to.</P>
+	  </div>
+	</div>
+	
+	<div class="row">
+	  <div class="span9 font14"><a class="bold" ng-click="whydoweneedtoknow = !whydoweneedtoknow">Why do we need to know?</a>
+	  <span ng-show="whydoweneedtoknow">
+	    <P class="font14">Linking your Facebook account with your LittleBlueBird account
+	    allows you to login via Facebook and still use the wish list you created under your LittleBlueBird account.
+	    </P>
+	  </span>
+	  <P>&nbsp;</P>
+	  </div>
+	</div>
+	
+	<div class="row">
+	  <div class="span9 font14"><a class="bold" ng-click="whatifidontwantto = !whatifidontwantto">What if I don't want to link my accounts?</a>
+	  <span ng-show="whatifidontwantto">
+	    <P class="font14">If you don't want to link your Facebook account with your LittleBlueBird account, just login using your 
+	    LittleBlueBird username and password.  Don't login via Facebook.
+	    </P>
+	  </span>
+	  <P>&nbsp;</P>
+	  </div>
+	</div>
+	
+	<div class="row simple-top">
+	  <div class="span3">
+		<div ng-repeat="auser in multipleusers()">
+		  <span ng-show="$index % 2 == 0">
+		    <div class="row">
+		      <div class="span3 align-top bold margbottom20">
+		        <a ng-href="" ng-click="mergeaccount(auser)" title="Click here if this is you">
+		          <div class="crop100"><img height="{{adjustedheight(auser, 100)}}" width="{{adjustedwidth(auser, 100)}}" ng-src="{{auser.profilepicUrl}}"/></div>
+		        </a>
+		        <a ng-href="" ng-click="mergeaccount(auser)" title="Click here if this is you">{{auser.first}} {{auser.last}}</a>
+		      </div>
+		    </div>
+		  </span>
+		</div>
+	  </div>
+	  <div class="span3 offset1">
+		<div ng-repeat="auser in multipleusers()">
+		  <span ng-show="$index % 2 == 1">
+		    <div class="row">
+		      <div class="span3 align-top bold margbottom20">
+		        <a ng-href="" ng-click="mergeaccount(auser)" title="Click here if this is you">
+		          <div class="crop100"><img height="{{adjustedheight(auser, 100)}}" width="{{adjustedwidth(auser, 100)}}" ng-src="{{auser.profilepicUrl}}"/></div>
+		        </a>
+		        <a ng-href="" ng-click="mergeaccount(auser)" title="Click here if this is you">{{auser.first}} {{auser.last}}</a>
+		      </div>
+		    </div>
+		  </span>
+		</div>
+	  </div>
+	</div>
+
+</div>

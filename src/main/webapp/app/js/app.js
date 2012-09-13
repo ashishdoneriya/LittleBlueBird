@@ -79,7 +79,8 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
   }).
   factory('CircleParticipant', function($resource) {
       var CircleParticipant = $resource('/gf/circleparticipants/:circleId', {circleId:'@circleId', userId:'@userId', inviterId:'@inviterId', 
-                                         participationLevel:'@participationLevel', who:'@who', email:'@email', circle:'@circle', adder:'@adder'}, 
+                                         participationLevel:'@participationLevel', who:'@who', email:'@email', circle:'@circle', adder:'@adder',
+                                         notifyonaddtoevent:'@notifyonaddtoevent'}, 
                     {
                       query: {method:'GET', isArray:false}, 
                       delete: {method:'DELETE'},
@@ -665,7 +666,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     if(angular.isDefined(circle.id)) {
       //alert("circle.id="+circle.id+"\n $scope.participationlevel="+$scope.participationlevel);
       var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:$scope.participationlevel,
-                                         who:person.fullname, email:person.email, circle:circle.name, adder:$scope.user.fullname},
+                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$scope.user.fullname},
                                          function() {$scope.circle.reminders = Reminder.query({circleId:$scope.circle.id})});
     }
   }

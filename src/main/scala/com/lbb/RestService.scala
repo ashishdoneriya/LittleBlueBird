@@ -210,8 +210,9 @@ object RestService extends RestHelper with LbbLogger {
     
     for(who <- S.param("who"); 
         email <- S.param("email"); 
-        circle <- S.param("circle"); 
-        adder <- S.param("adder"); if(saved)) Emailer.notifyAddedToCircle(who, email, circle, adder)
+        circle <- S.param("circle");
+        notifyonaddtoevent <- S.param("notifyonaddtoevent");
+        adder <- S.param("adder"); if(notifyonaddtoevent.equals("true") && saved)) Emailer.notifyAddedToCircle(who, email, circle, adder)
     
     JsonResponse("")
   }
@@ -632,7 +633,7 @@ object RestService extends RestHelper with LbbLogger {
   def deleteGift(id:Long, deleter:String) = {
     val giftBox = Gift.findByKey(id)
     for(gift <- giftBox) yield {
-      for(sender <- gift.sender; if(!sender.email.isEmpty())) yield {
+      for(sender <- gift.sender; if(sender.notifyondeletegift.is.equals("true") && !sender.email.isEmpty())) yield {
         val salut = sender.first.is + " " + sender.last.is
         Emailer.notifyGiftDeleted(sender.email.is, salut, deleter, gift.description.is)
       }

@@ -46,6 +46,7 @@ import net.liftweb.mapper.MappedString
 import net.liftweb.json.JsonAST.JArray
 import net.liftweb.mapper.In
 import net.liftweb.mapper.ByList
+import net.liftweb.mapper.MappedBoolean
 
 
 /**
@@ -180,6 +181,26 @@ class User extends LongKeyedMapper[User] with LbbLogger {
   
   object fbreqid extends MappedString(this, 140) {
     override def dbColumnName = "fb_request_id"
+  }
+  
+  object notifyonaddtoevent extends MappedString(this, 8) {
+    override def defaultValue = "true"
+    override def dbNotNull_? : Boolean = true
+  }
+  
+  object notifyondeletegift extends MappedString(this, 8) {
+    override def defaultValue = "true"
+    override def dbNotNull_? : Boolean = true
+  }
+  
+  object notifyoneditgift extends MappedString(this, 8) {
+    override def defaultValue = "true"
+    override def dbNotNull_? : Boolean = true
+  }
+  
+  object notifyonreturngift extends MappedString(this, 8) {
+    override def defaultValue = "true"
+    override def dbNotNull_? : Boolean = true
   }
   
   // https://github.com/lift/framework/blob/master/persistence/mapper/src/main/scala/net/liftweb/mapper/MappedDate.scala

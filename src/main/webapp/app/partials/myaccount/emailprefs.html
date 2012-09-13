@@ -1,0 +1,9 @@
+
+<div ng-controller="MyAccountCtrl">
+<P></P>
+<P><input type="checkbox" ng-checked="notifyonaddtoevent=='true'" ng-model="notifyonaddtoevent"/> Notify me when someone adds me to an event</P>
+<P><input type="checkbox" ng-checked="notifyondeletegift=='true'" ng-model="notifyondeletegift"/> Notify me when someone deletes a gift I have bought</P>
+<P><input type="checkbox" ng-checked="notifyoneditgift=='true'" ng-model="notifyoneditgift"/> Notify me when someone changes the description of a gift I have bought</P>
+<P><input type="checkbox" ng-checked="notifyonreturngift=='true'" ng-model="notifyonreturngift"/> Notify me when someone returns a gift, making it available again</P>
+<a class="btn" ng-click="updateemailprefs()">Update</a>
+</div>

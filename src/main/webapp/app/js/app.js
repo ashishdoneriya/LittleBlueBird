@@ -11,7 +11,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/giftlist/:showUserId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/myaccount', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/myaccount.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
+      when('/myaccount', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/myaccount/main.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/mywishlist', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/reminders', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/email', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
@@ -41,7 +41,11 @@ angular.module('datetime', [])
        
 angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap.modal']).
   factory('User', function($resource) {
-      var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login', creatorId:'@creatorId', creatorName:'@creatorName', facebookId:'@facebookId', fbreqid:'@fbreqid', friends:'@friends'}, 
+      var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', 
+                                                 password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login', 
+                                                 creatorId:'@creatorId', creatorName:'@creatorName', facebookId:'@facebookId', fbreqid:'@fbreqid', friends:'@friends',
+                                                 notifyonaddtoevent:'@notifyonaddtoevent', notifyondeletegift:'@notifyondeletegift', 
+                                                 notifyoneditgift:'@notifyoneditgift', notifyonreturngift:'@notifyonreturngift'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       find: {method:'GET', isArray:false}, 
@@ -202,6 +206,25 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, User ) {
   });
   
   $scope.user = RetrieveUser($scope, $cookieStore, User, User.currentUser, "userId");
+  
+  $scope.notifyonaddtoevent = $scope.user.notifyonaddtoevent;
+  $scope.notifyondeletegift = $scope.user.notifyondeletegift;
+  $scope.notifyoneditgift = $scope.user.notifyoneditgift;
+  $scope.notifyonreturngift = $scope.user.notifyonreturngift;
+  
+  $scope.updateemailprefs = function() {
+    $scope.user.notifyonaddtoevent = $scope.notifyonaddtoevent;
+    $scope.user.notifyondeletegift = $scope.notifyondeletegift;
+    $scope.user.notifyoneditgift = $scope.notifyoneditgift;
+    $scope.user.notifyonreturngift = $scope.notifyonreturngift;
+    $scope.user = User.save({userId:$scope.user.id, notifyonaddtoevent:$scope.user.notifyonaddtoevent, notifyondeletegift:$scope.user.notifyondeletegift, notifyoneditgift:$scope.user.notifyoneditgift, notifyonreturngift:$scope.user.notifyonreturngift}, 
+                                  function() {
+                                    User.currentUser = $scope.user;
+                                    $rootScope.$emit("userchange");
+                                  },
+                                  function() {alert("Uh oh - had a problem updating your profile");}
+                                );
+  }
   
   $scope.save = function(user) {
     $scope.user = User.save({userId:user.id, fullname:user.fullname, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirthStr, profilepic:user.profilepic}, 

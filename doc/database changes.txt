@@ -1,5 +1,9 @@
 
-new column:  fb_request_id
+new column:  person.notifyonaddtoevent - Mapper correctly marks these as not null, but doesn't get the default value right.  Have to manually set to 'true' (varchar)
+new column:  person.notifyondeletegift - Mapper correctly marks these as not null, but doesn't get the default value right.  Have to manually set to 'true' (varchar)
+new column:  person.notifyoneditgift - Mapper correctly marks these as not null, but doesn't get the default value right.  Have to manually set to 'true' (varchar)
+new column:  person.notifyonreturngift - Mapper correctly marks these as not null, but doesn't get the default value right.  Have to manually set to 'true' (varchar)
+new column:  person.fb_request_id
 
 
 new table:  friends  Created on eatj.com on 9/7/12

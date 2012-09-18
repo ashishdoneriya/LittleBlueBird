@@ -1,6 +1,6 @@
 
 <div class="span7 marg5" ng-controller="GiftCtrl">
-  <div class="row">     
+  <div class="row" ng-mouseenter="showshare='true'" ng-mouseleave="showshare='false'">     
     <div class="spantiny padtop5">
         
       <ul gift-actions class="nav marg0">
@@ -42,7 +42,9 @@
            ui-options="popoverOptions($index, gift)">
           {{gift.description}}
         </a>
-      </div>                
+      </div>   
+      
+      <div class="span1" ng-controller="ConnectCtrl"><span ng-show="showshare=='true'"><a class="uibutton confirm" ng-click="fbshare(gift)">Share</a></span></div>             
              
   </div>
   

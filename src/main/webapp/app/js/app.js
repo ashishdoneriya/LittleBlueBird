@@ -2,6 +2,9 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
   config(function($routeProvider){
     $routeProvider.
       when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html', three:'partials/LittleBlueBird.html', four:'partials/navbar.html'}}).
+      when('/foo/:fooid', {templates: {layout: 'foo', foo: 'partials/foo/foo.html', bar: 'partials/foo/bar.html'}}).
+      when('/bar/:fooid/:barid', {templates: {layout: 'foo', foo: 'partials/foo/foo.html', bar: 'partials/foo/bar.html'}}).
+      when('/baz/:fooid/:barid/:bazid', {templates: {layout: 'foo', foo: 'partials/foo/foo.html', bar: 'partials/foo/bar.html'}}).
       when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', one: 'partials/login.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}}).
       when('/circles', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
@@ -185,14 +188,15 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       }
   });
 
-function RetrieveUser($scope, $cookieStore, User, defaultValue, key) {
-  if(angular.isDefined(defaultValue)) {
-    return defaultValue;
+function RetrieveUser($scope, $cookieStore, User, key) {
+  if(angular.isDefined($scope.user)) {
+    console.log("RetrieveUser:  found default value !");
+    return $scope.user;
   }
   else if(angular.isDefined($cookieStore.get(key))) {
-    defaultValue = User.find({userId:$cookieStore.get(key)});
-    return defaultValue;
-    //return {};
+    console.log("RetrieveUser: User.find()...");
+    $scope.user = User.find({userId:$cookieStore.get(key)});
+    return $scope.user;
   }
   else
   {
@@ -206,7 +210,7 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, User ) {
     $scope.user = User.currentUser;
   });
   
-  $scope.user = RetrieveUser($scope, $cookieStore, User, User.currentUser, "userId");
+  $scope.user = RetrieveUser($scope, $cookieStore, User, "userId");
   
   $scope.notifyonaddtoevent = $scope.user.notifyonaddtoevent;
   $scope.notifyondeletegift = $scope.user.notifyondeletegift;
@@ -371,7 +375,8 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
     gift.editing=false;
     $scope.gift.description = $scope.giftorig.description;
     $scope.gift.url = $scope.giftorig.url;
-  }                     
+  }     
+                  
   
   // duplicated in CircleCtrl
   $scope.giftlist = function(circle, participant) {
@@ -392,7 +397,7 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
                             function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again  (error code 101)");});
   }
   
-  
+  // just like $scope.giftlist above but no circle here
   $scope.friendwishlist = function(friend) {
     gifts = Gift.query({recipientId:friend.id, viewerId:$scope.user.id}, 
                             function() { 
@@ -413,7 +418,7 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
 function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearch, Circle, Gift, CircleParticipant, Reminder, $route) {              
              
   
-  $scope.user = RetrieveUser($scope, $cookieStore, User, User.currentUser, "userId");
+  $scope.user = RetrieveUser($scope, $cookieStore, User, "userId");
   
   // ugly hack - set fields in the Create Account form so the outer circleForm will pass validation in the USUAL event
   // that the user doesn't try to create an account on the fly.  If the user DOES try to create an account on the fly,
@@ -751,8 +756,11 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
 
 function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Email, Gift, Circle, CircleParticipant) {
   
-  $scope.showUser = User.showUser;
-  $scope.showUserF = function() { return User.showUser; }
+  console.log("UserCtrl called");
+  
+  $scope.user = RetrieveUser($scope, $cookieStore, User, "userId");
+  
+  $scope.showUser = $scope.user; //User.showUser;
   $scope.multipleusers = function() { console.log("multipleusers() called"); return User.multipleUsers; }
   $scope.sharedemail = function() { return User.email; }
   
@@ -869,8 +877,6 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Ema
   $rootScope.$on("mywishlist", function(event) {
     $scope.mywishlist();
   });
-  
-  $scope.user = RetrieveUser($scope, $cookieStore, User, User.currentUser, "userId");
   
   if(angular.isDefined($route.current.params.showUserId) && !angular.isDefined($scope.showUser)) {
     $scope.showUser = User.find({userId:$route.current.params.showUserId}, function() {}, function() {alert("Could not find user "+$route.current.params.showUserId);})
@@ -1061,6 +1067,27 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
     $scope.fbuser = {}
     $scope.error = null;
     
+    $scope.fbshare = function(gift) {
+      FB.ui({
+          method:'feed',
+          message:'Buy me this: '+gift.description,
+          name:'Name goes here',
+          caption:'Caption goes here',
+          description:'Description goes here - looks like it can be really long...',
+          link:'http://www.littlebluebird.com',
+          picture:'http://www.littlebluebird.com/giftfairy/img/logo.gif',
+          actions: [{name:'actions:name?', link:'http://www.littlebluebird.com/foo/'}],
+          user_message_prompt:'user message prompt?'},
+        function(response) {
+          if(response && response.post_id) {
+            console.log('post was successful');
+          }
+          else {
+            console.log('post was not published');
+          }
+        });
+    }
+    
     
     $scope.fbinvite = function(friend) {
       FB.ui({method: 'apprequests', to: friend.facebookId, message: 'Check out LittleBlueBird - You\'ll love it!'}, 
@@ -1109,18 +1136,22 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
             console.log("$scope.fbuser.id = "+$scope.fbuser.id);
             
             // could get more than one person back - parent + children
-            var users = UserSearch.query({search:user.email}, 
+            var users = UserSearch.query({login:true, search:user.email}, 
                                           function(){//console.log(users[0]); 
                                                      // Now look for the user that has the right facebook id.  There might not be one though - if the user hasn't yet "merged" his LBB account with his FB account
-                                                     var mergedaccount = false;
+                                                     var alreadymergedaccount = false;
                                                      for(var i=0; i < users.length; i++) {
                                                        if(users[i].facebookId == $scope.fbuser.id) {
-                                                         mergedaccount = true;
+                                                         alreadymergedaccount = true;
                                                          User.currentUser = users[i]; // this is what we want to happen... we found a record in our person table that has this email AND facebookId
                                                        }
                                                      }
-                                                     if(mergedaccount) {
-                                                       $scope.getfriends(User.currentUser);
+                                                     if(alreadymergedaccount) {
+                                                       console.log("alreadymergedaccount");
+                                                       if(User.currentUser.friends.length == 0)
+                                                         $scope.getfriends(User.currentUser);
+                                                       else
+                                                         console.log("already have friends - not getting them again");
                                                        $rootScope.$emit("userchange");
                                                        $rootScope.$emit("mywishlist");
                                                        $location.url('mywishlist');
@@ -1145,7 +1176,7 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
                                                          User.currentUser = users[0];
                                                          User.showUser = users[0];
                                                          $scope.getfriends(User.currentUser);
-                                                         console.log("users[0].profilepicUrl...");
+                                                         console.log("users.length == 1:  users[0].profilepicUrl...");
                                                          console.log(users[0].profilepicUrl);
                                                          var placeholderPic = "http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg";
                                                          
@@ -1172,7 +1203,7 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
                                                        }
                                                      }
                                                     },
-                                          function() {alert("problem with UserSearch.query");});
+                                          function() {alert("Could not log you in at this time\n(error code 401)");});
             $scope.$apply() // Manual scope evaluation
         });
     }
@@ -1194,4 +1225,40 @@ function GettingStartedCtrl($scope) {
   $scope.additems = false;
   $scope.whydoweneedtoknow = false; // see whoareyou.html
   $scope.whatifidontwantto = false; // see whoareyou.html
+}
+
+function fooctrl($scope, $location, $route) {
+  console.log("fooctrl: fooid="+$route.current.params.fooid);
+  
+  $scope.foo = function() {
+    $location.url('foo');
+  }
+  
+  $scope.fooblah = function() {
+    console.log("fooblah");
+  }
+}
+
+function barctrl($scope, $location, $route) {
+  console.log("barctrl: fooid="+$route.current.params.fooid+", barid="+$route.current.params.barid);
+  
+  $scope.bar = function() {
+    $location.url('bar');
+  }
+  
+  $scope.barblah = function() {
+    console.log("barblah");
+  }
+}
+
+function bazctrl($scope, $location, $route) {
+  console.log("bazctrl: fooid="+$route.current.params.fooid+", barid="+$route.current.params.barid+", bazid="+$route.current.params.bazid);
+  
+  $scope.baz = function() {
+    $location.url('baz');
+  }
+  
+  $scope.bazblah = function() {
+    console.log("bazblah");
+  }
 }

@@ -47,6 +47,10 @@ import net.liftweb.json.JsonAST.JArray
 import net.liftweb.mapper.In
 import net.liftweb.mapper.ByList
 import net.liftweb.mapper.MappedBoolean
+import net.liftweb.http.JsonResponse
+import net.liftweb.http.S
+import com.lbb.util.RequestHelper
+import net.liftweb.mapper.ManyToMany
 
 
 /**
@@ -114,7 +118,7 @@ ALTER TABLE `person`
  * Lesson:  Don't have to implement validate here - use the inherited validate which will call validate on all the fields
  */
 // TODO store user preferences
-class User extends LongKeyedMapper[User] with LbbLogger {
+class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
   def getSingleton = User
   
   def primaryKeyField = id
@@ -446,13 +450,17 @@ class User extends LongKeyedMapper[User] with LbbLogger {
    * Find all users connected to 'this' user by events.  These are users that are or were at
    * one time in an event with 'this' user.
    */
-  def friendList = {
+  def friendListX = {
     val sql = "select p.* from person p " +
     		"join friends f on f.friend_id = p.id " +
     		"where f.user_id = " + this.id
     
     User.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
   }
+  
+  object friends extends MappedManyToMany(Friend, Friend.friend, Friend.user, User)
+  
+  def friendList = Friend.findAll(By(Friend.friend, this.id)).map(_.user.obj.open_!)
   
   override def toForm(button: Box[String], f: User => Any): NodeSeq = {
     debug("User.toForm")
@@ -538,6 +546,10 @@ class User extends LongKeyedMapper[User] with LbbLogger {
                  JField("dateOfBirth", if(this.dateOfBirth.is == null) { JsonAST.JNull } else { JInt(this.dateOfBirth.is.getTime()) } ),
                  JField("facebookId", JString(this.facebookId)),
                  JField("fbreqid", JString(this.fbreqid)),
+                 JField("notifyonaddtoevent", JString(this.notifyonaddtoevent)),
+                 JField("notifyondeletegift", JString(this.notifyondeletegift)),
+                 JField("notifyoneditgift", JString(this.notifyoneditgift)),
+                 JField("notifyonreturngift", JString(this.notifyonreturngift)),
                  JField("giftsHaveBeenPurchasedForMe", boolornull)
                  ))
   }
@@ -546,10 +558,36 @@ class User extends LongKeyedMapper[User] with LbbLogger {
     asReceiverJs(Empty)
   }
   
+  /**
+   * Like login, except that the user is returning inside a List.
+   * This variant of login gets called when the user is logged in via User.query in apps.js, because User.query
+   * defines the result as an array.
+   */
+  def loginarray = {
+    val users = this :: Nil
+    // record the login in the audit log
+    AuditLog.recordLogin(this, S.request)
+    val r = JsonResponse(JsArray(users.map(_.asJs)), Nil, List(RequestHelper.cookie("userId", this)), 200)
+    debug("LOGGING IN ======================= JsonResponse=" + r.toString())
+    r
+  }
+  
+  /**
+   * Use this when the ajax call is User.save - where the return type is NOT an array.
+   * If the ajax call is expecting an array to be returned, call loginarray
+   */
+  def login = {
+    // record the login in the audit log
+    AuditLog.recordLogin(this, S.request)
+    val r = JsonResponse(this.asJs, Nil, List(RequestHelper.cookie("userId", this)), 200)
+    debug("LOGGING IN ======================= JsonResponse=" + r.toString())
+    r
+  }
+  
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
     val jsonCircles = circleList.map(_.asJs)
     val jsCircles = JsArray(jsonCircles)
-    val jsonFriends = friendList.map(_.asJsShallow)
+    val jsonFriends = friendList.map(_.asJsShallow).toList//friendList.map(_.asJsShallow)
     val jsFriends = JArray(jsonFriends)
     val profilepicUrl = if(profilepic.is==null || profilepic.is.trim().toString().equals("")) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
     val img = new ImageIcon(profilepicUrl)	

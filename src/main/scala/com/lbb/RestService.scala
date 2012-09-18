@@ -250,15 +250,18 @@ object RestService extends RestHelper with LbbLogger {
         }
       }
     }
-    user.save()
-    val cookies = S.param("login").filter(p => p.equals("true")).map(s => RequestHelper.cookie("userId", user))
+    user.save
     
     debug("creatorName = "+S.param("creatorName"))
     for(creator <- S.param("creatorName")) yield {
       Emailer.notifyAccountCreatedForYou(user, creator)
     }
     
-    JsonResponse(user.asJs, Nil, cookies.toList, 200)
+    S.param("login") match {
+      case Full("true") => user.login
+      case _ => JsonResponse(user.asJs)
+    }
+    
   }
   
   def insertCircle = {
@@ -381,15 +384,10 @@ object RestService extends RestHelper with LbbLogger {
             
             val login = S.param("login").getOrElse("false").equals("true")
             
-            user.save()
+            user.save
             
             S.param("login") match {
-              case Full("true") => {
-                AuditLog.recordLogin(user, S.request)
-                val r = JsonResponse(user.asJs, Nil, List(RequestHelper.cookie("userId", user)), 200)
-                debug("updateUser: LOGGING IN ======================= JsonResponse=" + r.toString())
-                r
-              }
+              case Full("true") => user.login
               case _ => JsonResponse(user.asJs)
             }
             
@@ -407,7 +405,7 @@ object RestService extends RestHelper with LbbLogger {
   def findUser(id:Long) = {
     debug("RestService.findUser:  id="+id)
     User.findByKey(id) match {
-      case Full(user) => debug("RestService.findUser:  user.asJs => "+user.asJs);JsonResponse(user.asJs, Nil, List(RequestHelper.cookie("userId", user)), 200)
+      case Full(user) => user.login
       case _ => JsonResponse("")
     }
   }
@@ -421,7 +419,9 @@ object RestService extends RestHelper with LbbLogger {
     val lll = S.request.map(_.paramNames) getOrElse Nil
     val onlydefinedparms = lll.filter(name => {val value = S.param(name) getOrElse "undefined"; value != "undefined" })
     
-    val login = onlydefinedparms.contains("username") && onlydefinedparms.contains("password")
+    val userpass = onlydefinedparms.contains("username") && onlydefinedparms.contains("password")
+    val loginparm = S.param("login") getOrElse "undefined"
+    val login = userpass || loginparm=="true"
     
     val qparms = onlydefinedparms.map(name => (name, S.param(name)) match {
       case ("first", Full(value)) => Cmp(User.first, OprEnum.Like, Full(value), Empty, Full("LOWER"))
@@ -441,15 +441,7 @@ object RestService extends RestHelper with LbbLogger {
       case (_, true) => { // logging in...
         val users = User.findAll(qp: _*)
         users match {
-          case l:List[User] if(l.size == 1) => {
-            val jsons = users.map(_.asJs)
-            val jsArr = JsArray(jsons)
-            val r = JsonResponse(jsArr, Nil, List(RequestHelper.cookie("userId", users.head)), 200)
-            debug("findUsers: LOGGING IN ======================= JsonResponse(jsArr)=" + r.toString())
-            // record the login in the audit log
-            AuditLog.recordLogin(users.head, S.request)
-            r
-          } // case l:List[User] if(l.size == 1) 
+          case l:List[User] if(l.size == 1) => users.head.loginarray
           case _ => {debug("findUsers: BadResponse (pass:"+S.param("password")+")"); BadResponse()}
         } // users match
       } // case (_, true)

@@ -31,6 +31,7 @@ Tomcat serves the webapp from: C:\Program Files\Apache Software Foundation\Tomca
 
 DEPLOYING TO EATJ.COM TOMCAT
 www.littlebluebird.com/manager/html  (admin/Pi...  also  manager/Pi...)
+SEARCH FOR 'giftfairy' EVERYWHERE IN THE CODE
 
 
 Facebook: https://developers.facebook.com/apps/136122483829

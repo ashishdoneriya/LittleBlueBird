@@ -167,7 +167,7 @@ class UserTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     assert(u.first===UserTest.brent._1)
     
     // now update last name
-    assert(u.last("newlastname").save()===true)    
+    assert(u.last("newlastname").save===true)    
     assert(User.findAll.size===1)
     assert(u.last==="newlastname")
   }

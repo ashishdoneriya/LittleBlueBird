@@ -10,17 +10,19 @@ class Friend extends LongKeyedMapper[Friend] with IdPK with LbbLogger {
   def getSingleton = Friend
 
   // TODO make sure userid/friendid is unique
-  object userId extends MappedLongForeignKey(this, User) {
+  object user extends MappedLongForeignKey(this, User) {
     override def dbColumnName = "user_id"
   }
   
-  object friendId extends MappedLongForeignKey(this, User) {
+  object friend extends MappedLongForeignKey(this, User) {
     override def dbColumnName = "friend_id"
   }
   
   override def save = {
     try {
+      debug("attempt to save: user="+user+"  friend="+friend);
       val saved = super.save
+      debug("attempt to save: user="+user+"  friend="+friend+"  =>  saved="+saved);
       saved
     }
     catch { 
@@ -33,6 +35,11 @@ class Friend extends LongKeyedMapper[Friend] with IdPK with LbbLogger {
 object Friend extends Friend with LongKeyedMetaMapper[Friend] {
   override def dbTableName = "friends" // define the DB table name
     
+  def join(user:User, friend:User) = {
+    this.create.user(user).friend(friend).save
+    this.create.user(friend).friend(user).save
+  }
+    
   /**
    * We're going to write to the friends table ...in CircleParticipants.save
    * 
@@ -42,15 +49,15 @@ object Friend extends Friend with LongKeyedMetaMapper[Friend] {
    */
   def createFriends(cp:CircleParticipant) = {
     val friends = for(other <- cp.otherParticipants) yield {
-      val oneway = Friend.create.userId(cp.person.is).friendId(other.person.is)
-      val theotherway = Friend.create.userId(other.person.is).friendId(cp.person.is)
+      val oneway = Friend.create.user(cp.person.is).friend(other.person.is)
+      val theotherway = Friend.create.user(other.person.is).friend(cp.person.is)
       oneway :: theotherway :: Nil
     }
     friends.flatten
   }
   
   def associate(id1:Long, id2:Long) = {
-    Friend.create.userId(id1).friendId(id2).save
-    Friend.create.userId(id2).friendId(id1).save
+    Friend.create.user(id1).friend(id2).save
+    Friend.create.user(id2).friend(id1).save
   }
 }

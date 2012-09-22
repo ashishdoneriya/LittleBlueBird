@@ -1,0 +1,17 @@
+<div ng-controller="fooctrl">
+  <div class="row">
+    <div class="span4">
+    <P>This is foo.html</P>
+    <P><a ng-href="#/foo/1">#/foo/1</a></P>
+    <P><a ng-href="#/bar/1/2">#/bar/1/2</a></P>
+      
+      
+      
+      <P><a ng-click="urlfoo()">ng-click: $scope.urlfoo()...  $location.url('foo/3');</a></P>
+      <P><a ng-click="urlbar()">ng-click: $scope.urlbar()...  $location.url('bar/4/5');</a></P>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span4"><div ng-include src="'partials/foo/baz.html'"></div></div>
+  </div>
+</div>

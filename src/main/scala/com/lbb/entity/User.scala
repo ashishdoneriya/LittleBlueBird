@@ -445,19 +445,6 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
         Cmp(User.last, OprEnum.Like, Full("%"+l.toLowerCase+"%"), Empty, Full("LOWER")))
   }
   
-  /**
-   * REPLACE THIS WITH A CALL TO THE NEW FRIENDS TABLE WHICH DOESN'T EXIST YET
-   * Find all users connected to 'this' user by events.  These are users that are or were at
-   * one time in an event with 'this' user.
-   */
-  def friendListX = {
-    val sql = "select p.* from person p " +
-    		"join friends f on f.friend_id = p.id " +
-    		"where f.user_id = " + this.id
-    
-    User.findAllByInsecureSql(sql, IHaveValidatedThisSQL("me", "11/11/1111"))
-  }
-  
   object friends extends MappedManyToMany(Friend, Friend.friend, Friend.user, User)
   
   def friendList = Friend.findAll(By(Friend.friend, this.id)).map(_.user.obj.open_!)
@@ -580,7 +567,7 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
     // record the login in the audit log
     AuditLog.recordLogin(this, S.request)
     val r = JsonResponse(this.asJs, Nil, List(RequestHelper.cookie("userId", this)), 200)
-    debug("LOGGING IN ======================= JsonResponse=" + r.toString())
+    debug("LOGGING IN ======================= JsonResponse.toString().length()=" + r.toString().length())
     r
   }
   

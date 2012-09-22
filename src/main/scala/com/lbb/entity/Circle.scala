@@ -83,12 +83,17 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLog
   }
   
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {
+    debug("supplementalJs:  for circle '"+this.name+"'  ("+this.id+")");
     val dateString = date.is match {
       case null => ""
       case d:Date => new SimpleDateFormat("M/d/yyyy").format(d)
     }
     
-    val jsonReminders = reminders.map(r => {val js = r.asJs;debug("reminders.asJs: "+js);js})
+    val jsonReminders = reminders.map(r => {
+      val js = r.asJs
+      //debug("reminders.asJs: "+js)
+      js})
+      
     val jsReminders = JsArray(jsonReminders)
     
     List(("dateStr", dateString), ("receiverLimit", receiverLimit), ("reminders", jsReminders))  

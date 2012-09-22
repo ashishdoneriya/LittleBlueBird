@@ -405,8 +405,8 @@ object RestService extends RestHelper with LbbLogger {
   def findUser(id:Long) = {
     debug("RestService.findUser:  id="+id)
     User.findByKey(id) match {
-      case Full(user) => user.login
-      case _ => JsonResponse("")
+      case Full(user) => debug("RestService.findUser: calling user.login"); user.login
+      case _ => debug("RestService.findUser: BadResponse()"); BadResponse()
     }
   }
   

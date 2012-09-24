@@ -39,7 +39,7 @@
 
 .align-top {vertical-align:top;}
 
-.bggray {
+.bggraygradient {
   background-color: #ffffff;
   background-image: -moz-linear-gradient(top, #cdcdcd, #9a9a9a);
   background-image: -ms-linear-gradient(top, #cdcdcd, #9a9a9a);
@@ -113,10 +113,8 @@
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  background-color: #efefef;
+  border:1px solid #efefef;
 }
-
-.gift:hover { background-color:#dedede }
 
 .giftadd {
   background-color: #eeeeee;
@@ -286,6 +284,10 @@
 }
 
 .padbottom0 {padding-bottom:0;}
+
+.padbottom2 {padding-bottom:2;}
+
+.padbottom5 {padding-bottom:5;}
 
 .padleft0 {
   padding-left:0;

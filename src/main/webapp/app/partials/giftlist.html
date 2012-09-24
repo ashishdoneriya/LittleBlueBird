@@ -27,14 +27,14 @@ hyperlinks, which is what we want if we want to post items to FB.
         </span>
       </span>
           
-      <div class="row">
+      <div class="row margbottom5">
         <div class="span5">
           <div ng-include src="'partials/circleinfo.html'"></div>
         </div>
             
         <div class="span1 offset1 pull-right">
           <span ng-hide="gift.adding">
-            <a class="btn btn-success font24 pull-right" ng-click="$location.url($location.path());gift.adding=true;initNewGift();">+</a>
+            <a class="btn btn-mini btn-success font18 pull-right" ng-click="gift.adding=true;initNewGift();">+</a>
           </span>
         </div>
       </div> <!-- div class="row" -->
@@ -51,27 +51,31 @@ hyperlinks, which is what we want if we want to post items to FB.
 
           <div ng-repeat="gift in gifts">
             <!-- review usage of: gift -->
-            <div class="row gift marg0 margtop5">
               
-              <span ng-hide="gift.editing || gift.buying">    
-	            <ng-include src="'partials/giftlist/viewitem.html'"></ng-include>                  
-              </span>
-              <!-- end:  hide gift.editing || gift.buying -->  
+            <span ng-hide="gift.editing || gift.buying"> 
+              <div class="row gift marg0 margtop5">   
+	            <ng-include src="'partials/giftlist/viewitem.html'"></ng-include>  
+              </div>                
+            </span>
+            <!-- end:  hide gift.editing || gift.buying -->  
               
               
-              <span ng-show="gift.buying">
-	            <ng-include src="'partials/giftlist/buygiftform.html'"></ng-include>  
-              </span>
-              <!-- end:  hide gift.buying --> 
+            <span ng-show="gift.buying">
+              <div class="row gift marg0 margtop5">   
+	            <ng-include src="'partials/giftlist/buygiftform.html'"></ng-include>   
+              </div>                
+            </span>
+            <!-- end:  hide gift.buying --> 
               
                   
-              <span ng-show="gift.editing">
+            <span ng-show="gift.editing">
+              <div class="row gift marg0 margtop5">   
 	            <ng-include src="'partials/giftlist/editgiftform.html'"></ng-include>  
-              </span>
-              <!-- end:  show gift.editing -->    
+              </div>                
+            </span>
+            <!-- end:  show gift.editing -->    
                   
                   
-            </div> <!-- div class="row gift margleft10" -->
           </div> <!-- div ng-repeat="gift in gifts" -->
 
             

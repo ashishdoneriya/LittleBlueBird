@@ -109,16 +109,15 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
                                                        $rootScope.$emit("mywishlist");
                                                        $location.url('mywishlist');
                                                      } 
-                                                     /************
                                                      else { // ...but in the beginning, this is what will happen - no record in our person table contains this facebookId
                                                        if(users.length == 0) {
                                                          // need to create account for this person in LBB
                                                        
-                                                         $scope.user = User.save({login:true, fullname:$scope.fbuser.first_name+' '+$scope.fbuser.last_name, first:$scope.fbuser.first_name, last:$scope.fbuser.last_name, username:$scope.fbuser.email, email:$scope.fbuser.email, password:$scope.fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+$scope.fbuser.id+'/picture?type=large', facebookId:$scope.fbuser.id}, 
+                                                         $rootScope.user = User.save({login:true, fullname:$scope.fbuser.first_name+' '+$scope.fbuser.last_name, first:$scope.fbuser.first_name, last:$scope.fbuser.last_name, username:$scope.fbuser.email, email:$scope.fbuser.email, password:$scope.fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+$scope.fbuser.id+'/picture?type=large', facebookId:$scope.fbuser.id}, 
                                                                                 function() { 
-                                                                                   $scope.getfriends($scope.user);
-                                                                                   User.showUser = $scope.user;
-                                                                                   User.currentUser = $scope.user;
+                                                                                   //$scope.getfriends($rootScope.user);
+                                                                                   User.showUser = $rootScope.user;
+                                                                                   User.currentUser = $rootScope.user;
                                                                                    $rootScope.$emit("userchange");                                           
                                                                                    $rootScope.$emit("mywishlist"); 
                                                                                    $location.url('welcome');
@@ -129,7 +128,7 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
                                                          users[0].facebookId = $scope.fbuser.id;
                                                          User.currentUser = users[0];
                                                          User.showUser = users[0];
-                                                         $scope.getfriends(User.currentUser);
+                                                         //$scope.getfriends(User.currentUser);
                                                          console.log("users.length == 1:  users[0].profilepicUrl...");
                                                          console.log(users[0].profilepicUrl);
                                                          var placeholderPic = "http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg";
@@ -156,6 +155,7 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
                                                          $location.url('whoareyou'); 
                                                        }
                                                      }
+                                                     /************
                                                      *******************/
                                                     },
                                           function() {alert("Could not log you in at this time\n(error code 201)");});

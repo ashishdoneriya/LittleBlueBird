@@ -1,6 +1,6 @@
 
 // see:  http://jsfiddle.net/Hxbqd/6/
-function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $resource, UserSearch, User) {
+function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $resource, $location, UserSearch, User) {
 
     $scope.fbuser = {}
     $scope.error = null;
@@ -89,25 +89,27 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
             var users = UserSearch.query({login:true, search:$scope.fbuser.email}, 
                                           function(){
                                                      console.log(users[0]);
-                                                     /************
                                                      // Now look for the user that has the right facebook id.  There might not be one though - if the user hasn't yet "merged" his LBB account with his FB account
                                                      var alreadymergedaccount = false;
                                                      for(var i=0; i < users.length; i++) {
                                                        if(users[i].facebookId == $scope.fbuser.id) {
                                                          alreadymergedaccount = true;
                                                          User.currentUser = users[i]; // this is what we want to happen... we found a record in our person table that has this email AND facebookId
+                                                         $rootScope.user = users[i];
                                                        }
                                                      }
+                                                     console.log("alreadymergedaccount="+alreadymergedaccount);
                                                      if(alreadymergedaccount) {
                                                        console.log("alreadymergedaccount");
-                                                       if(User.currentUser.friends.length == 0)
-                                                         $scope.getfriends(User.currentUser);
-                                                       else
-                                                         console.log("already have friends - not getting them again");
+                                                       //if(User.currentUser.friends.length == 0)
+                                                       //  $scope.getfriends(User.currentUser);
+                                                       //else
+                                                       //  console.log("already have friends - not getting them again");
                                                        $rootScope.$emit("userchange");
                                                        $rootScope.$emit("mywishlist");
                                                        $location.url('mywishlist');
                                                      } 
+                                                     /************
                                                      else { // ...but in the beginning, this is what will happen - no record in our person table contains this facebookId
                                                        if(users.length == 0) {
                                                          // need to create account for this person in LBB

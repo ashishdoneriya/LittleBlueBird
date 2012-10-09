@@ -300,7 +300,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
 
 
 // These args need to be in the same order and the same number as the arg's in the function decl in app-ConnectCtrl
-ConnectCtrl.$inject = ['facebookConnect', 'facebookFriends', '$scope', '$rootScope', '$resource', 'UserSearch', 'User'];
+ConnectCtrl.$inject = ['facebookConnect', 'facebookFriends', '$scope', '$rootScope', '$resource', '$location', 'UserSearch', 'User'];
 
 function NavCtrl($scope) {
   $scope.navstate = function(compare) {

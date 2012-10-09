@@ -33,3 +33,9 @@ sbt> reload
 
 Info on LESS:
 http://fadeyev.net/2010/06/19/lessjs-will-obsolete-css/
+
+
+
+Info on SBT:
+http://www.scala-sbt.org/0.12.1/docs/home.html
+

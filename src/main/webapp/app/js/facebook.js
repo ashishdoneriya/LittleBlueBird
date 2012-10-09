@@ -1,5 +1,6 @@
 
     window.fbAsyncInit = function() {
+        console.log("FB initing ---------------");
         FB.init({
           appId      : '136122483829', // App ID
           //channelUrl : '//'+window.location.hostname+'/channel', // Path to your Channel File
@@ -8,6 +9,9 @@
           oauth      : true,
           xfbml      : true  // parse XFBML
         });
+        
+        angular.bootstrap(document, ['project']);
+        
     };
 
     // Load the SDK Asynchronously

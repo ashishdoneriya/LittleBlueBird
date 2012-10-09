@@ -3,7 +3,7 @@
 // This is LittleBlueBird login - don't confuse with FB login.  FB login goes through ConnectCtrl
 function LoginCtrl($document, $window, $rootScope, $cookieStore, $scope, $location, User, Circle, Logout, Email, CircleParticipant, facebookConnect) { 
   
-  $scope.comingfromfacebook = function() {
+  $scope.comingfromfacebookDONTKNOWABOUTTHIS = function() {
     if(angular.isDefined($scope.facebookreqids))
       return;
     $scope.facebookreqids = [];
@@ -59,21 +59,26 @@ function LoginCtrl($document, $window, $rootScope, $cookieStore, $scope, $locati
  
   $scope.login = function() {
     //alert("login:  "+$scope.username+" / "+$scope.password);
-    if(!angular.isDefined($scope.username) || ! angular.isDefined($scope.password)) {
+    if(!angular.isDefined($scope.username) || !angular.isDefined($scope.password)) {
       $scope.loginfail=true;
+      
+      console.log("scope.login:  didn't want this to happen");
       return;
     }
     
-    $scope.users = User.query({username:$scope.username, password:$scope.password}, 
+      console.log("scope.login:  made it this far at least");
+      
+    $scope.user = User.find({username:$scope.username, password:$scope.password}, 
                                function() {$scope.loginfail=false; 
-                                           if($scope.users[0].dateOfBirth == 0) { $scope.users[0].dateOfBirth = ''; }
-                                           
-                                           User.currentUser = $scope.users[0];
+                                           if($scope.user.dateOfBirth == 0) { $scope.user.dateOfBirth = ''; }
+                                           $rootScope.user = $scope.user;
+                                           User.currentUser = $scope.user;
                                            User.showUser = User.currentUser;  
                                            // uncomment for facebook integration
                                            //$scope.getfriends(User.currentUser);                                       
                                            $rootScope.$emit("userchange");                                          
                                            $rootScope.$emit("mywishlist");
+                                           console.log("scope.login:  go to 'gettingstarted'");
                                            $location.url('gettingstarted'); 
                                           }, 
                                function() {$scope.loginfail=true;}  );

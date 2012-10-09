@@ -1,0 +1,72 @@
+
+                <div class="span7 padtop20">
+
+<form novalidate name="buygiftForm"> 
+          <div class="row marg0">
+            <div class="span7">
+              <div class="row margleft_35">
+                <div class="span1">
+                  To:
+                </div>
+                <div class="span3">
+                  {{gift.recipients[0].first}} <span ng-repeat="recipient in gift.recipients.slice(1)"> and {{recipient.first}}</span>
+                </div>
+                <div class="span3">Date you are giving this</div>
+              </div>
+              <div class="row margleft_35">
+                <div class="span1">
+                  <input type="hidden" ng-model="gift.id" />
+                  <input type="hidden" ng-model="gift.senderId" />
+                  From:
+                </div>
+                <div class="span3">
+                  <input type="text" ng-model="gift.senderName" />
+                </div>
+                <div class="span3">
+                  <input class="input-small" date-picker="recdate" name="recdate" ng-model="recdate" type="text"></input>
+                </div>
+              </div>
+              <div class="row margleft_35 margbottom20">
+                <div class="span7 giftdescription">
+                  {{gift.description}}
+                </div>
+              </div>
+              <div class="row margleft_35">
+                <div class="span6">
+                
+                  <!-- btn toolbar 1 -->
+                  <span ng-show="gift.url != undefined && gift.url != ''">
+                  <div class="btn-toolbar">
+                    <div class="btn-group">
+                      <a class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift, recdate);">Reserve</a>
+                      <a ng-href="{{gift.url}}" target="new" class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift);">Buy Online</a>
+                    </div>
+                    <div class="btn-group">
+                      <a class="btn" ng-click="$location.url($location.path());gift.buying=false">Cancel</a>
+                    </div>
+                  </div> <!-- end btn toolbar 1 -->
+                  </span>
+                
+                  <!-- btn toolbar 2 -->
+                  <span ng-hide="gift.url != undefined && gift.url != ''">
+                  <div class="btn-toolbar">
+                    <div class="btn-group">
+                      <a class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift, recdate);">Reserve</a>
+                      <a class="btn" ng-disabled="true" title="No link was provided for this item.  Search for this item on Amazon.com">Buy Online</a>
+                    </div>
+                    <div class="btn-group">
+                      <a class="btn" ng-click="$location.url($location.path());gift.buying=false">Cancel</a>
+                    </div>
+                  </div> <!-- end btn toolbar 2 -->
+                  </span>
+                                               
+                  
+                </div>
+              </div>
+              
+              
+            </div>
+          </div>
+</form>
+ 
+                </div>

@@ -1,3 +1,26 @@
+function Gift2Ctrl($route, $scope, Gift, User, Circle, $rootScope) {
+  // to recreate the giftlist if the user hits refresh or if the user comes to this page via a link FB or wherever
+  if(angular.isDefined($route.current.params.showUserId)) {
+    var queryparms = {};
+    if(angular.isDefined($route.current.params.circleId)) {
+      queryparams = {recipientId:$route.current.params.showUserId, circleId:$route.current.params.circleId};
+    }
+    else queryparams = {recipientId:$route.current.params.showUserId};
+    
+    console.log("Gift2Ctrl: query for gifts");
+    
+    $scope.gifts = Gift.query(queryparams, 
+                            function() { 
+                              Circle.gifts = $scope.gifts; 
+                              console.log("$scope.gifts.length = "+$scope.gifts.length);
+                              console.log($scope.gifts);
+                              //if($scope.user.id == participant.id) { Circle.gifts.mylist=true; } else { Circle.gifts.mylist=false; } 
+                              $rootScope.$emit("circlechange");  
+                            }, 
+                            function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again  (error code 301)");});
+                            
+  }
+}
 
 function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) { 
 
@@ -23,6 +46,12 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
     var plcmt = idx < 2 ? 'bottom' : 'right';
     return {title:'Gift for '+recipients.join(','), content:cnt, placement:plcmt}
   }
+  
+  $rootScope.$on("circlechange", function(event) {
+    $scope.gifts = Circle.gifts;
+    console.log("GiftCtrl:  notified of 'circlechange'...  $scope.gifts=...");
+    console.log($scope.gifts);
+  });
   
   $scope.alertcannotedit = function() {alert('Cannot edit this item because you didn\'t add it');}
   
@@ -133,6 +162,8 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
   
   // duplicated in CircleCtrl
   $scope.giftlist = function(circle, participant) {
+    
+    console.log("$scope.giftlist(): query for gifts");
   
     // We're expanding this to allow for null circle
     // How do we tell if there's no circle?
@@ -147,7 +178,7 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 
                             }, 
-                            function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again  (error code 101)");});
+                            function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again  (error code 401)");});
   }
   
   // just like $scope.giftlist above but no circle here
@@ -163,6 +194,6 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 
                             }, 
-                            function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 201)");});
+                            function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
   }
 }

@@ -4,81 +4,138 @@
 // profilepic.html, welcome.html, whoareyou.html, ddbtn-addcircle.html
 function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, UserSearch, Email, Gift, Circle, CircleParticipant) {
   
-  console.log("UserCtrl called");
+  //console.log("UserCtrl called");
   
-  // to re-get the user when the page is reloaded
-  $scope.lookforuser = function() {
-    if(angular.isDefined($scope.user)) { 
-      // don't do anything
-      console.log("$scope.lookforuser:  $scope.user is already defined.  It is...");
-      console.log($scope.user);
-      
+  $scope.userExists = function() {
+    console.log("scope.userExists:  true (HARD-CODED)");
+    return true;
+  }
+  
+  $scope.userExistsWORKONTHIS = function() {
+    if(angular.isDefined($scope.user) && angular.isDefined($scope.user.id)) {
+      //console.log("$scope.userExists():  return true because $scope.user is defined");
+      return true;
     }
-    // next check for the userId cookie
-    else if(angular.isDefined($cookieStore.get("userId"))) {
-      console.log("$scope.lookforuser:  $scope.user is not defined, but there is a userId cookie: emit userchange");
-      $scope.user = User.find({userId:$cookieStore.get("userId")}, 
-                      function(){User.currentUser = $scope.user; 
-                                 console.log("$scope.user.id="+$scope.user.id); 
-                                 console.log("$scope.user.first="+$scope.user.first); 
-                                 console.log($scope.user); 
-                                 $rootScope.$emit("userchange");}
-                    );
+    else if($scope.lookingforuser) {
+      //console.log("$scope.lookingforuser="+$scope.lookingforuser+"  ...so hang on and return false from $scope.userExists()");
+      return false;
     }
-    // next see if the user is logged in to fb - if so, take that user info and send to the server
-    // and send back the userId cookie
-    else // else1
-    {
-      console.log("$scope.lookforuser:  $scope.user is not defined, and there is NO userId cookie, so check FB login status...");
+    else {
+      $scope.lookingforuser = true;
+      //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because there's no $scope.user yet...");
       
-      
+      // see if the user is logged in to FB
       FB.getLoginStatus(function(response) {
         // 'connected', 'not_authorized', 'unknown'
         $scope.fbstatus = response.status;
-        console.log("FB login status response...");
-        console.log(response);
+        //console.log("FB login status response...");
+        //console.log(response);
         if(response.status == 'connected') {
           FB.api('/me', 
             function(user) { // success
+              //console.log("User IS logged in to FB... let's try setting a cookie...");
+              $cookieStore.put("fbid", user.id);
               $scope.initfbuser(user);
+              $scope.lookingforuser = false;
+              //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because FB.api returned a user");
               $scope.$apply() // Manual scope evaluation
             }
           );
-        }
+        } // if(response.status == 'connected')
         else {
-          console.log("redirecting to:  /login");
-          $location.url("/login");
-        }
-      }); // end FB.getLoginStatus
+          //console.log("User is NOT logged in to FB");
+          
+          // maybe there's an LBB cookie because they don't have a FB account...
+          if(angular.isDefined($cookieStore.get("userId"))) {
+            //console.log("$scope.userExists():  $scope.user is not defined, but there is a userId cookie: emit userchange");
+            $scope.user = User.find({userId:$cookieStore.get("userId")}, 
+                      function(){User.currentUser = $scope.user; 
+                                 $scope.lookingforuser = false;
+                                 //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because we found the LBB cookie: userId");
+                                 //console.log("$scope.user.id="+$scope.user.id); 
+                                 //console.log("$scope.user.first="+$scope.user.first); 
+                                 //console.log($scope.user); 
+                                 $rootScope.$emit("userchange");}
+                      );
+          } // if(angular.isDefined($cookieStore.get("userId")))
+          else {
+            // They're not logged in to FB and there's no LBB cookie, so send them to the login page 
+            $scope.lookingforuser = false;
+            //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because we are redirecting to /login");
+            //console.log("redirecting to:  /login");
+            $location.url("/login");
+          }
+        
+        } // else: if(response.status == 'connected') 
+        
+      
+      }); // FB.getLoginStatus(function(response) {
       
       
-    } // end else1
-  } //end $scope.lookforuser
+      //console.log("$scope.userExists():  return false because it seemed like the right thing to do here");
+      return false;
+      
+    } // else
+  }
   
-  
+    
   // originally, this was in ConnectCtrl - don't know if we'll still need it there or not
   $scope.initfbuser = function(user) {
-    
       $scope.fbuser = user;
       console.log("$scope.initfbuser:  $scope.fbuser...");
       console.log($scope.fbuser);
       console.log("$scope.fbuser.id = "+$scope.fbuser.id);
       
-      var users = UserSearch.query({login:true, search:$scope.fbuser.email},
+      // We have query using the email address because the facebook id may not be in our db yet
+      var users = UserSearch.query({search:$scope.fbuser.email},
                     function() {
-                      console.log("found this fb user..."); 
-                      console.log(users[0]);   
+                      console.log("scope.initfbuser:  found "+users.length+" people with this email: "+$scope.fbuser.email); 
+                      if(users.length == 1) {
+                        console.log(users[0]);
+                        $scope.user = users[0];
+                        User.save({login:true, userId:$scope.user.id, facebookId:$scope.fbuser.id});
+                      }  
+                      else if(users.length == 0) {
+                        $scope.user = User.save({login:true, fullname:$scope.fbuser.first_name+' '+$scope.fbuser.last_name, first:$scope.fbuser.first_name, last:$scope.fbuser.last_name, username:$scope.fbuser.email, email:$scope.fbuser.email, password:$scope.fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+$scope.fbuser.id+'/picture?type=large', facebookId:$scope.fbuser.id}, 
+                                          function() { 
+                                            //$scope.getfriends($scope.user);
+                                            User.showUser = $scope.user;
+                                            User.currentUser = $scope.user;
+                                            $rootScope.$emit("userchange");                                           
+                                            $rootScope.$emit("mywishlist"); 
+                                            $location.url('welcome');
+                                          }
+                                        );
+                      } 
+                      else {
+                        // Here, we have several people in LBB that share the FB email address ...See if any already have the FB id
+                        // Nobody has the FB id => ask who are you?
+                        var userfound = false;
+                        for(var i=0; i < users.length; i++) {
+                          if(users[i].facebookId == $scope.fbuser.id && !userfound) {
+                            userfound = true;
+                            $scope.user = users[i];  // FOUND $scope.user !
+                            User.currentUser = $scope.user;
+                            $rootScope.$emit("userchange");  
+                          }
+                        }
+                        if(!userfound) {
+                          User.multipleUsers = users;
+                          User.email = $scope.fbuser.email;
+                          User.facebookId = $scope.fbuser.id;
+                          $location.url('whoareyou');  // have to ask who are you and send the user to a page showing everyone with this email
+                        }
+                      }
                       
                       
-                                 
                     }, // end 'success' function of var users = UserSearch.query()
-                    function(){alert("Could not log you in at this time\n(error code 401)");}
+                    function(){alert("Could not log you in at this time\n(error code 601)");}
                  ); // end var users = UserSearch.query()
       
   } // end $scope.initfbuser
   
   
-  $scope.showUser = $scope.user; //User.showUser;
+  //$scope.showUser = $scope.user; //User.showUser;
   $scope.multipleusers = function() { console.log("multipleusers() called"); return User.multipleUsers; }
   $scope.sharedemail = function() { return User.email; }
   
@@ -122,6 +179,8 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   
   $scope.nocirclemessage = {title:'', message:''};
   $scope.hasActiveCircles = function() {
+    if(!angular.isDefined($scope.user))
+      return;
     for(var i=0; i < $scope.user.circles.length; i++) {
       if($scope.user.circles[i].date > new Date().getTime()) {
         $scope.nocirclemessage = {title:'', message:''};
@@ -166,7 +225,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 
                             }, 
-                            function() {alert("Hmmm... Had a problem getting "+User.currentUser.first+"'s list\n  Try again  (error code 301)");});
+                            function() {alert("Hmmm... Had a problem getting "+User.currentUser.first+"'s list\n  Try again  (error code 701)");});
   }
   
   $scope.myaccount = function() {
@@ -211,8 +270,4 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
                                           else { form.username.$error.taken = 'false'; }
                                         });
   } 
-  
-  $scope.userExists = function() {
-    return angular.isDefined($scope.user) && angular.isDefined($scope.user.id)
-  }
 }

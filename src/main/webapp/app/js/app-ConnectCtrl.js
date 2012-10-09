@@ -1,6 +1,6 @@
 
 // see:  http://jsfiddle.net/Hxbqd/6/
-function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $location, $resource, UserSearch, User) {
+function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $resource, UserSearch, User) {
 
     $scope.fbuser = {}
     $scope.error = null;
@@ -68,53 +68,18 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
         facebookConnect.askFacebookForAuthentication(
           function(reason) { // fail
             $scope.error = reason;
+            console.log("$scope.registerWithFacebook:  reason="+reason);
           }, 
           function(user) { // success
+            console.log("$scope.registerWithFacebook:  success...");
             $scope.initfbuser(user);
             $scope.$apply() // Manual scope evaluation
           }
         );
     }
     
-    $scope.initfbuser = function(user) {
-      $scope.fbuser = user;
-      console.log("$scope.initfbuser:  $scope.fbuser...");
-      console.log($scope.fbuser);
-      console.log("$scope.fbuser.id = "+$scope.fbuser.id);
-      
-      var users = UserSearch.query({login:true, search:$scope.fbuser.email},
-                    function() {
-                      var alreadymergedaccount = false;
-                      for(var i=0; i < users.length; i++) {
-                        if(users[i].facebookId == $scope.fbuser.id) {
-                          alreadymergedaccount = true;
-                          User.currentUser = users[i]; // this is what we want to happen... we found a record in our person table that has this email AND facebookId
-                        }
-                      }
-                      console.log("already a merged account?...");
-                      console.log(alreadymergedaccount);
-                      
-                      if(alreadymergedaccount) {
-                        console.log("took out more stuff here");
-                        //if(User.currentUser.friends.length == 0)
-                        //  $scope.getfriends(User.currentUser);
-                        //else
-                        //  console.log("already have friends - not getting them again");
-                        console.log("$scope.initfbuser:  $rootScope.$emit(\"userchange\")");
-                        $rootScope.$emit("userchange");
-                        $rootScope.$emit("mywishlist");
-                        $location.url('mywishlist');
-                      }
-                      else {
-                      
-                      } // end 'else' of:  if(alreadymergedaccount) 
-                                                     
-                    }, // end 'success' function of var users = UserSearch.query()
-                    function(){alert("Could not log you in at this time\n(error code 401)");}); // end var users = UserSearch.query()
-      
-    }; // end $scope.initfbuser
     
-    $scope.initfbuserBIGMESS = function(user) {
+    $scope.initfbuser = function(user) {
             $scope.fbuser = user;
             console.log("$scope.fbuser...");
             console.log($scope.fbuser);
@@ -122,7 +87,9 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
             
             // could get more than one person back - parent + children
             var users = UserSearch.query({login:true, search:$scope.fbuser.email}, 
-                                          function(){//console.log(users[0]); 
+                                          function(){
+                                                     console.log(users[0]);
+                                                     /************
                                                      // Now look for the user that has the right facebook id.  There might not be one though - if the user hasn't yet "merged" his LBB account with his FB account
                                                      var alreadymergedaccount = false;
                                                      for(var i=0; i < users.length; i++) {
@@ -140,7 +107,7 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
                                                        $rootScope.$emit("userchange");
                                                        $rootScope.$emit("mywishlist");
                                                        $location.url('mywishlist');
-                                                     }
+                                                     } 
                                                      else { // ...but in the beginning, this is what will happen - no record in our person table contains this facebookId
                                                        if(users.length == 0) {
                                                          // need to create account for this person in LBB
@@ -187,7 +154,8 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $loca
                                                          $location.url('whoareyou'); 
                                                        }
                                                      }
+                                                     *******************/
                                                     },
-                                          function() {alert("Could not log you in at this time\n(error code 401)");});
+                                          function() {alert("Could not log you in at this time\n(error code 201)");});
     } //end $scope.initfbuserBIGMESS
 }

@@ -404,8 +404,9 @@ object RestService extends RestHelper with LbbLogger {
   
   def findUser(id:Long) = {
     debug("RestService.findUser:  id="+id)
-    User.findByKey(id) match {
-      case Full(user) => debug("RestService.findUser: calling user.login"); user.login
+    (User.findByKey(id), S.param("login")) match {
+      case (Full(user), Full("true")) => debug("RestService.findUser: calling user.login"); user.login
+      case (Full(user), _) => JsonResponse(user.asJs)
       case _ => debug("RestService.findUser: BadResponse()"); BadResponse()
     }
   }
@@ -420,8 +421,6 @@ object RestService extends RestHelper with LbbLogger {
     val onlydefinedparms = lll.filter(name => {val value = S.param(name) getOrElse "undefined"; value != "undefined" })
     
     val userpass = onlydefinedparms.contains("username") && onlydefinedparms.contains("password")
-    val loginparm = S.param("login") getOrElse "undefined"
-    val login = userpass || loginparm=="true"
     
     val qparms = onlydefinedparms.map(name => (name, S.param(name)) match {
       case ("first", Full(value)) => Cmp(User.first, OprEnum.Like, Full(value), Empty, Full("LOWER"))
@@ -436,16 +435,17 @@ object RestService extends RestHelper with LbbLogger {
     
     val qp = qparms.filter(q => !q.equals(Ignore[User]()))
     
-    (qp, login) match {
+    (qp, userpass) match {
       case (Nil, _) => NoContentResponse() // if there's no query parameters, we're not going to return all users
-      case (_, true) => { // logging in...
+      case (_, true) => {
+        // here, we're logging in using LBB credentials...
         val users = User.findAll(qp: _*)
         users match {
-          case l:List[User] if(l.size == 1) => users.head.loginarray
-          case _ => {debug("findUsers: BadResponse (pass:"+S.param("password")+")"); BadResponse()}
-        } // users match
-      } // case (_, true)
-      case (_, false) => { // typical findUsers function
+          case l:List[User] if(l.size == 1) => JsonResponse(l.head.asJs)
+          case _ => debug("findUsers:  users.size="+users.size); BadResponse() // too many or not enough people found
+        }
+      }
+      case _ => { // typical findUsers function
         val users = User.findAll(qp: _*)
         val jsons = users.map(_.asJs)
         val jsArr = JsArray(jsons)
@@ -454,7 +454,6 @@ object RestService extends RestHelper with LbbLogger {
         debug("RestService.findUsers: users.size=" + users.size)
         r
       }
-      case _ => debug("HUH ?!!!!!!!!! => qp="+qp+"   login="+login); BadResponse()
     }
     
     
@@ -530,8 +529,23 @@ object RestService extends RestHelper with LbbLogger {
     BadResponse()
   }
   
-  def findGifts = (User.findByKey(asLong(S.param("viewerId") openOr "") openOr -1), 
-                   User.findByKey(asLong(S.param("recipientId") openOr "") openOr -1)) match {
+  /**
+   * It's possible that there won't be a 'viewer' (current user)
+   * You may click a link in FB like  www.littlebluebird.com/gf/app/giftlist/552/17, which is the wishlist
+   * for user 552 and event 17, but no 'viewer' information.  Should the person who clicks the link be
+   * able to view the list anonymously?  I guess we could force them to login to facebook if they're not
+   * already - or make them create an LBB account.  Anonymous viewing is dangerous because I may be
+   * allowed to view my wishlist and see it in a diffferent context than I would if I were logged in.
+   * 
+   * Also, how would the user do anything with the list like buy items or add items unless we first 
+   * had a userId?
+   */
+  def findGifts = { 
+    val viewerParm = asLong(S.param("viewerId") openOr "undefined") openOr -1L
+    val viewerCookie = asLong(S.cookieValue("userId") openOr "undefined") openOr -1L
+    val userKey = if(viewerParm == -1L) viewerCookie else viewerParm
+    
+    (User.findByKey(userKey), User.findByKey(asLong(S.param("recipientId") openOr "") openOr -1)) match {
       case (Full(viewer), Full(recipient)) => {
         val circlebox = Circle.findByKey(asLong(S.param("circleId") openOr "") openOr -1)
         val giftlist = recipient.giftlist(viewer, circlebox);
@@ -550,11 +564,13 @@ object RestService extends RestHelper with LbbLogger {
         r
       }
       case _ => {
+        debug("RestService.findGifts: S.cookieValue(\"userId\")=" + S.cookieValue("userId"))
         debug("RestService.findGifts: S.param(viewerId)=" + S.param("viewerId"))
         debug("RestService.findGifts: S.param(circleId)=" + S.param("circleId"))
         debug("RestService.findGifts: S.param(recipientId)=" + S.param("recipientId"))
         BadResponse()
       }
+    }
   }
   
   def updateGift(updater:String, id:Long) = (Gift.findByKey(id), S.request) match {

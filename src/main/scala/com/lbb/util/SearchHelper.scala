@@ -17,10 +17,7 @@ object SearchHelper {
       case _ => Nil;
     } // S.param("search") match
     
-    (users, S.param("login")) match {
-      case (list, Full("true")) if(list.size == 1) => users.head.loginarray
-      case _ => JsonResponse(JsArray(users.map(_.asJs)))
-    }
+    JsonResponse(JsArray(users.map(_.asJs)))
   }
   
   def usersearch(s1:String, s2:String) = {

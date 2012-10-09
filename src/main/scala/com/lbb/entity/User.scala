@@ -550,14 +550,14 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
    * This variant of login gets called when the user is logged in via User.query in apps.js, because User.query
    * defines the result as an array.
    */
-  def loginarray = {
-    val users = this :: Nil
-    // record the login in the audit log
-    AuditLog.recordLogin(this, S.request)
-    val r = JsonResponse(JsArray(users.map(_.asJs)), Nil, List(RequestHelper.cookie("userId", this)), 200)
-    debug("LOGGING IN ======================= JsonResponse=" + r.toString())
-    r
-  }
+//  def loginarray = {
+//    val users = this :: Nil
+//    // record the login in the audit log
+//    AuditLog.recordLogin(this, S.request)
+//    val r = JsonResponse(JsArray(users.map(_.asJs)), Nil, List(RequestHelper.cookie("userId", this)), 200)
+//    debug("LOGGING IN ======================= JsonResponse=" + r.toString())
+//    r
+//  }
   
   /**
    * Use this when the ajax call is User.save - where the return type is NOT an array.
@@ -566,7 +566,9 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
   def login = {
     // record the login in the audit log
     AuditLog.recordLogin(this, S.request)
-    val r = JsonResponse(this.asJs, Nil, List(RequestHelper.cookie("userId", this)), 200)
+    val r = JsonResponse(this.asJs)
+    // see the commented out method RequestHelper.cookie
+    //val r = JsonResponse(this.asJs, Nil, List(RequestHelper.cookie("userId", this)), 200)
     debug("LOGGING IN ======================= JsonResponse.toString().length()=" + r.toString().length())
     r
   }

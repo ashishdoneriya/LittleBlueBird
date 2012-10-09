@@ -1,17 +1,30 @@
-<div ng-controller="fooctrl">
+
+<div ng-controller="LoginCtrl">
+
   <div class="row">
-    <div class="span4">
-    <P>This is foo.html</P>
-    <P><a ng-href="#/foo/1">#/foo/1</a></P>
-    <P><a ng-href="#/bar/1/2">#/bar/1/2</a></P>
+    <div class="span3 well well-small">
+      foo.html
+      <span ng-hide="forgotlogin">
+		<form novalidate class="form-inline">
+		    <input type="text" title="username" placeholder="Username" ng-model="username"  class="input-small">
+		    <input type="password" title="password" placeholder="Password" ng-model="password" class="input-small">
+		    <button class="btn" ng-click="login()">Login</button> <a href="#/login" ng-click="forgotlogin=true">forgot your login?</a> 
+		</form>
+
+        <span ng-show="loginfail"><div class="alert alert-error">Wrong username/password</div></span>
+      </span>
+      <span ng-show="forgotlogin">
+		<form novalidate class="form-inline">
+		    <input type="email" title="Email" placeholder="Email" ng-model="email"  class="span2">
+		    <button class="btn" ng-click="forgotlogin=false;emailIt(email)">Email It!</button> 
+		</form>
+      </span>
       
-      
-      
-      <P><a ng-click="urlfoo()">ng-click: $scope.urlfoo()...  $location.url('foo/3');</a></P>
-      <P><a ng-click="urlbar()">ng-click: $scope.urlbar()...  $location.url('bar/4/5');</a></P>
+      <div id="fb-root"></div>
+      <div ng-controller="ConnectCtrl">
+        <span ng-click="registerWithFacebook()"><img src="img/fblogin.jpg"></span>
+      </div>
+
     </div>
-  </div>
-  <div class="row">
-    <div class="span4"><div ng-include src="'partials/foo/baz.html'"></div></div>
   </div>
 </div>

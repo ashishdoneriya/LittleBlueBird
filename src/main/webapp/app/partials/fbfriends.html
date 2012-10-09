@@ -1,0 +1,7 @@
+<div ng-controller="FacebookFriendsCtrl">
+  fbid: {{fbid}}
+  <P><a ng-click="setcookie('foo')">set cookie: foo</a> &nbsp;&nbsp; <a ng-click="setcookie('bar')">set cookie: bar</a>
+   &nbsp;&nbsp; <a ng-click="setcookie({id:1, name:'woohoo'})">set cookie: [obj]</a></P>
+  <P>foocookie_func(): {{foocookie_func()}}</P>
+  <P>foocookie: {{foocookie}}</P>
+</div>

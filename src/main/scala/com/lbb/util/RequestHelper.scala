@@ -58,10 +58,17 @@ object RequestHelper {
     }
   }
     
-  def cookie(name:String, value:User) = {
-    new HTTPCookie(name, Full(value.id.is.toString()), Empty, Empty, Full(24*60*60), Empty, Empty, Empty)
-  }
+    
+    /**
+     * Taking this out for now so I can figure out where all it's used.  Then I'll re-implement according to
+     * a new rule:  Only use LBB cookies if the user doesn't have a FB account.  Otherwise, let FB handle
+     * all the auth and cookie stuff    
+     */
+//  def cookie(name:String, value:User) = {
+//    new HTTPCookie(name, Full(value.id.is.toString()), Empty, Empty, Full(24*60*60), Empty, Empty, Empty)
+//  }
   
+    
 //  def createEmail = {
 //    Email(S.param("to").getOrElse("info@littlebluebird.com"), 
 //          S.param("from").getOrElse("info@littlebluebird.com"), 

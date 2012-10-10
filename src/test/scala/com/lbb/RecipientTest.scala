@@ -77,10 +77,11 @@ class RecipientTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     Circle.findAll.foreach(_.delete_!)
     assert(Circle.findAll.size===0)
         
-    User.findAll.foreach(_.delete_!)
+    User.findAll.foreach(_.delete_!) 
     assert(User.findAll.size===0)
 
     val brent = UserTest.createBrent
+    val brentx = UserTest.createBrentX 
     val tamie = UserTest.createTamie
     val kiera = UserTest.createKiera
     val truman = UserTest.createTruman

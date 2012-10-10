@@ -30,7 +30,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
         console.log("$routechangestart: $rootScope...");
         console.log($rootScope);
         console.log("$location.url()="+$location.url());
-        if(angular.isDefined($rootScope.user) || $location.url()=='/login' || $location.url()=='/foo/1') {
+        if(angular.isDefined($rootScope.user) || $location.url()=='/login' || $location.url()=='/whoareyou' || $location.url()=='/foo/1') {
           // don't do anything - we have what we need
         }
         else if(angular.isDefined($cookieStore.get("user"))) {

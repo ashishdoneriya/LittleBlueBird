@@ -171,6 +171,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   $scope.mergeaccount = function(user) {
     user.facebookId = User.facebookId;
     User.currentUser = user;
+    $rootScope.user = user;
     User.save({userId:user.id, facebookId:user.facebookId});
     $rootScope.$emit("userchange");                    
     $rootScope.$emit("mywishlist");                    

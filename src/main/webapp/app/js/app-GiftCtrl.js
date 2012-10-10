@@ -49,8 +49,8 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
   
   $rootScope.$on("circlechange", function(event) {
     $scope.gifts = Circle.gifts;
-    console.log("GiftCtrl:  notified of 'circlechange'...  $scope.gifts=...");
-    console.log($scope.gifts);
+    //console.log("GiftCtrl:  notified of 'circlechange'...  $scope.gifts=...");
+    //console.log($scope.gifts);
   });
   
   $scope.alertcannotedit = function() {alert('Cannot edit this item because you didn\'t add it');}

@@ -118,6 +118,8 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
                                                                                    //$scope.getfriends($rootScope.user);
                                                                                    User.showUser = $rootScope.user;
                                                                                    User.currentUser = $rootScope.user;
+                                                                                   console.log("just created an LBB account, check $rootScope.user...");
+                                                                                   console.log($rootScope.user);
                                                                                    $rootScope.$emit("userchange");                                           
                                                                                    $rootScope.$emit("mywishlist"); 
                                                                                    $location.url('welcome');
@@ -148,7 +150,7 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
                                                          // And if we happen to find several people all with the same email address and no FB id,
                                                          // we have to ask the user "who are you" and display all the people that have this email address
                                                          // "Why are you asking me?"... "What is a 'merged' account?"...  "Why do I need to 'merge' my accounts?"...
-                                                         // These are all things we have to exlain to the user on the mergeaccount page
+                                                         // These are all things we have to explain to the user on the mergeaccount page
                                                          User.multipleUsers = users;
                                                          User.email = $scope.fbuser.email;
                                                          User.facebookId = $scope.fbuser.id;

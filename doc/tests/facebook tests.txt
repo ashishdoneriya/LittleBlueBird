@@ -35,6 +35,25 @@ with LBB.  We don't send him to the Welcome page and we don't send him to the
 Getting Started page.
 
 
+TEST ****
+(Haven't documented the results of this test yet - the app probably needs some 
+tweaking to conform to the expected behavior specified below.)
+
+Person is already logged in to fb
+Person table is empty
+Person goes to *any* LBB url
+LBB sends person to Welcome page (not sure if this actually happens now)
+Person table now has a record for this person containing email and facebook id
+
+What does this Use Case represent?  It represents brand new LBB users.  Notice that
+the person is already logged in to fb - this is common enough.  This person may
+have received an email from someone else or found LBB through a search engine.  
+As soon as the person types in *any* LBB url, LBB recognizes that the person is
+already logged in to fb.  An FB permission dialog appears.  When the user clicks
+Allow, FB returns email and facebook id to LBB.  We send this person to the
+Welcome page because that's where new users go.
+
+
 
 THIS STUFF BELOW IS PROBABLY USEFUL, BUT I DECIDED TO TAKE A DIFFERENT APPROACH ABOVE.
 INSTEAD, I DECIDED TO DOCUMENT THE TESTS I HAD ACTUALLY PERFORMED RATHER THAN TRY TO

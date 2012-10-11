@@ -1,3 +1,52 @@
+
+
+
+
+Oct 2012 =========================================================================
+
+TEST ****
+Not logged in to fb
+Person table is empty
+Click "Login with FB" button
+Login as bdunklau@gmail.com/P.....
+Should get sent to Welcome page
+
+
+TEST ****
+Not logged in to fb
+Person table is populated, several people have bdunklau@gmail.com addresses,
+but no one has a facebook id yet
+Run RecipientTest to populate the person table this way
+Click "Login with FB" button
+Login as bdunklau@gmail.com/P.....
+Should get sent to the "Who Are You?" page where you see everyone that
+has the bdunklau@gmail.com address
+Click "Brent Dunklaux"
+Should get sent to "My Wish List" page
+One of the records in the person table should now have a facebook id
+
+What does this Use Case represent?  It represents "legacy" users, people that
+are already LBB users, they have just never logged in via fb before.  Moreover,
+one of these people has created accounts for others using his own email address.
+So we don't know who to assign the facebook id to.  That's why we have to first
+send them to the Who Are You page.  After clicking on one of those people, we 
+can send him to the My Wish List page because this person is already familiar
+with LBB.  We don't send him to the Welcome page and we don't send him to the
+Getting Started page.
+
+
+
+THIS STUFF BELOW IS PROBABLY USEFUL, BUT I DECIDED TO TAKE A DIFFERENT APPROACH ABOVE.
+INSTEAD, I DECIDED TO DOCUMENT THE TESTS I HAD ACTUALLY PERFORMED RATHER THAN TRY TO
+DOCUMENT ALL THE TESTS I *COULD* RUN.  DOCUMENTING ALL THE TESTS I *COULD* RUN ALWAYS
+LEFT WE WONDERING: HAVE I COVERED EVERYTHING?
+
+PLUS THE TESTS ABOVE ARE WRITTEN IN MORE OF A "HERE'S HOW YOU ACTUALLY RUN THIS TEST"
+KIND OF LANGUAGE THAT THE TESTS BELOW DON'T HAVE.
+
+
+Sept 2012 =========================================================================
+
 user: may or may not have a record in the person table
       person record may or may not have an email address
       person record may or may not have fb id

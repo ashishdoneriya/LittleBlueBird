@@ -10,7 +10,11 @@
 
 <div class="row" ng-controller="UserCtrl">
   <div class="span2 margbottom20">
-    <div class="crop150"><img height="{{adjustedheight(showUser, 150)}}" width="{{adjustedwidth(showUser, 150)}}" ng-src="{{showUser.profilepicUrl}}"/></div>
+    <div style="width:150px; height:150px; overflow:hidden;">
+      <div style="margin-top:{{profilepicmargintop}};margin-left:{{profilepicmarginleft}}">
+        <img height="{{adjustedheight(showUser, 150)}}" width="{{adjustedwidth(showUser, 150)}}" ng-src="{{showUser.profilepicUrl}}"/>
+      </div>
+    </div>
   </div>
 </div>
 

@@ -6,3 +6,6 @@ TRY THIS:
 It makes no sense, but...  foo.html at one time (maybe still is) an exact copy of login.html.  Ctrl-A/Ctrl-C on foo.html to copy
 all of it.  Then go over to login.html and do Ctrl-A/Ctrl-V to overlay foo.html on top of login.html.  The reload the page and 
 retry.  I have no idea why this works but it worked time again when I was developing/debugging this in Oct 2012.
+
+ALSO TRY THIS:
+Get a new browser window

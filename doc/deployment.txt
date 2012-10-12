@@ -44,4 +44,6 @@ Change the way the LBB page tab was added:
 In dev mode, I put this in the address bar:  http://www.facebook.com/dialog/pagetab?app_id=136122483829&next=http://localhost:8080/gf/app/
 Obviously, this also needs to change to:     http://www.facebook.com/dialog/pagetab?app_id=136122483829&next=http://www.littlebluebird.com/gf/app/
 
+In facebook.js, change the channelUrl
+
 Emailer:  Change the image of the little blue bird to where it is on the new webapp

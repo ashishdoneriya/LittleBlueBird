@@ -32,16 +32,41 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
         console.log("$location.url()="+$location.url());
         if(angular.isDefined($rootScope.user) || $location.url()=='/login' || $location.url()=='/whoareyou' || $location.url()=='/foo/1') {
           // don't do anything - we have what we need
+          $rootScope.templates = newRoute.$route.templates;
+          $rootScope.layoutController = newRoute.$route.controller;
         }
         else if(angular.isDefined($cookieStore.get("user"))) {
           $rootScope.user = $cookieStore.get("user");
+          $rootScope.templates = newRoute.$route.templates;
+          $rootScope.layoutController = newRoute.$route.controller;
         }
         else {
-          $location.url('login');
+          console.log("$location.url()="+$location.url());
+          // here's where you check to see if the user is logged in to fb
+          connected = function(res) {
+                console.log("connected()---");
+                $rootScope.templates = newRoute.$route.templates;
+                $rootScope.layoutController = newRoute.$route.controller;
+          }
+          notauthorized = function(res) {
+                console.log("notauthorized()---");
+                $location.url('login');
+                $rootScope.templates = newRoute.$route.templates;
+                $rootScope.layoutController = newRoute.$route.controller;
+          }
+          unknown = function(res) {
+                console.log("unknown()---");
+                $location.url('login');
+                $rootScope.templates = newRoute.$route.templates;
+                $rootScope.layoutController = newRoute.$route.controller;
+          }
+          facebookConnect.getLoginStatus(connected, notauthorized, unknown);
+          
+          //$location.url('login');
+          //$rootScope.templates = newRoute.$route.templates;
+          //$rootScope.layoutController = newRoute.$route.controller;
         }
 
-        $rootScope.templates = newRoute.$route.templates;
-        $rootScope.layoutController = newRoute.$route.controller;
 
         
     }); // $rootScope.$on('$routeChangeStart', function(scope, newRoute)
@@ -272,11 +297,17 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
             }, {scope:'email',perms:'publish_stream'});
         }
         
-        this.getLoginStatus = function(callback, ok, fail) {
+        this.getLoginStatus = function(connected, notauthorized, unknown) {
           FB.getLoginStatus(function(response) {
-            console.log("response...");
-            console.log(response);
-            callback(response, ok, fail);
+            if(response.status == 'connected') {
+              connected(response);
+            }
+            else if(response.status == 'not_authorized') {
+              notauthorized(response);
+            }
+            else {
+              unknown(response);
+            }
           });
         }
         

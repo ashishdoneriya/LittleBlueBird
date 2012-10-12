@@ -91,10 +91,10 @@
 
 .crop100 { width: 100px; height: 100px; overflow: hidden; float:left;  }
 
-.crop150 { width: 150px; height: 150px; overflow: hidden;  }
+.crop150X { width: 150px; height: 150px; overflow: hidden;  }
 
-.crop150 img { 
-  margin:0px 0px 0px 0px; 
+.crop150X imgX { 
+  margin:0px 0px 0px -24px; 
 }
 
 .font12 { font-size:12px; }

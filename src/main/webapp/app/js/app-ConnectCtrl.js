@@ -39,26 +39,31 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
     }
 
     $rootScope.$on("getfriends", function(event) {
-      $scope.user = User.currentUser;
-      $scope.getfriends($scope.user);
+      $rootScope.user = User.currentUser;
+      $scope.getfriends($rootScope.user);
     });
     
-    $scope.getfriends = function(user) {
+    $scope.getfriends = function() {
+      console.log("$scope.getfriends()");
       facebookFriends.getfriends(function(fail){alert(fail);}, 
                                  function(friends) {
-                                   //if(angular.isDefined(user.friends)) user.friends.splice(0, user.friends.length); else user.friends = [];
+                                   //if(angular.isDefined($rootScope.user.friends)) $rootScope.user.friends.splice(0, $rootScope.user.friends.length); else $rootScope.user.friends = [];
                                    var savethesefriends = [];
                                    for(var i=0; i < friends.data.length; i++) {
                                      //console.log("friends.data[i].name="+friends.data[i].name);
                                      friends.data[i].fullname = friends.data[i].name;
                                      friends.data[i].profilepicUrl = "http://graph.facebook.com/"+friends.data[i].id+"/picture?type=large";
                                      savethesefriends.push(friends.data[i]);
+                                     //$rootScope.user.friends = friends;
                                    }
+                                   console.log("$scope.getfriends():  $emit(\"userchange\")");
+                                   $rootScope.$emit("userchange");
                                    
+                                   // rethinking this...
                                    console.log("saving friends 1");
                                    // will write each friend to the person table and write a record to the friends table for each friend to associate the user with all his friends
-                                   var saveduser = User.save({userId:user.id, friends:savethesefriends}, 
-                                             function() {user = saveduser; console.log("user.friends.length="+user.friends.length)});
+                                   var saveduser = User.save({userId:$rootScope.user.id, friends:savethesefriends}, 
+                                             function() {$rootScope.user = saveduser; console.log("$rootScope.user.friends.length="+$rootScope.user.friends.length)});
                                    
                                  }
                                 )
@@ -88,7 +93,8 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
             // could get more than one person back - parent + children
             var users = UserSearch.query({login:true, search:$scope.fbuser.email}, 
                                           function(){
-                                                     console.log(users[0]);
+                                                     //console.log(users[0]);
+                                                     
                                                      // Now look for the user that has the right facebook id.  There might not be one though - if the user hasn't yet "merged" his LBB account with his FB account
                                                      var alreadymergedaccount = false;
                                                      for(var i=0; i < users.length; i++) {
@@ -98,15 +104,16 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
                                                          $rootScope.user = users[i];
                                                        }
                                                      }
-                                                     console.log("alreadymergedaccount="+alreadymergedaccount);
+                                                     console.log("$scope.initfbuser():  $rootScope.user="+$rootScope.user);
                                                      if(alreadymergedaccount) {
-                                                       console.log("alreadymergedaccount");
+                                                       console.log("alreadymergedaccount - $emit commented out");
                                                        //if(User.currentUser.friends.length == 0)
                                                        //  $scope.getfriends(User.currentUser);
                                                        //else
                                                        //  console.log("already have friends - not getting them again");
-                                                       $rootScope.$emit("userchange");
-                                                       $rootScope.$emit("mywishlist");
+                                                       
+                                                       //$rootScope.$emit("userchange");
+                                                       //$rootScope.$emit("mywishlist");
                                                        $location.url('mywishlist');
                                                      } 
                                                      else { // ...but in the beginning, this is what will happen - no record in our person table contains this facebookId
@@ -130,7 +137,8 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
                                                          users[0].facebookId = $scope.fbuser.id;
                                                          User.currentUser = users[0];
                                                          User.showUser = users[0];
-                                                         //$scope.getfriends(User.currentUser);
+                                                         $rootScope.user = users[0];
+                                                         $scope.getfriends();
                                                          console.log("users.length == 1:  users[0].profilepicUrl...");
                                                          console.log(users[0].profilepicUrl);
                                                          var placeholderPic = "http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg";
@@ -161,5 +169,5 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
                                                      *******************/
                                                     },
                                           function() {alert("Could not log you in at this time\n(error code 201)");});
-    } //end $scope.initfbuserBIGMESS
+    } //end $scope.initfbuser
 }

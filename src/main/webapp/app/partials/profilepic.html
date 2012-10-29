@@ -12,7 +12,7 @@
   <div class="span2 margbottom20">
     <div style="width:150px; height:150px; overflow:hidden;">
       <div style="margin-top:{{profilepicmargintop}};margin-left:{{profilepicmarginleft}}">
-        <img height="{{adjustedheight(showUser, 150)}}" width="{{adjustedwidth(showUser, 150)}}" ng-src="{{showUser.profilepicUrl}}"/>
+        <img height="{{adjustedheight(showUser(), 150)}}" width="{{adjustedwidth(showUser(), 150)}}" ng-src="{{showUser().profilepicUrl}}"/>
       </div>
     </div>
   </div>

@@ -54,10 +54,11 @@
           <a class="align-top bold" href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
             {{friend.fullname}}
           </a> 
-          <span ng-show="friend.facebookId != null && friend.facebookId != ''" ng-controller="ConnectCtrl">
-            <span ng-show="friend.fbreqid == ''"><P><a class="uibutton" ng-click="fbinvite(friend)">Invite</a></P></span>
-            <span ng-show="friend.fbreqid != '' && friend.email == ''"><P>Invited</P></span>
-            <span ng-show="friend.email != ''"><P>Accepted</P></span>
+          <span ng-controller="ConnectCtrl">
+            <span ng-show="shouldInvite(friend)"><P><a class="uibutton" ng-click="fbinvite(friend)">Invite</a></P></span>
+            <span ng-show="appRequestHasBeenSent(friend)"><P>App request sent</P></span>
+            <span ng-show="appRequestAccepted(friend)"><P>App request accepted</P></span>
+            <span ng-show="isAlreadyAUser(friend)"><P>Already uses this app</P></span>
           </span>
         </div>
       </div>

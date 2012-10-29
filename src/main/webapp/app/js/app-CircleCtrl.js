@@ -81,7 +81,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   }
   
   $scope.createonthefly = function(newuser, thecircle) {
-    anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth, creatorId:$scope.user.id, creatorName:$scope.user.fullname}, 
+    anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
                                   function() {$scope.addparticipant2(anewuser, thecircle); $scope.addmethod = 'byname'; $scope.usersearch = ''; $scope.search = '';}
                                 );
   }
@@ -111,7 +111,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   });
 
   $rootScope.$on("userchange", function(event) {
-    $scope.user = User.currentUser;
+    $rootScope.user = User.currentUser;
   });
 
   //$rootScope.$on("usersearchresults", function(event) {
@@ -129,9 +129,9 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
                         $scope.people.splice(0, $scope.people.length); // effectively refreshes the people list
                         
                         // uncomment for facebook integration
-                        //for(var i=0; i < $scope.user.friends.length; i++) {
-                        //  if(!lbbNamesContainFbName(lbbpeople, $scope.user.friends[i].fullname))
-                        //    $scope.people.push($scope.user.friends[i]);
+                        //for(var i=0; i < $rootScope.user.friends.length; i++) {
+                        //  if(!lbbNamesContainFbName(lbbpeople, $rootScope.user.friends[i].fullname))
+                        //    $scope.people.push($rootScope.user.friends[i]);
                         //}
                         for(var i=0; i < lbbpeople.length; i++) {
                           $scope.people.push(lbbpeople[i]);
@@ -181,8 +181,8 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
                  participants:circle.participants, creatorId:circle.creatorId},
                  function() {
                    if(!angular.isDefined(circle.id))
-                     $scope.user.circles.push(savedcircle); 
-                   User.currentUser=$scope.user; 
+                     $rootScope.user.circles.push(savedcircle); 
+                   User.currentUser=$rootScope.user; 
                    $rootScope.$emit("userchange");
                  } 
                );
@@ -194,8 +194,8 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     $scope.people = {};
     Circle.circleType = thetype;
     $location.url($location.path());
-    $scope.newcircle = {name:'', creatorId:$scope.user.id, receiverLimit:limit, participants:{receivers:[], givers:[]}};
-    $scope.circlecopies = angular.copy($scope.user.circles);
+    $scope.newcircle = {name:'', creatorId:$rootScope.user.id, receiverLimit:limit, participants:{receivers:[], givers:[]}};
+    $scope.circlecopies = angular.copy($rootScope.user.circles);
   }
   
   $scope.editcircleFunction = function(circle) {
@@ -204,21 +204,21 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     for(var i=0; i < $scope.thecircle.participants.receivers.length; i++) {
       console.log($scope.circle.participants.receivers[i]);
     }
-    $scope.circlecopies = angular.copy($scope.user.circles);
+    $scope.circlecopies = angular.copy($rootScope.user.circles);
   }
   
   // TODO add reminder
   $scope.addmyselfasreceiver = function(circle) {
     $scope.participationlevel = 'Receiver'
-    $scope.addparticipant2($scope.user, circle)
-    //circle.participants.receivers.push($scope.user);
+    $scope.addparticipant2($rootScope.user, circle)
+    //circle.participants.receivers.push($rootScope.user);
   }
   
   // TODO add reminder
   $scope.addmyselfasgiver = function(circle) {
     $scope.participationlevel = 'Giver'
-    $scope.addparticipant2($scope.user, circle)
-    //circle.participants.givers.push($scope.user);
+    $scope.addparticipant2($rootScope.user, circle)
+    //circle.participants.givers.push($rootScope.user);
   }
   
   $scope.getType = function() {return Circle.circleType;}
@@ -251,8 +251,8 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     // if the circle already exists, add the participant to the db immediately
     if(angular.isDefined(circle.id)) {
       //alert("circle.id="+circle.id+"\n $scope.participationlevel="+$scope.participationlevel);
-      var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:$scope.participationlevel,
-                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$scope.user.fullname},
+      var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$rootScope.user.id, userId:person.id, participationLevel:$scope.participationlevel,
+                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$rootScope.user.fullname},
                                          function() {$scope.circle.reminders = Reminder.query({circleId:$scope.circle.id})});
     }
   }
@@ -315,9 +315,9 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   // TODO delete reminders
   $scope.deletecircle = function(circle, index) {
     Circle.save({circleId:circle.id, datedeleted:new Date().getTime()},
-                function() {$scope.user.circles.splice(index, 1); 
-                            User.currentUser=$scope.user; 
-                            if($scope.user.circles.length > 0) {circle = $scope.user.circles[0]; Circle.currentCircle = $scope.user.circles[0];}
+                function() {$rootScope.user.circles.splice(index, 1); 
+                            User.currentUser=$rootScope.user; 
+                            if($rootScope.user.circles.length > 0) {circle = $rootScope.user.circles[0]; Circle.currentCircle = $rootScope.user.circles[0];}
                             else {circle = {}; Circle.currentCircle = {};}
                             $rootScope.$emit("userchange"); 
                             $rootScope.$emit("circlechange");});

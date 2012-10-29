@@ -29,7 +29,7 @@ function LoginCtrl($document, $window, $rootScope, $cookieStore, $scope, $locati
     var someusers = User.query({fbreqid:$scope.facebookreqids}, 
                                function() {
                                  // TODO might be good to have an "oops" page just in case the request_ids doesn't match anyone - if someone is monkeying with the url
-                                 $scope.user = someusers[0]; 
+                                 $rootScope.user = someusers[0]; 
                                  
                                  // We've identified the new user by facebook request id.  Now we're going to go through the FB login process
                                  // because we know the person is logged in to FB (they just came from there).
@@ -40,7 +40,7 @@ function LoginCtrl($document, $window, $rootScope, $cookieStore, $scope, $locati
 						             function(userfromfb) { // success
 						             
                                        // I only need these 3 parms...
-                                       saveduser = User.save({login:true, userId:$scope.user.id, email:userfromfb.email}, 
+                                       saveduser = User.save({login:true, userId:$rootScope.user.id, email:userfromfb.email}, 
                                                              function() { 
                                                                User.showUser = saveduser;
                                                                User.currentUser = saveduser;
@@ -68,11 +68,10 @@ function LoginCtrl($document, $window, $rootScope, $cookieStore, $scope, $locati
     
       console.log("scope.login:  made it this far at least");
       
-    $scope.user = User.find({username:$scope.username, password:$scope.password}, 
+    $rootScope.user = User.find({username:$scope.username, password:$scope.password}, 
                                function() {$scope.loginfail=false; 
-                                           if($scope.user.dateOfBirth == 0) { $scope.user.dateOfBirth = ''; }
-                                           $rootScope.user = $scope.user;
-                                           User.currentUser = $scope.user;
+                                           if($rootScope.user.dateOfBirth == 0) { $rootScope.user.dateOfBirth = ''; }
+                                           User.currentUser = $rootScope.user;
                                            User.showUser = User.currentUser;  
                                            // uncomment for facebook integration
                                            //$scope.getfriends(User.currentUser);                                       
@@ -88,7 +87,7 @@ function LoginCtrl($document, $window, $rootScope, $cookieStore, $scope, $locati
   $scope.logout = function() {
     Logout.logout({});   
     User.currentUser = x; 
-    $scope.user = x;
+    $rootScope.user = x;
     console.log("logging out");                                      
     $rootScope.$emit("userchange");
     //alert("logout");

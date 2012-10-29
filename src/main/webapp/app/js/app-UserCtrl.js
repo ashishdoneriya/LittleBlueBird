@@ -7,13 +7,13 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   //console.log("UserCtrl called");
   
   $scope.userExists = function() {
-    console.log("scope.userExists:  true (HARD-CODED)");
+    //console.log("scope.userExists:  true (HARD-CODED)");
     return true;
   }
   
   $scope.userExistsWORKONTHIS = function() {
-    if(angular.isDefined($scope.user) && angular.isDefined($scope.user.id)) {
-      //console.log("$scope.userExists():  return true because $scope.user is defined");
+    if(angular.isDefined($rootScope.user) && angular.isDefined($rootScope.user.id)) {
+      //console.log("$scope.userExists():  return true because $rootScope.user is defined");
       return true;
     }
     else if($scope.lookingforuser) {
@@ -22,7 +22,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
     }
     else {
       $scope.lookingforuser = true;
-      //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because there's no $scope.user yet...");
+      //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because there's no $rootScope.user yet...");
       
       // see if the user is logged in to FB
       FB.getLoginStatus(function(response) {
@@ -47,14 +47,14 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
           
           // maybe there's an LBB cookie because they don't have a FB account...
           if(angular.isDefined($cookieStore.get("userId"))) {
-            //console.log("$scope.userExists():  $scope.user is not defined, but there is a userId cookie: emit userchange");
-            $scope.user = User.find({userId:$cookieStore.get("userId")}, 
-                      function(){User.currentUser = $scope.user; 
+            //console.log("$scope.userExists():  $rootScope.user is not defined, but there is a userId cookie: emit userchange");
+            $rootScope.user = User.find({userId:$cookieStore.get("userId")}, 
+                      function(){User.currentUser = $rootScope.user; 
                                  $scope.lookingforuser = false;
                                  //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because we found the LBB cookie: userId");
-                                 //console.log("$scope.user.id="+$scope.user.id); 
-                                 //console.log("$scope.user.first="+$scope.user.first); 
-                                 //console.log($scope.user); 
+                                 //console.log("$rootScope.user.id="+$rootScope.user.id); 
+                                 //console.log("$rootScope.user.first="+$rootScope.user.first); 
+                                 //console.log($rootScope.user); 
                                  $rootScope.$emit("userchange");}
                       );
           } // if(angular.isDefined($cookieStore.get("userId")))
@@ -80,7 +80,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   
     
   // originally, this was in ConnectCtrl - don't know if we'll still need it there or not
-  $scope.initfbuser = function(user) {
+  $scope.initfbuserSTILLUSINGTHIS = function(user) {
       $scope.fbuser = user;
       console.log("$scope.initfbuser:  $scope.fbuser...");
       console.log($scope.fbuser);
@@ -92,15 +92,15 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
                       console.log("scope.initfbuser:  found "+users.length+" people with this email: "+$scope.fbuser.email); 
                       if(users.length == 1) {
                         console.log(users[0]);
-                        $scope.user = users[0];
-                        User.save({login:true, userId:$scope.user.id, facebookId:$scope.fbuser.id});
+                        $rootScope.user = users[0];
+                        User.save({login:true, userId:$rootScope.user.id, facebookId:$scope.fbuser.id});
                       }  
                       else if(users.length == 0) {
-                        $scope.user = User.save({login:true, fullname:$scope.fbuser.first_name+' '+$scope.fbuser.last_name, first:$scope.fbuser.first_name, last:$scope.fbuser.last_name, username:$scope.fbuser.email, email:$scope.fbuser.email, password:$scope.fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+$scope.fbuser.id+'/picture?type=large', facebookId:$scope.fbuser.id}, 
+                        $rootScope.user = User.save({login:true, fullname:$scope.fbuser.first_name+' '+$scope.fbuser.last_name, first:$scope.fbuser.first_name, last:$scope.fbuser.last_name, username:$scope.fbuser.email, email:$scope.fbuser.email, password:$scope.fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+$scope.fbuser.id+'/picture?type=large', facebookId:$scope.fbuser.id}, 
                                           function() { 
-                                            //$scope.getfriends($scope.user);
-                                            User.showUser = $scope.user;
-                                            User.currentUser = $scope.user;
+                                            //$scope.getfriends($rootScope.user);
+                                            User.showUser = $rootScope.user;
+                                            User.currentUser = $rootScope.user;
                                             $rootScope.$emit("userchange");                                           
                                             $rootScope.$emit("mywishlist"); 
                                             $location.url('welcome');
@@ -114,8 +114,8 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
                         for(var i=0; i < users.length; i++) {
                           if(users[i].facebookId == $scope.fbuser.id && !userfound) {
                             userfound = true;
-                            $scope.user = users[i];  // FOUND $scope.user !
-                            User.currentUser = $scope.user;
+                            $rootScope.user = users[i];  // FOUND $rootScope.user !
+                            User.currentUser = $rootScope.user;
                             $rootScope.$emit("userchange");  
                           }
                         }
@@ -135,37 +135,37 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   } // end $scope.initfbuser
   
   
-  //$scope.showUser = $scope.user; //User.showUser;
+  //$rootScope.showUser = $rootScope.user; //User.showUser;
   $scope.multipleusers = function() { console.log("multipleusers() called"); return User.multipleUsers; }
   $scope.sharedemail = function() { return User.email; }
   
   $scope.showaccepted = function() {
-    console.log("$scope.user.friends.length="+$scope.user.friends.length);
-    for(var i=0; i < $scope.user.friends.length; i++) {
-      if($scope.user.friends[i].email != '')
-        $scope.user.friends[i].show = true;
+    console.log("$rootScope.user.friends.length="+$rootScope.user.friends.length);
+    for(var i=0; i < $rootScope.user.friends.length; i++) {
+      if($rootScope.user.friends[i].email != '')
+        $rootScope.user.friends[i].show = true;
       else
-        $scope.user.friends[i].show = false;
+        $rootScope.user.friends[i].show = false;
     }
   }
   
   $scope.showinvited = function() {
-    for(var i=0; i < $scope.user.friends.length; i++) {
-      if($scope.user.friends[i].fbreqid != '' && $scope.user.friends[i].email == '')
-        $scope.user.friends[i].show = true;
+    for(var i=0; i < $rootScope.user.friends.length; i++) {
+      if($rootScope.user.friends[i].fbreqid != '' && $rootScope.user.friends[i].email == '')
+        $rootScope.user.friends[i].show = true;
       else
-        $scope.user.friends[i].show = false;
+        $rootScope.user.friends[i].show = false;
     }
   }
   
   $scope.showall = function() {
-    for(var i=0; i < $scope.user.friends.length; i++) {
-      $scope.user.friends[i].show = true;
+    for(var i=0; i < $rootScope.user.friends.length; i++) {
+      $rootScope.user.friends[i].show = true;
     }
   }
   
   $scope.resendWelcomeEmail = function() {
-    Email.send({type:'welcome', from:'info@littlebluebird.com', user:$scope.user}, function() {}, function() {});
+    Email.send({type:'welcome', from:'info@littlebluebird.com', user:$rootScope.user}, function() {}, function() {});
   }
   
   $scope.mergeaccount = function(user) {
@@ -180,10 +180,10 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   
   $scope.nocirclemessage = {title:'', message:''};
   $scope.hasActiveCircles = function() {
-    if(!angular.isDefined($scope.user))
+    if(!angular.isDefined($rootScope.user))
       return;
-    for(var i=0; i < $scope.user.circles.length; i++) {
-      if($scope.user.circles[i].date > new Date().getTime()) {
+    for(var i=0; i < $rootScope.user.circles.length; i++) {
+      if($rootScope.user.circles[i].date > new Date().getTime()) {
         $scope.nocirclemessage = {title:'', message:''};
         return;
       }
@@ -199,14 +199,14 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
     var mindim = auser.profilepicheight < auser.profilepicwidth ? auser.profilepicheight : auser.profilepicwidth
     var ratio = mindim > limit ? limit / mindim : 1;
     var adj = ratio * auser.profilepicheight;
-    console.log("adjusted height="+adj);
+    //console.log("adjusted height="+adj);
     if(adj > limit) {
       topmargin = -1 * Math.round((adj - limit)/2);
-      console.log("$scope.adjustedheight: adj > limit:  adj="+adj+",  limit="+limit+",  topmargin="+topmargin);
+      //console.log("$scope.adjustedheight: adj > limit:  adj="+adj+",  limit="+limit+",  topmargin="+topmargin);
     }
     else {
       topmargin = 0;
-      console.log("$scope.adjustedheight: else:  adj="+adj+",  limit="+limit+",  topmargin="+topmargin);
+      //console.log("$scope.adjustedheight: else:  adj="+adj+",  limit="+limit+",  topmargin="+topmargin);
     }
     $scope.profilepicmargintop = topmargin + 'px';
     return adj;
@@ -221,7 +221,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
     var mindim = auser.profilepicheight < auser.profilepicwidth ? auser.profilepicheight : auser.profilepicwidth
     var ratio = mindim > limit ? limit / mindim : 1;
     var adj = ratio * auser.profilepicwidth;
-    console.log("adjusted width="+adj);
+    //console.log("adjusted width="+adj);
     if(adj > limit)
       left = -1 * Math.round((adj - limit)/2);
     else
@@ -233,15 +233,15 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   // "my wish list" call
   $scope.mywishlist = function() {
     console.log("check scope.user.id...");
-    console.log($scope.user.id);
-    gifts = Gift.query({viewerId:$scope.user.id}, 
+    console.log($rootScope.user.id);
+    gifts = Gift.query({viewerId:$rootScope.user.id}, 
                             function() { 
                               Circle.gifts = gifts; 
                               Circle.gifts.mylist=true;
                               var x;
                               Circle.currentCircle = x; 
-                              User.currentUser = $scope.user;
-                              User.showUser = $scope.user;
+                              User.currentUser = $rootScope.user;
+                              User.showUser = $rootScope.user;
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 
                             }, 
@@ -249,17 +249,20 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   }
   
   $scope.myaccount = function() {
-    User.currentUser = $scope.user;
-    User.showUser = $scope.user;
+    User.currentUser = $rootScope.user;
+    User.showUser = $rootScope.user;
     $rootScope.$emit("userchange");
   }
+  
+  // THIS IS WRONG - IT'S NOT ALWAYS THE CURRENT USER !!
+  $scope.showUser = function() { return $rootScope.user }
   
   $scope.loginpage = function() {
     $location.url('login');
   }
   
   $scope.save = function(user) {
-    $scope.user = User.save({fullname:user.fullname, first:user.first, last:user.last, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirth}, 
+    $rootScope.user = User.save({fullname:user.fullname, first:user.first, last:user.last, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirth}, 
                                   function() {
                                     $location.url('giftlist'); 
                                   }
@@ -267,16 +270,60 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   }
 
   $rootScope.$on("userchange", function(event) {
-    $scope.user = User.currentUser;
-    $scope.showUser = User.showUser;
+    $rootScope.user = User.currentUser;
+    $rootScope.showUser = User.showUser;
   });
-
+  
   $rootScope.$on("mywishlist", function(event) {
     $scope.mywishlist();
   });
   
-  if(angular.isDefined($route.current.params.showUserId) && !angular.isDefined($scope.showUser)) {
-    $scope.showUser = User.find({userId:$route.current.params.showUserId}, function() {}, function() {alert("Could not find user "+$route.current.params.showUserId);})
+  // Based on the person's facebook id (or lack thereof), and email address and facebook request id,
+  // should we be able to invite this person/send him an app request?
+  // If the person has a facebook id but no email or facebook request id on file, then we should
+  // be able to send an app request to this person
+  $scope.shouldInvite = function(friend) {
+    var hasfbid = friend.facebookId != null && friend.facebookId != ''
+    var noemail = friend.email == null || friend.email == '';
+    var nofbreqid = friend.fbreqid == null || friend.fbreqid == '';
+    var invite = hasfbid && noemail && nofbreqid;
+    //console.log("$scope.shouldInvite():  invite="+invite);
+    return invite
+  }
+  
+  // Has an app request been sent to this user, but not yet accepted?
+  // Yes, if the friend has a facebook id, no email, but does have a facebook request id on file
+  $scope.appRequestHasBeenSent = function(friend) {
+    var hasfbid = friend.facebookId != null && friend.facebookId != ''
+    var noemail = friend.email == null || friend.email == '';
+    var hasfbreqid = friend.fbreqid != null && friend.fbreqid != '';
+    var hasbeensent = hasfbid && noemail && hasfbreqid
+    //console.log("$scope.appRequestHasBeenSent():  hasbeensent="+hasbeensent);
+    return hasbeensent;
+  }
+  
+  $scope.appRequestAccepted = function(friend) {
+    var hasfbid = friend.facebookId != null && friend.facebookId != ''
+    var hasemail = friend.email != null && friend.email != '';
+    var hasfbreqid = friend.fbreqid != null && friend.fbreqid != '';
+    var hasbeenaccepted = hasfbid && hasemail && hasfbreqid;
+    //console.log("$scope.appRequestAccepted():  hasbeenaccepted="+hasbeenaccepted);
+    return hasbeenaccepted;
+  } 
+  
+  // Some people may be users but they weren't invited.  These people will have
+  // facebook id's and email addresses.  They just won't have a facebook request id on file
+  $scope.isAlreadyAUser = function(friend) {
+    var hasfbid = friend.facebookId != null && friend.facebookId != ''
+    var hasemail = friend.email != null && friend.email != '';
+    var nofbreqid = friend.fbreqid == null || friend.fbreqid == '';
+    var alreadyuser = hasfbid && hasemail && nofbreqid;
+    console.log("$scope.isAlreadyAUser():  alreadyuser="+alreadyuser);
+    return alreadyuser;
+  }
+  
+  if(angular.isDefined($route.current.params.showUserId) && !angular.isDefined($rootScope.showUser)) {
+    $rootScope.showUser = User.find({userId:$route.current.params.showUserId}, function() {}, function() {alert("Could not find user "+$route.current.params.showUserId);})
   }
   
   // duplicated in RegisterCtrl

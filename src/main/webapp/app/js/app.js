@@ -245,10 +245,10 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
 
 function RegisterCtrl($scope, User, $rootScope, $location) {
   $scope.save = function(newuser) {
-    $scope.user = User.save({login:true, fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth}, 
+    $rootScope.user = User.save({login:true, fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth}, 
                                   function() { 
-                                    User.showUser = $scope.user;
-                                    User.currentUser = $scope.user;
+                                    User.showUser = $rootScope.user;
+                                    User.currentUser = $rootScope.user;
                                     $location.url('welcome');
                                   }
                                 );
@@ -267,8 +267,8 @@ function RegisterCtrl($scope, User, $rootScope, $location) {
   } 
 
   $rootScope.$on("userchange", function(event) {
-    $scope.user = User.currentUser;
-    $scope.showUser = User.showUser;
+    $rootScope.user = User.currentUser;
+    $rootScope.showUser = User.showUser;
   });
 }
 

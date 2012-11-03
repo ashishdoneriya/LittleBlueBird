@@ -1,6 +1,5 @@
 
-<div ng-controller="UserCtrl">
-<div ng-controller="GiftCtrl">
+<div ng-controller="FriendCtrl">
 
 
 <div class="navbar">
@@ -41,7 +40,7 @@
   <div class="span7">
     <div class="row">
       <div class="span3 margbottom5 align-top">
-        <div ng-repeat="friend in user.friends">
+        <div ng-repeat="friend in friends">
 
       <span ng-show="$index % 2 == 0 && (friend.show || friend.show==null)">  
       <div class="row">
@@ -67,7 +66,7 @@
         </div>
       </div>
       <div class="span3 offset1 margbottom5 align-top">
-        <div ng-repeat="friend in user.friends">
+        <div ng-repeat="friend in friends">
       
       <span ng-show="$index % 2 == 1 && (friend.show || friend.show==null)">    
       <div class="row">
@@ -91,10 +90,18 @@
       
         </div>
       </div>
+      
     </div>
+    
+    <div class="row">
+      <div class="span7 black">
+        <a ng-click="previousFriends()">previous</a> | <a ng-click="nextFriends()">next</a>
+      </div>
+    </div>
+      
+      
   </div>
 </div>
 
 
-</div>
 </div>

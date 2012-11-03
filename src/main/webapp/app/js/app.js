@@ -172,6 +172,32 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
 
       return Email;
   })
+  .factory('indexHolder', function() {
+    var limit=20;
+    var offset=0;
+  
+    var modify = {};
+  
+    modify.next = function() {
+      offset = offset + limit;
+      return offset;
+    };
+  
+    modify.previous = function() {
+      offset = offset - limit;
+      return offset;
+    };
+  
+    modify.limit = function() {
+      return limit;
+    };
+  
+    modify.offset = function() {
+      return offset;
+    };
+  
+    return modify; // returning this is very important
+  })
   .directive('btnEditCircle', function(){
       return {
         scope: false,
@@ -316,22 +342,17 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
 })
 .factory('facebookFriends', function() {
   return new function() {
-    this.getfriends = function(fail, success) {
-      FB.api('/me/friends', success);
-    }
-  }
-})
-.factory('facebookAppRequest', function() {
-  return new function() {
-    this.getfriends = function(fail, success) {
-      FB.api('/me/friends', success);
+    this.getfriends = function(offset, limit, fail, success) {
+      var url = '/me/friends?offset='+offset+'&limit='+limit;
+      console.log("facebookFriends.getfriends():  url="+url);
+      FB.api(url, success);
     }
   }
 });
 
 
 // These args need to be in the same order and the same number as the arg's in the function decl in app-ConnectCtrl
-ConnectCtrl.$inject = ['facebookConnect', 'facebookFriends', '$scope', '$rootScope', '$resource', '$location', 'UserSearch', 'User'];
+ConnectCtrl.$inject = ['facebookConnect', 'facebookFriends', '$scope', '$rootScope', '$resource', '$location', 'UserSearch', 'User', 'indexHolder'];
 
 function NavCtrl($scope) {
   $scope.navstate = function(compare) {

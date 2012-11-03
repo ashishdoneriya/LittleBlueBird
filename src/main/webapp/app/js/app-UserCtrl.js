@@ -6,6 +6,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   
   //console.log("UserCtrl called");
   
+  
   $scope.userExists = function() {
     //console.log("scope.userExists:  true (HARD-CODED)");
     return true;
@@ -278,6 +279,10 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
     $scope.mywishlist();
   });
   
+  $rootScope.$on("$viewContentLoaded", function(event) {
+    console.log("UserCtrl:  $rootScope.$on('$viewContentLoaded'...");
+  });
+  
   // Based on the person's facebook id (or lack thereof), and email address and facebook request id,
   // should we be able to invite this person/send him an app request?
   // If the person has a facebook id but no email or facebook request id on file, then we should
@@ -318,7 +323,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
     var hasemail = friend.email != null && friend.email != '';
     var nofbreqid = friend.fbreqid == null || friend.fbreqid == '';
     var alreadyuser = hasfbid && hasemail && nofbreqid;
-    console.log("$scope.isAlreadyAUser():  alreadyuser="+alreadyuser);
+    //console.log("$scope.isAlreadyAUser():  alreadyuser="+alreadyuser);
     return alreadyuser;
   }
   

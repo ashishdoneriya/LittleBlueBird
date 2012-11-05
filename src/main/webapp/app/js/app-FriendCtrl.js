@@ -17,7 +17,7 @@ function FriendCtrl($scope, $rootScope, User, facebookFriends, indexHolder) {
                                    for(var i=0; i < friends.data.length; i++) {
                                      //console.log("friends.data[i].name="+friends.data[i].name);
                                      friends.data[i].fullname = friends.data[i].name;
-                                     friends.data[i].profilepicUrl = "http://graph.facebook.com/"+friends.data[i].id+"/picture?type=large";
+                                     friends.data[i].profilepicUrl = "http://graph.facebook.com/"+friends.data[i].id+"/picture?type=square";
                                      fbfriends.push(friends.data[i]);
                                    }
 
@@ -51,5 +51,7 @@ function FriendCtrl($scope, $rootScope, User, facebookFriends, indexHolder) {
  
     $scope.nextFriends = function() {
       $scope.getfriends(indexHolder.next(), indexHolder.limit());
+      console.log("$scope.nextFriends:  $scope.$apply() ------------");
+      $scope.$apply();
     }
 }

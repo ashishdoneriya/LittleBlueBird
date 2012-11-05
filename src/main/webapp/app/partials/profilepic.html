@@ -11,7 +11,7 @@
 <div class="row" ng-controller="UserCtrl">
   <div class="span2 margbottom20">
     <div style="width:150px; height:150px; overflow:hidden;">
-      <div style="margin-top:{{profilepicmargintop}};margin-left:{{profilepicmarginleft}}">
+      <div style="margin-top:{{margintop(showUser(), 150)}};margin-left:{{marginleft(showUser(), 150)}}">
         <img height="{{adjustedheight(showUser(), 150)}}" width="{{adjustedwidth(showUser(), 150)}}" ng-src="{{showUser().profilepicUrl}}"/>
       </div>
     </div>

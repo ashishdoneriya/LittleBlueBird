@@ -76,6 +76,26 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
     $rootScope.$on('$routeChangeSuccess', function(scope, newRoute) {
       console.log("routeChangeSuccess");
     } )
+  })
+  .run(function($rootScope, dimAdjuster) {
+
+    // adjust dims for large profile pics
+    $rootScope.adjustedheight = function(auser, limit) { 
+      return dimAdjuster.adjustedheight(auser, limit);
+    }
+    
+    $rootScope.adjustedwidth = function(auser, limit) { 
+      return dimAdjuster.adjustedwidth(auser, limit);
+    }
+    
+    $rootScope.margintop = function(auser, limit) { 
+      return dimAdjuster.margintop(auser, limit);
+    }
+    
+    $rootScope.marginleft = function(auser, limit) { 
+      return dimAdjuster.marginleft(auser, limit);
+    }
+
   });
 
 
@@ -197,6 +217,58 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
     };
   
     return modify; // returning this is very important
+  })
+  .factory('dimAdjuster', function() {
+    var obj = {};
+    
+    obj.adjustedwidth = function(auser, limit) {
+      if(!angular.isDefined(auser))
+        return -1;
+      var image = new Image();
+      image.src = auser.profilepicUrl;
+      var mindim = image.height < image.width ? image.height : image.width;
+      if(auser.fullname == 'Eric Moore') {console.log(auser); console.log("mindim: "+mindim);}
+      var ratio = mindim > limit ? limit / mindim : 1;
+      if(auser.fullname == 'Eric Moore') console.log("ratio: "+ratio);
+      var adj = ratio * image.width;
+      if(auser.fullname == 'Eric Moore') console.log("adj: "+adj);
+      return adj;
+    };
+    
+    obj.marginleft = function(auser, limit) {
+      var adj = obj.adjustedwidth(auser,limit);
+      if(adj > limit)
+        left = -1 * Math.round((adj - limit)/2);
+      else
+        left = 0;
+      var l = left + 'px';
+      if(auser.fullname == 'Eric Moore') console.log("marginleft: "+l);
+      return l;
+    }
+    
+    obj.adjustedheight = function(auser, limit) {
+      if(!angular.isDefined(auser))
+        return -1;
+      var image = new Image();
+      image.src = auser.profilepicUrl;
+      var mindim = image.height < image.width ? image.height : image.width;
+      var ratio = mindim > limit ? limit / mindim : 1;
+      var adj = ratio * image.height;
+      return adj;
+    }; // obj.adjustHeight
+    
+    obj.margintop = function(auser,limit) {
+      var adj = obj.adjustedheight(auser,limit);
+      if(adj > limit) {
+        topmargin = -1 * Math.round((adj - limit)/2);
+      }
+      else {
+        topmargin = 0;
+      }
+      return topmargin + 'px';
+    }; // obj.margintop
+    
+    return obj;
   })
   .directive('btnEditCircle', function(){
       return {

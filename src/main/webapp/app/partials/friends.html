@@ -5,7 +5,7 @@
 <div class="navbar">
   <div class="navbar-inner bggraygradient">
     <div class="container">
-      <span class="brand font14">Friends</span>
+      <span class="brand font14">Facebook Friends</span>
       
       <ul class="nav pull-right">
         <li>
@@ -44,12 +44,14 @@
 
       <span ng-show="$index % 2 == 0 && (friend.show || friend.show==null)">  
       <div class="row">
-        <div class="span100 margbottom5 align-top">
-          <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
-            <div class="crop100"><img height={{adjustedheight(friend,100)}} width={{adjustedwidth(friend,100)}} ng-src="{{friend.profilepicUrl}}" /></div>
+        <div class="span1 margbottom5 align-top">
+          <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.name}}'s wish list">
+          
+                <img ng-src="{{friend.profilepicUrl}}"/>
+          
           </a> 
         </div>
-        <div class="span1 align-top">
+        <div class="span2 align-top">
           <a class="align-top bold" href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
             {{friend.fullname}}
           </a> 
@@ -70,12 +72,14 @@
       
       <span ng-show="$index % 2 == 1 && (friend.show || friend.show==null)">    
       <div class="row">
-        <div class="span100 margbottom5 align-top">
-          <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
-            <div class="crop100"><img height={{adjustedheight(friend,100)}} width={{adjustedwidth(friend,100)}} ng-src="{{friend.profilepicUrl}}" /></div>
+        <div class="span1 margbottom5 align-top">
+          <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.name}}'s wish list">
+          
+                <img ng-src="{{friend.profilepicUrl}}"/>
+          
           </a> 
         </div>
-        <div class="span1 align-top">
+        <div class="span2 align-top">
           <a class="align-top bold" href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
             {{friend.fullname}}
           </a> 

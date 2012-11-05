@@ -193,44 +193,6 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
     if($scope.nocirclemessage.message == "") $scope.nocirclemessage = {title:'No Events', message:"Create some events"};
   }
   
-  // adjust dims for large profile pics
-  $scope.adjustedheight = function(auser, limit) { 
-    if(!angular.isDefined(auser))
-      return -1;
-    var mindim = auser.profilepicheight < auser.profilepicwidth ? auser.profilepicheight : auser.profilepicwidth
-    var ratio = mindim > limit ? limit / mindim : 1;
-    var adj = ratio * auser.profilepicheight;
-    //console.log("adjusted height="+adj);
-    if(adj > limit) {
-      topmargin = -1 * Math.round((adj - limit)/2);
-      //console.log("$scope.adjustedheight: adj > limit:  adj="+adj+",  limit="+limit+",  topmargin="+topmargin);
-    }
-    else {
-      topmargin = 0;
-      //console.log("$scope.adjustedheight: else:  adj="+adj+",  limit="+limit+",  topmargin="+topmargin);
-    }
-    $scope.profilepicmargintop = topmargin + 'px';
-    return adj;
-  }
-      
-  $scope.profilepicmarginleft = 0;
-  $scope.profilepicmargintop = 0;
-    
-  $scope.adjustedwidth = function(auser, limit) {
-    if(!angular.isDefined(auser))
-      return -1;
-    var mindim = auser.profilepicheight < auser.profilepicwidth ? auser.profilepicheight : auser.profilepicwidth
-    var ratio = mindim > limit ? limit / mindim : 1;
-    var adj = ratio * auser.profilepicwidth;
-    //console.log("adjusted width="+adj);
-    if(adj > limit)
-      left = -1 * Math.round((adj - limit)/2);
-    else
-      left = 0;
-    $scope.profilepicmarginleft = left + 'px';
-    return adj;
-  }
-  
   // "my wish list" call
   $scope.mywishlist = function() {
     console.log("check scope.user.id...");

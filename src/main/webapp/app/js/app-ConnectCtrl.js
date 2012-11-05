@@ -26,17 +26,6 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
           }
         });
     }
-    
-    
-    $scope.fbinvite = function(friend) {
-      FB.ui({method: 'apprequests', to: friend.facebookId, message: 'Check out LittleBlueBird - You\'ll love it!'}, 
-            function callback(response) {
-              // response.to:  an array of fb id's
-              // response.request:  the request id returned by fb
-              friend.fbreqid = response.request;
-              User.save({userId:friend.id, fbreqid:friend.fbreqid});
-            });
-    }
 
     $rootScope.$on("getfriends", function(event) {
       $rootScope.user = User.currentUser;

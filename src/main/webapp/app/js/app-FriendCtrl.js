@@ -41,6 +41,20 @@ function FriendCtrl($scope, $rootScope, User, facebookFriends, indexHolder) {
     } // $scope.getfriends = function()
     
     
+    // removed 'friend' argument from function to pull up a dialog showing all of your friends
+    $scope.fbinvite = function() {
+      FB.ui({method: 'apprequests', message: 'Check out LittleBlueBird - You\'ll love it!'}, 
+            function callback(response) {
+              // response.to:  an array of fb id's
+              // response.request:  the request id returned by fb
+              console.log("$scope.fbinvite:  response...");
+              console.log(response);
+              //friend.fbreqid = response.request;
+              //User.save({userId:friend.id, fbreqid:friend.fbreqid});
+            });
+    }
+    
+    
     $scope.getfriends(indexHolder.offset(), indexHolder.limit());
   
  

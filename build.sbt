@@ -18,4 +18,4 @@ libraryDependencies ++= Seq(
   "net.liftweb" %% "lift-facebook" % "2.4" % "compile->default"
 )
 
-port in container.Configuration := 80
+port in container.Configuration := 8080

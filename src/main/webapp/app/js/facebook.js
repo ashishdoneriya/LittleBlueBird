@@ -3,7 +3,7 @@
         console.log("FB initing ---------------");
         FB.init({
           appId      : '136122483829', // App ID
-          channelUrl : 'http://localhost/gf/app/channel.html', // Path to your Channel File
+          channelUrl : 'http://localhost:8080/gf/app/channel.html', // Path to your Channel File
           status     : true, // check login status
           cookie     : true, // enable cookies to allow the server to access the session
           oauth      : true,

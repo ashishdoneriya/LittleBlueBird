@@ -137,6 +137,13 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
 
       return User;
   }).
+  factory('AppRequest', function($resource){
+      var AppRequest = $resource('/gf/apprequest/:facebookId/:fbreqid', {facebookId:'@facebookId', fbreqid:'@fbreqid'}, 
+                       {
+                         save: {method:'POST'}
+                       });
+      return AppRequest;
+  }).
   factory('Logout', function($resource) {
       var Logout = $resource('/gf/logout', {}, {logout: {method:'POST'}});
       return Logout;
@@ -191,32 +198,6 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
                     });
 
       return Email;
-  })
-  .factory('indexHolder', function() {
-    var limit=20;
-    var offset=0;
-  
-    var modify = {};
-  
-    modify.next = function() {
-      offset = offset + limit;
-      return offset;
-    };
-  
-    modify.previous = function() {
-      offset = offset - limit;
-      return offset;
-    };
-  
-    modify.limit = function() {
-      return limit;
-    };
-  
-    modify.offset = function() {
-      return offset;
-    };
-  
-    return modify; // returning this is very important
   })
   .factory('dimAdjuster', function() {
     var obj = {};
@@ -424,7 +405,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
 
 
 // These args need to be in the same order and the same number as the arg's in the function decl in app-ConnectCtrl
-ConnectCtrl.$inject = ['facebookConnect', 'facebookFriends', '$scope', '$rootScope', '$resource', '$location', 'UserSearch', 'User', 'indexHolder'];
+ConnectCtrl.$inject = ['facebookConnect', 'facebookFriends', '$scope', '$rootScope', '$resource', '$location', 'UserSearch', 'User'];
 
 function NavCtrl($scope) {
   $scope.navstate = function(compare) {

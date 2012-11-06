@@ -5,7 +5,7 @@
 <div class="navbar">
   <div class="navbar-inner bggraygradient">
     <div class="container">
-      <span class="brand font14">Facebook Friends</span>
+      <span class="brand font14">Friends</span>
       
       <ul class="nav pull-right">
         <li>
@@ -15,11 +15,6 @@
       <a class="dropdown-toggle" data-toggle="dropdown">Friend Stuff <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a ng-click="showaccepted()">Show Accepted</li><li><a ng-click="showinvited()">Show Invited</li><li><a ng-click="showall()">Show All</li>
-        <li><a ng-href="#/mywishlist" ng-click="mywishlist()"><img ng-src="img/facebook-little.gif"/> Add Facebook Friends</a></li>
-        <!-- This is demo code.  I was not planning on putting a Friends link here.  It's just here
-        so I can verify friends in FireBug
-        <li ng-controller="ConnectCtrl"><a ng-click="getfriends()">Friends</a></li>
-        -->
       </ul>
     </li>
   </ul>
@@ -31,81 +26,9 @@
 
 
 
-
-
-
-
 <div class="row">
   <div class="span7">
-  
-    <P><a class="uibutton" ng-click="fbinvite()">Invite</a></P>
-        
-    <div class="row">
-      <div class="span3 margbottom5 align-top">
-        <div ng-repeat="friend in friends">
-
-      <span ng-show="$index % 2 == 0 && (friend.show || friend.show==null)">  
-      <div class="row">
-        <div class="span1 margbottom5 align-top">
-          <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.name}}'s wish list">
-          
-                <img ng-src="{{friend.profilepicUrl}}"/>
-          
-          </a> 
-        </div>
-        <div class="span2 align-top">
-          <a class="align-top bold" href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
-            {{friend.fullname}}
-          </a> 
-          <span ng-controller="ConnectCtrl">
-            <span ng-show="shouldInvite(friend)"><P><a class="uibutton" ng-click="fbinvite(friend)">Invite</a></P></span>
-            <span ng-show="appRequestHasBeenSent(friend)"><P>App request sent</P></span>
-            <span ng-show="appRequestAccepted(friend)"><P>App request accepted</P></span>
-            <span ng-show="isAlreadyAUser(friend)"><P>Already uses this app</P></span>
-          </span>
-        </div>
-      </div>
-      </span>
-      
-        </div>
-      </div>
-      <div class="span3 offset1 margbottom5 align-top">
-        <div ng-repeat="friend in friends">
-      
-      <span ng-show="$index % 2 == 1 && (friend.show || friend.show==null)">    
-      <div class="row">
-        <div class="span1 margbottom5 align-top">
-          <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.name}}'s wish list">
-          
-                <img ng-src="{{friend.profilepicUrl}}"/>
-          
-          </a> 
-        </div>
-        <div class="span2 align-top">
-          <a class="align-top bold" href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
-            {{friend.fullname}}
-          </a> 
-          <span ng-show="friend.facebookId != null && friend.facebookId != ''" ng-controller="ConnectCtrl">
-            <span ng-show="friend.fbreqid == ''"><P><a class="uibutton" ng-click="fbinvite(friend)">Invite</a></P></span>
-            <span ng-show="friend.fbreqid != '' && friend.email == ''"><P>Invited</P></span>
-            <span ng-show="friend.email != ''"><P>Accepted</P></span>
-          </span>
-        </div>
-      </div>
-      </span>
-      
-        </div>
-      </div>
-      
-    </div>
-    
-    <div class="row">
-      <div class="span7 black">
-        <a ng-click="previousFriends()">previous</a> | <a ng-click="nextFriends()">next</a>
-      </div>
-    </div>
-      
-      
+    <a class="uibutton" ng-click="fbinvite()">Invite Facebook Friends</a>
   </div>
 </div>
 

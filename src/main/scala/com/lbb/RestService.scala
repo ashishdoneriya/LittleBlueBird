@@ -39,6 +39,10 @@ import net.liftweb.mapper.QueryParam
 import net.liftweb.mapper.Ignore
 
 object RestService extends RestHelper with LbbLogger {
+  
+  serve {
+    case JsonPost("apprequest" :: facebookId :: fbreqid :: _, (json, req)) => saveAppRequest(facebookId, fbreqid)
+  }
 
   // ref:  http://www.assembla.com/spaces/liftweb/wiki/REST_Web_Services
   serve {
@@ -81,6 +85,38 @@ object RestService extends RestHelper with LbbLogger {
     case Get("circles" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  88888888"); findCircle(circleId)
     case Get("circleparticipants" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  77777777777"); findCircleParticipants(circleId)
     case _ => debug("RestService.serve:  666666666"); debugRequest
+  }
+  
+  /**
+   * When you invite people via facebook, we immediately grab the peoples facebook id's and facebook request id's
+   * Look at app-FriendCtrl: $scope.fbinvite().  For every person you invite, we call this method here via the
+   * AppRequest.save() method (app.js)
+   */
+  def saveAppRequest(facebookId:String, fbreqid:String) = {
+    // how do you know if this person is in the db already - all you have is a facebook id ?
+    // We could wait till the person responds to the app request...
+    // When they accept the app request, they will provide their email address - we can query the db with that
+    
+    // Query for facebook id, found: update facebook request id with fbreqid
+    // not found:  Insert a row, use facebook id for all required fields
+    
+    // facebook id is unique, so we will only get either Nil or a one-element list
+    User.findAll(By(User.facebookId, facebookId)) match {
+      case Nil => {
+        // db doesn't contain this facebook id.  This is actually dangerous because pretty much everyone has a facebook account
+        // Not finding a facebook id gives rise to the possibility that we will accidentally create a second account for 
+        // someone if they already have an LBB account.  For now, we will insert a record to person.  Then when the person
+        // accepts the app request, we will ask them if they already have an LBB account.  If they do, we will delete the record
+        // we are writing here and we will take the facebook id here and update their record with it (and also the fb request id)
+        val u = User.create // <- see override in User
+        u.first("").last("").username(facebookId).password(facebookId).profilepic("http://graph.facebook.com/"+facebookId+"/picture?type=large").facebookId(facebookId).fbreqid(fbreqid)
+        u.save
+      }
+      case u :: us => { u.fbreqid(fbreqid); u.save; }
+      case _ => ;
+    }
+    
+    NoContentResponse()
   }
   
   // not just the current user's id - but anybody's id
@@ -455,43 +491,7 @@ object RestService extends RestHelper with LbbLogger {
         r
       }
     }
-    
-    
-//    S.param("password") match {
-//      // here we're authenticating
-//      case Full(p) if(p != "undefined") => {
-//        val queryParams = MapperHelper.convert(S.request.open_!._params, User.queriableFields)        
-//        val users = User.findAll(queryParams: _*)
-//        users match {
-//          case l:List[User] if((l.size == 1) && (l.head.password.equals(p))) => {
-//            // TODO got weird char-by-char json response on the client when I tried to deal with just one
-//            // object, so create a List of one object and do the same thing you do in the regular query block
-//            val jsons = users.map(_.asJs)
-//            val jsArr = JsArray(jsons)
-//            val r = JsonResponse(jsArr, Nil, List(RequestHelper.cookie("userId", users.head)), 200)
-//            debug("findUsers: JsonResponse(jsArr)=" + r.toString())
-//            // record the login in the audit log
-//            AuditLog.recordLogin(users.head, S.request)
-//            r
-//          }
-//          case _ => {
-//            debug("findUsers: BadResponse (pass:"+p+")"); 
-//            BadResponse()
-//          }
-//        }
-//      }
-//      // regular query
-//      case _ => {
-//        val queryParams = MapperHelper.convert(S.request.open_!._params, User.queriableFields)
-//        val users = User.findAll(queryParams: _*)
-//        val jsons = users.map(_.asJs)
-//        val jsArr = JsArray(jsons)
-//        val r = JsonResponse(jsArr)
-//        debug("RestService.findUsers: JsonResponse(jsArr)=" + r.toString())
-//        r
-//      }
-//    }
-    
+        
   }
   
   def findCircle(id:Long) = {

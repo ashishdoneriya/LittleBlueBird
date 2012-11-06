@@ -647,6 +647,11 @@ object User extends User with LongKeyedMetaMapper[User] {
   override def fieldOrder = List(id, first, last, email,
   username, password, dateOfBirth, profilepic, bio)
   
+  override def create = {
+    val u = super.create
+    u.notifyonaddtoevent("true").notifyondeletegift("true").notifyoneditgift("true").notifyonreturngift("true")
+  }
+  
   // mapper won't let you query by password
   val queriableFields = List(User.first, User.last, User.username, User.email, User.facebookId, User.fbreqid)
   

@@ -245,50 +245,6 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
     console.log("UserCtrl:  $rootScope.$on('$viewContentLoaded'...");
   });
   
-  // Based on the person's facebook id (or lack thereof), and email address and facebook request id,
-  // should we be able to invite this person/send him an app request?
-  // If the person has a facebook id but no email or facebook request id on file, then we should
-  // be able to send an app request to this person
-  $scope.shouldInvite = function(friend) {
-    var hasfbid = friend.facebookId != null && friend.facebookId != ''
-    var noemail = friend.email == null || friend.email == '';
-    var nofbreqid = friend.fbreqid == null || friend.fbreqid == '';
-    var invite = hasfbid && noemail && nofbreqid;
-    //console.log("$scope.shouldInvite():  invite="+invite);
-    return invite
-  }
-  
-  // Has an app request been sent to this user, but not yet accepted?
-  // Yes, if the friend has a facebook id, no email, but does have a facebook request id on file
-  $scope.appRequestHasBeenSent = function(friend) {
-    var hasfbid = friend.facebookId != null && friend.facebookId != ''
-    var noemail = friend.email == null || friend.email == '';
-    var hasfbreqid = friend.fbreqid != null && friend.fbreqid != '';
-    var hasbeensent = hasfbid && noemail && hasfbreqid
-    //console.log("$scope.appRequestHasBeenSent():  hasbeensent="+hasbeensent);
-    return hasbeensent;
-  }
-  
-  $scope.appRequestAccepted = function(friend) {
-    var hasfbid = friend.facebookId != null && friend.facebookId != ''
-    var hasemail = friend.email != null && friend.email != '';
-    var hasfbreqid = friend.fbreqid != null && friend.fbreqid != '';
-    var hasbeenaccepted = hasfbid && hasemail && hasfbreqid;
-    //console.log("$scope.appRequestAccepted():  hasbeenaccepted="+hasbeenaccepted);
-    return hasbeenaccepted;
-  } 
-  
-  // Some people may be users but they weren't invited.  These people will have
-  // facebook id's and email addresses.  They just won't have a facebook request id on file
-  $scope.isAlreadyAUser = function(friend) {
-    var hasfbid = friend.facebookId != null && friend.facebookId != ''
-    var hasemail = friend.email != null && friend.email != '';
-    var nofbreqid = friend.fbreqid == null || friend.fbreqid == '';
-    var alreadyuser = hasfbid && hasemail && nofbreqid;
-    //console.log("$scope.isAlreadyAUser():  alreadyuser="+alreadyuser);
-    return alreadyuser;
-  }
-  
   if(angular.isDefined($route.current.params.showUserId) && !angular.isDefined($rootScope.showUser)) {
     $rootScope.showUser = User.find({userId:$route.current.params.showUserId}, function() {}, function() {alert("Could not find user "+$route.current.params.showUserId);})
   }

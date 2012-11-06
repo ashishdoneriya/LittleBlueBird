@@ -1,6 +1,6 @@
 
 // see:  http://jsfiddle.net/Hxbqd/6/
-function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $resource, $location, UserSearch, User, indexHolder) {
+function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $resource, $location, UserSearch, User) {
 
     $scope.fbuser = {}
     $scope.error = null;
@@ -31,38 +31,6 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
       $rootScope.user = User.currentUser;
       $scope.getfriends($rootScope.user);
     });
-    
-    $scope.getfriends = function() {
-      console.log("$scope.getfriends():  indexHolder.offset()="+indexHolder.offset()+"  indexHolder.limit()="+indexHolder.limit());
-      facebookFriends.getfriends(indexHolder.offset(), indexHolder.limit(), function(fail){alert(fail);}, 
-                                 function(friends) {
-                                   //if(angular.isDefined($rootScope.user.friends)) $rootScope.user.friends.splice(0, $rootScope.user.friends.length); else $rootScope.user.friends = [];
-                                   var fbfriends = [];
-                                   for(var i=0; i < friends.data.length; i++) {
-                                     //console.log("friends.data[i].name="+friends.data[i].name);
-                                     friends.data[i].fullname = friends.data[i].name;
-                                     friends.data[i].profilepicUrl = "http://graph.facebook.com/"+friends.data[i].id+"/picture?type=large";
-                                     fbfriends.push(friends.data[i]);
-                                   }
-
-                                   User.friends = fbfriends;
-                                   $rootScope.$emit("userchange");
-                                   console.log("ConnectCtrl:  $rootScope.$emit(\"userchange\");");
-                                   
-                                   console.log("$scope.getfriends():  ---------- $location.url(\"friends\"); ---------");
-                                   $location.url("friends");
-                                   
-                                   //console.log(friends);
-                                   
-                                   // rethinking this...
-                                   // will write each friend to the person table and write a record to the friends table for each friend to associate the user with all his friends
-                                   //var saveduser = User.save({userId:$rootScope.user.id, friends:savethesefriends}, 
-                                   //          function() {$rootScope.user = saveduser; console.log("$rootScope.user.friends.length="+$rootScope.user.friends.length)
-                                   //          });
-                                   
-                                 }
-                                );
-    }
 
     $scope.registerWithFacebook = function() {
         facebookConnect.askFacebookForAuthentication(

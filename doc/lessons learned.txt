@@ -1,0 +1,6 @@
+"App on Facebook" at developers.facebook.com - DON'T PICK THIS OPTION
+It was creating a bunch of a problems with the auth button in login.html.  The fb dialog would appear, you would login,
+but when you clicked login, the dialog wouldn't go away and the 'success' callback function wouldn't get called.
+You would get logged in to fb, but the fact that the login dialog doesn't go away, but rather just stares at you blank - was
+really making the "login with fb" feature a non-starter.
+THEN I HIT THE LITTLE X NEXT TO "App on Facebook" and presto! the fb login dialog started working perfectly.

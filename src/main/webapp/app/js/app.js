@@ -123,9 +123,13 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
     
       if(facebookreqids.length > 0) {
         deleterequests = function(res) {
+          console.log("app.js:  about to delete app requests.  res = ...");
+          var fbid = res.authResponse.userID;
+          console.log(res);
           for(var i=0; i < facebookreqids.length; i++) {
-            console.log("app.js: deleting app request: "+facebookreqids[i]);
-            facebookConnect.deleteAppRequest(facebookreqids[i]);
+            var reqid_plus_fbid = facebookreqids[i]+'_'+fbid;
+            console.log("app.js: deleting app request: "+reqid_plus_fbid);
+            facebookConnect.deleteAppRequest(reqid_plus_fbid);
           }
         }
         notauthorized = function(res) { console.log("app.js: FB: not authorized"); }

@@ -20,11 +20,19 @@
 		</form>
       </span>
       
-      <div id="fb-root"></div>
-      <div ng-controller="ConnectCtrl">
-        <span ng-click="registerWithFacebook()"><img src="img/fblogin.jpg"></span>
-      </div>
-
     </div>
   </div>
+</div>
+
+
+
+<div id="fb-root"></div>
+<div ng-controller="fooctrl">
+<P><span ng-click="registerWithFacebook()"><img src="img/fblogin.jpg"></span> Name: {{fbuser}}</P>
+<P><a ng-click="fbinvite()">invite</a></P>
+In order to delete app requests, you have to be logged in as the person who received the request, NOT the person who sent the request.
+<hr/>
+
+  <P><a ng-click="deleteAppRequest('000000000000000')">delete</a> 000000000000000</P>
+
 </div>

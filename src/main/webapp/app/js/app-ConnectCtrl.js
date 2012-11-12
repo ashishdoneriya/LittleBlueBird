@@ -47,6 +47,12 @@ function ConnectCtrl(facebookConnect, facebookFriends, $scope, $rootScope, $reso
     }
     
     
+    $scope.deleteAppRequest = function(requestId) {
+      console.log("$scope.deleteAppRequest() ------------");
+      facebookConnect.deleteAppRequest(requestId);
+    }
+    
+    
     $scope.initfbuser = function(user) {
             $scope.fbuser = user;
             console.log("$scope.fbuser...");

@@ -24,11 +24,16 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       when('/welcome', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}});
   
-  }).run(function($route, $rootScope, $cookieStore, $location, $rootScope, facebookConnect){    
+  })
+  .run(function($rootScope) {
+    $rootScope.foobar = function() { console.log("foobarYY ----------------------"); };
+  })
+  .run(function($route, $rootScope, $cookieStore, $location, $rootScope, facebookConnect){    
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){
         if (!newRoute || !newRoute.$route) return;
         console.log("$routechangestart: $rootScope...");
         console.log($rootScope);
+        console.log("$rootScope.foobar() = "+$rootScope.foobar());
         console.log("$location.url()="+$location.url());
         if(angular.isDefined($rootScope.user) || $location.url()=='/login' || $location.url()=='/whoareyou' || $location.url()=='/foo/1') {
           // don't do anything - we have what we need
@@ -71,7 +76,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
         
     }); // $rootScope.$on('$routeChangeStart', function(scope, newRoute)
     
-  }) // .run(function($route, $rootScope, $location, $rootScope, facebookConnect)
+  }) 
   .run(function($route, $rootScope, $location, $rootScope, facebookConnect) { 
     $rootScope.$on('$routeChangeSuccess', function(scope, newRoute) {
       console.log("routeChangeSuccess");
@@ -223,7 +228,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       else
         left = 0;
       var l = left + 'px';
-      if(auser.fullname == 'Eric Moore') console.log("marginleft: "+l);
+      if(angular.isDefined(auser) && auser.fullname == 'Eric Moore') console.log("marginleft: "+l);
       return l;
     }
     
@@ -361,6 +366,7 @@ function EmailCtrl($scope, Email) {
   }
 }
 
+// delete app requests: http://developers.facebook.com/docs/requests/#deleting
 // source:  http://jsfiddle.net/mkotsur/Hxbqd/
 angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', function() {
     return new function() {
@@ -388,6 +394,24 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
               unknown(response);
             }
           });
+        }
+        
+        this.deleteAppRequest = function(requestId) {
+          console.log("this.deleteAppRequest:  BEGIN:  requestId="+requestId+",  FB="+FB);
+          FB.getLoginStatus(function(response) {
+            if(response.status == 'connected') {
+              console.log("this.deleteAppRequest:  connected...");
+              FB.api(requestId, 'delete', function(resp2) {
+                console.log("this.deleteAppRequest:  resp2...");
+                console.log(resp2);
+              });
+            }
+            else  {
+              console.log("this.deleteAppRequest:  not connected...");
+            }
+            
+          });
+          
         }
         
     } // return new function()
@@ -422,11 +446,43 @@ function GettingStartedCtrl($scope) {
   $scope.whatifidontwantto = false; // see whoareyou.html
 }
 
-function fooctrl($scope, $location, $route, UserSearch) {
+function fooctrl($scope, $location, $route, UserSearch, facebookConnect) {
   console.log("fooctrl: fooid="+$route.current.params.fooid);
   
   $scope.foo = function() { console.log("$scope.foo"); }
   
+
+    $scope.registerWithFacebook = function() {
+        facebookConnect.askFacebookForAuthentication(
+          function(reason) { // fail
+            $scope.error = reason;
+            console.log("$scope.registerWithFacebook:  reason="+reason);
+          }, 
+          function(user) { // success
+            console.log("$scope.registerWithFacebook:  success...");
+            $scope.fbuser = user;
+            $scope.$apply() // Manual scope evaluation
+          }
+        );
+    }
+    
+    
+    $scope.deleteAppRequest = function(requestId) {
+      console.log("$scope.deleteAppRequest() ------------");
+      facebookConnect.deleteAppRequest(requestId);
+    }
+    
+    $scope.fbinvite = function() {
+      FB.ui({method: 'apprequests', message: 'Check out LittleBlueBird - You\'ll love it!'}, 
+            function callback(response) {
+              // response.to:  an array of fb id's
+              // response.request:  the request id returned by fb
+              console.log("$scope.fbinvite:  response...");
+              console.log(response);
+              console.log("$scope.fbinvite:  $scope.$apply()...");
+              $scope.$apply();
+            });
+    }
     
     $scope.testsearch = function() {
       UserSearch.search({search:'bdunklau@gmail.com'}, function(){console.log("$scope.testsearch:  success :)");}, function(){console.log("$scope.testsearch:  failed :(");});

@@ -22,39 +22,13 @@ function Gift2Ctrl($window, $route, $scope, Gift, User, Circle, $rootScope, face
   }
   
   
-    // BEGIN: Check for facebook request id in url.  If it's there, delete it.  The logged in user is the person
-    // who received the request.  This is pretty nice clean up of request id's.
-    $scope.facebookreqids = [];
-    console.log($scope.facebookreqids);
-    var parms = $window.location.search.split("&")
-    if(parms.length > 0) {
-      for(var i=0; i < parms.length; i++) {
-        if(parms[i].split("=").length > 1 && (parms[i].split("=")[0] == 'request_ids' || parms[i].split("=")[0] == '?request_ids')) {
-          fbreqids_csv = parms[i].split("=")[1].split("%2C")
-          for(var j=0; j < fbreqids_csv.length; j++) {
-            $scope.facebookreqids.push(fbreqids_csv[j]);
-          }  
-        }
-      }
-    }
+  // BEGIN: Check for facebook request id in url.  If it's there, delete it.  The logged in user is the person
+  // who received the request.  This is pretty nice clean up of request id's.
   
-    for(var k=0; k < $scope.facebookreqids.length; k++) {
-      console.log("$scope.facebookreqids["+k+"] = "+$scope.facebookreqids[k]);
-    }
-    
-    if($scope.facebookreqids.length > 0) {
-      deleterequests = function(res) {
-        for(var i=0; i < $scope.facebookreqids.length; i++) {
-          console.log("Gift2Ctrl: deleting app request: "+$scope.facebookreqids[i]);
-          facebookConnect.deleteAppRequest($scope.facebookreqids[i]);
-        }
-      }
-      notauthorized = function(res) { console.log("Gift2Ctrl: FB: not authorized"); }
-      unknown = function(res) { console.log("Gift2Ctrl: FB: unknown"); }
-      facebookConnect.getLoginStatus(deleterequests, notauthorized, unknown);
-    }
-    // END: Cleaning up facebook request id's.  This may end up getting moved somewhere else, but it's a nice demonstration
-    // of how you delete app requests once they've been accepted.
+  $scope.deleteAppRequests($window, facebookConnect);
+  
+  // END: Cleaning up facebook request id's.  This may end up getting moved somewhere else, but it's a nice demonstration
+  // of how you delete app requests once they've been accepted.
 }
 
 function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) { 

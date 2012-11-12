@@ -82,7 +82,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       console.log("routeChangeSuccess");
     } )
   })
-  .run(function($rootScope, dimAdjuster) {
+  .run(function($rootScope, $window, dimAdjuster, facebookConnect) {
 
     // adjust dims for large profile pics
     $rootScope.adjustedheight = function(auser, limit) { 
@@ -100,6 +100,40 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
     $rootScope.marginleft = function(auser, limit) { 
       return dimAdjuster.marginleft(auser, limit);
     }
+    
+    $rootScope.deleteAppRequests = function($window, facebookConnect) {
+      
+      var facebookreqids = [];
+      console.log(facebookreqids);
+      var parms = $window.location.search.split("&")
+      if(parms.length > 0) {
+        for(var i=0; i < parms.length; i++) {
+          if(parms[i].split("=").length > 1 && (parms[i].split("=")[0] == 'request_ids' || parms[i].split("=")[0] == '?request_ids')) {
+            fbreqids_csv = parms[i].split("=")[1].split("%2C")
+            for(var j=0; j < fbreqids_csv.length; j++) {
+              facebookreqids.push(fbreqids_csv[j]);
+            }  
+          }
+        }
+      }  
+  
+      for(var k=0; k < facebookreqids.length; k++) {
+        console.log("facebookreqids["+k+"] = "+facebookreqids[k]);
+      }
+    
+      if(facebookreqids.length > 0) {
+        deleterequests = function(res) {
+          for(var i=0; i < facebookreqids.length; i++) {
+            console.log("app.js: deleting app request: "+facebookreqids[i]);
+            facebookConnect.deleteAppRequest(facebookreqids[i]);
+          }
+        }
+        notauthorized = function(res) { console.log("app.js: FB: not authorized"); }
+        unknown = function(res) { console.log("app.js: FB: unknown"); }
+          facebookConnect.getLoginStatus(deleterequests, notauthorized, unknown);
+      }
+      
+    } // end $rootScope.deleteAppRequests()
 
   });
 

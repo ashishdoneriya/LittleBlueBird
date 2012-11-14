@@ -51,6 +51,7 @@ import net.liftweb.http.JsonResponse
 import net.liftweb.http.S
 import com.lbb.util.RequestHelper
 import net.liftweb.mapper.ManyToMany
+import net.liftweb.mapper.MappedLongForeignKey
 
 
 /**
@@ -133,6 +134,11 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
       }
       case _ => super.validate
     }
+  }
+    
+  // TODO make sure circle/person is unique
+  object parent extends MappedLongForeignKey(this, User) {
+    override def dbColumnName = "parent_id"
   }
   
   object first extends MappedString(this, 140) {
@@ -650,6 +656,10 @@ object User extends User with LongKeyedMetaMapper[User] {
   override def create = {
     val u = super.create
     u.notifyonaddtoevent("true").notifyondeletegift("true").notifyoneditgift("true").notifyonreturngift("true")
+  }
+  
+  def create(parentId:Long, facebookId:String, fbreqid:String):User = {
+    User.create.first("").last("").parent(parentId).username(facebookId).password(facebookId).facebookId(facebookId).fbreqid(fbreqid).profilepic("http://graph.facebook.com/"+facebookId+"/picture?type=large")
   }
   
   // mapper won't let you query by password

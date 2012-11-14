@@ -25,15 +25,11 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}});
   
   })
-  .run(function($rootScope) {
-    $rootScope.foobar = function() { console.log("foobarYY ----------------------"); };
-  })
   .run(function($route, $rootScope, $cookieStore, $location, $rootScope, facebookConnect){    
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){
         if (!newRoute || !newRoute.$route) return;
         console.log("$routechangestart: $rootScope...");
         console.log($rootScope);
-        console.log("$rootScope.foobar() = "+$rootScope.foobar());
         console.log("$location.url()="+$location.url());
         if(angular.isDefined($rootScope.user) || $location.url()=='/login' || $location.url()=='/whoareyou' || $location.url()=='/foo/1') {
           // don't do anything - we have what we need
@@ -82,7 +78,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       console.log("routeChangeSuccess");
     } )
   })
-  .run(function($rootScope, $window, dimAdjuster, facebookConnect) {
+  .run(function($rootScope, $window, $location, dimAdjuster, facebookConnect, AppRequest, UserSearch, User) {
 
     // adjust dims for large profile pics
     $rootScope.adjustedheight = function(auser, limit) { 
@@ -101,7 +97,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       return dimAdjuster.marginleft(auser, limit);
     }
     
-    $rootScope.deleteAppRequests = function($window, facebookConnect) {
+    $rootScope.acceptAppRequest = function($window, facebookConnect) {
       
       var facebookreqids = [];
       console.log(facebookreqids);
@@ -131,6 +127,23 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
             console.log("app.js: deleting app request: "+reqid_plus_fbid);
             facebookConnect.deleteAppRequest(reqid_plus_fbid);
           }
+          
+          // get the user info of the person who just accepted the app request
+          // and write this to the db
+          FB.api('/me', function(meresponse) {
+            console.log("app.js:  meresponse..."); // will have: name, email, first_name, last_name, id, and other stuff
+            console.log(meresponse);
+            // lame: need to query for person.id first.  Without it, RestService will think we want to
+            // insert to person, not update it
+            newusers = User.query({facebookId:meresponse.id}, 
+              function() {
+                $rootScope.user = User.save({userId:newusers[0].id, first:meresponse.first_name, last:meresponse.last_name, email:meresponse.email}, 
+                  function() {console.log("$rootScope.acceptAppRequest:  $rootScope.user=...");console.log($rootScope.user);},
+                  function() {alert("Couldn't save the new user (error 112)");});
+              },
+              function() {alert("Couldn't get user id (error 111)");});
+          });
+          
         }
         notauthorized = function(res) { console.log("app.js: FB: not authorized"); }
         unknown = function(res) { console.log("app.js: FB: unknown"); }
@@ -138,6 +151,112 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       }
       
     } // end $rootScope.deleteAppRequests()
+
+    
+    $rootScope.fbinvite = function() {
+      FB.ui({method: 'apprequests', message: 'Check out LittleBlueBird - You\'ll love it!'}, 
+            function callback(response) {
+              // response.to:  an array of fb id's
+              // response.request:  the request id returned by fb
+              console.log("$rootScope.fbinvite:  response...");
+              console.log(response);
+              console.log("$rootScope.fbinvite:  $rootScope.user.id="+$rootScope.user.id);
+              AppRequest.save({parentId:$rootScope.user.id, fbreqid:response.request, facebookIds:response.to});
+              console.log("$rootScope.fbinvite:  $rootScope.$apply()...");
+              $rootScope.$apply();
+            });
+    }   
+    
+    $rootScope.registerWithFacebook = function() {
+        facebookConnect.askFacebookForAuthentication(
+          function(reason) { // fail
+            $rootScope.error = reason;
+            console.log("$rootScope.registerWithFacebook:  reason="+reason);
+          }, 
+          function(user) { // success
+            console.log("$rootScope.registerWithFacebook:  success...");
+            $rootScope.initfbuser(user);
+            $rootScope.$apply() // Manual scope evaluation
+          }
+        );
+    } 
+    
+    $rootScope.initfbuser = function(user) {
+      $rootScope.fbuser = user;
+      console.log("$rootScope.initfbuser...");
+      console.log($rootScope.fbuser);
+      
+      // could get more than one person back - parent + children
+      var users = UserSearch.query({login:true, search:$rootScope.fbuser.email}, 
+                    function() {
+                      console.log("$rootScope.initfbuser:  var users = UserSearch.query(): users...");
+                      console.log(users);
+                      var alreadymergedaccount = false;
+                      for(var i=0; i < users.length; i++) {
+                        if(users[i].facebookId == $rootScope.fbuser.id) {
+                          alreadymergedaccount = true;
+                          User.currentUser = users[i]; // this is what we want to happen... we found a record in our person table that has this email AND facebookId
+                          $rootScope.user = users[i];
+                        }
+                      }
+                      console.log("$rootScope.initfbuser():  $rootScope.user="+$rootScope.user);
+                      if(alreadymergedaccount) {
+                        console.log("alreadymergedaccount - $emit commented out");
+                        $location.url('mywishlist');
+                      } 
+                      else { // ...but in the beginning, this is what will happen - no record in our person table contains this facebookId
+                        if(users.length == 0) {
+                           // need to create account for this person in LBB
+                                                       
+                           $rootScope.user = User.save({login:true, fullname:$rootScope.fbuser.first_name+' '+$rootScope.fbuser.last_name, first:$rootScope.fbuser.first_name, last:$rootScope.fbuser.last_name, username:$rootScope.fbuser.email, email:$rootScope.fbuser.email, password:$rootScope.fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+$rootScope.fbuser.id+'/picture?type=large', facebookId:$rootScope.fbuser.id}, 
+                                               function() { 
+                                                 User.showUser = $rootScope.user;
+                                                 User.currentUser = $rootScope.user;
+                                                 console.log("just created an LBB account, check $rootScope.user...");
+                                                 console.log($rootScope.user);
+                                                 $rootScope.$emit("userchange");                                           
+                                                 $rootScope.$emit("mywishlist"); 
+                                                 $location.url('welcome');
+                                               }
+                                             );
+                                                       }
+                      else if(users.length == 1) {  // easy... we found exactly one person with this email - set the facebookid
+                        users[0].facebookId = $rootScope.fbuser.id;
+                        User.currentUser = users[0];
+                        User.showUser = users[0];
+                        $rootScope.user = users[0];
+                        console.log("users.length == 1:  users[0].profilepicUrl...");
+                        console.log(users[0].profilepicUrl);
+                        var placeholderPic = "http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg";
+                                                         
+                        console.log("users[0].profilepicUrl != placeholderPic...");
+                        console.log(users[0].profilepicUrl != placeholderPic);
+                                                         
+                        var pic = users[0].profilepicUrl != placeholderPic ? users[0].profilepicUrl : "http://graph.facebook.com/"+$rootScope.fbuser.id+"/picture?type=large";
+                        var uagain = User.save({userId:User.currentUser.id, facebookId:$rootScope.fbuser.id, profilepic:pic}, 
+                                       function() {
+                                         User.currentUser = uagain; 
+                                         User.showUser = uagain;
+									     $rootScope.$emit("userchange");                                          
+									     $rootScope.$emit("mywishlist");
+									     $location.url('mywishlist');});
+                                       }
+                      else if(users.length > 1) {
+                        // And if we happen to find several people all with the same email address and no FB id,
+                        // we have to ask the user "who are you" and display all the people that have this email address
+                        // "Why are you asking me?"... "What is a 'merged' account?"...  "Why do I need to 'merge' my accounts?"...
+                        // These are all things we have to explain to the user on the mergeaccount page
+                        User.multipleUsers = users;
+                        User.email = $rootScope.fbuser.email;
+                        User.facebookId = $rootScope.fbuser.id;
+                        $location.url('whoareyou'); 
+                      }
+                                                     }
+                    },
+                    function() {alert("Could not log you in at this time (error 201)");});
+    
+    }
+    
 
   });
 
@@ -181,7 +300,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return User;
   }).
   factory('AppRequest', function($resource){
-      var AppRequest = $resource('/gf/apprequest/:facebookId/:fbreqid', {facebookId:'@facebookId', fbreqid:'@fbreqid'}, 
+      var AppRequest = $resource('/gf/apprequest/:fbreqid/:parentId', {parentId:'@parentId', facebookIds:'@facebookIds', fbreqid:'@fbreqid'}, 
                        {
                          save: {method:'POST'}
                        });
@@ -502,24 +621,6 @@ function fooctrl($scope, $location, $route, UserSearch, facebookConnect) {
             $scope.$apply() // Manual scope evaluation
           }
         );
-    }
-    
-    
-    $scope.deleteAppRequest = function(requestId) {
-      console.log("$scope.deleteAppRequest() ------------");
-      facebookConnect.deleteAppRequest(requestId);
-    }
-    
-    $scope.fbinvite = function() {
-      FB.ui({method: 'apprequests', message: 'Check out LittleBlueBird - You\'ll love it!'}, 
-            function callback(response) {
-              // response.to:  an array of fb id's
-              // response.request:  the request id returned by fb
-              console.log("$scope.fbinvite:  response...");
-              console.log(response);
-              console.log("$scope.fbinvite:  $scope.$apply()...");
-              $scope.$apply();
-            });
     }
     
     $scope.testsearch = function() {

@@ -25,7 +25,7 @@ function Gift2Ctrl($window, $route, $scope, Gift, User, Circle, $rootScope, face
   // BEGIN: Check for facebook request id in url.  If it's there, delete it.  The logged in user is the person
   // who received the request.  This is pretty nice clean up of request id's.
   
-  $scope.deleteAppRequests($window, facebookConnect);
+  $scope.acceptAppRequest($window, facebookConnect);
   
   // END: Cleaning up facebook request id's.  This may end up getting moved somewhere else, but it's a nice demonstration
   // of how you delete app requests once they've been accepted.

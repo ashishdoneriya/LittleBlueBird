@@ -41,7 +41,7 @@ import net.liftweb.mapper.Ignore
 object RestService extends RestHelper with LbbLogger {
   
   serve {
-    case JsonPost("apprequest" :: facebookId :: fbreqid :: _, (json, req)) => saveAppRequest(facebookId, fbreqid)
+    case JsonPost("apprequest" :: fbreqid :: AsLong(parentId) :: _, (json, req)) => saveAppRequest(fbreqid, parentId)
   }
 
   // ref:  http://www.assembla.com/spaces/liftweb/wiki/REST_Web_Services
@@ -89,10 +89,35 @@ object RestService extends RestHelper with LbbLogger {
   
   /**
    * When you invite people via facebook, we immediately grab the peoples facebook id's and facebook request id's
-   * Look at app-FriendCtrl: $scope.fbinvite().  For every person you invite, we call this method here via the
-   * AppRequest.save() method (app.js)
+   * Look at app-FriendCtrl.  It used to contain $scope.fbinvite(), which has since been moved to app.js and 
+   * declared at the $rootScope level.  We call this method once, with once facebook request id and possibly
+   * many facebook id's
+   * 
+   * See: AppRequest.save() method (app.js)
+   * 
+   * facebookIds comes through as a comma-sep String
    */
-  def saveAppRequest(facebookId:String, fbreqid:String) = {
+  def saveAppRequest(fbreqid:String, parentId:Long) = {
+    val ids = S.param("facebookIds") openOr ""
+    val facebookIds = ids.split(",")
+    
+    // facebook id's are unique, so figure out which ones are already in the db
+    val already = User.findAll(ByList(User.facebookId, facebookIds))
+    val existingIds = already.map(_.facebookId.is)
+    
+    // these are the only id's we're concerned with here
+    val insertIds = facebookIds.filter(fid => !existingIds.contains(fid)).toList
+    
+    debug("saveAppRequest():  facebookIds="+ids+"  ("+ids.getClass.getName+")");
+    debug("saveAppRequest():  existingIds="+existingIds);
+    debug("saveAppRequest():  insertIds="+insertIds);
+    
+    for(fbid <- insertIds) {
+      User.create(parentId, fbid, fbreqid).save
+    }
+    
+    // Ignore 'existingIds', only
+    
     // how do you know if this person is in the db already - all you have is a facebook id ?
     // We could wait till the person responds to the app request...
     // When they accept the app request, they will provide their email address - we can query the db with that
@@ -101,20 +126,20 @@ object RestService extends RestHelper with LbbLogger {
     // not found:  Insert a row, use facebook id for all required fields
     
     // facebook id is unique, so we will only get either Nil or a one-element list
-    User.findAll(By(User.facebookId, facebookId)) match {
-      case Nil => {
-        // db doesn't contain this facebook id.  This is actually dangerous because pretty much everyone has a facebook account
-        // Not finding a facebook id gives rise to the possibility that we will accidentally create a second account for 
-        // someone if they already have an LBB account.  For now, we will insert a record to person.  Then when the person
-        // accepts the app request, we will ask them if they already have an LBB account.  If they do, we will delete the record
-        // we are writing here and we will take the facebook id here and update their record with it (and also the fb request id)
-        val u = User.create // <- see override in User
-        u.first("").last("").username(facebookId).password(facebookId).profilepic("http://graph.facebook.com/"+facebookId+"/picture?type=large").facebookId(facebookId).fbreqid(fbreqid)
-        u.save
-      }
-      case u :: us => { u.fbreqid(fbreqid); u.save; }
-      case _ => ;
-    }
+//    User.findAll(By(User.facebookId, facebookId)) match {
+//      case Nil => {
+//        // db doesn't contain this facebook id.  This is actually dangerous because pretty much everyone has a facebook account
+//        // Not finding a facebook id gives rise to the possibility that we will accidentally create a second account for 
+//        // someone if they already have an LBB account.  For now, we will insert a record to person.  Then when the person
+//        // accepts the app request, we will ask them if they already have an LBB account.  If they do, we will delete the record
+//        // we are writing here and we will take the facebook id here and update their record with it (and also the fb request id)
+//        val u = User.create // <- see override in User
+//        u.first("").last("").username(facebookId).password(facebookId).profilepic("http://graph.facebook.com/"+facebookId+"/picture?type=large").facebookId(facebookId).fbreqid(fbreqid)
+//        u.save
+//      }
+//      case u :: us => { u.fbreqid(fbreqid); u.save; }
+//      case _ => ;
+//    }
     
     NoContentResponse()
   }

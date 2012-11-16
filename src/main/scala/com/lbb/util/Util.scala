@@ -1,4 +1,7 @@
 package com.lbb.util
+import com.lbb.entity.User
+import net.liftweb.http.JsonResponse
+import net.liftweb.http.js.JE.JsArray
 
 object Util {
   
@@ -29,6 +32,12 @@ object Util {
     // for international amazon sites, you won't get credit for the sale
     case s:String if(s.contains("amazon")) => AmazonLinkCreator
     case _ => NoopLinkCreator
+  }
+  
+  def toJsonResponse(l:List[User]) = {
+    val jsons = l.map(_.asJs)
+    val jsArr = JsArray(jsons)
+    JsonResponse(jsArr)
   }
   
 }

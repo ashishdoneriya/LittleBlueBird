@@ -37,11 +37,14 @@ import net.liftweb.mapper.OprEnum
 import net.liftweb.mapper.ByList
 import net.liftweb.mapper.QueryParam
 import net.liftweb.mapper.Ignore
+import net.liftweb.mapper.IHaveValidatedThisSQL
+import com.lbb.util.Util
 
 object RestService extends RestHelper with LbbLogger {
   
   serve {
     case JsonPost("apprequest" :: fbreqid :: AsLong(parentId) :: _, (json, req)) => saveAppRequest(fbreqid, parentId)
+    case JsonPost("apprequestaccepted" :: facebookId :: name :: _, (json, req)) => saveAcceptedAppRequest(facebookId, name)
   }
 
   // ref:  http://www.assembla.com/spaces/liftweb/wiki/REST_Web_Services
@@ -96,6 +99,11 @@ object RestService extends RestHelper with LbbLogger {
    * See: AppRequest.save() method (app.js)
    * 
    * facebookIds comes through as a comma-sep String
+   * 
+   * At this point, you don't know the person's email address.  All you can do is query for facebook id.
+   * If that query turns up no one, you'll have to write a record to the person table that you may later
+   * delete.  Only when the invited person accepts the invitation do you know what the person's email
+   * address is.
    */
   def saveAppRequest(fbreqid:String, parentId:Long) = {
     val ids = S.param("facebookIds") openOr ""
@@ -143,6 +151,85 @@ object RestService extends RestHelper with LbbLogger {
     
     NoContentResponse()
   }
+  
+  
+  /**
+   * app.js defines $rootScope.acceptAppRequest().  That function looks for 'request_ids' in the url.  If found, that function 
+   * calls the angular service AppRequestAccepted.save() which maps to /gf/apprequestaccepted and ultimately this method.
+   * <P>
+   * This method finds the record in 'person' that was written by saveAppRequest() when the app request was issued.
+   * saveAppRequest() writes a pretty incomplete record to 'person' because all we know at that time is a facebook id and
+   * a facebook request id.
+   * <P>
+   * When the app request is accepted, we know much more: we know the person's email address and name.
+   * <P>
+   * Things can get tricky at this point.  The person accepting the app request may already be in LBB.  So we have to look
+   * for an existing record with the email returned by fb.  
+   * <P>
+   * If the email address is found only once, then we'll "merge" the existing record with the one created by saveAppRequest():
+   * We'll delete the record created in saveAppRequest() and we'll update the existing record's facebook id value.
+   * <P>
+   * If the email address isn't found, we will assume this person doesn't have an LBB account.  THIS COULD BE A FAULTY ASSUMPTION!
+   * We will keep the record created in saveAppRequest() and update it with the person's name and email.
+   * <P>
+   * If the email is found more than once, we have to send the user to a "Who are you?" page where we display everyone that
+   * has the email and let them say who they are.
+   * <P>
+   * Finally, the faulty assumption alluded to above:  Just because we don't find the email in the 'person' table doesn't mean
+   * the person is not yet an LBB user.  They could be one of those people that didn't supply an email in the beginning.
+   * They could have a different email on file with LBB.  In either case, the result is a "duplicate account".  This is really
+   * bad for that person because their wish list is under the original account.  They may wonder what the heck happened to their
+   * wish list - why is it empty?  There isn't much we can do about this.  Name matching is tricky and probably more trouble 
+   * than it's worth.  We need some kind of prompt "Do you already have an LBB account?"
+   */
+  def saveAcceptedAppRequest(facebookId:String, name:String) = { 
+    val email = S.param("email") openOr ""
+    
+    // This should always return at least one row.  And the row should have facebookId.  It MAY also have the email, but
+    // it doesn't have to
+    val existing = User.findAllByInsecureSql("select * from person where facebook_id = '"+facebookId+"' or email = '"+email+"'", IHaveValidatedThisSQL("me", "11/11/1111"))
+    
+    
+    existing match {
+      case l:List[User] if(l.size == 1 && l.head.email.is == email && l.head.facebookId.is == facebookId) => {
+        // IDEAL CASE: The record already existed with all the info we need.  This could have happened by 
+        // by a user creating their own account without an app request from someone else
+        Util.toJsonResponse(l)
+      }
+      case l:List[User] if(l.size == 1 && l.head.facebookId.is == facebookId) => {
+        // NOT IDEAL CASE: We didn't find a record with the email address we were looking for.
+        // THIS IS POTENTIALLY BAD if the person really does have an LBB account, just under another email or blank email
+        // Take this record and update with the name and email sent by fb
+        l.head.name(name).email(email).save
+        Util.toJsonResponse(l)
+      }
+      case l:List[User] if(l.size == 2) => {
+        // IDEAL CASE: One record has facebook id.  The other has email.  Delete the record with the facebook id
+        // because that is just a "stub" record created by saveAppRequest.  Take the facebook id and update the
+        // record having the email.
+        val stubrecord = l.filter(u => u.facebookId.is == facebookId).head
+        stubrecord.delete_!
+        val tosave = l.filter(u => u.email.is == email).head.facebookId(facebookId)
+        tosave.save
+        Util.toJsonResponse(List(tosave))
+      }
+      case l:List[User] if(l.size > 2) => {
+        // NOT IDEAL CASE: Shared email in this case.  We know that only one record can have facebook id.
+        // The fact that there are 3 or more records means the other records all have the same email
+        // When the array of users gets back to the client, we will send the user to a "who are you?" page
+        val stubrecord = l.filter(u => u.facebookId.is == facebookId).head
+        stubrecord.delete_!
+        val peoplewiththesameemail = l.filter(u => u.email.is == email)
+        Util.toJsonResponse(peoplewiththesameemail)
+      }
+      case _ => {
+        // ERROR CONDITION - The query above should always return at least one row, one having facebook id
+        BadResponse()
+      }
+    }
+  }
+  
+  
   
   // not just the current user's id - but anybody's id
   def wishlist(userId:Long) = {

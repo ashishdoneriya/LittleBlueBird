@@ -78,7 +78,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       console.log("routeChangeSuccess");
     } )
   })
-  .run(function($rootScope, $window, $location, dimAdjuster, facebookConnect, AppRequest, UserSearch, User) {
+  .run(function($rootScope, $window, $location, dimAdjuster, facebookConnect, AppRequest, AppRequestAccepted, UserSearch, User) {
 
     // adjust dims for large profile pics
     $rootScope.adjustedheight = function(auser, limit) { 
@@ -96,6 +96,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
     $rootScope.marginleft = function(auser, limit) { 
       return dimAdjuster.marginleft(auser, limit);
     }
+    
     
     $rootScope.acceptAppRequest = function($window, facebookConnect) {
       
@@ -133,13 +134,16 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
           FB.api('/me', function(meresponse) {
             console.log("app.js:  meresponse..."); // will have: name, email, first_name, last_name, id, and other stuff
             console.log(meresponse);
-            // lame: need to query for person.id first.  Without it, RestService will think we want to
-            // insert to person, not update it
-            newusers = User.query({facebookId:meresponse.id}, 
+            // queries person table for everyone that has either facebook id or email
+            records = AppRequestAccepted.save({facebookId:meresponse.id, email:meresponse.email, name:meresponse.name}, 
               function() {
-                $rootScope.user = User.save({userId:newusers[0].id, first:meresponse.first_name, last:meresponse.last_name, email:meresponse.email}, 
-                  function() {console.log("$rootScope.acceptAppRequest:  $rootScope.user=...");console.log($rootScope.user);},
-                  function() {alert("Couldn't save the new user (error 112)");});
+                // 'records' should always have at least one element because fbinvite() will write a record with the given facebook id if no facebook id is found
+                if(records.length == 1) { $rootScope.user = records[0]; }
+                else if(records.length > 1) {
+                  // go to the "who are you" page
+                  User.multipleUsers = records;
+                  $location.url('whoareyou');
+                }
               },
               function() {alert("Couldn't get user id (error 111)");});
           });
@@ -214,7 +218,13 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
                                                  User.currentUser = $rootScope.user;
                                                  console.log("just created an LBB account, check $rootScope.user...");
                                                  console.log($rootScope.user);
-                                                 $rootScope.$emit("userchange");                                           
+                                                 
+                                                 //console.log("$rootScope.initfbuser:  $rootScope.$emit(\"userchange\")");
+                                                 //$rootScope.$emit("userchange"); 
+                                                 
+                                                 console.log("$rootScope.initfbuser:  $rootScope.$broadcast(\"userchange\")");
+                                                 $rootScope.$broadcast("userchange");   
+                                                                                        
                                                  $rootScope.$emit("mywishlist"); 
                                                  $location.url('welcome');
                                                }
@@ -305,6 +315,13 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
                          save: {method:'POST'}
                        });
       return AppRequest;
+  }).
+  factory('AppRequestAccepted', function($resource){
+      var AppRequestAccepted = $resource('/gf/apprequestaccepted/:facebookId/:name', {facebookId:'@facebookId', email:'@email', name:'@name'}, 
+                       {
+                         save: {method:'POST', isArray:true}
+                       });
+      return AppRequestAccepted;
   }).
   factory('Logout', function($resource) {
       var Logout = $resource('/gf/logout', {}, {logout: {method:'POST'}});

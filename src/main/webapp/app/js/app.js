@@ -89,14 +89,6 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       return dimAdjuster.adjustedwidth(auser, limit);
     }
     
-    $rootScope.margintop = function(auser, limit) { 
-      return dimAdjuster.margintop(auser, limit);
-    }
-    
-    $rootScope.marginleft = function(auser, limit) { 
-      return dimAdjuster.marginleft(auser, limit);
-    }
-    
   });
 
 
@@ -224,17 +216,6 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return adj;
     };
     
-    obj.marginleft = function(auser, limit) {
-      var adj = obj.adjustedwidth(auser,limit);
-      if(adj > limit)
-        left = -1 * Math.round((adj - limit)/2);
-      else
-        left = 0;
-      var l = left + 'px';
-      if(angular.isDefined(auser) && auser.fullname == 'Eric Moore') console.log("marginleft: "+l);
-      return l;
-    }
-    
     obj.adjustedheight = function(auser, limit) {
       if(!angular.isDefined(auser))
         return -1;
@@ -245,17 +226,6 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       var adj = ratio * image.height;
       return adj;
     }; // obj.adjustHeight
-    
-    obj.margintop = function(auser,limit) {
-      var adj = obj.adjustedheight(auser,limit);
-      if(adj > limit) {
-        topmargin = -1 * Math.round((adj - limit)/2);
-      }
-      else {
-        topmargin = 0;
-      }
-      return topmargin + 'px';
-    }; // obj.margintop
     
     return obj;
   })

@@ -58,7 +58,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
       FB.api(url, success);
     }
   }
-}).run(function($rootScope, $window, $location, facebookConnect, AppRequest, AppRequestAccepted, UserSearch, User) {
+}).run(function($rootScope, $window, $cookieStore, $location, facebookConnect, AppRequest, AppRequestAccepted, UserSearch, User) {
     
     $rootScope.acceptAppRequest = function($window, facebookConnect) {
       
@@ -163,6 +163,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                           alreadymergedaccount = true;
                           User.currentUser = users[i]; // this is what we want to happen... we found a record in our person table that has this email AND facebookId
                           $rootScope.user = users[i];
+                          $cookieStore.put("user", $rootScope.user);
                         }
                       }
                       console.log("$rootScope.initfbuser():  $rootScope.user="+$rootScope.user);
@@ -178,6 +179,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                                                function() { 
                                                  User.showUser = $rootScope.user;
                                                  User.currentUser = $rootScope.user;
+                                                 $cookieStore.put("user", $rootScope.user);
                                                  console.log("just created an LBB account, check $rootScope.user...");
                                                  console.log($rootScope.user);
                                                  
@@ -197,6 +199,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                         User.currentUser = users[0];
                         User.showUser = users[0];
                         $rootScope.user = users[0];
+                        $cookieStore.put("user", $rootScope.user);
                         console.log("users.length == 1:  users[0].profilepicUrl...");
                         console.log(users[0].profilepicUrl);
                         var placeholderPic = "http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg";

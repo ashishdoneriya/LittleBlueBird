@@ -1,8 +1,11 @@
 package com.lbb
 import java.text.SimpleDateFormat
 import java.util.Date
+
+import com.lbb.entity.AuditLog
 import com.lbb.entity.Circle
 import com.lbb.entity.CircleParticipant
+import com.lbb.entity.Friend
 import com.lbb.entity.Gift
 import com.lbb.entity.Recipient
 import com.lbb.entity.Reminder
@@ -10,35 +13,33 @@ import com.lbb.entity.User
 import com.lbb.util.Email
 import com.lbb.util.Emailer
 import com.lbb.util.LbbLogger
-import com.lbb.util.MapperHelper
-import com.lbb.util.RequestHelper
 import com.lbb.util.SearchHelper
-import net.liftweb.common.Box
+import com.lbb.util.Util
+
+import net.liftweb.common.Box.box2Option
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
 import net.liftweb.http.js.JE.JsArray
-import net.liftweb.http.js.JsExp
-import net.liftweb.http.js.JsObj
-import net.liftweb.http.provider.HTTPCookie
+import net.liftweb.http.js.JsExp.strToJsExp
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.BadResponse
 import net.liftweb.http.JsonResponse
 import net.liftweb.http.NoContentResponse
-import net.liftweb.http.Req
 import net.liftweb.http.S
-import net.liftweb.json.JsonAST._
+import net.liftweb.json.JsonAST.JArray
+import net.liftweb.json.JsonAST.JField
+import net.liftweb.json.JsonAST.JObject
+import net.liftweb.json.JsonAST.JValue
+import net.liftweb.mapper.MappedField.mapToType
+import net.liftweb.mapper.MappedForeignKey.getObj
 import net.liftweb.mapper.By
-import net.liftweb.util.BasicTypesHelpers._
-import org.joda.time.DateTime
-import com.lbb.entity.AuditLog
-import com.lbb.entity.Friend
-import net.liftweb.mapper.Cmp
-import net.liftweb.mapper.OprEnum
 import net.liftweb.mapper.ByList
-import net.liftweb.mapper.QueryParam
-import net.liftweb.mapper.Ignore
+import net.liftweb.mapper.Cmp
 import net.liftweb.mapper.IHaveValidatedThisSQL
-import com.lbb.util.Util
+import net.liftweb.mapper.Ignore
+import net.liftweb.mapper.OprEnum
+import net.liftweb.util.BasicTypesHelpers.AsLong
+import net.liftweb.util.BasicTypesHelpers.asLong
 
 object RestService extends RestHelper with LbbLogger {
   
@@ -194,13 +195,21 @@ object RestService extends RestHelper with LbbLogger {
       case l:List[User] if(l.size == 1 && l.head.email.is == email && l.head.facebookId.is == facebookId) => {
         // IDEAL CASE: The record already existed with all the info we need.  This could have happened by 
         // by a user creating their own account without an app request from someone else
+        val parent = User.findAll(By(User.id, existing.head.parent.is)).head
+        debug("'existing' -> "+existing.head);
+        debug("'parent' -> "+parent);
+        Friend.join(parent, existing.head)
         Util.toJsonResponse(l)
       }
       case l:List[User] if(l.size == 1 && l.head.facebookId.is == facebookId) => {
         // NOT IDEAL CASE: We didn't find a record with the email address we were looking for.
         // THIS IS POTENTIALLY BAD if the person really does have an LBB account, just under another email or blank email
         // Take this record and update with the name and email sent by fb
+        val parent = User.findAll(By(User.id, existing.head.parent.is)).head
         l.head.name(name).email(email).save
+        debug("'l.head' -> "+l.head);
+        debug("'parent' -> "+parent);
+        Friend.join(parent, l.head)
         Util.toJsonResponse(l)
       }
       case l:List[User] if(l.size == 2) => {
@@ -211,6 +220,10 @@ object RestService extends RestHelper with LbbLogger {
         stubrecord.delete_!
         val tosave = l.filter(u => u.email.is == email).head.facebookId(facebookId)
         tosave.save
+        val parent = User.findAll(By(User.id, existing.head.parent.is)).head
+        debug("'tosave' -> "+tosave);
+        debug("'parent' -> "+parent);
+        Friend.join(parent, tosave)
         Util.toJsonResponse(List(tosave))
       }
       case l:List[User] if(l.size > 2) => {

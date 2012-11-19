@@ -533,7 +533,11 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
                  JField("username", JString(this.username)), 
                  JField("profilepicUrl", JString(profilepicUrl.toString())),
                  JField("profilepicheight", JInt(profilepicheight)),
-                 JField("profilepicwidth", JInt(profilepicwidth)),
+                 JField("profilepicwidth", JInt(profilepicwidth))
+         ,JField("profilepicadjustedheight", JInt(Util.calculateAdjustedHeight(150, profilepicUrl)))
+         ,JField("profilepicadjustedwidth", JInt(Util.calculateAdjustedWidth(150, profilepicUrl)))
+         ,JField("profilepicmargintop", JString(Util.calculateMarginTop(150, profilepicUrl)))
+         ,JField("profilepicmarginleft", JString(Util.calculateMarginLeft(150, profilepicUrl))),
                  JField("email", JString(this.email)),
                  JField("bio", JString(this.bio)),
                  JField("age", JInt(this.age.is)),

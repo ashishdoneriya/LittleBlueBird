@@ -1,4 +1,12 @@
 
+function ProfilePicCtrl($rootScope, $cookieStore) {
+  console.log("ProfilePicCtrl --------------------");
+  
+  if(!angular.isDefined($rootScope.showUser)) {
+    $rootScope.showUser = $cookieStore.get("showUser");
+  }
+}
+
 
 // main.html, personalinfo.html, circleinfo.html, friends.html, giftlist.html, mycircles.html, navbar.html,
 // profilepic.html, welcome.html, whoareyou.html, ddbtn-addcircle.html

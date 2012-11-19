@@ -19,4 +19,18 @@
 </div>
 
 
+<div ng-repeat="friend in user.friends">
+<div class="row">
+  <div class="span7">
+    <div style="width:150px; height:150px; overflow:hidden;">
+      <div style="margin-top:{{friend.profilepicmargintop}};margin-left:{{friend.profilepicmarginleft}}">
+        <img height="{{friend.profilepicadjustedheight}}" width="{{friend.profilepicadjustedwidth}}" ng-src="{{friend.profilepicUrl}}"/>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
 </div>

@@ -80,90 +80,10 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   }
   
     
-  // originally, this was in ConnectCtrl - don't know if we'll still need it there or not
-  $scope.initfbuserSTILLUSINGTHIS = function(user) {
-      $scope.fbuser = user;
-      console.log("$scope.initfbuser:  $scope.fbuser...");
-      console.log($scope.fbuser);
-      console.log("$scope.fbuser.id = "+$scope.fbuser.id);
-      
-      // We have query using the email address because the facebook id may not be in our db yet
-      var users = UserSearch.query({search:$scope.fbuser.email},
-                    function() {
-                      console.log("scope.initfbuser:  found "+users.length+" people with this email: "+$scope.fbuser.email); 
-                      if(users.length == 1) {
-                        console.log(users[0]);
-                        $rootScope.user = users[0];
-                        User.save({login:true, userId:$rootScope.user.id, facebookId:$scope.fbuser.id});
-                      }  
-                      else if(users.length == 0) {
-                        $rootScope.user = User.save({login:true, fullname:$scope.fbuser.first_name+' '+$scope.fbuser.last_name, first:$scope.fbuser.first_name, last:$scope.fbuser.last_name, username:$scope.fbuser.email, email:$scope.fbuser.email, password:$scope.fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+$scope.fbuser.id+'/picture?type=large', facebookId:$scope.fbuser.id}, 
-                                          function() { 
-                                            //$scope.getfriends($rootScope.user);
-                                            User.showUser = $rootScope.user;
-                                            User.currentUser = $rootScope.user;
-                                            $rootScope.$emit("userchange");                                           
-                                            $rootScope.$emit("mywishlist"); 
-                                            $location.url('welcome');
-                                          }
-                                        );
-                      } 
-                      else {
-                        // Here, we have several people in LBB that share the FB email address ...See if any already have the FB id
-                        // Nobody has the FB id => ask who are you?
-                        var userfound = false;
-                        for(var i=0; i < users.length; i++) {
-                          if(users[i].facebookId == $scope.fbuser.id && !userfound) {
-                            userfound = true;
-                            $rootScope.user = users[i];  // FOUND $rootScope.user !
-                            User.currentUser = $rootScope.user;
-                            $rootScope.$emit("userchange");  
-                          }
-                        }
-                        if(!userfound) {
-                          User.multipleUsers = users;
-                          User.email = $scope.fbuser.email;
-                          User.facebookId = $scope.fbuser.id;
-                          $location.url('whoareyou');  // have to ask who are you and send the user to a page showing everyone with this email
-                        }
-                      }
-                      
-                      
-                    }, // end 'success' function of var users = UserSearch.query()
-                    function(){alert("Could not log you in at this time\n(error code 601)");}
-                 ); // end var users = UserSearch.query()
-      
-  } // end $scope.initfbuser
-  
-  
   //$rootScope.showUser = $rootScope.user; //User.showUser;
   $scope.multipleusers = function() { console.log("multipleusers() called"); return User.multipleUsers; }
   $scope.sharedemail = function() { return User.email; }
   
-  $scope.showaccepted = function() {
-    console.log("$rootScope.user.friends.length="+$rootScope.user.friends.length);
-    for(var i=0; i < $rootScope.user.friends.length; i++) {
-      if($rootScope.user.friends[i].email != '')
-        $rootScope.user.friends[i].show = true;
-      else
-        $rootScope.user.friends[i].show = false;
-    }
-  }
-  
-  $scope.showinvited = function() {
-    for(var i=0; i < $rootScope.user.friends.length; i++) {
-      if($rootScope.user.friends[i].fbreqid != '' && $rootScope.user.friends[i].email == '')
-        $rootScope.user.friends[i].show = true;
-      else
-        $rootScope.user.friends[i].show = false;
-    }
-  }
-  
-  $scope.showall = function() {
-    for(var i=0; i < $rootScope.user.friends.length; i++) {
-      $rootScope.user.friends[i].show = true;
-    }
-  }
   
   $scope.resendWelcomeEmail = function() {
     Email.send({type:'welcome', from:'info@littlebluebird.com', user:$rootScope.user}, function() {}, function() {});
@@ -218,7 +138,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   }
   
   // THIS IS WRONG - IT'S NOT ALWAYS THE CURRENT USER !!
-  $scope.showUser = function() { return $rootScope.user }
+  //$scope.showUser = function() { return $rootScope.user }
   
   $scope.loginpage = function() {
     $location.url('login');

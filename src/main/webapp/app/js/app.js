@@ -38,6 +38,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
         }
         else if(angular.isDefined($cookieStore.get("user"))) {
           $rootScope.user = $cookieStore.get("user");
+          console.log("FOUND $cookieStore.get('user') = "+$cookieStore.get("user"));
           $rootScope.templates = newRoute.$route.templates;
           $rootScope.layoutController = newRoute.$route.controller;
         }

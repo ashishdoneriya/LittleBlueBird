@@ -163,7 +163,9 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                           alreadymergedaccount = true;
                           User.currentUser = users[i]; // this is what we want to happen... we found a record in our person table that has this email AND facebookId
                           $rootScope.user = users[i];
+                          $rootScope.showUser = users[i];
                           $cookieStore.put("user", $rootScope.user);
+                          $cookieStore.put("showUser", $rootScope.showUser);
                         }
                       }
                       console.log("$rootScope.initfbuser():  $rootScope.user="+$rootScope.user);
@@ -177,9 +179,11 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                                                        
                            $rootScope.user = User.save({login:true, fullname:$rootScope.fbuser.first_name+' '+$rootScope.fbuser.last_name, first:$rootScope.fbuser.first_name, last:$rootScope.fbuser.last_name, username:$rootScope.fbuser.email, email:$rootScope.fbuser.email, password:$rootScope.fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+$rootScope.fbuser.id+'/picture?type=large', facebookId:$rootScope.fbuser.id}, 
                                                function() { 
-                                                 User.showUser = $rootScope.user;
                                                  User.currentUser = $rootScope.user;
+                                                 $rootScope.showUser = $rootScope.user;
+                                                 User.showUser = $rootScope.showUser;
                                                  $cookieStore.put("user", $rootScope.user);
+                                                 $cookieStore.put("showUser", $rootScope.showUser);
                                                  console.log("just created an LBB account, check $rootScope.user...");
                                                  console.log($rootScope.user);
                                                  
@@ -199,7 +203,9 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                         User.currentUser = users[0];
                         User.showUser = users[0];
                         $rootScope.user = users[0];
+                        $rootScope.showUser = users[0];
                         $cookieStore.put("user", $rootScope.user);
+                        $cookieStore.put("showUser", $rootScope.showUser);
                         console.log("users.length == 1:  users[0].profilepicUrl...");
                         console.log(users[0].profilepicUrl);
                         var placeholderPic = "http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg";

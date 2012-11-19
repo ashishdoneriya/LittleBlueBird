@@ -52,6 +52,7 @@ import net.liftweb.http.S
 import com.lbb.util.RequestHelper
 import net.liftweb.mapper.ManyToMany
 import net.liftweb.mapper.MappedLongForeignKey
+import com.lbb.util.Util
 
 
 /**
@@ -588,6 +589,8 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
     val img = new ImageIcon(profilepicUrl)	
     val profilepicheight = img.getIconHeight()
     val profilepicwidth = img.getIconWidth()
+    val profilepicadjustedheight = Util.calculateAdjustedHeight(150, profilepicUrl)
+    val profilepicadjustedwidth = Util.calculateAdjustedWidth(150, profilepicUrl)
     val dobString = dateOfBirth.is match {
       case null => ""
       case d:Date => new SimpleDateFormat("M/d/yyyy").format(d)
@@ -598,7 +601,12 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
          ("friends", jsFriends),
          ("profilepicUrl", JString(profilepicUrl.toString())), 
          ("profilepicheight", profilepicheight), 
-         ("profilepicwidth", profilepicwidth))        
+         ("profilepicwidth", profilepicwidth)
+         ,("profilepicadjustedheight", Util.calculateAdjustedHeight(150, profilepicUrl))
+         ,("profilepicadjustedwidth", Util.calculateAdjustedWidth(150, profilepicUrl))
+         ,("profilepicmargintop", JString(Util.calculateMarginTop(150, profilepicUrl)))
+         ,("profilepicmarginleft", JString(Util.calculateMarginLeft(150, profilepicUrl)))
+         )        
   }
   
   def addfriends(list:List[Map[String, Any]]) = {

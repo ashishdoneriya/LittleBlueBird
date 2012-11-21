@@ -15,21 +15,123 @@
 <div class="row">
   <div class="span7">
     <a class="uibutton" ng-click="fbinvite()">Invite Facebook Friends</a>
+    <a class="uibutton" ng-click="beginnewuser()">Create Account for Someone</a>
   </div>
 </div>
 
 
-<div ng-repeat="friend in user.friends">
+
+            <!-- See:  http://docs-next.angularjs.org/guide/dev_guide.forms 
+                 This page is a copy of register.html except the title here is Create Account
+                 and on register.html it's Sign Up.   Also the save button here creates a new
+                 user but doesn't send the user to the welcome screen like in register.html
+            -->
+<span ng-show="mode=='createaccount'">
+<div class="row">
+  <div class="span7"><P><h4>Create Account for Someone</h4></P></div>
+</div> 
+<div class="row">
+  <div class="span7">All fields required</div>
+</div> 
 <div class="row">
   <div class="span7">
-    <div style="width:150px; height:150px; overflow:hidden;">
-      <div style="margin-top:{{friend.profilepicmargintop}};margin-left:{{friend.profilepicmarginleft}}">
-        <img height="{{friend.profilepicadjustedheight}}" width="{{friend.profilepicadjustedwidth}}" ng-src="{{friend.profilepicUrl}}"/>
+    <div class="row">
+      <div class="span3" ng-form="newuserform" ng-controller="CreateAccountCtrl">
+
+        <div class="box-white">
+        <div class="row">
+          <div class="span1">Name</div>
+          <div class="span2 margleft0">
+            <input class="w110" maxlength="140" value="" type="text" name="fullname" ng-model="newuser.fullname" ng-required="true" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="span1">Email</div>
+          <div class="span2 margleft0">
+            <input class="w110" maxlength="140" value="" name="email" type="email" ng-model="newuser.email" ng-required="true">
+            <span ng-show="newuserform.email.$dirty">
+              <span ng-show="newuserform.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
+            </span>
+          </div>
+        </div>  
+
+        <div class="row">
+          <div class="span1">Username</div>
+          <div class="span2 margleft0">
+            <input class="w110" maxlength="140" value="" name="username" type="text" ng-model="newuser.username" ng-change="isUsernameUnique(newuser, newuserform)" required />
+            <span ng-show="newuserform.username.$dirty">
+              <span ng-show="newuserform.username.$error.taken">
+                <img src="img/red_x.png" id="invalidusername" title="Username is taken">
+              </span>
+            </span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="span1">Password</div>
+          <div class="span2 margleft0">
+            <input class="w110" ng-model="newuser.password" type="password" name="password" value="*******" ng-required="true" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="span1">Again</div>
+          <div class="span2 margleft0">
+            <input class="w110" ng-model="newuser.passwordAgain" type="password" name="passwordAgain" value="*******" ng-required="true" />
+            <span ng-show="newuserform.passwordAgain.$dirty">
+              <span ng-show="newuser.passwordAgain != newuser.password && !newuserform.passwordAgain.$error.required">
+                <img src="img/red_x.png" id="passwordsdontmatch" title="Passwords don't match">
+              </span>
+            </span> 
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="span2 offset1">    
+          
+            <div ng-hide="userfieldsvalid(newuser)" >
+              <a class="btn" ng-click="cancel();">Cancel</a>
+              <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet">Save</a>
+            </div>    
+          
+            <div ng-show="userfieldsvalid(newuser)" >
+              <a class="btn" ng-click="cancel();">Cancel</a>
+              <a class="btn btn-primary" ng-click="createonthefly(newuser, newcircle)">Save</a>
+            </div>
+          </div>
+        </div>
+        </div> <!-- end div:class=box-white -->
+      
+      </div>
+      
+      
+      <div class="span3">Use this form to create an account for someone that doesn't have a Facebook account.  
+                    If this person doesn't have an email address, maybe a child, just enter <I>your</I> email address in this form.  Email addresses don't have to be unique. 
       </div>
     </div>
   </div>
-</div>
-</div>
+</div> 
+</span> <!-- end of span: addmethod='createaccount' --> 
+  
+  
+<span ng-show="mode=='friends'">
+  <div class="row"><div class="span2">&nbsp;</div></div>
+  <div ng-repeat="friend in user.friends">
+    <div class="row margtop5">
+      <div class="span2 white"><div style="width:100px;background-color:#00a2d2;">{{friend.fullname}}</div></div>
+    </div>
+    <div class="row">
+      <div class="span2">
+        <div style="width:100px; height:100px; overflow:hidden;">
+          <div style="margin-top:{{friend.profilepicmargintop100}};margin-left:{{friend.profilepicmarginleft100}}">
+            <img height="{{friend.profilepicadjustedheight100}}" width="{{friend.profilepicadjustedwidth100}}" ng-src="{{friend.profilepicUrl}}"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</span> 
 
 
 

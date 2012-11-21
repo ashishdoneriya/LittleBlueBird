@@ -12,10 +12,14 @@ class Friend extends LongKeyedMapper[Friend] with IdPK with LbbLogger {
   // TODO make sure userid/friendid is unique
   object user extends MappedLongForeignKey(this, User) {
     override def dbColumnName = "user_id"
+    override def dbNotNull_? : Boolean = true
+    override def dbIndexed_? : Boolean = true
   }
   
   object friend extends MappedLongForeignKey(this, User) {
     override def dbColumnName = "friend_id"
+    override def dbNotNull_? : Boolean = true
+    override def dbIndexed_? : Boolean = true
   }
   
   override def save = {

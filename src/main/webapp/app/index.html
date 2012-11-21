@@ -176,27 +176,28 @@
     
     
     <script type="text/ng-template" id="layout.html">
-  <div ng-include src="templates.five"></div>
-  <div class="row margtop20"> <!-- one big row -->
+    <div ng-include src="templates.five"></div>
+    <div class="container">
+      <div class="row margtop20"> <!-- one big row -->
   
-    <div class="span2"> <!-- 2 main cols -->
-      <div class="row"><div class="span150 simple-bottom"><div ng-include src="templates.six"></div></div></div>
-      <!-- review usage of: box shadow well-tiny -->
-      <div class="row">
-        <div class="span2 margbottom20"><div ng-include src="templates.three"></div></div>
-      </div>
-    </div> <!-- end of first main col -->
+        <div class="span2"> <!-- 2 main cols -->
+          <div class="row"><div class="span150 simple-bottom"><div ng-include src="templates.six"></div></div></div>
+          <!-- review usage of: box shadow well-tiny -->
+          <div class="row">
+            <div class="span2 margbottom20"><div ng-include src="templates.three"></div></div>
+          </div>
+        </div> <!-- end of first main col -->
     
-    <div class="span7"> <!-- 2nd main col -->
-      <div class="row"><div class="span7"><div ng-include src="templates.four"></div></div></div>
-    </div> <!-- end of 2nd main col -->
+        <div class="span7"> <!-- 2nd main col -->
+          <div class="row"><div class="span7"><div ng-include src="templates.four"></div></div></div>
+        </div> <!-- end of 2nd main col -->
     
-    <div class="span2">
-      <div class="row"><div class="span2 margleft35"><iframe src="http://rcm.amazon.com/e/cm?t=wwwlittleb040-20&o=1&p=29&l=ur1&category=dvd&banner=1GM7J5TZSG5X8AQRXX02&f=ifr&lt1=_new" width="120" height="600" scrolling="no" border="0" marginwidth="0" style="border:none;" frameborder="0"></iframe></div></div></div>
+        <div class="span2">
+          <div class="row"><div class="span2 margleft35"><iframe src="http://rcm.amazon.com/e/cm?t=wwwlittleb040-20&o=1&p=29&l=ur1&category=dvd&banner=1GM7J5TZSG5X8AQRXX02&f=ifr&lt1=_new" width="120" height="600" scrolling="no" border="0" marginwidth="0" style="border:none;" frameborder="0"></iframe></div></div></div>
+        </div>
+    
+      </div>  <!-- one big row -->
     </div>
-    
-  </div>  <!-- one big row -->
-  
     </script>
     
     
@@ -214,18 +215,17 @@
     
     </head>
     <body class="body1">
-      <div> 
-        <div ng-include src="templates.layout" scope=""></div>
-      </div>
-    <script src="js/app-LoginCtrl.js"></script> 
-    <script src="js/app-ConnectCtrl.js"></script>  
-    <script src="js/app-UserCtrl.js"></script> 
-    <script src="js/app-MyAccountCtrl.js"></script>         
-    <script src="js/app-GiftCtrl.js"></script>   
-    <script src="js/app-CircleCtrl.js"></script>   
-    <script src="js/app-FriendCtrl.js"></script>  
-    <script src="js/app-FacebookModule.js"></script>    
-    <script src="js/app.js"></script>   
+      <div ng-include src="templates.layout" scope=""></div>
+      
+      <script src="js/app-LoginCtrl.js"></script> 
+      <script src="js/app-ConnectCtrl.js"></script>  
+      <script src="js/app-UserCtrl.js"></script> 
+      <script src="js/app-MyAccountCtrl.js"></script>         
+      <script src="js/app-GiftCtrl.js"></script>   
+      <script src="js/app-CircleCtrl.js"></script>   
+      <script src="js/app-FriendCtrl.js"></script>  
+      <script src="js/app-FacebookModule.js"></script>    
+      <script src="js/app.js"></script>   
     </body>
     
 </html>

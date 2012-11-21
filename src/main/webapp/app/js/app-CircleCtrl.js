@@ -325,6 +325,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     $location.url($location.path());
   }
   
+  // duplicated in app-FriendCtrl.js
   $scope.userfieldsvalid = function(newuser) {
     var ret = angular.isDefined(newuser) && angular.isDefined(newuser.fullname) && angular.isDefined(newuser.email)
           && angular.isDefined(newuser.username) && angular.isDefined(newuser.password) 

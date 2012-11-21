@@ -190,10 +190,6 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
     override def dbColumnName = "facebook_id"
   }
   
-  object fbreqid extends MappedString(this, 140) {
-    override def dbColumnName = "fb_request_id"
-  }
-  
   object notifyonaddtoevent extends MappedString(this, 8) {
     override def defaultValue = "true"
     override def dbNotNull_? : Boolean = true
@@ -537,13 +533,16 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
          ,JField("profilepicadjustedheight", JInt(Util.calculateAdjustedHeight(150, profilepicUrl)))
          ,JField("profilepicadjustedwidth", JInt(Util.calculateAdjustedWidth(150, profilepicUrl)))
          ,JField("profilepicmargintop", JString(Util.calculateMarginTop(150, profilepicUrl)))
-         ,JField("profilepicmarginleft", JString(Util.calculateMarginLeft(150, profilepicUrl))),
-                 JField("email", JString(this.email)),
+         ,JField("profilepicmarginleft", JString(Util.calculateMarginLeft(150, profilepicUrl)))
+         ,JField("profilepicadjustedheight100", JInt(Util.calculateAdjustedHeight(100, profilepicUrl)))
+         ,JField("profilepicadjustedwidth100", JInt(Util.calculateAdjustedWidth(100, profilepicUrl)))
+         ,JField("profilepicmargintop100", JString(Util.calculateMarginTop(100, profilepicUrl)))
+         ,JField("profilepicmarginleft100", JString(Util.calculateMarginLeft(100, profilepicUrl)))
+                 ,JField("email", JString(this.email)),
                  JField("bio", JString(this.bio)),
                  JField("age", JInt(this.age.is)),
                  JField("dateOfBirth", if(this.dateOfBirth.is == null) { JsonAST.JNull } else { JInt(this.dateOfBirth.is.getTime()) } ),
                  JField("facebookId", JString(this.facebookId)),
-                 JField("fbreqid", JString(this.fbreqid)),
                  JField("notifyonaddtoevent", JString(this.notifyonaddtoevent)),
                  JField("notifyondeletegift", JString(this.notifyondeletegift)),
                  JField("notifyoneditgift", JString(this.notifyoneditgift)),
@@ -610,7 +609,15 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
          ,("profilepicadjustedwidth", Util.calculateAdjustedWidth(150, profilepicUrl))
          ,("profilepicmargintop", JString(Util.calculateMarginTop(150, profilepicUrl)))
          ,("profilepicmarginleft", JString(Util.calculateMarginLeft(150, profilepicUrl)))
+         ,("profilepicadjustedheight100", Util.calculateAdjustedHeight(100, profilepicUrl))
+         ,("profilepicadjustedwidth100", Util.calculateAdjustedWidth(100, profilepicUrl))
+         ,("profilepicmargintop100", JString(Util.calculateMarginTop(100, profilepicUrl)))
+         ,("profilepicmarginleft100", JString(Util.calculateMarginLeft(100, profilepicUrl)))
          )        
+  }
+  
+  def addfriend(friend:User) = {
+    Friend.join(this, friend)
   }
   
   def addfriends(list:List[Map[String, Any]]) = {
@@ -667,15 +674,15 @@ object User extends User with LongKeyedMetaMapper[User] {
   
   override def create = {
     val u = super.create
-    u.notifyonaddtoevent("true").notifyondeletegift("true").notifyoneditgift("true").notifyonreturngift("true")
+    u.facebookId(Empty).notifyonaddtoevent("true").notifyondeletegift("true").notifyoneditgift("true").notifyonreturngift("true")
   }
   
-  def create(parentId:Long, facebookId:String, fbreqid:String):User = {
-    User.create.first("").last("").parent(parentId).username(facebookId).password(facebookId).facebookId(facebookId).fbreqid(fbreqid).profilepic("http://graph.facebook.com/"+facebookId+"/picture?type=large")
+  def create(name:String, facebookId:String):User = {
+    User.create.first("").last("").username(facebookId).password(facebookId).facebookId(facebookId).profilepic("http://graph.facebook.com/"+facebookId+"/picture?type=large")
   }
   
   // mapper won't let you query by password
-  val queriableFields = List(User.first, User.last, User.username, User.email, User.facebookId, User.fbreqid)
+  val queriableFields = List(User.first, User.last, User.username, User.email, User.facebookId)
   
   def findByFacebookId(l:List[String]) = {
     User.findAll(ByList(User.facebookId, l)) 

@@ -25,7 +25,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}});
   
   })
-  .run(function($route, $rootScope, $cookieStore, $location, $rootScope, facebookConnect){    
+  .run(function($route, $rootScope, $cookieStore, $location, $rootScope, facebookConnect, User){    
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){
         if (!newRoute || !newRoute.$route) return;
         console.log("$routechangestart: $rootScope...");
@@ -37,8 +37,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
           $rootScope.layoutController = newRoute.$route.controller;
         }
         else if(angular.isDefined($cookieStore.get("user"))) {
-          $rootScope.user = $cookieStore.get("user");
-          console.log("FOUND $cookieStore.get('user') = "+$cookieStore.get("user"));
+          $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){console.log("FOUND user from $cookieStore.get('user')...");console.log($rootScope.user);});
           $rootScope.templates = newRoute.$route.templates;
           $rootScope.layoutController = newRoute.$route.controller;
         }
@@ -120,7 +119,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
   factory('User', function($resource) {
       var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', 
                                                  password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login', 
-                                                 creatorId:'@creatorId', creatorName:'@creatorName', facebookId:'@facebookId', fbreqid:'@fbreqid', friends:'@friends',
+                                                 creatorId:'@creatorId', creatorName:'@creatorName', facebookId:'@facebookId', friends:'@friends',
                                                  notifyonaddtoevent:'@notifyonaddtoevent', notifyondeletegift:'@notifyondeletegift', 
                                                  notifyoneditgift:'@notifyoneditgift', notifyonreturngift:'@notifyonreturngift'}, 
                     {
@@ -139,7 +138,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return AppRequest;
   }).
   factory('AppRequestAccepted', function($resource){
-      var AppRequestAccepted = $resource('/gf/apprequestaccepted/:facebookId/:name', {facebookId:'@facebookId', email:'@email', name:'@name'}, 
+      var AppRequestAccepted = $resource('/gf/apprequestaccepted/:facebookId/:name', {facebookId:'@facebookId', email:'@email', name:'@name', fbreqids:'@fbreqids'}, 
                        {
                          save: {method:'POST', isArray:true}
                        });

@@ -1,9 +1,30 @@
 
+new table:  app_request
+with columns:
+	id - autoincr, 
+	inviter_id - the current user's person.id, 
+	fbreqid - the facebook request id, <- MAYBE MAKE THIS UNIQUE, DUNNO
+	facebook_id - the facebook id of the person being invited
+	
+	Everything not null.  Don't make inviter_id/facebook_id unique; allow for one person to send multiple requests to another person
+
+
+new column:  person.fb_request_id - NOT SURE ABOUT THIS COLUMN.  We may want an entirely separate table for app requests.  We were trying to use person.parent_id
+to tie inviter and invitee but that could be problematic if two people try to invite the same person.  An app_request table could tie the current user to the
+invited person (who doesn't have a person.id yet)
+
+
 new column:  person.notifyonaddtoevent - Mapper correctly marks these as not null, but doesn't get the default value right.  Have to manually set to 'true' (varchar)
+Created on eatj.com on 11/21/12: ALTER TABLE `person` ADD `notifyonaddtoevent` VARCHAR( 8 ) NOT NULL DEFAULT 'true';
+
 new column:  person.notifyondeletegift - Mapper correctly marks these as not null, but doesn't get the default value right.  Have to manually set to 'true' (varchar)
+Created on eatj.com on 11/21/12: ALTER TABLE `person` ADD `notifyondeletegift` VARCHAR( 8 ) NOT NULL DEFAULT 'true';
+
 new column:  person.notifyoneditgift - Mapper correctly marks these as not null, but doesn't get the default value right.  Have to manually set to 'true' (varchar)
+Created on eatj.com on 11/21/12: ALTER TABLE `person` ADD `notifyoneditgift` VARCHAR( 8 ) NOT NULL DEFAULT 'true';
+
 new column:  person.notifyonreturngift - Mapper correctly marks these as not null, but doesn't get the default value right.  Have to manually set to 'true' (varchar)
-new column:  person.fb_request_id
+Created on eatj.com on 11/21/12: ALTER TABLE `person` ADD `notifyonreturngift` VARCHAR( 8 ) NOT NULL DEFAULT 'true';
 
 
 new table:  friends  Created on eatj.com on 9/7/12

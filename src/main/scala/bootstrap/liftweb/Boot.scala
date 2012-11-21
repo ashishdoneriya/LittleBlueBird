@@ -26,6 +26,7 @@ import net.liftweb.http.DocType
 import com.lbb.entity.Reminder
 import com.lbb.entity.AuditLog
 import com.lbb.entity.Friend
+import com.lbb.entity.AppRequest
 
 class Boot extends LbbLogger {
   def boot {
@@ -88,6 +89,7 @@ class Boot extends LbbLogger {
     Schemifier.schemify(true, Schemifier.infoF _, Reminder)
     Schemifier.schemify(true, Schemifier.infoF _, AuditLog)
     Schemifier.schemify(true, Schemifier.infoF _, Friend)
+    Schemifier.schemify(true, Schemifier.infoF _, AppRequest)
     
     // Read the reminder table and create executors for all the reminders
     Reminder.boot

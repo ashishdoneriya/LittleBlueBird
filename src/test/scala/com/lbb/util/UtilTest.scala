@@ -44,5 +44,23 @@ class UtilTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     assert("-25px"===margintop)
     assert("0px"===marginleft)
   }
+
+  // testing the 'no profile pic' image
+  test("adjusted dimensions 3") {
+    val profilepicUrl = new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg")
+    val img = new ImageIcon(profilepicUrl)	
+    val profilepicheight = img.getIconHeight()
+    val profilepicwidth = img.getIconWidth()
+    assert(126===profilepicheight)
+    assert(200===profilepicwidth)
+    val adjustedheight = Util.calculateAdjustedHeight(75, profilepicUrl) 
+    val adjustedwidth = Util.calculateAdjustedWidth(75, profilepicUrl)
+    assert(75===adjustedheight)
+    assert(119===adjustedwidth)
+    val margintop = Util.calculateMarginTop(75, profilepicUrl)
+    val marginleft = Util.calculateMarginLeft(75, profilepicUrl)
+    assert("0px"===margintop)
+    assert("-22px"===marginleft)
+  }
   
 }

@@ -1,10 +1,15 @@
 
-function ProfilePicCtrl($rootScope, $cookieStore) {
+function ProfilePicCtrl($rootScope, $cookieStore, User) {
   console.log("ProfilePicCtrl --------------------");
   
   if(!angular.isDefined($rootScope.showUser)) {
-    $rootScope.showUser = $cookieStore.get("showUser");
+    $rootScope.showUser = User.find({userId:$cookieStore.get("showUser")});
   }
+}
+
+
+function CreateAccountCtrl($scope, $rootScope) {
+
 }
 
 

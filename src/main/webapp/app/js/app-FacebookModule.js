@@ -65,6 +65,19 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
       var facebookreqids = [];
       console.log(facebookreqids);
       var parms = $window.location.search.split("&")
+      console.log("$window.location...");
+      console.log($window.location);
+      console.log("$window.location.search...");
+      console.log($window.location.search);
+      
+      // you have a url like this:
+      // http://localhost:8080/gf/app/index.html?request_ids=113378048826497&ref=notif&app_request_type=user_to_user&code=AQAmY87blmBsyAjADV6REoiANQr0PyXuIqHLFrTteBQVstF9X8er5MrDLQxe7J83x_qfyY6vaYvypkfmdaOwAyDde3hD1Bl5VBrs_SwhOhEdRtGO9eIs_vIBXMvvKozbTX9R4ZwTmHzATt_vkiAbdOIaTRHS5n7frB0hn87T1cTN8sZWp07MuzKz2sWMNIV-SB1tr_Id0RNr_u4S191Dvp5C#/mywishlist
+      // and you're trying to find what's on the very end - is it #/friend or #/wishlist, what is it?...
+      var hashidx = $window.location.href.indexOf('#');
+      
+      // move over 2. 1 for the # and the other for the / so you're left with just 'wishlist' or 'friends' etc
+      var path = $window.location.href.substring(hashidx + 2);
+      
       if(parms.length > 0) {
         for(var i=0; i < parms.length; i++) {
           if(parms[i].split("=").length > 1 && (parms[i].split("=")[0] == 'request_ids' || parms[i].split("=")[0] == '?request_ids')) {
@@ -97,10 +110,14 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
             console.log("app.js:  meresponse..."); // will have: name, email, first_name, last_name, id, and other stuff
             console.log(meresponse);
             // queries person table for everyone that has either facebook id or email
-            records = AppRequestAccepted.save({facebookId:meresponse.id, email:meresponse.email, name:meresponse.name}, 
+            records = AppRequestAccepted.save({facebookId:meresponse.id, email:meresponse.email, name:meresponse.name, fbreqids:fbreqids_csv}, 
               function() {
                 // 'records' should always have at least one element because fbinvite() will write a record with the given facebook id if no facebook id is found
-                if(records.length == 1) { $rootScope.user = records[0]; }
+                if(records.length == 1) { 
+                  $rootScope.user = records[0]; 
+                  console.log("SET $window.location.search = ''");
+                  $window.location.search = ''
+                }
                 else if(records.length > 1) {
                   // go to the "who are you" page
                   User.multipleUsers = records;
@@ -113,7 +130,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
         }
         notauthorized = function(res) { console.log("app.js: FB: not authorized"); }
         unknown = function(res) { console.log("app.js: FB: unknown"); }
-          facebookConnect.getLoginStatus(deleterequests, notauthorized, unknown);
+        facebookConnect.getLoginStatus(deleterequests, notauthorized, unknown);
       }
       
     } // end $rootScope.deleteAppRequests()
@@ -164,8 +181,8 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                           User.currentUser = users[i]; // this is what we want to happen... we found a record in our person table that has this email AND facebookId
                           $rootScope.user = users[i];
                           $rootScope.showUser = users[i];
-                          $cookieStore.put("user", $rootScope.user);
-                          $cookieStore.put("showUser", $rootScope.showUser);
+                          $cookieStore.put("user", $rootScope.user.id);
+                          $cookieStore.put("showUser", $rootScope.showUser.id);
                         }
                       }
                       console.log("$rootScope.initfbuser():  $rootScope.user="+$rootScope.user);
@@ -182,8 +199,8 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                                                  User.currentUser = $rootScope.user;
                                                  $rootScope.showUser = $rootScope.user;
                                                  User.showUser = $rootScope.showUser;
-                                                 $cookieStore.put("user", $rootScope.user);
-                                                 $cookieStore.put("showUser", $rootScope.showUser);
+                                                 $cookieStore.put("user", $rootScope.user.id);
+                                                 $cookieStore.put("showUser", $rootScope.showUser.id);
                                                  console.log("just created an LBB account, check $rootScope.user...");
                                                  console.log($rootScope.user);
                                                  
@@ -204,8 +221,8 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                         User.showUser = users[0];
                         $rootScope.user = users[0];
                         $rootScope.showUser = users[0];
-                        $cookieStore.put("user", $rootScope.user);
-                        $cookieStore.put("showUser", $rootScope.showUser);
+                        $cookieStore.put("user", $rootScope.user.id);
+                        $cookieStore.put("showUser", $rootScope.showUser.id);
                         console.log("users.length == 1:  users[0].profilepicUrl...");
                         console.log(users[0].profilepicUrl);
                         var placeholderPic = "http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg";

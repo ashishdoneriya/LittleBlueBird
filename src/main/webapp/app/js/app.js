@@ -25,12 +25,24 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}});
   
   })
-  .run(function($route, $rootScope, $cookieStore, $location, $rootScope, facebookConnect, User){    
+  .run(function($window, $route, $rootScope, $cookieStore, $location, $rootScope, facebookConnect, User){    
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){
         if (!newRoute || !newRoute.$route) return;
         console.log("$routechangestart: $rootScope...");
         console.log($rootScope);
         console.log("$location.url()="+$location.url());
+        
+          console.log("HA HA:  $window.location.search = "+$window.location.search);
+        if($window.location.search == '') console.log("HUHHHHHHHHHHH XXXXX? $window.location.search="+$window.location.search);
+        if($window.location.search != '') {
+          console.log("HA HA ----------------------------------");
+          var s = $window.location.search;
+          $cookieStore.put("window.location.search", s); 
+          $window.location.search = '';
+          console.log("app.js:  cookieStore(window.location.search)...");
+          console.log($cookieStore.get("window.location.search"));
+        }
+        
         if(angular.isDefined($rootScope.user) || $location.url()=='/login' || $location.url()=='/whoareyou' || $location.url()=='/foo/1') {
           // don't do anything - we have what we need
           $rootScope.templates = newRoute.$route.templates;

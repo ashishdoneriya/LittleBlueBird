@@ -47,6 +47,11 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
           
         }
         
+        this.logout = function(response) {
+          console.log("this.logout = function(response) ----------------");
+          
+        }
+        
     } // return new function()
     
 })
@@ -61,22 +66,22 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
 }).run(function($rootScope, $window, $cookieStore, $location, facebookConnect, AppRequest, AppRequestAccepted, UserSearch, User) {
     
     $rootScope.acceptAppRequest = function($window, facebookConnect) {
+      console.log("$rootScope.acceptAppRequest:  cookieStore.get(window.location.search)...");
+      console.log($cookieStore.get("window.location.search"));
+      console.log("$rootScope.acceptAppRequest:  cookieStore.remove(window.location.search)...");
+      $cookieStore.remove("window.location.search");
+      console.log("$rootScope.acceptAppRequest:  AFTER REMOVE: cookieStore.get(window.location.search)...");
+      console.log($cookieStore.get("window.location.search"));
+    }
+    
+    $rootScope.acceptAppRequestXXXX = function($window, facebookConnect) {
       
       var facebookreqids = [];
       console.log(facebookreqids);
       var parms = $window.location.search.split("&")
-      console.log("$window.location...");
-      console.log($window.location);
-      console.log("$window.location.search...");
-      console.log($window.location.search);
       
-      // you have a url like this:
-      // http://localhost:8080/gf/app/index.html?request_ids=113378048826497&ref=notif&app_request_type=user_to_user&code=AQAmY87blmBsyAjADV6REoiANQr0PyXuIqHLFrTteBQVstF9X8er5MrDLQxe7J83x_qfyY6vaYvypkfmdaOwAyDde3hD1Bl5VBrs_SwhOhEdRtGO9eIs_vIBXMvvKozbTX9R4ZwTmHzATt_vkiAbdOIaTRHS5n7frB0hn87T1cTN8sZWp07MuzKz2sWMNIV-SB1tr_Id0RNr_u4S191Dvp5C#/mywishlist
-      // and you're trying to find what's on the very end - is it #/friend or #/wishlist, what is it?...
-      var hashidx = $window.location.href.indexOf('#');
-      
-      // move over 2. 1 for the # and the other for the / so you're left with just 'wishlist' or 'friends' etc
-      var path = $window.location.href.substring(hashidx + 2);
+      console.log("TRY SET $window.location.search = ''");
+      $window.location.search = '';
       
       if(parms.length > 0) {
         for(var i=0; i < parms.length; i++) {
@@ -115,8 +120,6 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                 // 'records' should always have at least one element because fbinvite() will write a record with the given facebook id if no facebook id is found
                 if(records.length == 1) { 
                   $rootScope.user = records[0]; 
-                  console.log("SET $window.location.search = ''");
-                  $window.location.search = ''
                 }
                 else if(records.length > 1) {
                   // go to the "who are you" page
@@ -134,6 +137,16 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
       }
       
     } // end $rootScope.deleteAppRequests()
+    
+    
+    $rootScope.fblogout = function() {
+      console.log("FB.logout ----------------");
+      FB.logout(function(response){
+        console.log("FB.logout:  response...");
+        console.log(response);
+        $cookieStore.remove("user");
+      });
+    }
 
     
     $rootScope.fbinvite = function() {

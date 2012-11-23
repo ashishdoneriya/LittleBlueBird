@@ -7,6 +7,23 @@ HOW TO DEPLOY TO EATJ.COM
 Launch git, cd ~/LittleBlueBird
 
 
+EDITING THE HOSTS FILE: C:\Windows\System32\drivers\etc\hosts
+If you try to save this file, you'll get "Access is denied"
+You have to go to Start -> All Programs -> Accessories -> right click Notepad
+Choose Run as Administrator
+That will pop up a blank notepad doc
+Copy the contents of the hosts file to here
+Edit the file the way you want
+File -> Save As C:\Windows\System32\drivers\etc\hosts
+
+
+Run jetty on port 80, not 8080:
+LittleBlueBird/build.sbt contains the line: port in container.Configuration := 8080
+Change this to 80 and restart the sbt
+Most like have to do: netstat -a -o -n because you'll get an error saying address already in use
+Then: taskkill /F /PID [pid the port 80 process]
+
+
 Window -> Preferences -> General -> Network Connections -> SSH2
 SSH2 Home:  	C:\Users\bdunklau\.ssh
 Private Keys: 	id_dsa,id_rsa

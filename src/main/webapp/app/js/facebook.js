@@ -1,6 +1,6 @@
 
     window.fbAsyncInit = function() {
-        console.log("FB initing ---------------");
+        console.log("FB initing --------------- //connect.facebook.net/en_US/all.js");
         FB.init({
           appId      : '136122483829', // App ID
           channelUrl : 'http://localhost:8080/gf/app/channel.html', // Path to your Channel File
@@ -9,6 +9,16 @@
           oauth      : true,
           xfbml      : true  // parse XFBML
         });
+        
+        $.browser.chrome = /chrome/.test(navigator.userAgent.toLowerCase());
+if ($.browser.chrome || $.browser.msie) {
+    FB.XD._origin = window.location.protocol + "//" + document.domain + "/" + FB.guid();
+    FB.XD.Flash.init();
+    FB.XD._transport = "flash";
+  } else if ($.browser.opera) {
+    FB.XD._transport = "fragment";
+    FB.XD.Fragment._channelUrl = window.location.protocol + "//" + window.location.host + "/";
+  }
         
         angular.bootstrap(document, ['project']);
         

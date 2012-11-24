@@ -67,12 +67,25 @@ function GiftCtrl($rootScope, $route, $cookieStore, $scope, Circle, Gift, User) 
   $scope.alertcannotdelete = function() {alert('Cannot delete this item because you didn\'t add it');}
   
   $scope.initNewGift = function() {
-    $scope.newgift = {addedBy:$rootScope.user, circle:$scope.circle};
-    $scope.newgift.recipients = angular.copy($scope.circle.participants.receivers);
+    console.log("initnewgift() ------------------------");
+    if(angular.isDefined($scope.circle)) {
+      $scope.newgift = {addedBy:$rootScope.user, circle:$scope.circle};
+      $scope.newgift.recipients = angular.copy($scope.circle.participants.receivers);
+    }
+    else {
+      $scope.newgift = {addedBy:$rootScope.user};
+      $scope.newgift.recipients = [$rootScope.showUser];
+    }
+    
     for(var i=0; i < $scope.newgift.recipients.length; i++) {
       if($scope.newgift.recipients[i].id == $rootScope.showUser.id)
         $scope.newgift.recipients[i].checked = true;
     }
+    
+    // you need to specify who the gift is for if there is a circle and if there is more than one receiver in the circle
+    $scope.needToSpecifyWhoTheGiftIsFor = angular.isDefined($scope.newgift) && angular.isDefined($scope.newgift.circle) 
+           && angular.isDefined($scope.newgift.recipients) && $scope.newgift.recipients.length > 1;
+    console.log("scope.needToSpecifyWhoTheGiftIsFor = "+$scope.needToSpecifyWhoTheGiftIsFor);
   }
   
   

@@ -20,6 +20,8 @@
 	                <div class="span4"><input class="span4" type="URL" name="url" ng-model="newgift.url" /></div>
 	              </div>
                 </div>
+                
+              <span ng-show="needToSpecifyWhoTheGiftIsFor">
                 <div class="span3">
                   <div class="row margleft_35">
                     <div class="span3">
@@ -33,13 +35,14 @@
                       </div>
                     </div>
                   </div>
-                                    
-                  
                 </div>
+              </span>
+                
+                
               </div>
               <div class="row margleft_35">
                     <div class="span1">
-                      <a class="btn" ng-click="$location.url($location.path());gift.adding=false">Cancel</a>
+                      <a class="btn" ng-click="gift.adding=false">Cancel</a>
                     </div>
                     <div class="span4">
                       <div ng-show="addGiftForm.$invalid">
@@ -47,7 +50,7 @@
                       </div>    
           
                       <div ng-hide="addGiftForm.$invalid">
-                        <a class="btn btn-primary" ng-click="$location.url($location.path());addgift(newgift);gift.adding=false;">Add Item</a>
+                        <a class="btn btn-primary" ng-click="addgift(newgift);gift.adding=false;">Add Item</a>
                       </div>
                     </div>
               </div>

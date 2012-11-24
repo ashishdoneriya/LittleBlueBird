@@ -1,13 +1,14 @@
-function Gift2Ctrl($window, $route, $scope, Gift, User, Circle, $rootScope, facebookConnect) {
+function Gift2Ctrl($window, $route, $scope, Gift, User, Circle, $rootScope, facebookConnect, $cookieStore) {
   // to recreate the giftlist if the user hits refresh or if the user comes to this page via a link FB or wherever
   if(angular.isDefined($route.current.params.showUserId)) {
-    var queryparms = {};
+    var queryparams = {recipientId:$route.current.params.showUserId, viewerId:$cookieStore.get("user")};
+
     if(angular.isDefined($route.current.params.circleId)) {
-      queryparams = {recipientId:$route.current.params.showUserId, circleId:$route.current.params.circleId};
+      queryparams.circleId = $route.current.params.circleId;
     }
-    else queryparams = {recipientId:$route.current.params.showUserId};
     
-    console.log("Gift2Ctrl: query for gifts");
+    console.log("Gift2Ctrl: queryparams...  look for viewerId");
+    console.log(queryparams);
     
     $scope.gifts = Gift.query(queryparams, 
                             function() { 

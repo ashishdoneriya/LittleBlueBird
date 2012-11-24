@@ -140,11 +140,13 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
     
     
     $rootScope.fblogout = function() {
-      console.log("FB.logout ----------------");
+      console.log("FB.logout ---------------- FB = ...");
+      console.log(FB);
       FB.logout(function(response){
         console.log("FB.logout:  response...");
         console.log(response);
         $cookieStore.remove("user");
+        $location.url('login');
       });
     }
 

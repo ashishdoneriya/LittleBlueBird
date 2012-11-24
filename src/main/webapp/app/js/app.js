@@ -250,20 +250,6 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
         }
       }
   })
-  .directive('btnUser', function(){
-      return {
-        restrict: 'E',
-        replace: true,
-        transclude: true,
-        controller: UserCtrl,
-        scope: { btnText:'@' },
-        templateUrl: 'templates/ddbtn-user.html',
-        // The linking function will add behavior to the template
-        link: function(scope, element, attrs) {
-           $('.dropdown-toggle').dropdown();
-        }
-      }
-  })
   .directive('friendStuff', function(){
       return {
         replace: false,

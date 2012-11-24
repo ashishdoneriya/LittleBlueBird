@@ -60,9 +60,9 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
           //console.log("User is NOT logged in to FB");
           
           // maybe there's an LBB cookie because they don't have a FB account...
-          if(angular.isDefined($cookieStore.get("userId"))) {
+          if(angular.isDefined($cookieStore.get("user"))) {
             //console.log("$scope.userExists():  $rootScope.user is not defined, but there is a userId cookie: emit userchange");
-            $rootScope.user = User.find({userId:$cookieStore.get("userId")}, 
+            $rootScope.user = User.find({userId:$cookieStore.get("user")}, 
                       function(){User.currentUser = $rootScope.user; 
                                  $scope.lookingforuser = false;
                                  //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because we found the LBB cookie: userId");
@@ -71,7 +71,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
                                  //console.log($rootScope.user); 
                                  $rootScope.$emit("userchange");}
                       );
-          } // if(angular.isDefined($cookieStore.get("userId")))
+          } // if(angular.isDefined($cookieStore.get("user")))
           else {
             // They're not logged in to FB and there's no LBB cookie, so send them to the login page 
             $scope.lookingforuser = false;

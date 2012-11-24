@@ -339,8 +339,8 @@ function EmailCtrl($scope, Email) {
 
 
 
-// These args need to be in the same order and the same number as the arg's in the function decl in app-ConnectCtrl
-ConnectCtrl.$inject = ['facebookConnect', 'facebookFriends', '$scope', '$rootScope', '$resource', '$location', 'UserSearch', 'User'];
+// These args need to be in the same order and the same number as the arg's in the function decl in app-LoginCtrl
+LoginCtrl.$inject = ['$rootScope', '$cookieStore', '$scope', '$location', 'User', 'Logout', 'Email', 'facebookConnect'];
 
 function NavCtrl($scope, $window) {
   $scope.navstate = function(compare) {

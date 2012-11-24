@@ -3,6 +3,10 @@
     
   <div class="row">
     <div class="span3 well well-small">
+      
+      <div id="fb-root"></div>
+      <div ng-click="registerWithFacebook()"><img src="img/fblogin.jpg"></div>
+      
       <span ng-hide="forgotlogin">
 		<form novalidate class="form-inline">
 		    <input type="text" title="username" placeholder="Username" ng-model="username"  class="input-small">
@@ -18,11 +22,6 @@
 		    <button class="btn" ng-click="forgotlogin=false;emailIt(email)">Email It!</button> 
 		</form>
       </span>
-      
-      <div id="fb-root"></div>
-      <div ng-controller="ConnectCtrl">
-        <span ng-click="registerWithFacebook()"><img src="img/fblogin.jpg"></span>
-      </div>
 
     </div>
   </div>

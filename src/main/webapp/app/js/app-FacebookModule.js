@@ -207,6 +207,10 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
       console.log($rootScope.fbuser);
       
       // could get more than one person back - parent + children
+      // So this method allows for the fact that the user may have an LBB account that has not yet
+      // been "merged" with the FB account.  That's why we're querying by email and not fb id: because person.facebook_id
+      // may be null
+      // UserSearch.query DOESN'T TAKE A LOGIN:TRUE PARAMETER
       var users = UserSearch.query({login:true, search:$rootScope.fbuser.email}, 
                     function() {
                       console.log("$rootScope.initfbuser:  var users = UserSearch.query(): users...");

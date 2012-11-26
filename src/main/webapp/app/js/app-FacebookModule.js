@@ -182,22 +182,22 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
     
     // can also supply a "to" argument with value of someone's facebook id whose wall/timeline you want to post on
     // but beware, that person may not allow that
-    $rootScope.fbsharegift = function(gift, showUser, circle) {
+    $rootScope.fbsharelist = function(showUser) {
       FB.ui({
           method:'feed',
           name:'I\'ve updated my wish list. Check it out on LittleBlueBird.com [FREE for all subscribers]',
           caption:'Give what THEY want - Get what YOU want',
           description:'This is the site my friends and family use to keep track of everyone\'s wish list',
-          link:'http://www.littlebluebird.com/gf/app/index.html#/giftlist/'+showUser.id+'/'+circle.id,
+          link:'http://www.littlebluebird.com/gf/app/index.html#/giftlist/'+showUser.id+'/',
           picture:'http://www.littlebluebird.com/giftfairy/img/logo.gif',
           //actions: [{name:'actions:name?', link:'http://www.littlebluebird.com/foo/'}],
           user_message_prompt:'user message prompt?'},
         function(response) {
           if(response && response.post_id) {
-            console.log('$rootScope.fbsharegift():  post was successful');
+            console.log('$rootScope.fbsharelist():  post was successful');
           }
           else {
-            console.log('$rootScope.fbsharegift():  post was not published');
+            console.log('$rootScope.fbsharelist():  post was not published');
           }
         });
     }

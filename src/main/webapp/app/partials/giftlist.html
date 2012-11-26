@@ -29,17 +29,31 @@ hyperlinks, which is what we want if we want to post items to FB.
         </span>
       </span>
           
+          
       <div class="row margbottom5">
         <div class="span5">
-          <div ng-include src="'partials/circleinfo.html'"></div>
+          <h3 class="margleft5">{{showUser.fullname}}'s Wish List</h3>
         </div>
             
-        <div class="span1 offset1 pull-right">
+        <div class="span2 pull-right">
+          <a class="uibutton confirm" ng-click="fbsharelist(showUser)">Share</a>
           <span ng-hide="gift.adding">
             <a class="btn btn-mini btn-success font18 pull-right" ng-click="gift.adding=true;initNewGift();">+</a>
           </span>
         </div>
       </div> <!-- div class="row" -->
+          
+          
+      <div class="row margbottom5">
+        <div class="span5">
+          <h3 class="margleft5">{{circle.name}}</h3>
+        </div>
+        <div class="span2 pull-right">
+          <h4 class="pull-right">{{circle.date | date:'EEE MMM d, yyyy'}}</h4>
+        </div>
+            
+      </div> <!-- div class="row" -->
+          
           
           
       <div class="row">

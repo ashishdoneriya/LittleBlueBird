@@ -1,6 +1,6 @@
 
 <div class="span7 marg5" ng-controller="GiftCtrl">
-  <div class="row" ng-mouseenter="showshare='true'" ng-mouseleave="showshare='false'">     
+  <div class="row">     
     <div class="spantiny padtop5">
         
       <ul gift-actions class="nav marg0">
@@ -44,7 +44,7 @@
         </a>
       </div>   
       
-      <div class="span1" ng-controller="LoginCtrl"><span ng-show="showshare=='true'"><a class="uibutton confirm" ng-click="fbsharegift(gift)">Share</a></span></div>             
+      <div class="span1"><span ng-show="showshare=='true'"><a class="uibutton confirm" ng-click="fbsharelist(showUser, circle)">Share</a></span></div>             
              
   </div>
   

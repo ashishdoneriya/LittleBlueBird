@@ -4,7 +4,13 @@ function Gift2Ctrl($window, $route, $scope, Gift, User, Circle, $rootScope, face
     var queryparams = {recipientId:$route.current.params.showUserId, viewerId:$cookieStore.get("user")};
 
     if(angular.isDefined($route.current.params.circleId)) {
-      queryparams.circleId = $route.current.params.circleId;
+      // circleId parm will have a & on the end that needs to be stripped off when coming to someone's 
+      // wish list FROM FACEBOOK.  I set $window.location.search to '' in app.js:run()
+      // THIS CODE IS DUPLICATED IN app-CircleCtrl:CircleCtrl
+      var circleId = $route.current.params.circleId
+      if(circleId.substring(circleId.length - 1 == '&')) circleId = circleId.substring(0, circleId.length-1)
+        
+      queryparams.circleId = circleId;
     }
     
     console.log("Gift2Ctrl: queryparams...  look for viewerId");

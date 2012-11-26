@@ -11,7 +11,12 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     $scope.circle = Circle.currentCircle; 
   }
   else if(angular.isDefined($route.current.params.circleId)) {
-    $scope.circle = Circle.query({circleId:$route.current.params.circleId}, function() {Circle.currentCircle = $scope.circle;}, function() {alert("Could not find Event "+$route.current.params.circleId);})
+    // circleId parm will have a & on the end that needs to be stripped off when coming to someone's 
+    // wish list FROM FACEBOOK.  I set $window.location.search to '' in app.js:run()
+    // THIS CODE IS DUPLICATED IN app-GiftCtrl:Gift2Ctrl
+    var circleId = $route.current.params.circleId
+    if(circleId.substring(circleId.length - 1 == '&')) circleId = circleId.substring(0, circleId.length-1)
+    $scope.circle = Circle.query({circleId:circleId}, function() {Circle.currentCircle = $scope.circle;console.log("app-CircleCtrl: $scope.circle....");console.log($scope.circle);}, function() {alert("Could not find Event "+circleId);})
   }
   
   

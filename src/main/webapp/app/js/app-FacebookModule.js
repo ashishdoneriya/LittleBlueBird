@@ -140,12 +140,12 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
     
     
     $rootScope.fblogout = function() {
+      $cookieStore.remove("user");
       console.log("FB.logout ---------------- FB = ...");
       console.log(FB);
       FB.logout(function(response){
         console.log("FB.logout:  response...");
         console.log(response);
-        $cookieStore.remove("user");
         $location.url('login');
       });
     }
@@ -180,16 +180,17 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
     } 
     
     
-    $rootScope.fbsharegift = function(gift) {
+    // can also supply a "to" argument with value of someone's facebook id whose wall/timeline you want to post on
+    // but beware, that person may not allow that
+    $rootScope.fbsharegift = function(gift, showUser, circle) {
       FB.ui({
           method:'feed',
-          message:'Buy me this: '+gift.description,
-          name:'Name goes here',
-          caption:'Caption goes here',
-          description:'Description goes here - looks like it can be really long...',
-          link:'http://www.littlebluebird.com',
+          name:'I\'ve updated my wish list. Check it out on LittleBlueBird.com [FREE for all subscribers]',
+          caption:'Give what THEY want - Get what YOU want',
+          description:'This is the site my friends and family use to keep track of everyone\'s wish list',
+          link:'http://www.littlebluebird.com/gf/app/index.html#/giftlist/'+showUser.id+'/'+circle.id,
           picture:'http://www.littlebluebird.com/giftfairy/img/logo.gif',
-          actions: [{name:'actions:name?', link:'http://www.littlebluebird.com/foo/'}],
+          //actions: [{name:'actions:name?', link:'http://www.littlebluebird.com/foo/'}],
           user_message_prompt:'user message prompt?'},
         function(response) {
           if(response && response.post_id) {

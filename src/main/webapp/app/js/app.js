@@ -298,12 +298,27 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
 
 
 
-function RegisterCtrl($scope, User, $rootScope, $location) {
+function RegisterCtrl($scope, User, $rootScope, $location, $cookieStore) {
   $scope.save = function(newuser) {
+    var userwas = $cookieStore.get("user");
+    var showuserwas = $cookieStore.get("showUser");
+    $cookieStore.put("userwas", userwas);
+    $cookieStore.put("showuserwas", showuserwas);
+    $cookieStore.remove("user");
+    $cookieStore.remove("showUser");
+    console.log("REMOVED user COOKIE -----------------------");
+    console.log("$cookieStore.get(\"userwas\")="+$cookieStore.get("userwas"));
+    console.log("$cookieStore.get(\"user\")="+$cookieStore.get("user"));
+    console.log("$cookieStore.get(\"showuserwas\")="+$cookieStore.get("showuserwas"));
+    console.log("$cookieStore.get(\"showUser\")="+$cookieStore.get("showUser"));
+    
     $rootScope.user = User.save({login:true, fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth}, 
                                   function() { 
-                                    User.showUser = $rootScope.user;
+                                    $rootScope.showUser = $rootScope.user;
                                     User.currentUser = $rootScope.user;
+                                    User.showUser = $rootScope.showUser;
+                                    $cookieStore.put("user", $rootScope.user.id);
+                                    $cookieStore.put("showUser", $rootScope.showUser.id);
                                     $location.url('welcome');
                                   }
                                 );

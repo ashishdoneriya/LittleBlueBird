@@ -141,6 +141,13 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
     
     $rootScope.fblogout = function() {
       $cookieStore.remove("user");
+      $cookieStore.remove("showUser");
+      if(!angular.isDefined($rootScope.user.facebookId) || $rootScope.user.facebookId==null) {
+        console.log("user's facebook id is undefined - returning early - don't try FB.logout()");
+        $location.url('login');
+        return;
+      }
+      console.log("$rootScope.user.facebookId="+$rootScope.user.facebookId+" - therefore we ARE going to do FB.logout()");
       console.log("FB.logout ---------------- FB = ...");
       console.log(FB);
       FB.logout(function(response){

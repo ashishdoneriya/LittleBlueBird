@@ -3,7 +3,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
     //$locationProvider.html5Mode(true);
     
     $routeProvider.
-      when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/register.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}}).
+      when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}}).
       when('/foo/:fooid', {templates: {layout: 'foo', foo: 'partials/foo/foo.html'}}).
       when('/bar/:fooid/:barid', {templates: {layout: 'foo', foo: 'partials/foo/bar.html'}}).
       when('/baz/:fooid/:barid/:bazid', {templates: {layout: 'foo', foo: 'partials/foo/foo.html', bar: 'partials/foo/bar.html'}}).

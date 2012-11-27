@@ -4,7 +4,21 @@ function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Em
 
     $scope.fbuser = {}
     $scope.error = null;
+    $rootScope.loginoption = '';
     
+  $scope.loginhelpbox = function(showhide) {
+    console.log("scope.loginhelpbox, using rootScope -----------------------------");
+    $rootScope.loginhelp = showhide;
+  }
+  
+  
+  $scope.setloginoption = function(something) { 
+    console.log("$rootScope.setloginoption -----------------------"); 
+    $rootScope.loginoption = something; 
+  }
+  
+  $scope.setloginsectiontwo = function(somename) { $rootScope.loginsectiontwo = somename; }
+  
  
   $scope.login = function() {
     //alert("login:  "+$scope.username+" / "+$scope.password);

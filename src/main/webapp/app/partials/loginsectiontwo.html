@@ -1,0 +1,9 @@
+
+  <div ng-controller="LoginCtrl">
+    <div ng-hide="loginsectiontwo=='createlbbaccount'">
+      <div ng-include src="'partials/registrationoptions.html'"></div>
+    </div>
+    <div ng-show="loginsectiontwo=='createlbbaccount'">
+      <div ng-include src="'partials/register.html'"></div>
+    </div>
+  </div>

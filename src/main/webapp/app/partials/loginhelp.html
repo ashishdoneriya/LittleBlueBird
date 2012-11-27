@@ -1,0 +1,98 @@
+
+<div class="row" ng-controller="LoginCtrl">
+  <div class="span7 well well-small">
+    
+    <div class="row">
+      <div class="span6"><h4>Login Help</h4></div>
+      <div class="span1"><a class="pull-right" ng-click="loginhelpbox('hide')"><i class="icon-remove"></i></a></div>
+    </div>
+    
+    <div class="row">
+      <div class="span7">
+        Are you inquiring about your account or your child's account?  <a ng-click="whoseaccount='mine'">mine</a> | <a ng-click="whoseaccount='child'">my child's</a>
+      </div>
+    </div>
+    
+    <div class="row" ng-show="whoseaccount=='mine' || whoseaccount=='child'">
+      <div class="span7">
+        <span ng-show="whoseaccount=='mine'">Do you</span> <span ng-show="whoseaccount=='child'">Does your child</span> already have a Facebook account?  <a ng-click="existingfbaccount='yes'">Yes</a> | <a ng-click="existingfbaccount='no'">No</a>
+      </div>
+    </div>
+    
+    <div class="row" ng-show="existingfbaccount=='yes'">
+      <div class="span7">
+        <span ng-show="whoseaccount=='mine'">Does your</span> <span ng-show="whoseaccount=='child'">Does your child's</span> LittleBlueBird email match <span ng-show="whoseaccount=='mine'">your</span> <span ng-show="whoseaccount=='child'">his/her</span> Facebook email?  <a ng-click="emailsmatch='yes'">Yes</a> | <a ng-click="emailsmatch='no'">No</a> | <a ng-click="emailsmatch='no'">Don't know</a>
+      </div>
+    </div>
+    
+    <div class="row" ng-show="existingfbaccount=='no'">
+      <div class="span7">
+        Do you want a Facebook account <span ng-show="whoseaccount=='child'">for your child</span>?  <a ng-click="wantsfbaccount='yes'">Yes</a> | <a ng-click="wantsfbaccount='no'">No</a>
+      </div>
+    </div>
+    
+    
+    <span ng-show="wantsfbaccount=='yes'">
+    <div class="row"><div class="span7"><hr/></div></div>
+    <div class="row">
+      <div class="span7">
+        <b>You're all set!</b> Click "Sign in with Facebook". <span ng-show="whoseaccount=='mine'">You</span> <span ng-show="whoseaccount=='child'">Your child</span> will be given the opportunity to create 
+        <span ng-show="whoseaccount=='mine'">your</span> <span ng-show="whoseaccount=='child'">his/her</span> Facebook account on the fly. 
+      </div>
+    </div>
+    </span>
+    
+    
+    <span ng-show="wantsfbaccount=='no'">
+    <div class="row"><div class="span7"><hr/></div></div>
+    <div class="row">
+      <div class="span7">
+        <b>You're all set!</b> <span ng-show="whoseaccount=='mine'">You</span> <span ng-show="whoseaccount=='child'">Your child</span> should choose <a ng-click="setloginoption('littlebluebird')">Sign in with LittleBlueBird</a>, not "Sign in with Facebook"
+      </div>
+    </div>
+    </span>
+    
+    
+    <span ng-show="emailsmatch=='yes'">
+    <div class="row"><div class="span7"><hr/></div></div>
+    <div class="row">
+      <div class="span7">
+        <b>You're all set!</b> Nothing more for you to do.  Click "Sign in with Facebook" and see how much easier it is to share LittleBlueBird with all your friends.
+      </div>
+    </div>
+    </span>
+    
+    
+    <span ng-show="emailsmatch=='no'">
+    <div class="row"><div class="span7"><hr/></div></div>
+    <div class="row">
+      <div class="span7">
+        <b>You're almost ready!</b>  There's one last thing you need to do. 
+      </div>
+    </div>
+    <div class="row">
+      <div class="span7">
+        <ul>
+        <li><a ng-click="setloginoption('littlebluebird')">Sign in to your <span ng-show="whoseaccount=='child'">child's</span> LittleBlueBird account</a></li>
+        <li>Change your <span ng-show="whoseaccount=='child'">child's</span> email address to match 
+          <span ng-show="whoseaccount=='mine'">your</span> <span ng-show="whoseaccount=='child'">his/her</span> Facebook email
+        </li>
+        <li>Logout of LittleBlueBird</li>
+        <li>Then come back to this page and click "Sign in with Facebook"</li>
+        </ul>
+      </div>
+    </div>
+    </span>
+    
+    <div class="row"><div class="span7"><hr/></div></div>
+    
+    <div class="row">
+      <div class="span7 pull-right">
+        <a ng-click="whoseaccount='';existingfbaccount='';emailsmatch='';wantsfbaccount=''">Start Over</a>
+      </div>
+    </div>
+    
+    
+    
+  </div>
+</div>

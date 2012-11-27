@@ -3,17 +3,18 @@
 
 
     <div class="row">
-      <div class="span3 well well-small">
+      <div class="span4 well well-small">
 
 <form novalidate name="regForm" ng-controller="RegisterCtrl">
 
-        <div class="row"><div class="span3"><h3>Sign Up</h3></div></div>
+        <div class="row"><div class="span4"><h4>Sign up with LittleBlueBird</h4><hr/></div></div>
     
 
 
 
-
-
+        <div class="row">
+          <div class="span4 padleft15">
+          
             <div class="row">
               <div class="span1">Name</div>
               <div class="span2 margleft0">
@@ -82,6 +83,9 @@
                 </span> 
               </div>
             </div>
+          
+          </div>
+        </div>
 
 
 
@@ -89,15 +93,19 @@
 
 
         <div class="row">
-          <div class="span2 offset1">    
+          <div class="span3 offset1">    
           
-            <div ng-show="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
+            <span ng-show="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
               <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet">Save</a>
-            </div>    
+            </span>    
           
-            <div ng-hide="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
+            <span ng-hide="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
               <a href="#" class="btn btn-primary" ng-click="save(newuser)">Save</a>
-            </div>
+            </span>
+            
+            <span ng-controller="LoginCtrl">
+              <a class="btn" ng-click="setloginsectiontwo('cancel')">Cancel</a>
+            </span>
       
           </div>
     

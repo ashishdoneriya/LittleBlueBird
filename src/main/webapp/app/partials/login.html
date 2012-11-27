@@ -1,27 +1,69 @@
 
+<div id="fb-root"></div>
+      
 <div ng-controller="LoginCtrl">
     
   <div class="row">
-    <div class="span3 well well-small">
+    <div class="span4 well well-small">
       
-      <div id="fb-root"></div>
-      <div ng-click="registerWithFacebook()"><img src="img/fblogin.jpg"></div>
       
-      <span ng-hide="forgotlogin">
-		<form novalidate class="form-inline">
+      <span ng-show="loginoption==''">
+      <div class="row">
+        <div class="span4">
+          <h4>LittleBlueBird now uses Facebook login!</h4>
+          <hr/>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="span4">
+          <div ng-click="registerWithFacebook()"><img src="img/fblogin.jpg"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="span4">
+          <P>&nbsp;</P>
+          We've changed the way you login to LittleBlueBird.
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="span4">
+          If you already have a LittleBlueBird account, go to <a ng-click="loginhelpbox('show')">Login Help</a> to see how this affects you.
+          <P>&nbsp;</P>
+          No thanks, just let me <a ng-click="setloginoption('littlebluebird')">login to LittleBlueBird</a> the way I always have
+        </div>
+      </div>
+      </span> <!-- span ng-show="loginoption==''" -->
+      
+
+      
+      <span ng-show="loginoption=='littlebluebird'">
+      
+        <h4>Sign in with LittleBlueBird</h4>
+        <hr/>
+      
+        <span ng-hide="forgotlogin">
+		  <form novalidate class="form-inline">
 		    <input type="text" title="username" placeholder="Username" ng-model="username"  class="input-small">
 		    <input type="password" title="password" placeholder="Password" ng-model="password" class="input-small">
-		    <button class="btn" ng-click="login()">Login</button> <a href="#/login" ng-click="forgotlogin=true">forgot your login?</a> 
-		</form>
+		    <button class="btn" ng-click="login()">Login</button>
+		    <button class="btn" ng-click="setloginoption('')">Cancel</button>
+		  </form>
+		  <a href="#/login" ng-click="forgotlogin=true">forgot your login?</a> 
 
-        <span ng-show="loginfail"><div class="alert alert-error">Wrong username/password</div></span>
-      </span>
-      <span ng-show="forgotlogin">
-		<form novalidate class="form-inline">
+          <span ng-show="loginfail"><div class="alert alert-error">Wrong username/password</div></span>
+        </span>
+        <span ng-show="forgotlogin">
+	      <form novalidate class="form-inline">
 		    <input type="email" title="Email" placeholder="Email" ng-model="email"  class="span2">
 		    <button class="btn" ng-click="forgotlogin=false;emailIt(email)">Email It!</button> 
-		</form>
-      </span>
+		  </form>
+        </span>
+      </span> <!-- span ng-show="loginoption=='littlebluebird'" -->
+
+
 
     </div>
   </div>

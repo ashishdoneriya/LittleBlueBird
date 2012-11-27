@@ -1,0 +1,56 @@
+
+<div class="row">
+  <div class="span4 well well-small">
+  
+        <div class="row"><div class="span4">LittleBlueBird now uses Facebook login!</div></div>
+        
+        <div class="row">
+          <div class="span4">
+            <a ng-click="donthavefbaccount='show'">I don't have a Facebook account <i class="icon-chevron-right"></i></a>
+          </div>
+        </div>
+        
+        <span ng-show="donthavefbaccount=='show'">
+        <div class="row">
+          <div class="span4 margleft30 padright5">
+            Click the "Sign in with Facebook" button.  At the bottom of the popup, click the link that says "Sign up for Facebook".
+            <a class="font10" ng-click="donthavefbaccount=''">(hide)</a>
+          </div>
+        </div>
+        </span>
+        
+        <div class="row">
+          <div class="span4">
+            <a ng-click="dontwantfbaccount='show'">I don't want a Facebook account <i class="icon-chevron-right"></i></a>
+          </div>
+        </div>
+        
+        <span ng-show="dontwantfbaccount=='show'">
+        <div class="row">
+          <div class="span4 margleft30 padright5">
+            You can still <a ng-click="setloginsectiontwo('createlbbaccount')">create a LittleBlueBird account</a> the way you always could.
+            <a class="font10" ng-click="dontwantfbaccount=''">(hide)</a>
+          </div>
+        </div>
+        </span>
+        
+        <div class="row">
+          <div class="span4">
+            <a ng-click="childdoesnthavefacebook='show'">I need to create an account for my child who isn't on Facebook <i class="icon-chevron-right"></i></a>
+          </div>
+        </div>
+        
+        <span ng-show="childdoesnthavefacebook=='show'">
+        <div class="row">
+          <div class="span4 margleft30 padright5">
+            You can still <a ng-click="setloginsectiontwo('createlbbaccount')">create a LittleBlueBird account</a> the way you always could.  If your child has
+            his/her own email address, you can register with that.  You also have the option of registering using <I>your</I> 
+            email address if your child doesn't have email.
+            <a class="font10" ng-click="childdoesnthavefacebook=''">(hide)</a>
+          </div>
+        </div>
+        </span>
+        
+        
+  </div>
+</div>

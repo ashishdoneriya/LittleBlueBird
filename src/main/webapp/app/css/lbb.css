@@ -97,6 +97,8 @@
   margin:0px 0px 0px -24px; 
 }
 
+.font10 { font-size:10px; }
+
 .font12 { font-size:12px; }
 
 .font14 { font-size:14px; }
@@ -315,6 +317,10 @@
 
 .padright15 {
   padding-right:15px;
+}
+
+.padright5 {
+  padding-right:5px;
 }
 
 .padtop5 {

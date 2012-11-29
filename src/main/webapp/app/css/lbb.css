@@ -311,6 +311,10 @@
   padding-left:15px;
 }
 
+.padleft30 {
+  padding-left:30px;
+}
+
 .padright0 {
   padding-right:0;
 }
@@ -321,6 +325,10 @@
 
 .padright5 {
   padding-right:5px;
+}
+
+.padright30 {
+  padding-right:30px;
 }
 
 .padtop5 {

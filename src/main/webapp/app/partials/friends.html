@@ -13,9 +13,18 @@
 
 
 <div class="row">
-  <div class="span7">
-    <a class="uibutton" ng-click="fbinvite()">Invite Facebook Friends</a>
-    <a class="uibutton" ng-click="beginnewuser()">Create Account for Someone</a>
+  <div class="span2 offset5">
+    <div class="btn-group pull-right">
+      <a class="btn btn-small dropdown-toggle" data-toggle="dropdown" href="#">
+        Add Friends
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a ng-click="fbinvite()">Add Facebook Friends</a></li>
+        <li><a>Add LittleBlueBird Friends</a></li>
+        <li><a ng-click="beginnewuser()">Create Account for Someone</a></li>
+      </ul>
+    </div>
   </div>
 </div>
 

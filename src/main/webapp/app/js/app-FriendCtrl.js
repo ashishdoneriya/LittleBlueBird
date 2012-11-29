@@ -54,6 +54,8 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
   
   // just like $scope.giftlist above but no circle here
   $scope.friendwishlist = function(friend) {
+    console.log("$scope.friendwishlist:  set $location.url(/giftlist/#) RIGHT AWAY ------------------------");
+    $location.path('/giftlist/'+friend.id);
     gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, 
                             function() { 
                               Circle.gifts = gifts; 
@@ -65,8 +67,6 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
                               console.log($rootScope.circle);
                               User.currentUser = $rootScope.user;
                               User.showUser = friend;
-                              console.log("$scope.friendwishlist:  set $location.url(/giftlist/#)");
-                              $location.path('/giftlist/'+friend.id);
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 
                             }, 

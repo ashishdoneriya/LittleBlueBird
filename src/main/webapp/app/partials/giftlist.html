@@ -13,15 +13,6 @@ hyperlinks, which is what we want if we want to post items to FB.
 
 
 <div ng-controller="GiftListCtrl">
-    
-        <span ng-show="isExpired()">
-          <div class="row alert alert-success margleft10">
-            <div class="span6">
-              <h4 class="alert-heading">{{circle.name}} has past</h4>
-              This is what {{showUser.first}} got for {{circle.name}}
-            </div>
-          </div>
-        </span>
           
           
       <div class="row margbottom5">
@@ -47,16 +38,48 @@ hyperlinks, which is what we want if we want to post items to FB.
         </div>
             
       </div> <!-- div class="row" -->
+      
+      <div class="row"><div class="span7 simple-top"></div></div>
+    
+      <div class="row">
+        <div class="span7">
+        <span ng-show="isExpired()">
+          <div class="row alert alert-success margleft0">
+            <div class="span6 padright30 margleft0">
+              <h4 class="alert-heading">{{circle.name}} has past</h4>
+              This is what {{showUser.first}} got for {{circle.name}}
+            </div>
+          </div>
+        </span>
+        </div>
+      </div>
           
           
           
       <div class="row">
             
         <!-- everything goes in here -->
-        <div class="span7 simple-top">
-        
+        <div class="span7">
+            
           <span ng-show="gifts.length==0 && !isExpired()">
-            <h5>This list is empty</h5>
+            <P><h4 class="font16">This list is empty</h4></P>
+            <span ng-show="user.id != showUser.id">
+              <P class="font16">Did you know you can add items to this list even though it's not <I>your</I> list?</P>
+              <P class="font16">And anything you add will be hidden from {{showUser.fullname}}. LittleBlueBird won't spoil the surprise!</P>
+              <P class="font16">Everyone else will be able to see it though</P>
+            </span>
+          </span>
+            
+          <span ng-show="gifts.length==0 && isExpired()">
+            <P>
+              <h4 class="font16">
+                According to LittleBlueBird, <span ng-show="user.id == showUser.id">you</span><span ng-hide="user.id == showUser.id">{{showUser.fullname}}</span> didn't get anything at this event.
+              </h4>
+            </P>
+            <P class="font16">
+              <span ng-show="user.id == showUser.id">You</span><span ng-hide="user.id == showUser.id">{{showUser.fullname}}</span> probably did get something,
+                it just wasn't bought through LittleBlueBird.
+            </P>
           </span>
             
           <span ng-show="gift.adding">

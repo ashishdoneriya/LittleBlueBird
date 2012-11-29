@@ -38,11 +38,11 @@
                   <span ng-show="gift.url != undefined && gift.url != ''">
                   <div class="btn-toolbar">
                     <div class="btn-group">
-                      <a class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift, recdate);">Reserve</a>
-                      <a ng-href="{{gift.url}}" target="new" class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift);">Buy Online</a>
+                      <a class="btn btn-success" ng-click="gift.buying=false;buygift($index, gift, recdate);">Reserve</a>
+                      <a ng-href="{{gift.url}}" target="new" class="btn btn-success" ng-click="gift.buying=false;buygift($index, gift);">Buy Online</a>
                     </div>
                     <div class="btn-group">
-                      <a class="btn" ng-click="$location.url($location.path());gift.buying=false">Cancel</a>
+                      <a class="btn" ng-click="gift.buying=false">Cancel</a>
                     </div>
                   </div> <!-- end btn toolbar 1 -->
                   </span>
@@ -51,11 +51,11 @@
                   <span ng-hide="gift.url != undefined && gift.url != ''">
                   <div class="btn-toolbar">
                     <div class="btn-group">
-                      <a class="btn btn-success" ng-click="$location.url($location.path());gift.buying=false;buygift($index, gift, recdate);">Reserve</a>
+                      <a class="btn btn-success" ng-click="gift.buying=false;buygift($index, gift, recdate);">Reserve</a>
                       <a class="btn" ng-disabled="true" title="No link was provided for this item.  Search for this item on Amazon.com">Buy Online</a>
                     </div>
                     <div class="btn-group">
-                      <a class="btn" ng-click="$location.url($location.path());gift.buying=false">Cancel</a>
+                      <a class="btn" ng-click="gift.buying=false">Cancel</a>
                     </div>
                   </div> <!-- end btn toolbar 2 -->
                   </span>

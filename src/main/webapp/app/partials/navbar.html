@@ -59,7 +59,7 @@
 				        <div class="searchresults pad5">
 				            <div ng-repeat="person in people">
 				              <span ng-hide="person.hide">
-				                <div class="row margbottom5 margleft0 highlight-box-white" ng-click="$location.url($location.path());addparticipant($index, person, thecircle)">
+				                <div class="row margbottom5 margleft0 highlight-box-white" ng-click="addparticipant($index, person, thecircle)">
 				                  <div class="span1 marg0"><img height=50 width=50 ng-src="{{person.profilepicUrl}}" /></div>
 				                  <div class="span2 marg0 padtop5 font14">{{person.fullname}}</div>
 				                </div>

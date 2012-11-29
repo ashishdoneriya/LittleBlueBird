@@ -222,8 +222,8 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
   
     $scope.gifts = Gift.query({viewerId:$rootScope.user.id, circleId:circle.id, recipientId:participant.id}, 
                             function() { 
-                              console.log("scope.giftlist: set path to 'giftlist'");
-                              $location.path('giftlist');
+                              console.log("scope.giftlist: SETTING path to '/giftlist/#/#/'");
+                              $location.path('/giftlist/'+participant.id+'/'+circle.id);
                               Circle.gifts = $scope.gifts; 
                               Circle.currentCircle = circle; // phase this strategy out
                               $rootScope.circle = circle;

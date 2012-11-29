@@ -25,11 +25,11 @@ hyperlinks, which is what we want if we want to post items to FB.
           
           
       <div class="row margbottom5">
-        <div class="span5">
+        <div class="span4">
           <h3 class="margleft5">{{showUser.fullname}}'s Wish List</h3>
         </div>
             
-        <div class="span2 pull-right">
+        <div class="span3 pull-right">
           <a class="uibutton confirm" title="Share this list on Facebook" ng-click="fbsharelist(showUser)">Share on Facebook</a>
           <span ng-hide="gift.adding">
             <a class="btn btn-mini btn-success font18 pull-right" title="Add an item to this wish list" ng-click="gift.adding=true;initNewGift();">+</a>
@@ -54,6 +54,10 @@ hyperlinks, which is what we want if we want to post items to FB.
             
         <!-- everything goes in here -->
         <div class="span7 simple-top">
+        
+          <span ng-show="gifts.length==0 && !isExpired()">
+            <h5>This list is empty</h5>
+          </span>
             
           <span ng-show="gift.adding">
 	        <div ng-include src="'partials/giftlist/addgiftform.html'"></div>
@@ -84,7 +88,6 @@ hyperlinks, which is what we want if we want to post items to FB.
               </div>                
             </span>
             <!-- end:  show gift.editing -->    
-                  
                   
           </div> <!-- div ng-repeat="gift in gifts" -->
 

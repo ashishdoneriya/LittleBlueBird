@@ -65,7 +65,8 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
                               console.log($rootScope.circle);
                               User.currentUser = $rootScope.user;
                               User.showUser = friend;
-                              $location.path('giftlist');
+                              console.log("$scope.friendwishlist:  set $location.url(/giftlist/#)");
+                              $location.path('/giftlist/'+friend.id);
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 
                             }, 

@@ -187,7 +187,6 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     $scope.search = '';
     $scope.people = {};
     Circle.circleType = thetype;
-    $location.url($location.path());
     $scope.newcircle = {name:'', creatorId:$rootScope.user.id, receiverLimit:limit, participants:{receivers:[], givers:[]}};
     $scope.circlecopies = angular.copy($rootScope.user.circles);
   }
@@ -316,7 +315,6 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
                             $rootScope.$emit("userchange"); 
                             $rootScope.$emit("circlechange");});
                 
-    $location.url($location.path());
   }
   
   // duplicated in app-FriendCtrl.js

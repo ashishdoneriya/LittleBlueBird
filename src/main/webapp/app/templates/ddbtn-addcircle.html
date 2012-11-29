@@ -145,7 +145,7 @@
 				          <span ng-hide="noonefound">
 				            <div ng-repeat="person in people | filter:search">
 				              <span ng-hide="person.hide">
-				                <div class="row margbottom5 margleft0 highlight-box-white" ng-click="$location.url($location.path());addparticipant($index, person, newcircle)">
+				                <div class="row margbottom5 margleft0 highlight-box-white" ng-click="addparticipant($index, person, newcircle)">
 				                  <div class="span1 marg0"><img height=50 width=50 ng-src="{{person.profilepicUrl}}" /></div>
 				                  <div class="span2 marg0 padtop5 font14">{{person.fullname}}</div>
 				                </div>
@@ -291,13 +291,13 @@
 	</div>
 	<div class="modal-footer">	
               <div ng-show="circleForm.name.$error.required || circleForm.expdate.$error.required">
-                <a ng-click="$parent.modalShown = false;$location.url($location.path());cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a>
+                <a ng-click="$parent.modalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a>
                 <a ng-disabled="true" class="btn" id="invalidform">Save</a>
               </div>    
           
               <div ng-hide="circleForm.name.$error.required || circleForm.expdate.$error.required">
-                <a ng-click="$parent.modalShown = false;$location.url($location.path());cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a> 
-                <a class="btn btn-primary" ng-click="savecircle(newcircle, expdate);$parent.modalShown = false;$location.url($location.path());showRegister=false;search='';">Save</a>
+                <a ng-click="$parent.modalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a> 
+                <a class="btn btn-primary" ng-click="savecircle(newcircle, expdate);$parent.modalShown = false;showRegister=false;search='';">Save</a>
               </div>
 	</div>
   </div>

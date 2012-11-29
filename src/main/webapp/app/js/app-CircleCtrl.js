@@ -91,23 +91,12 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
                                 );
   }
   
-  $scope.isExpired = function() { 
-    return angular.isDefined($scope.circle) && $scope.circle.date < new Date().getTime(); 
-  }
-  
   $scope.nocircle = function() {
     return !angular.isDefined($scope.circle);
   }
   
   $scope.currentCircle = function() { 
     return Circle.currentCircle;
-  }
-  
-  $scope.makeActive = function(index, circle) {
-    circle.index = index; // for deleting
-    Circle.currentCircle = circle;
-    Circle.currentCircle.isExpired = circle.date < new Date();
-    $rootScope.$emit("circlechange");
   }
 
   $rootScope.$on("circlechange", function(event) {

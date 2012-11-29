@@ -112,22 +112,24 @@
     </div>
   </div>
 </div> 
-</span> <!-- end of span: addmethod='createaccount' --> 
-  
-  
+</span> <!-- end of span: mode='createaccount' --> 
+
+
 <span ng-show="mode=='friends'">
   <div class="row"><div class="span2">&nbsp;</div></div>
   <div ng-repeat="friend in user.friends">
-    <div class="row margtop5">
-      <div class="span2 white"><div style="width:100px;background-color:#00a2d2;">{{friend.fullname}}</div></div>
-    </div>
     <div class="row">
-      <div class="span2">
+      <div class="span1">
         <div style="width:100px; height:100px; overflow:hidden;">
           <div style="margin-top:{{friend.profilepicmargintop100}};margin-left:{{friend.profilepicmarginleft100}}">
-            <img height="{{friend.profilepicadjustedheight100}}" width="{{friend.profilepicadjustedwidth100}}" ng-src="{{friend.profilepicUrl}}"/>
+            <a href="#/giftlist/{{friend.id}}" title="See {{friend.fullname}}'s wish list">
+              <img height="{{friend.profilepicadjustedheight100}}" width="{{friend.profilepicadjustedwidth100}}" ng-src="{{friend.profilepicUrl}}"/>
+            </a>
           </div>
         </div>
+      </div>
+      <div class="span1"><a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">{{friend.fullname}}</a>
+        <P>{{friend.appRequestStatus}}</P>
       </div>
     </div>
   </div>

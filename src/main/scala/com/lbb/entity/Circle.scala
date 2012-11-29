@@ -96,7 +96,7 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLog
       
     val jsReminders = JsArray(jsonReminders)
     
-    List(("dateStr", dateString), ("receiverLimit", receiverLimit), ("reminders", jsReminders))  
+    List(("dateStr", dateString), ("receiverLimit", receiverLimit), ("reminders", jsReminders), ("isExpired", isExpired))  
   }
   
 //  object deleted extends MappedBoolean(this) {
@@ -184,7 +184,11 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLog
   def givers = participantList.filter(!_.isReceiver(this))//.map(_.asJsShallow)
   
   def isExpired = {
-    new DateTime(date.is) isBefore(new DateTime())
+    val ret = new DateTime(date.is) isBefore(new DateTime())
+//    debug("Circle "+id.is+" isExpired: new DateTime(date.is)="+new DateTime(date.is));
+//    debug("Circle "+id.is+" isExpired: new DateTime()="+new DateTime());
+    debug("Circle "+id.is+" isExpired: "+ret+": "+new DateTime(date.is)+" isBefore "+new DateTime()+" => "+(new DateTime(date.is) isBefore(new DateTime())));
+    ret
   }
   
   def isDeleted = {

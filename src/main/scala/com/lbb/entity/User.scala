@@ -53,6 +53,8 @@ import com.lbb.util.RequestHelper
 import net.liftweb.mapper.ManyToMany
 import net.liftweb.mapper.MappedLongForeignKey
 import com.lbb.util.Util
+import net.liftweb.mapper.Distinct
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
 
 
 /**
@@ -126,6 +128,20 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
   def primaryKeyField = id
   object id extends MappedLongIndex(this)
   
+  override def save = {
+    try {
+      debug("attempt to save: user="+this);
+      val saved = super.save
+      debug("attempt to save: user="+this+"  =>  saved="+saved);
+      saved
+    }
+    catch { 
+      case e:MySQLIntegrityConstraintViolationException => debug(e.getClass().getName+": "+e.getMessage); false 
+      case e => error(e.getClass().getName+": "+e.getMessage); false 
+    }
+  }
+  
+  // TODO looks like old Lift code
   override def validate:List[FieldError] = {
     (first, last) match {
       case(f, l) if(f.is.trim()=="" && l.is.trim()=="") => {
@@ -425,24 +441,6 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
     g.addedBy.is==this.id.is
   }
   
-  /**
-   * Have to pass in the circle also.  The gift may not have a circle because it
-   * was added to "my wish list".  Or the gift may have been added in the context of
-   * one circle but bought in another
-   */
-//  def buy(g:Gift, c:Circle) = {
-//    g.sender(this).circle(c).save()
-//  }
-  
-  /**
-   * The opposite of buy() - when the user changes his mind and decides
-   * not to give the gift after all.
-   * Set the circle back to null in this case
-   */
-//  def returngift(g:Gift) = {
-//    g.sender(Empty).circle(Empty).save()
-//  }
-  
   def findByName(f:String, l:String) = {
     User.findAll(Cmp(User.first, OprEnum.Like, Full("%"+f.toLowerCase+"%"), Empty, Full("LOWER")),
         Cmp(User.last, OprEnum.Like, Full("%"+l.toLowerCase+"%"), Empty, Full("LOWER")))
@@ -452,9 +450,26 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
   
   def friendList = Friend.findAll(By(Friend.friend, this.id)).map(_.user.obj.open_!)
   
+  // TODO leftover Lift code?
   override def toForm(button: Box[String], f: User => Any): NodeSeq = {
     debug("User.toForm")
     super.toForm(button, f)
+  }
+  
+  // Does this user have an apprequest that is waiting to be accepted?
+  // Return either "pending" or ""
+  def appRequestStatus = {
+    // take the user's facebook id and query the app_request table with it
+    // accept_date needs to be null for all rows found
+    this.facebookId.is match {
+      case null => ""
+      case s:String => {
+        val acceptedrequests = AppRequest.findAll(By(AppRequest.facebookId, s)).filter(ar => ar.acceptdate.is!=null)
+        val pending = if(acceptedrequests.size==0) "pending" else ""
+        pending
+      }
+      case _ => ""
+    }
   }
   
   def canEdit(g:Gift) = {
@@ -530,6 +545,7 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
                  JField("profilepicUrl", JString(profilepicUrl.toString())),
                  JField("profilepicheight", JInt(profilepicheight)),
                  JField("profilepicwidth", JInt(profilepicwidth))
+         ,JField("appRequestStatus", JString(this.appRequestStatus))
          ,JField("profilepicadjustedheight", JInt(Util.calculateAdjustedHeight(150, profilepicUrl)))
          ,JField("profilepicadjustedwidth", JInt(Util.calculateAdjustedWidth(150, profilepicUrl)))
          ,JField("profilepicmargintop", JString(Util.calculateMarginTop(150, profilepicUrl)))
@@ -605,6 +621,7 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
          ("profilepicUrl", JString(profilepicUrl.toString())), 
          ("profilepicheight", profilepicheight), 
          ("profilepicwidth", profilepicwidth)
+         ,("appRequestStatus", this.appRequestStatus)
          ,("profilepicadjustedheight", Util.calculateAdjustedHeight(150, profilepicUrl))
          ,("profilepicadjustedwidth", Util.calculateAdjustedWidth(150, profilepicUrl))
          ,("profilepicmargintop", JString(Util.calculateMarginTop(150, profilepicUrl)))
@@ -678,7 +695,7 @@ object User extends User with LongKeyedMetaMapper[User] {
   }
   
   def create(name:String, facebookId:String):User = {
-    User.create.first("").last("").username(facebookId).password(facebookId).facebookId(facebookId).profilepic("http://graph.facebook.com/"+facebookId+"/picture?type=large")
+    User.create.name(name).username(facebookId).password(facebookId).facebookId(facebookId).profilepic("http://graph.facebook.com/"+facebookId+"/picture?type=large")
   }
   
   // mapper won't let you query by password

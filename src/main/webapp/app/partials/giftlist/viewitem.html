@@ -17,7 +17,7 @@
   
     </div>
     
-    <span ng-hide="isExpired() || gifts.mylist">
+    <span ng-hide="circle.isExpired || gifts.mylist">
       <div class="span1">
         <span ng-show="gift.canbuy">
           <a href="#/buy/{{circle.id}}/{{showUser.id}}/{{gift.id}}" class="btn btn-success btn-mini" title="Reserve tells others you are buying this" ng-click="startbuying(gift)">Reserve</a>

@@ -159,16 +159,51 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
 
     
     $rootScope.fbinvite = function() {
-      FB.ui({method: 'apprequests', message: 'Check out LittleBlueBird - You\'ll love it!'}, 
-            function callback(response) {
-              // response.to:  an array of fb id's
-              // response.request:  the request id returned by fb
-              console.log("$rootScope.fbinvite:  response...");
-              console.log(response);
+      FB.ui({method: 'apprequests', message: 'Check out LittleBlueBird.  You can post your Christmas and birthday lists on it.  It\'s totally awesome!  No more emailing lists back and forth.  No more getting two of something.'}, 
+            function callback(appresponse) {
+              // appresponse.to:  an array of fb id's
+              // appresponse.request:  the request id returned by fb
+              console.log("$rootScope.fbinvite:  appresponse...");
+              console.log(appresponse);
               console.log("$rootScope.fbinvite:  $rootScope.user.id="+$rootScope.user.id);
-              AppRequest.save({parentId:$rootScope.user.id, fbreqid:response.request, facebookIds:response.to});
-              console.log("$rootScope.fbinvite:  $rootScope.$apply()...");
-              $rootScope.$apply();
+              
+              FB.api('/me/friends', function(friendresponse) {
+                if(friendresponse.data) {
+                  console.log("FB.api(/me/friends):  friendresponse.data...");
+                  //console.log(friendresponse.data);
+                  // loop through all facebook id's to figure out the names that go with the facebook id's of people that just got app requests
+                  var apprequests = [];
+                  
+                  for(var i=0; i < appresponse.to.length; i++) {
+                    for(var j=0; j < friendresponse.data.length; j++) {
+                      if(appresponse.to[i] == friendresponse.data[j].id) {
+                        apprequests.push({parentId:$rootScope.user.id, fbreqid:appresponse.request, facebookId:appresponse.to[i], name:friendresponse.data[j].name});
+                        console.log("FOUND FRIEND NAME: fbid="+appresponse.to[i]+", name="+friendresponse.data[j].name+", fbreqid="+appresponse.request);
+                        break;
+                      }
+                    }
+                  }
+                  
+                  console.log("WRITING THESE AppRequests...");
+                  console.log(apprequests);
+                  var friends = AppRequest.save({requests:apprequests},
+                          function() {
+                            console.log("$rootScope.fbinvite() ------------------------------");
+                            console.log(friends);
+                            $rootScope.user.friends = friends;
+                            $rootScope.$emit("friends"); 
+                            //$rootScope.$apply();
+                          });
+                  
+                } else {
+                  console.log("FB.api(/me/friends):  ERROR: friendresponse...");
+                  console.log(friendresponse);
+                }
+              });
+              
+              //AppRequest.save({parentId:$rootScope.user.id, fbreqid:response.request, facebookIds:response.to});
+              //console.log("$rootScope.fbinvite:  $rootScope.$apply()...");
+              //$rootScope.$apply();
             });
     }   
     

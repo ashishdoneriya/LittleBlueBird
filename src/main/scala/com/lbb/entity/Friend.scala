@@ -60,6 +60,10 @@ object Friend extends Friend with LongKeyedMetaMapper[Friend] {
     friends.flatten
   }
   
+  def createFriends(u1:Long, u2:Long) = {
+    List(this.create.user(u1).friend(u2), this.create.user(u2).friend(u1))
+  }
+  
   def associate(id1:Long, id2:Long) = {
     Friend.create.user(id1).friend(id2).save
     Friend.create.user(id2).friend(id1).save

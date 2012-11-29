@@ -2,7 +2,7 @@
 /buy/:circleId/:showUserId/:giftId
 /editgift/:circleId/:showUserId/:giftId
 /deletegift/:circleId/:showUserId/:giftId
-/giftlist/:circleId/:showUserId
+/giftlist/:showUserId/:circleId
 /mywishlist
 /wishlist/:showUserId
 
@@ -12,13 +12,8 @@ hyperlinks, which is what we want if we want to post items to FB.
  -->
 
 
-<div ng-controller="Gift2Ctrl"></div>
-
-<div ng-controller="UserCtrl">
-  <div ng-controller="CircleCtrl">
-    <div ng-controller="GiftCtrl">
+<div ng-controller="GiftListCtrl">
     
-      <span ng-hide="gifts.mylist"> <!-- Hide. Doesn't apply for "my wish list" -->
         <span ng-show="isExpired()">
           <div class="row alert alert-success margleft10">
             <div class="span6">
@@ -27,7 +22,6 @@ hyperlinks, which is what we want if we want to post items to FB.
             </div>
           </div>
         </span>
-      </span>
           
           
       <div class="row margbottom5">
@@ -36,7 +30,7 @@ hyperlinks, which is what we want if we want to post items to FB.
         </div>
             
         <div class="span2 pull-right">
-          <a class="uibutton confirm" title="Share this list on Facebook" ng-click="fbsharelist(showUser)">Share</a>
+          <a class="uibutton confirm" title="Share this list on Facebook" ng-click="fbsharelist(showUser)">Share on Facebook</a>
           <span ng-hide="gift.adding">
             <a class="btn btn-mini btn-success font18 pull-right" title="Add an item to this wish list" ng-click="gift.adding=true;initNewGift();">+</a>
           </span>
@@ -62,7 +56,7 @@ hyperlinks, which is what we want if we want to post items to FB.
         <div class="span7 simple-top">
             
           <span ng-show="gift.adding">
-	        <ng-include src="'partials/giftlist/addgiftform.html'"></ng-include>
+	        <div ng-include src="'partials/giftlist/addgiftform.html'"></div>
           </span>
 
           <div ng-repeat="gift in gifts">
@@ -101,6 +95,4 @@ hyperlinks, which is what we want if we want to post items to FB.
       </div> <!-- div class="row" -->
           
       
-    </div>  <!-- GiftCtrl -->
-  </div>  <!-- CircleCtrl -->
-</div>  <!-- UserCtrl -->
+</div>  <!-- GiftListCtrl -->

@@ -5,6 +5,9 @@ with columns:
 	inviter_id - the current user's person.id, 
 	fbreqid - the facebook request id, <- MAYBE MAKE THIS UNIQUE, DUNNO
 	facebook_id - the facebook id of the person being invited
+	name - the name of the person matching facebook_id
+	request_date - default to now()
+	accept_date - the date the person accepts the app request
 	
 	Everything not null.  Don't make inviter_id/facebook_id unique; allow for one person to send multiple requests to another person
 

@@ -1,4 +1,4 @@
-var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']).
+var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', 'FacebookModule']).
   config(function($routeProvider, $locationProvider, $rootScopeProvider, $cookieStoreProvider){
     //$locationProvider.html5Mode(true);
     
@@ -15,6 +15,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       when('/friends', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/fbfriends', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
+      when('/event/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/giftlist/:showUserId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/myaccount', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/myaccount/main.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
@@ -90,7 +91,7 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
       console.log("routeChangeSuccess");
     } )
   })
-  .run(function($rootScope, dimAdjuster) {
+  .run(function($rootScope, $location, dimAdjuster) {
 
     // adjust dims for large profile pics
     $rootScope.adjustedheight = function(auser, limit) { 
@@ -100,6 +101,8 @@ var app = angular.module('project', ['UserModule', 'datetime', 'FacebookModule']
     $rootScope.adjustedwidth = function(auser, limit) { 
       return dimAdjuster.adjustedwidth(auser, limit);
     }
+    
+    $rootScope.gotoFriends = function() { $location.url('friends') }
     
   });
 
@@ -143,9 +146,9 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return User;
   }).
   factory('AppRequest', function($resource){
-      var AppRequest = $resource('/gf/apprequest/:fbreqid/:parentId', {parentId:'@parentId', facebookIds:'@facebookIds', fbreqid:'@fbreqid'}, 
+      var AppRequest = $resource('/gf/apprequest', {requests:'@requests'}, 
                        {
-                         save: {method:'POST'}
+                         save: {method:'POST', isArray:true}
                        });
       return AppRequest;
   }).
@@ -159,29 +162,6 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
   factory('Logout', function($resource) {
       var Logout = $resource('/gf/logout', {}, {logout: {method:'POST'}});
       return Logout;
-  }).
-  factory('Circle', function($resource) {
-      var Circle = $resource('/gf/circles/:circleId', {circleId:'@circleId', circleType:'@circleType', name:'@name', expirationdate:'@expirationdate', creatorId:'@creatorId', participants:'@participants', datedeleted:'@datedeleted'}, 
-                    {
-                      query: {method:'GET', isArray:false}, 
-                      activeEvents: {method:'GET', isArray:true}, 
-                      expiredEvents: {method:'GET', isArray:true},
-                      save: {method:'POST'}
-                    });
-
-      return Circle;
-  }).
-  factory('CircleParticipant', function($resource) {
-      var CircleParticipant = $resource('/gf/circleparticipants/:circleId', {circleId:'@circleId', userId:'@userId', inviterId:'@inviterId', 
-                                         participationLevel:'@participationLevel', who:'@who', email:'@email', circle:'@circle', adder:'@adder',
-                                         notifyonaddtoevent:'@notifyonaddtoevent'}, 
-                    {
-                      query: {method:'GET', isArray:false}, 
-                      delete: {method:'DELETE'},
-                      save: {method:'POST'}
-                    });
-
-      return CircleParticipant;
   }).
   factory('Reminder', function($resource) {
       var Reminder = $resource('/gf/reminders/:circleId', {circleId:'@circleId', userId:'@userId', remind_date:'@remind_date', people:'@people'},

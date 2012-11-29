@@ -2,7 +2,7 @@
 
 // main.html, personalinfo.html, circleinfo.html, friends.html, giftlist.html, mycircles.html, navbar.html,
 // profilepic.html, welcome.html, whoareyou.html, ddbtn-addcircle.html
-function FriendCtrl($scope, $rootScope, User, facebookFriends, AppRequest) {
+function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookFriends, AppRequest) {
   
   console.log("FriendCtrl called:  ----------------");
   
@@ -50,4 +50,29 @@ function FriendCtrl($scope, $rootScope, User, facebookFriends, AppRequest) {
                                           else { form.username.$error.taken = 'false'; }
                                         });
   } 
+  
+  
+  // just like $scope.giftlist above but no circle here
+  $scope.friendwishlist = function(friend) {
+    gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, 
+                            function() { 
+                              Circle.gifts = gifts; 
+                              Circle.gifts.mylist=false;
+                              //var x;
+                              //Circle.currentCircle = x; 
+                              delete $rootScope.circle;
+                              console.log("$scope.friendwishlist():  delete $rootScope.circle - check below");
+                              console.log($rootScope.circle);
+                              User.currentUser = $rootScope.user;
+                              User.showUser = friend;
+                              $location.path('giftlist');
+                              $rootScope.$emit("circlechange");  
+                              $rootScope.$emit("userchange"); 
+                            }, 
+                            function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
+  }
+  
+  $rootScope.$on("friends", function(event) {
+    // fbinvite() sets $rootScope.user.friends so need to do anything here except listen for the event
+  });
 }

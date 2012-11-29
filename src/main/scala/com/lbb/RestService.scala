@@ -43,7 +43,7 @@ import com.lbb.entity.AppRequest
 object RestService extends RestHelper with LbbLogger {
   
   serve {
-    case JsonPost("apprequest" :: fbreqid :: AsLong(parentId) :: _, (json, req)) => saveAppRequest(fbreqid, parentId)
+    case JsonPost("apprequest" :: _, (json, req)) => saveAppRequests
     case JsonPost("apprequestaccepted" :: facebookId :: name :: _, (json, req)) => saveAcceptedAppRequest(facebookId, name)
   }
 
@@ -91,32 +91,87 @@ object RestService extends RestHelper with LbbLogger {
   }
   
   /**
-   * When you invite people via facebook, we immediately grab the peoples facebook id's and facebook request id's
-   * Look at app-FriendCtrl.  It used to contain $scope.fbinvite(), which has since been moved to app.js and 
-   * declared at the $rootScope level.  We call this method once, with once facebook request id and possibly
-   * many facebook id's
-   * 
-   * See: AppRequest.save() method (app.js)
-   * 
-   * facebookIds comes through as a comma-sep String
-   * 
-   * At this point, you don't know the person's email address.  All you can do is query for facebook id.
-   * If that query turns up no one, you'll have to write a record to the person table that you may later
-   * delete.  Only when the invited person accepts the invitation do you know what the person's email
-   * address is.
-   * 
-   * 11/2/12 - UPDATE ON THE PARAGRAPH ABOVE: We now have a new app_request table.  And we write app requests here,
-   * not to the person table.  We'll write to the person table once the app requests are accepted.
+   * Write to app_request table for every app request here
+   * Write to person table for every person that isn't represented there (with a facebook id)
+   * Write to friends table for all associations that don't already exist
+   * app-FacebookModule.js contains $rootScope.fbinvite() which calls this method via
+   * AppRequest.save({requests:apprequests})
+   * Return 'friends' to display on the user's Friends page
    */
-  def saveAppRequest(fbreqid:String, inviterId:Long) = {
-    val ids = S.param("facebookIds") openOr ""
-    val facebookIds = ids.split(",")
+  def saveAppRequests = {
     
-    for(facebookId <- facebookIds) {
-      AppRequest.create.inviter(inviterId).fbreqid(fbreqid).facebookId(facebookId).save
+    // create the AppRequest objects
+    val vvvv = for(req <- S.request; jvalue <- req.json) yield {
+      debug("saveAppRequests:  ("+jvalue.getClass.getName+")  jvalue = "+jvalue);
+      
+      val appreqlist = jvalue match {
+        case jobj:JObject => {
+          jobj.values.get("requests") match {
+            case Some(list:List[Map[String, Any]]) => {
+              val apprequests = for(map <- list) yield {
+                // would also like to the write to the person table, but all we know about this person is name and facebook id
+                // better to wait till the request is accepted and we know email.  Even that isn't foolproof though if person
+                // exists under a different email
+                val ar = AppRequest.create 
+                for(kv <- map) {
+                  kv match {
+                    case ("parentId", b:BigInt) => { ar.inviter(b.toInt); debug("saveAppRequests:  parentId="+b+" (BigInt)") }
+                    case ("facebookId", s:String) => ar.facebookId(s) 
+                    case ("name", s:String) => ar.name(s);
+                    case ("fbreqid", s:String) => ar.fbreqid(s);
+                    case _ => { error("saveAppRequests:  unhandled kv pair: "+kv._1+" ("+kv._1.getClass.getName+") and "+kv._2+" ("+kv._2.getClass.getName+")"); }
+                  } // kv match
+                } // for(kv <- map)
+                
+                ar
+              
+              } // val apprequests = for(map <- list)
+              apprequests
+            } // case Some(list:List[Map[String, Any]])
+            
+            case _ => Nil
+          } // jobj.values.get("requests")
+          
+        } // case jobj:JObject
+        case _ => Nil
+      } // jvalue match {
+      appreqlist      
+    } // for(req <- S.request; jvalue <- req.json) yield {
+    
+    // write to app_request
+    val apprequests = vvvv.openOr(Nil)
+    apprequests.foreach(_.save)
+    
+    // write to person
+    val facebookIds = apprequests.map(_.facebookId.is)
+    val xxx = facebookIds.map(facebookId => {
+      val gg = apprequests.filter(ar => ar.facebookId.equals(facebookId))
+      val names = gg.map(_.name.is)
+      names match {
+        case name :: ns => Full(User.create(name, facebookId))
+        case _ => Empty
+      }
+    })
+    val insertTheseUsers = for(xx <- xxx; user <- xx) yield user
+    insertTheseUsers.foreach(_.save)
+    
+    // unique constraint violations definitely possible above, so 'insertTheseUser' may contain User objects with null id's, that's why we're querying here
+    val newusers = User.findAll(ByList(User.facebookId, facebookIds))
+    
+    // write to friends
+    // Don't worry if any relationships exist already; Friend.save is overridden and will handle unique constraint violations
+    val inviterId = apprequests.head.inviter.is 
+    val listoflists = for(newuser <- newusers) yield {
+      Friend.createFriends(newuser.id.is, inviterId)
     }
+    val potentialnewfriends = listoflists.flatten
+    potentialnewfriends.foreach(_.save)
     
-    NoContentResponse()
+    // return friends of the current user
+    val friendbox = for(user <- User.findByKey(inviterId)) yield user.friendList
+    val friends = friendbox openOr Nil
+    Util.toJsonResponse(friends)
+    
   }
   
   
@@ -630,9 +685,7 @@ object RestService extends RestHelper with LbbLogger {
       }
       case _ => { // typical findUsers function
         val users = User.findAll(qp: _*)
-        val jsons = users.map(_.asJs)
-        val jsArr = JsArray(jsons)
-        val r = JsonResponse(jsArr)
+        val r = Util.toJsonResponse(users)
         debug("RestService.findUsers: JsonResponse(jsArr)=" + r.toString())
         debug("RestService.findUsers: users.size=" + users.size)
         r

@@ -1,10 +1,10 @@
 
         
+<div ng-controller="CircleCtrl">
 <div class="row">
-  <div class="span2 bold margbottom5"><h4><a ng-href="#/friends">Friends</a></h4></div>
+  <div class="span2 bold margbottom5"><h4><a href="#/friends" ng-click="gotoFriends()">Friends</a></h4></div>
 </div>
 
-<div ng-controller="CircleCtrl">
 
 <div ng-controller="GiftCtrl">
 <div class="row">
@@ -25,7 +25,7 @@
 
   <ul ng-repeat="circle in user.circles" ng-class="'nav nav-pills nav-stacked marg0'">
     <li ng-class="activeOrNot(circle)">
-      <a ng-click="makeActive($index, circle);toggleCircle(circle);showParticipants(circle);">
+      <a href="#/event/{{circle.id}}" ng-click="makeActive($index, circle);toggleCircle(circle);showParticipants(circle);">
         <span class="caret margleft_5 margtop5"></span> <b>{{circle.name}}</b>
       </a>
         <!-- review usage of: box-white inset -->

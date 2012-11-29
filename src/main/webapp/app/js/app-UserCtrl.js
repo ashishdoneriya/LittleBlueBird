@@ -134,8 +134,11 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
                             function() { 
                               Circle.gifts = gifts; 
                               Circle.gifts.mylist=true;
-                              var x;
-                              Circle.currentCircle = x; 
+                              //var x;
+                              //Circle.currentCircle = x; 
+                              delete $rootScope.circle;
+                              console.log("mywishlist(): delete $rootScope.circle:  check below ------------------");
+                              console.log($rootScope.circle);
                               User.currentUser = $rootScope.user;
                               User.showUser = $rootScope.user;
                               $rootScope.$emit("circlechange");  
@@ -149,9 +152,6 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
     User.showUser = $rootScope.user;
     $rootScope.$emit("userchange");
   }
-  
-  // THIS IS WRONG - IT'S NOT ALWAYS THE CURRENT USER !!
-  //$scope.showUser = function() { return $rootScope.user }
   
   $scope.loginpage = function() {
     $location.url('login');

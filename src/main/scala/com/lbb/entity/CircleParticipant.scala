@@ -11,6 +11,8 @@ import java.util.Date
 import net.liftweb.mapper.MappedString
 import net.liftweb.mapper.IHaveValidatedThisSQL
 import com.lbb.util.LbbLogger
+import net.liftweb.mapper.By
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
 
 /**
  * READY TO DEPLOY
@@ -125,19 +127,25 @@ class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK wit
    * override so we can update the reminders when a participant is added
    */
   override def save() = {
-    val saved = super.save()
-    saved match {
-      case true => {
-        val box = Reminder.createReminders(circle, person)
-        box.map(reminders => reminders.foreach(_.save))
+    try {
+      val saved = super.save
+      saved match {
+        case true => {
+          val box = Reminder.createReminders(circle, person)
+          box.map(reminders => reminders.foreach(_.save))
         
-        // Now we have to associate the new participant with all other participants in the friends table!
-        debug("calling: Friend.createFriends(this).foreach(_.save)");
-        Friend.createFriends(this) foreach {debug("saving friend..."); _.save}
+          // Now we have to associate the new participant with all other participants in the friends table!
+          debug("calling: Friend.createFriends(this).foreach(_.save)");
+          Friend.createFriends(this) foreach {debug("saving friend..."); _.save}
+        }
+        case _ => {}
       }
-      case _ => {}
+      saved
     }
-    saved
+    catch {
+      case e:MySQLIntegrityConstraintViolationException => debug(e.getClass().getName+": "+e.getMessage); false 
+      case e => error(e.getClass().getName+": "+e.getMessage); false 
+    }
   }
   
   override def delete_! = {
@@ -158,4 +166,23 @@ object CircleParticipant extends CircleParticipant with LongKeyedMetaMapper[Circ
   
   // define the order fields will appear in forms and output
   override def fieldOrder = List(person, circle)
+  
+  def merge(keep:User, delete:User) = {
+    // delete is a member of what circles
+    val circleIds = delete.circleList.map(_.id.is)
+    val newcps = for(circleId <- circleIds) yield {
+      val cps = CircleParticipant.findAll(By(CircleParticipant.circle, circleId), By(CircleParticipant.person, delete.id.is))
+      val news = cps.map(cp => {
+        val newcp = CircleParticipant.create.circle(circleId);
+        newcp.person(keep.id.is)
+        newcp.participationLevel(cp.participationLevel.is)
+        newcp.inviter(cp.inviter.is)
+        cp.delete_!
+        newcp
+      })
+      news
+    }
+    val vvv = newcps.flatten
+    vvv.foreach(_.save)    
+  }
 }

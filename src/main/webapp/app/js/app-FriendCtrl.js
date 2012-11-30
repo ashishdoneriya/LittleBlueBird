@@ -65,8 +65,6 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
                               delete $rootScope.circle;
                               console.log("$scope.friendwishlist():  delete $rootScope.circle - check below");
                               console.log($rootScope.circle);
-                              User.currentUser = $rootScope.user;
-                              User.showUser = friend;
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 
                             }, 

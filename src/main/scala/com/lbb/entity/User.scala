@@ -704,4 +704,23 @@ object User extends User with LongKeyedMetaMapper[User] {
   def findByFacebookId(l:List[String]) = {
     User.findAll(ByList(User.facebookId, l)) 
   }
+  
+  // pain in the ass:  delete may belong to circles, may have a wish list, probably has friends
+  // you have to look at every table that has delete.id as a key and you have to update those
+  // records with keep.id
+  def merge(keep:User, delete:User) = {
+    // audit_log, circle_participants, friends, gift, person, recipient, reminders
+    AuditLog.merge(keep, delete)
+    CircleParticipant.merge(keep, delete) // handles reminders too
+    Friend.merge(keep, delete)
+    Gift.merge(keep, delete)
+    Recipient.merge(keep, delete)
+    
+    // now merge the person records...
+    // don't delete the 'delete' person, just add an X to the facebook id
+    val fbid = delete.facebookId.is
+    delete.facebookId(fbid+"X").username(fbid+"X").password(fbid+"X").save
+    keep.facebookId(fbid).username(fbid).password(fbid).profilepic("http://graph.facebook.com/"+fbid+"/picture?type=large").save
+    keep
+  }
 }

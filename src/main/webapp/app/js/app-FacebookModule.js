@@ -65,7 +65,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
   }
 }).run(function($rootScope, $window, $cookieStore, $location, facebookConnect, AppRequest, AppRequestAccepted, UserSearch, User) {
     
-    $rootScope.acceptAppRequest = function($window, facebookConnect) {
+    $rootScope.acceptAppRequestTRYINGSTUFFOUT = function($window, facebookConnect) {
       console.log("$rootScope.acceptAppRequest:  cookieStore.get(window.location.search)...");
       console.log($cookieStore.get("window.location.search"));
       console.log("$rootScope.acceptAppRequest:  cookieStore.remove(window.location.search)...");
@@ -74,11 +74,19 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
       console.log($cookieStore.get("window.location.search"));
     }
     
-    $rootScope.acceptAppRequestXXXX = function($window, facebookConnect) {
+    $rootScope.acceptAppRequest = function($window, facebookConnect) {
       
       var facebookreqids = [];
       console.log(facebookreqids);
-      var parms = $window.location.search.split("&")
+      
+      console.log("$cookieStore.get(window.location.search) = "+$cookieStore.get("window.location.search"));
+      
+      if($cookieStore.get("window.location.search")==null) {
+        console.log("$rootScope.acceptAppRequest:  RETURN EARLY:  cookieStore.get(window.location.search) is null");
+        return;
+      }
+      
+      var parms = $cookieStore.get("window.location.search").split("&")
       
       console.log("TRY SET $window.location.search = ''");
       $window.location.search = '';
@@ -119,7 +127,18 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
               function() {
                 // 'records' should always have at least one element because fbinvite() will write a record with the given facebook id if no facebook id is found
                 if(records.length == 1) { 
-                  $rootScope.user = records[0]; 
+                  $rootScope.user = angular.copy(records[0]);
+                  $rootScope.showUser = angular.copy(records[0]); 
+                  console.log("$rootScope.acceptAppRequest:  $rootScope.user = angular.copy(records[0]); ----------------------------------");
+                  console.log("$rootScope.acceptAppRequest:  EMIT USERCHANGE ----------------------------------");
+                  console.log("$rootScope.acceptAppRequest:  SET USERID COOKIE $rootScope.user.id="+$rootScope.user.id+"  ----------------------------------");
+                  console.log("$rootScope.acceptAppRequest:  $rootScope.user .....................");
+                  console.log($rootScope.user);
+                  $cookieStore.put("user", $rootScope.user.id);
+                  $cookieStore.put("showUser", $rootScope.showUser.id);
+                  $rootScope.$emit("userchange");
+                  console.log("$rootScope.acceptAppRequest:  GO EXPLICITLY TO MYWISHLIST PAGE");
+                  $location.url('mywishlist');
                 }
                 else if(records.length > 1) {
                   // go to the "who are you" page
@@ -136,7 +155,9 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
         facebookConnect.getLoginStatus(deleterequests, notauthorized, unknown);
       }
       
-    } // end $rootScope.deleteAppRequests()
+      $cookieStore.remove("window.location.search");
+      
+    } // end $rootScope.acceptAppRequest()
     
     
     $rootScope.fblogout = function() {
@@ -262,7 +283,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                       for(var i=0; i < users.length; i++) {
                         if(users[i].facebookId == $rootScope.fbuser.id) {
                           alreadymergedaccount = true;
-                          User.currentUser = users[i]; // this is what we want to happen... we found a record in our person table that has this email AND facebookId
+                          //User.currentUser = users[i]; // this is what we want to happen... we found a record in our person table that has this email AND facebookId
                           $rootScope.user = users[i];
                           $rootScope.showUser = users[i];
                           $cookieStore.put("user", $rootScope.user.id);
@@ -280,9 +301,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                                                        
                            $rootScope.user = User.save({login:true, fullname:$rootScope.fbuser.first_name+' '+$rootScope.fbuser.last_name, first:$rootScope.fbuser.first_name, last:$rootScope.fbuser.last_name, username:$rootScope.fbuser.email, email:$rootScope.fbuser.email, password:$rootScope.fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+$rootScope.fbuser.id+'/picture?type=large', facebookId:$rootScope.fbuser.id}, 
                                                function() { 
-                                                 User.currentUser = $rootScope.user;
                                                  $rootScope.showUser = $rootScope.user;
-                                                 User.showUser = $rootScope.showUser;
                                                  $cookieStore.put("user", $rootScope.user.id);
                                                  $cookieStore.put("showUser", $rootScope.showUser.id);
                                                  console.log("just created an LBB account, check $rootScope.user...");
@@ -301,8 +320,6 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                                                        }
                       else if(users.length == 1) {  // easy... we found exactly one person with this email - set the facebookid
                         users[0].facebookId = $rootScope.fbuser.id;
-                        User.currentUser = users[0];
-                        User.showUser = users[0];
                         $rootScope.user = users[0];
                         $rootScope.showUser = users[0];
                         $cookieStore.put("user", $rootScope.user.id);
@@ -315,10 +332,10 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                         console.log(users[0].profilepicUrl != placeholderPic);
                                                          
                         var pic = users[0].profilepicUrl != placeholderPic ? users[0].profilepicUrl : "http://graph.facebook.com/"+$rootScope.fbuser.id+"/picture?type=large";
-                        var uagain = User.save({userId:User.currentUser.id, facebookId:$rootScope.fbuser.id, profilepic:pic}, 
+                        var uagain = User.save({userId:$rootScope.user.id, facebookId:$rootScope.fbuser.id, profilepic:pic}, 
                                        function() {
-                                         User.currentUser = uagain; 
-                                         User.showUser = uagain;
+                                         $rootScope.user = uagain; 
+                                         $rootScope.showUser = uagain;
 									     $rootScope.$emit("userchange");                                          
 									     $rootScope.$emit("mywishlist");
 									     $location.url('mywishlist');});

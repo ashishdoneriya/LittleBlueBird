@@ -226,17 +226,6 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger with DateChangeListener 
    */
   def hasBeenReceivedInAnotherCircle(c:Circle) = {
     hasBeenReceived && !hasBeenReceivedInCircle(c)
-//    if(!hasBeenReceived) {
-//      false
-//    }
-//    
-//    this.circle.obj match {
-//      case Full(f) => {
-//        val differentCircle = f.id.is!=c.id.is
-//        differentCircle
-//      }
-//      case _ => false
-//    }
   }
   
   def isForSomeoneElse(u:User) = !isFor(u)
@@ -353,4 +342,17 @@ object Gift extends Gift with LongKeyedMetaMapper[Gift] {
   
   // define the order fields will appear in forms and output
   override def fieldOrder = List(description, url)
+  
+  def merge(keep:User, delete:User) = {
+    // PROBLEM: If you delete gift records that have this person as an adder or sender
+    // and then try to create new gift records with 'keep' as the adder/sender, you're
+    // going to generate NEW GIFT.ID VALUES!  That's going to have a ripple effect into
+    // the recipient table: The gift_id values won't match and THOSE will have to be updated
+    // BETTER TO UPDATE the addedBy and sender values in this case
+    Gift.findAll(By(Gift.addedBy, delete.id.is)).foreach(g => {g.addedBy(keep.id.is); g.save})
+    Gift.findAll(By(Gift.sender, delete.id.is)).foreach(g => {g.sender(keep.id.is); g.save})
+    
+    // now find all gifts that delete is a recipient of
+    
+  }
 }

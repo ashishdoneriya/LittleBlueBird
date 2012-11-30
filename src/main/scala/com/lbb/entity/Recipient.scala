@@ -4,6 +4,7 @@ import net.liftweb.mapper.LongKeyedMapper
 import net.liftweb.mapper.LongKeyedMetaMapper
 import net.liftweb.mapper.MappedLongForeignKey
 import scala.xml.Text
+import net.liftweb.mapper.By
 
 /**
  * READY TO DEPLOY
@@ -75,4 +76,8 @@ class Recipient extends LongKeyedMapper[Recipient] with IdPK {
 
 object Recipient extends Recipient with LongKeyedMetaMapper[Recipient] {
   override def dbTableName = "recipient"
+  
+  def merge(keep:User, delete:User) = {
+    findAll(By(Recipient.person, delete.id.is)).foreach(r => {r.person(keep.id.is);r.save})
+  }
 }

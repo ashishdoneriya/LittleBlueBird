@@ -5,6 +5,8 @@ import net.liftweb.mapper.LongKeyedMetaMapper
 import net.liftweb.mapper.MappedLongForeignKey
 import com.lbb.util.LbbLogger
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
+import net.liftweb.mapper.ByList
+import net.liftweb.mapper.By
 
 class Friend extends LongKeyedMapper[Friend] with IdPK with LbbLogger {
   def getSingleton = Friend
@@ -67,5 +69,15 @@ object Friend extends Friend with LongKeyedMetaMapper[Friend] {
   def associate(id1:Long, id2:Long) = {
     Friend.create.user(id1).friend(id2).save
     Friend.create.user(id2).friend(id1).save
+  }
+  
+  def merge(keep:User, delete:User) = {
+    val friendIds = delete.friendList.map(_.id.is)
+    val f1 = Friend.findAll(ByList(Friend.user, friendIds), By(Friend.friend, delete.id.is))
+    val f2 = Friend.findAll(ByList(Friend.friend, friendIds), By(Friend.user, delete.id.is))
+    (f1 :: f2 :: Nil).flatten.foreach(_.delete_!)
+    for(friendId <- friendIds) {
+      Friend.associate(friendId, keep.id.is)
+    }
   }
 }

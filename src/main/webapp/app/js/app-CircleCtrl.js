@@ -105,7 +105,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   });
 
   $rootScope.$on("userchange", function(event) {
-    $rootScope.user = User.currentUser;
+    //$rootScope.user = User.currentUser;
   });
 
   //$rootScope.$on("usersearchresults", function(event) {
@@ -176,7 +176,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
                  function() {
                    if(!angular.isDefined(circle.id))
                      $rootScope.user.circles.push(savedcircle); 
-                   User.currentUser=$rootScope.user; 
+                   //User.currentUser=$rootScope.user; 
                    $rootScope.$emit("userchange");
                  } 
                );
@@ -309,7 +309,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   $scope.deletecircle = function(circle, index) {
     Circle.save({circleId:circle.id, datedeleted:new Date().getTime()},
                 function() {$rootScope.user.circles.splice(index, 1); 
-                            User.currentUser=$rootScope.user; 
+                            //User.currentUser=$rootScope.user; 
                             if($rootScope.user.circles.length > 0) {circle = $rootScope.user.circles[0]; Circle.currentCircle = $rootScope.user.circles[0];}
                             else {circle = {}; Circle.currentCircle = {};}
                             $rootScope.$emit("userchange"); 

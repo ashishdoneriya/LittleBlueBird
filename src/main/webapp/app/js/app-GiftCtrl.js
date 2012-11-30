@@ -1,4 +1,4 @@
-function GiftListCtrl($window, $route, $scope, Gift, User, Circle, $rootScope, facebookConnect, $cookieStore) {
+function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $rootScope, facebookConnect, $cookieStore) {
   
   
   if(angular.isDefined(Circle.currentCircle)) {
@@ -38,8 +38,22 @@ function GiftListCtrl($window, $route, $scope, Gift, User, Circle, $rootScope, f
                               //if($rootScope.user.id == participant.id) { Circle.gifts.mylist=true; } else { Circle.gifts.mylist=false; } 
                               $rootScope.$emit("circlechange");  
                             }, 
-                            function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again  (error code 301)");});
+                            function() {alert("Hmmm... Had a problem getting this person's list\n  Try again  (error code 301)");});
                             
+  }
+  else if($location.url()=='/mywishlist' && $cookieStore.get("user")!=null) {
+    
+    $scope.gifts = Gift.query({viewerId:$cookieStore.get("user")}, 
+                            function() { 
+                              Circle.gifts = gifts; 
+                              Circle.gifts.mylist=true;
+                              delete $rootScope.circle;
+                              console.log($rootScope.circle);
+                              $rootScope.showUser = $rootScope.user;
+                              $rootScope.$emit("circlechange");  
+                              $rootScope.$emit("userchange"); 
+                            }, 
+                            function() {alert("Hmmm... Had a problem getting "+$rootScope.user.fullname+"'s list\n  Try again  (error code 302)");});
   }
   
   
@@ -227,8 +241,7 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
                               Circle.gifts = $scope.gifts; 
                               Circle.currentCircle = circle; // phase this strategy out
                               $rootScope.circle = circle;
-                              User.currentUser = $rootScope.user;
-                              User.showUser = participant;
+                              $rootScope.showUser = participant;
                               if($rootScope.user.id == participant.id) { Circle.gifts.mylist=true; } else { Circle.gifts.mylist=false; } 
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 

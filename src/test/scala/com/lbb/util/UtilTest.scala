@@ -63,4 +63,19 @@ class UtilTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     assert("-22px"===marginleft)
   }
   
+  test("List stuff") {
+    val list = List(1,2,3,4)
+    val l2 = list.filter(i => i > 5)
+    l2 match {
+      case x :: xs => println("Nil matched case x :: xs")
+      case Nil => println("Nil matched case Nil")
+      case _ => println("Nil matched case _")
+    }
+    
+    list.size match {
+      case 4 => println("list matched case 4")
+      case _ => println("list matched case _")
+    }
+  }
+  
 }

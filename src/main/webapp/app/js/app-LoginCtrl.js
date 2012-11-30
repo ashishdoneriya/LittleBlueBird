@@ -34,10 +34,9 @@ function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Em
     $rootScope.user = User.find({username:$scope.username, password:$scope.password}, 
                                function() {$scope.loginfail=false; 
                                            if($rootScope.user.dateOfBirth == 0) { $rootScope.user.dateOfBirth = ''; }
-                                           User.currentUser = $rootScope.user;
-                                           User.showUser = User.currentUser;  
+                                           //User.currentUser = $rootScope.user;
+                                           $rootScope.showUser = $rootScope.user;  
                                            // uncomment for facebook integration
-                                           //$scope.getfriends(User.currentUser);                                       
                                            $rootScope.$emit("userchange");                                          
                                            $rootScope.$emit("mywishlist");
                                            console.log("scope.login:  go to 'gettingstarted'");
@@ -49,8 +48,8 @@ function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Em
   
   $scope.logout = function() {
     Logout.logout({});   
-    User.currentUser = x; 
-    $rootScope.user = x;
+    delete $rootScope.user;
+    $cookieStore.remove("user");
     console.log("logging out");                                      
     $rootScope.$emit("userchange");
     //alert("logout");

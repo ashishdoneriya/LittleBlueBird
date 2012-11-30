@@ -22,8 +22,9 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       when('/mywishlist', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/reminders', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/email', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/welcome', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}});
+      when('/welcome', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      ;
   
   })
   .run(function($window, $route, $rootScope, $cookieStore, $location, $rootScope, facebookConnect, User){    
@@ -295,8 +296,6 @@ function RegisterCtrl($scope, User, $rootScope, $location, $cookieStore) {
     $rootScope.user = User.save({login:true, fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth}, 
                                   function() { 
                                     $rootScope.showUser = $rootScope.user;
-                                    User.currentUser = $rootScope.user;
-                                    User.showUser = $rootScope.showUser;
                                     $cookieStore.put("user", $rootScope.user.id);
                                     $cookieStore.put("showUser", $rootScope.showUser.id);
                                     $location.url('welcome');
@@ -317,10 +316,10 @@ function RegisterCtrl($scope, User, $rootScope, $location, $cookieStore) {
   } 
 
   $rootScope.$on("userchange", function(event) {
-    $rootScope.user = User.currentUser;
-    $rootScope.showUser = User.showUser;
   });
+
 }
+
 
 function EmailCtrl($scope, Email) {
   $scope.email = {to:'bdunklau@yahoo.com', from:'info@littlebluebird.com',

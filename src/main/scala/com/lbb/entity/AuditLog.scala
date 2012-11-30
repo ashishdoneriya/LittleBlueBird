@@ -10,6 +10,7 @@ import net.liftweb.http.S
 import net.liftweb.common.Box
 import net.liftweb.http.Req
 import java.util.Date
+import net.liftweb.mapper.By
 
 /**
  * id - auto incr
@@ -111,5 +112,11 @@ object AuditLog extends AuditLog with LongKeyedMetaMapper[AuditLog] {
     AuditLog.create.person(user).username(user.username).firstname(user.first)
     .lastname(user.last).email(user.email).remote_ip(remoteIp).request_url(reqUrl)
     .query_string(queryString).session_id(sessionId).action(action).save
+  }
+  
+  def merge(keep:User, delete:User) = {
+    // for now, just delete the audit_log records for the delete user
+    val r = AuditLog.findAll(By(AuditLog.person, delete.id.is))
+    r.foreach(_.delete_!)
   }
 }

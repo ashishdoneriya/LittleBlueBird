@@ -5,6 +5,8 @@ function ProfilePicCtrl($rootScope, $cookieStore, User) {
   if(!angular.isDefined($rootScope.showUser)) {
     $rootScope.showUser = User.find({userId:$cookieStore.get("showUser")});
   }
+  
+  $rootScope.showUserfunc = function() { return $rootScope.showUser; }
 }
 
 
@@ -63,7 +65,8 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
           if(angular.isDefined($cookieStore.get("user"))) {
             //console.log("$scope.userExists():  $rootScope.user is not defined, but there is a userId cookie: emit userchange");
             $rootScope.user = User.find({userId:$cookieStore.get("user")}, 
-                      function(){User.currentUser = $rootScope.user; 
+                      function(){
+                                 //User.currentUser = $rootScope.user; 
                                  $scope.lookingforuser = false;
                                  //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because we found the LBB cookie: userId");
                                  //console.log("$rootScope.user.id="+$rootScope.user.id); 
@@ -93,7 +96,6 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   }
   
     
-  //$rootScope.showUser = $rootScope.user; //User.showUser;
   $scope.multipleusers = function() { console.log("multipleusers() called"); return User.multipleUsers; }
   $scope.sharedemail = function() { return User.email; }
   
@@ -104,7 +106,6 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   
   $scope.mergeaccount = function(user) {
     user.facebookId = User.facebookId;
-    User.currentUser = user;
     $rootScope.user = user;
     User.save({userId:user.id, facebookId:user.facebookId});
     $rootScope.$emit("userchange");                    
@@ -139,17 +140,14 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
                               delete $rootScope.circle;
                               console.log("mywishlist(): delete $rootScope.circle:  check below ------------------");
                               console.log($rootScope.circle);
-                              User.currentUser = $rootScope.user;
-                              User.showUser = $rootScope.user;
+                              $rootScope.showUser = $rootScope.user;
                               $rootScope.$emit("circlechange");  
                               $rootScope.$emit("userchange"); 
                             }, 
-                            function() {alert("Hmmm... Had a problem getting "+User.currentUser.first+"'s list\n  Try again  (error code 701)");});
+                            function() {alert("Hmmm... Had a problem getting "+$rootScope.user.fullname+"'s list\n  Try again  (error code 701)");});
   }
   
   $scope.myaccount = function() {
-    User.currentUser = $rootScope.user;
-    User.showUser = $rootScope.user;
     $rootScope.$emit("userchange");
   }
   
@@ -164,10 +162,15 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
                                   }
                                 );
   }
+  
+  $scope.userobj = function() { return $rootScope.user; }
 
   $rootScope.$on("userchange", function(event) {
-    $rootScope.user = User.currentUser;
-    $rootScope.showUser = User.showUser;
+    console.log("app-UserCtrl: $rootScope.$on(\"userchange\", function(event):  $rootScope.user.................");
+    console.log($rootScope.user);
+    // don't have to do this anymore; $rootScope.user is updated in the function that triggers this event.  All we have to do here is listen for the event
+    //$rootScope.user = User.currentUser;
+    //$rootScope.showUser = User.showUser;
   });
   
   $rootScope.$on("mywishlist", function(event) {

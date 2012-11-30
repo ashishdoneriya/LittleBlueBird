@@ -4,8 +4,6 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, User ) {
   console.log("MyAccountCtrl called");
   
   $rootScope.$on("userchange", function(event) {
-    $rootScope.user = User.currentUser;
-    $rootScope.showUser = User.showUser;
     $scope.notifyonaddtoevent = $rootScope.user.notifyonaddtoevent;
     $scope.notifyondeletegift = $rootScope.user.notifyondeletegift;
     $scope.notifyoneditgift = $rootScope.user.notifyoneditgift;
@@ -20,7 +18,7 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, User ) {
     $rootScope.user.notifyonreturngift = $scope.notifyonreturngift;
     $rootScope.user = User.save({userId:$rootScope.user.id, notifyonaddtoevent:$rootScope.user.notifyonaddtoevent, notifyondeletegift:$rootScope.user.notifyondeletegift, notifyoneditgift:$rootScope.user.notifyoneditgift, notifyonreturngift:$rootScope.user.notifyonreturngift}, 
                                   function() {
-                                    User.currentUser = $rootScope.user;
+                                    //User.currentUser = $rootScope.user;
                                     $rootScope.$emit("userchange");
                                   },
                                   function() {alert("Uh oh - had a problem updating your profile");}
@@ -32,7 +30,7 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, User ) {
                                   function() {
                                     //alert("Your profile has been updated"); 
                                     if(user.dateOfBirth == 0) { user.dateOfBirth = ''; } 
-                                    User.currentUser = $rootScope.user;
+                                    //User.currentUser = $rootScope.user;
                                     $rootScope.$emit("userchange");
                                   },
                                   function() {alert("Uh oh - had a problem updating your profile");}

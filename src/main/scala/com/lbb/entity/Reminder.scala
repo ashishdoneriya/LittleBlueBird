@@ -254,5 +254,10 @@ object Reminder extends Reminder with LongKeyedMetaMapper[Reminder] {
   def deleteReminders(userId:Long, circleId:Long) = {
     Reminder.findByNameAndEvent(userId, circleId).foreach(r => r.delete_!)
   }  
+  
+  
+  def merge(keep:User, delete:User) = {
+    // reminders has timer tasks that have to be cancelled and restarted under keep's id I think
+  }
     
 }

@@ -28,11 +28,10 @@
         <li>
 
 
-<span ng-controller="UserCtrl">
 <span ng-show="userExists()">
   <ul class="nav">
     <li class="dropdown">
-      <a class="dropdown-toggle" data-toggle="dropdown">{{user.fullname}} <b class="caret"></b></a>
+      <a class="dropdown-toggle" data-toggle="dropdown">{{userobj().fullname}} <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a class="font12" ng-href="#/mywishlist" ng-click="mywishlist()">My Wish List</a></li>
         <li><a class="font12" ng-href="#/myaccount" ng-click="myaccount()">Account Settings</a></li>
@@ -41,7 +40,6 @@
       </ul>
     </li>
   </ul>
-</span>
 </span>
 
 

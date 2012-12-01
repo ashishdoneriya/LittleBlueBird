@@ -75,3 +75,7 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
     // fbinvite() sets $rootScope.user.friends so need to do anything here except listen for the event
   });
 }
+
+function FriendsNoneCtrl($scope, $rootScope) {
+
+}

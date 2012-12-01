@@ -1,0 +1,58 @@
+<span ng-controller="FriendsNoneCtrl">
+  <div class="row">
+    <div class="span7"><h3>You don't have any friends in LittleBlueBird yet.</h3></div>
+  </div>
+  <div class="row">
+    <div class="span7"><a ng-click="moreinfo='explainfriends'">Explain the Friends feature <i class="icon-chevron-right"></i></a></div>
+  </div>
+  <div class="row">
+    <div class="span7">You can add friends from Facebook.</div>
+  </div>
+  <div class="row">
+    <div class="span7">You can search for other LittleBlueBird users.</div>
+  </div>
+  <div class="row">
+    <div class="span7">Or you can create accounts for people that aren't on LittleBlueBird yet. <a ng-click="moreinfo='whycreateaccount'">Why? <i class="icon-chevron-right"></i></a></div>
+  </div>
+
+  
+  <span ng-show="moreinfo=='whycreateaccount'">
+  <div class="row">
+    <div class="span7">
+      <P>&nbsp;</P><h4>Why Should I Create an Account <i>for</i> Someone?</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span7">
+      You should create accounts for...
+      <ul>
+        <li>children and other family members that aren't on Facebook</li>
+        <li>children and other family members that don't have email (register using <i>your</i> email instead)</li>
+      </ul>
+      <a ng-click="moreinfo=''">hide</a>
+    </div>
+  </div>
+  </span>
+
+  
+  <span ng-show="moreinfo=='explainfriends'">
+  <div class="row">
+    <div class="span7">
+      <P>&nbsp;</P><h4>What is the Friends Feature?</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span7">
+      If you add your friends here, you can see their wish lists without having to create an Event.
+      <P>Give a gift any time for no reason. Just add your friends here and then click their name.</P>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span7">
+      <a ng-click="moreinfo=''">hide</a>
+    </div>
+  </div>
+  </span>
+  
+  
+</span>

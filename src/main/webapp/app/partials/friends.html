@@ -15,7 +15,7 @@
 <div class="row">
   <div class="span7">
         <a class="btn btn-small pull-right" ng-click="beginnewuser()">Create Account for Someone</a>
-        <a class="btn btn-small pull-right">Add LittleBlueBird Friends</a>
+        <a class="btn btn-small pull-right" ng-click="addlbbfriend()">Add LittleBlueBird Friends</a>
         <a class="btn btn-small pull-right" ng-click="fbinvite()">Add Facebook Friends</a>
   </div>
 </div>
@@ -124,12 +124,54 @@
 </span> <!-- end of span: mode='createaccount' --> 
 
 
+<span ng-show="mode=='addlbbfriend'">
+			      <div class="row">
+		            <div class="span3"><h4>Add LittleBlueBird Friends</h4></div>
+		          </div>
+			      <div class="row">
+		            <div class="span3"><input search-users type="text" class="span3" ng-model="search"></div>
+		          </div>
+				  <div class="row">
+				    <div class="span3">      
+				      <span ng-show="usersearch=='loaded'">
+	                    <div class="box-white">
+				          <span ng-show="noonefound">
+			                <div class="row">
+			                  <div class="span3">No one found <p><a ng-click="beginnewuser();">Create Account for this Person</a></p></div>
+			                </div>
+				          </span>
+				          <span ng-hide="noonefound">
+				            <div ng-repeat="person in people | filter:search">
+				              <span ng-hide="person.hide">
+				                <div class="row margbottom5 margleft0 highlight-box-white" ng-click="addparticipant($index, person, newcircle)">
+				                  <div class="span1 marg0"><img height=50 width=50 ng-src="{{person.profilepicUrl}}" /></div>
+				                  <div class="span2 marg0 padtop5 font14">{{person.fullname}}</div>
+				                </div>
+				              </span>
+				            </div>
+				          </span>
+				        </div>
+				      </span>
+				      
+				    </div>
+			      </div>
+				  <div class="row">
+				    <div class="span3"> 
+                      <a class="btn" ng-click="cancel();">Cancel</a>
+				    </div>
+			      </div> 	
+			      
+			      
+			      
+</span> <!-- mode='addlbbfriend' -->
+
+
 <span ng-show="mode=='friends'">
   <div class="row"><div class="span7">&nbsp;</div></div>
   
   <span ng-show="user.friends.length==0">
     <div ng-include src="'partials/friendsnone.html'"></div>
-  <span>
+  </span>
   
   <span ng-hide="user.friends.length==0">
   <div class="row">
@@ -140,7 +182,7 @@
             <div class="span1">
               <div style="width:100px; height:100px; overflow:hidden;">
                 <div style="margin-top:{{friend.profilepicmargintop100}};margin-left:{{friend.profilepicmarginleft100}}">
-                  <a href="#/giftlist/{{friend.id}}" title="See {{friend.fullname}}'s wish list">
+                  <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
                     <img height="{{friend.profilepicadjustedheight100}}" width="{{friend.profilepicadjustedwidth100}}" ng-src="{{friend.profilepicUrl}}"/>
                   </a>
                 </div>
@@ -161,7 +203,7 @@
             <div class="span1">
               <div style="width:100px; height:100px; overflow:hidden;">
                 <div style="margin-top:{{friend.profilepicmargintop100}};margin-left:{{friend.profilepicmarginleft100}}">
-                  <a href="#/giftlist/{{friend.id}}" title="See {{friend.fullname}}'s wish list">
+                  <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
                     <img height="{{friend.profilepicadjustedheight100}}" width="{{friend.profilepicadjustedwidth100}}" ng-src="{{friend.profilepicUrl}}"/>
                   </a>
                 </div>
@@ -182,7 +224,7 @@
             <div class="span1">
               <div style="width:100px; height:100px; overflow:hidden;">
                 <div style="margin-top:{{friend.profilepicmargintop100}};margin-left:{{friend.profilepicmarginleft100}}">
-                  <a href="#/giftlist/{{friend.id}}" title="See {{friend.fullname}}'s wish list">
+                  <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
                     <img height="{{friend.profilepicadjustedheight100}}" width="{{friend.profilepicadjustedwidth100}}" ng-src="{{friend.profilepicUrl}}"/>
                   </a>
                 </div>

@@ -72,6 +72,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   }
     
   $scope.beginnewuser = function() {
+    console.log("app-CircleCtrl: beginnewuser");
     $scope.addmethod = 'createaccount';
     $scope.newuser = {};
   }
@@ -101,29 +102,7 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
   //  $scope.people = UserSearch.results;
   //});
   
-  $scope.usersearch = '';
-  $scope.people = [];
-  
-  $scope.query = function() {
-    $scope.usersearch = 'loading';
-    var lbbpeople = UserSearch.query({search:$scope.search}, 
-                      function() {
-                        $scope.usersearch = 'loaded'; 
-                        $scope.people.splice(0, $scope.people.length); // effectively refreshes the people list
-                        
-                        // uncomment for facebook integration
-                        //for(var i=0; i < $rootScope.user.friends.length; i++) {
-                        //  if(!lbbNamesContainFbName(lbbpeople, $rootScope.user.friends[i].fullname))
-                        //    $scope.people.push($rootScope.user.friends[i]);
-                        //}
-                        for(var i=0; i < lbbpeople.length; i++) {
-                          $scope.people.push(lbbpeople[i]);
-                        }
-                        $scope.noonefound = $scope.people.length==0 ? true : false; 
-                      }, 
-                      function() {$scope.people.splice(0, $scope.people.length);$scope.usersearch = '';});
-  }
-  
+
          
   // helper function:  If there's overlap between the LBB users and FB friends, we want to know
   // about it.  Use the LBB user and ignore the FB user.  In the future, we'll want to add to the person table: facebook id

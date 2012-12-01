@@ -10,8 +10,14 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
     
   // duplicated almost - similar to app-CircleCtrl.js
   $scope.beginnewuser = function() {
-    $scope.mode = 'createaccount';
+     $scope.mode = 'createaccount';
+    console.log("$scope.mode="+$scope.mode);
     $scope.newuser = {};
+  }
+  
+  $scope.addlbbfriend = function() {
+    $scope.mode = 'addlbbfriend';
+    console.log("$scope.mode="+$scope.mode);
   }
   
   $scope.cancel = function() {
@@ -54,14 +60,12 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
   
   // just like $scope.giftlist above but no circle here
   $scope.friendwishlist = function(friend) {
-    console.log("$scope.friendwishlist:  set $location.url(/giftlist/#) RIGHT AWAY ------------------------");
+    $rootScope.showUser = friend;
     $location.path('/giftlist/'+friend.id);
-    gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, 
+    $rootScope.gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, 
                             function() { 
-                              Circle.gifts = gifts; 
-                              Circle.gifts.mylist=false;
-                              //var x;
-                              //Circle.currentCircle = x; 
+                              $rootScope.gifts.mylist=false;
+                              $rootScope.gifts.ready="true";
                               delete $rootScope.circle;
                               console.log("$scope.friendwishlist():  delete $rootScope.circle - check below");
                               console.log($rootScope.circle);

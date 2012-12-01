@@ -15,15 +15,7 @@
           <a href="mailto:info@littlebluebird.com">Contact Us</a>
         </li>
       </ul>
-      <ul class="nav">
-        <div class="row margtop10 margbottom0">
-          <div class="span2 offset1"><input search-users type="text" class="input-medium search-query" ng-model="search" title="Search for people">
-          </div>
-          <div class="span1 margleft_10 margtop5"><i class="icon-search"></i>
-          </div>
-        </div>
-        
-      </ul>
+      
       <ul class="nav pull-right">
         <li>
 
@@ -51,27 +43,6 @@
     </div>
   </div>
 </div>
-
-				    <span ng-show="usersearch=='loaded'">
-				      <span ng-hide="noonefound">
-				        <div class="searchresults pad5">
-				            <div ng-repeat="person in people">
-				              <span ng-hide="person.hide">
-				                <div class="row margbottom5 margleft0 highlight-box-white" ng-click="addparticipant($index, person, thecircle)">
-				                  <div class="span1 marg0"><img height=50 width=50 ng-src="{{person.profilepicUrl}}" /></div>
-				                  <div class="span2 marg0 padtop5 font14">{{person.fullname}}</div>
-				                </div>
-				              </span>
-				            </div>
-				        </div>
-			          </span>
-				      <span ng-show="noonefound">
-				        <div class="searchresults pad5">
-				            No one found
-				        </div>
-			          </span>
-			        </span>
-        
 
 
 </div>

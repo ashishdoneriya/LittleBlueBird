@@ -54,7 +54,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
               $scope.initfbuser(user);
               $scope.lookingforuser = false;
               //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because FB.api returned a user");
-              $scope.$apply() // Manual scope evaluation
+              //$scope.$apply() // Manual scope evaluation - commented out on 11/30/12 - experimenting
             }
           );
         } // if(response.status == 'connected')
@@ -72,7 +72,8 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
                                  //console.log("$rootScope.user.id="+$rootScope.user.id); 
                                  //console.log("$rootScope.user.first="+$rootScope.user.first); 
                                  //console.log($rootScope.user); 
-                                 $rootScope.$emit("userchange");}
+                                 //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting
+                                 }
                       );
           } // if(angular.isDefined($cookieStore.get("user")))
           else {
@@ -108,8 +109,8 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
     user.facebookId = User.facebookId;
     $rootScope.user = user;
     User.save({userId:user.id, facebookId:user.facebookId});
-    $rootScope.$emit("userchange");                    
-    $rootScope.$emit("mywishlist");                    
+    //$rootScope.$emit("userchange");    // commented out on 11/30/12 - experimenting                 
+    //$rootScope.$emit("mywishlist");    // commented out on 11/30/12 - experimenting                 
     $location.url('mywishlist');
   }
   
@@ -141,14 +142,14 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
                               console.log("mywishlist(): delete $rootScope.circle:  check below ------------------");
                               console.log($rootScope.circle);
                               $rootScope.showUser = $rootScope.user;
-                              $rootScope.$emit("circlechange");  
-                              $rootScope.$emit("userchange"); 
+                              //$rootScope.$emit("circlechange");   // commented out on 11/30/12 - experimenting
+                              //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+$rootScope.user.fullname+"'s list\n  Try again  (error code 701)");});
   }
   
   $scope.myaccount = function() {
-    $rootScope.$emit("userchange");
+    //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting
   }
   
   $scope.loginpage = function() {

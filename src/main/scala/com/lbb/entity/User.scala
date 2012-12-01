@@ -719,7 +719,7 @@ object User extends User with LongKeyedMetaMapper[User] {
     // now merge the person records...
     // don't delete the 'delete' person, just add an X to the facebook id
     val fbid = delete.facebookId.is
-    delete.facebookId(fbid+"X").username(fbid+"X").password(fbid+"X").save
+    delete.first("").last("").facebookId(fbid+"X").username(fbid+"X").password(fbid+"X").save
     keep.facebookId(fbid).username(fbid).password(fbid).profilepic("http://graph.facebook.com/"+fbid+"/picture?type=large").save
     keep
   }

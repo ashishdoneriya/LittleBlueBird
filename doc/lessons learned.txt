@@ -1,3 +1,12 @@
+When you're listening for events via $emit, $broadcast and $on BE AWARE that the controller has to be initialized
+or else it won't receive the event.
+AND FROM THEN ON, every controller that's been initialized will receive the event, whether the page/controller is being displayed or not.
+I RAN A TEST where I had a fooctrl, barctrl and bazctrl, each listening for "change" events.
+The $on functions in each controller wouldn't fire until I had gone to the corresponding page ONCE.
+FROM THEN ON the controller's $on function would fire even if the page wasn't being displayed at the time.
+
+
+
 "App on Facebook" at developers.facebook.com - DON'T PICK THIS OPTION
 It was creating a bunch of a problems with the auth button in login.html.  The fb dialog would appear, you would login,
 but when you clicked login, the dialog wouldn't go away and the 'success' callback function wouldn't get called.

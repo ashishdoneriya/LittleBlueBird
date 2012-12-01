@@ -61,7 +61,7 @@ hyperlinks, which is what we want if we want to post items to FB.
         <!-- everything goes in here -->
         <div class="span7">
             
-          <span ng-show="gifts.length==0 && !isExpired()">
+          <span ng-show="gifts.ready && gifts.length==0 && !isExpired()">
             <P><h4 class="font16">This list is empty</h4></P>
             <span ng-show="user.id != showUser.id">
               <P class="font16">Did you know you can add items to this list even though it's not <I>your</I> list?</P>

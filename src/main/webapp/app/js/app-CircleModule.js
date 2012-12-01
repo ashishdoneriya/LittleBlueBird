@@ -33,7 +33,7 @@ angular.module('CircleModule', [])
       //Circle.currentCircle.isExpired = circle.date < new Date();
       $rootScope.circle = circle;
       $rootScope.circle.isExpired = circle.date < new Date();
-      $rootScope.$emit("circlechange");
+      //$rootScope.$emit("circlechange"); // commented out on 11/30/12 - experimenting
     }
     
   

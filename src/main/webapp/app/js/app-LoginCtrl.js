@@ -37,8 +37,8 @@ function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Em
                                            //User.currentUser = $rootScope.user;
                                            $rootScope.showUser = $rootScope.user;  
                                            // uncomment for facebook integration
-                                           $rootScope.$emit("userchange");                                          
-                                           $rootScope.$emit("mywishlist");
+                                           //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting                                         
+                                           //$rootScope.$emit("mywishlist");  // commented out on 11/30/12 - experimenting
                                            console.log("scope.login:  go to 'gettingstarted'");
                                            $location.url('gettingstarted'); 
                                           }, 
@@ -51,7 +51,7 @@ function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Em
     delete $rootScope.user;
     $cookieStore.remove("user");
     console.log("logging out");                                      
-    $rootScope.$emit("userchange");
+    //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting
     //alert("logout");
   }
   

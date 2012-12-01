@@ -30,28 +30,28 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
     console.log("Gift2Ctrl: queryparams...  look for viewerId");
     console.log(queryparams);
     
-    $scope.gifts = Gift.query(queryparams, 
+    $rootScope.gifts = Gift.query(queryparams, 
                             function() { 
-                              Circle.gifts = $scope.gifts; 
-                              console.log("$scope.gifts.length = "+$scope.gifts.length);
-                              console.log($scope.gifts);
+                              Circle.gifts = $rootScope.gifts; 
+                              console.log("$rootScope.gifts.length = "+$rootScope.gifts.length);
+                              console.log($rootScope.gifts);
                               //if($rootScope.user.id == participant.id) { Circle.gifts.mylist=true; } else { Circle.gifts.mylist=false; } 
-                              $rootScope.$emit("circlechange");  
+                              //$rootScope.$emit("circlechange");   // commented out on 11/30/12 - experimenting
                             }, 
                             function() {alert("Hmmm... Had a problem getting this person's list\n  Try again  (error code 301)");});
                             
   }
   else if($location.url()=='/mywishlist' && $cookieStore.get("user")!=null) {
     
-    $scope.gifts = Gift.query({viewerId:$cookieStore.get("user")}, 
+    $rootScope.gifts = Gift.query({viewerId:$cookieStore.get("user")}, 
                             function() { 
-                              Circle.gifts = gifts; 
+                              Circle.gifts = $rootScope.gifts; 
                               Circle.gifts.mylist=true;
                               delete $rootScope.circle;
                               console.log($rootScope.circle);
                               $rootScope.showUser = $rootScope.user;
-                              $rootScope.$emit("circlechange");  
-                              $rootScope.$emit("userchange"); 
+                              //$rootScope.$emit("circlechange");   // commented out on 11/30/12 - experimenting
+                              //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+$rootScope.user.fullname+"'s list\n  Try again  (error code 302)");});
   }
@@ -64,7 +64,6 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
   
   // END: Cleaning up facebook request id's.  This may end up getting moved somewhere else, but it's a nice demonstration
   // of how you delete app requests once they've been accepted.
-  
   
   
   $scope.initNewGift = function() {
@@ -106,8 +105,8 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
                addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id, 
                senderId:gift.sender, senderName:gift.sender_name},
                function() {
-                 if(remove) $scope.gifts.splice(index, 1);
-                 else $scope.gifts.splice(index, 1, savedgift);
+                 if(remove) $rootScope.gifts.splice(index, 1);
+                 else $rootScope.gifts.splice(index, 1, savedgift);
                });
   }
   
@@ -125,7 +124,7 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
     var savedgift = Gift.save({updater:$rootScope.user.fullname, circleId:$scope.circle.id, description:gift.description, url:gift.url, 
                addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id},
                function() {
-                 if(add) {$scope.gifts.reverse();$scope.gifts.push(savedgift);$scope.gifts.reverse();}
+                 if(add) {$rootScope.gifts.reverse();$rootScope.gifts.push(savedgift);$rootScope.gifts.reverse();}
                  $scope.newgift = {};
                  $scope.newgift.recipients = [];
                });
@@ -141,7 +140,7 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
   
   $rootScope.$on("circlechange", function(event) {
     console.log("GiftListCtrl: circlechange event received --------------------------------");
-    $scope.gifts = Circle.gifts;
+    $rootScope.gifts = Circle.gifts;
     //$rootScope should be updated by the function that triggered this event
   });
 }
@@ -172,9 +171,9 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
   }
   
   $rootScope.$on("circlechange", function(event) {
-    $scope.gifts = Circle.gifts;
-    //console.log("GiftCtrl:  notified of 'circlechange'...  $scope.gifts=...");
-    //console.log($scope.gifts);
+    $rootScope.gifts = Circle.gifts;
+    //console.log("GiftCtrl:  notified of 'circlechange'...  $rootScope.gifts=...");
+    //console.log($rootScope.gifts);
   });
   
   $scope.alertcannotedit = function() {alert('Cannot edit this item because you didn\'t add it');}
@@ -194,7 +193,7 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
     var circleId = angular.isDefined($scope.circle) ? $scope.circle.id : -1;
     gift.receivedate = new Date(recdate);
     var savedgift = Gift.save({giftId:gift.id, updater:$rootScope.user.fullname, circleId:circleId, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id, senderId:gift.senderId, senderName:gift.senderName, receivedate:gift.receivedate.getTime()},
-               function() { $scope.gifts.splice(index, 1, savedgift); });
+               function() { $rootScope.gifts.splice(index, 1, savedgift); });
   }
   
   
@@ -202,7 +201,7 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
     var circleId = angular.isDefined($scope.circle) ? $scope.circle.id : -1;
     var savedgift = Gift.save({giftId:gift.id, updater:$rootScope.user.fullname, circleId:circleId, recipients:gift.recipients, viewerId:$rootScope.user.id, 
                                recipientId:$rootScope.showUser.id, senderId:-1, senderName:''},
-               function() { $scope.gifts.splice(index, 1, savedgift); });
+               function() { $rootScope.gifts.splice(index, 1, savedgift); });
   }
     
   
@@ -221,7 +220,7 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
   }
   
   $scope.deletegift = function(index, gift) {
-    $scope.gifts.splice(index, 1);
+    $rootScope.gifts.splice(index, 1);
     Gift.delete({giftId:gift.id, updater:$rootScope.user.fullname});
   }
                   
@@ -229,22 +228,24 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
   // duplicated in CircleCtrl (doesn't look like it anymore)
   $scope.giftlist = function(circle, participant) {
     
-    console.log("$scope.giftlist(): query for gifts");
+    console.log("$scope.giftlist(): $rootScope.gifts.......commented out stuff");
   
     // We're expanding this to allow for null circle
     // How do we tell if there's no circle?
   
-    $scope.gifts = Gift.query({viewerId:$rootScope.user.id, circleId:circle.id, recipientId:participant.id}, 
+    $rootScope.gifts = Gift.query({viewerId:$rootScope.user.id, circleId:circle.id, recipientId:participant.id}, 
                             function() { 
-                              console.log("scope.giftlist: SETTING path to '/giftlist/#/#/'");
-                              $location.path('/giftlist/'+participant.id+'/'+circle.id);
-                              Circle.gifts = $scope.gifts; 
-                              Circle.currentCircle = circle; // phase this strategy out
+                              //console.log("scope.giftlist: SETTING path to '/giftlist/#/#/'");
+                              //$location.path('/giftlist/'+participant.id+'/'+circle.id);
+                              //Circle.gifts = $rootScope.gifts; 
+                              //Circle.currentCircle = circle; // phase this strategy out
+                              $rootScope.gifts.ready = true;
                               $rootScope.circle = circle;
                               $rootScope.showUser = participant;
-                              if($rootScope.user.id == participant.id) { Circle.gifts.mylist=true; } else { Circle.gifts.mylist=false; } 
-                              $rootScope.$emit("circlechange");  
-                              $rootScope.$emit("userchange"); 
+                              if($rootScope.user.id == participant.id) { $rootScope.gifts.mylist=true; } else { $rootScope.gifts.mylist=false; } 
+                              //$rootScope.$emit("giftlist2");
+                              //$rootScope.$emit("circlechange");   // commented out on 11/30/12 - experimenting
+                              //$rootScope.$emit("userchange");     // commented out on 11/30/12 - experimenting
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again  (error code 401)");});
   }

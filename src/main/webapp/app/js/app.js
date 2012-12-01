@@ -4,9 +4,9 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
     
     $routeProvider.
       when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}}).
-      when('/foo/:fooid', {templates: {layout: 'foo', foo: 'partials/foo/foo.html'}}).
-      when('/bar/:fooid/:barid', {templates: {layout: 'foo', foo: 'partials/foo/bar.html'}}).
-      when('/baz/:fooid/:barid/:bazid', {templates: {layout: 'foo', foo: 'partials/foo/foo.html', bar: 'partials/foo/bar.html'}}).
+      when('/foo/:fooid', {templates: {layout: 'foo',               menu: 'partials/foo/menu.html', body:'partials/foo/foo.html'}}).
+      when('/bar/:fooid/:barid', {templates: {layout: 'foo',        menu: 'partials/foo/menu.html', body:'partials/foo/bar.html'}}).
+      when('/baz/:fooid/:barid/:bazid', {templates: {layout: 'foo', menu: 'partials/foo/menu.html', body:'partials/foo/baz.html'}}).
       when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', one: 'partials/login.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}}).
       when('/circles', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
       when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
@@ -30,22 +30,14 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
   .run(function($window, $route, $rootScope, $cookieStore, $location, $rootScope, facebookConnect, User){    
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){
         if (!newRoute || !newRoute.$route) return;
-        console.log("$routechangestart: $rootScope...");
-        console.log($rootScope);
-        console.log("$location.url()="+$location.url());
         
-          console.log("HA HA:  $window.location.search = "+$window.location.search);
-        if($window.location.search == '') console.log("HUHHHHHHHHHHH XXXXX? $window.location.search="+$window.location.search);
         if($window.location.search != '') {
-          console.log("HA HA ----------------------------------");
           var s = $window.location.search;
           $cookieStore.put("window.location.search", s); 
           $window.location.search = '';
-          console.log("app.js:  cookieStore(window.location.search)...");
-          console.log($cookieStore.get("window.location.search"));
         }
         
-        if(angular.isDefined($rootScope.user) || $location.url()=='/login' || $location.url()=='/whoareyou' || $location.url()=='/foo/1') {
+        if(angular.isDefined($rootScope.user) || $location.url()=='/login' || $location.url()=='/whoareyou' || $location.url().indexOf('foo')!=-1  || $location.url().indexOf('bar')!=-1  || $location.url().indexOf('baz')!=-1 ) {
           // don't do anything - we have what we need
           $rootScope.templates = newRoute.$route.templates;
           $rootScope.layoutController = newRoute.$route.controller;
@@ -89,7 +81,8 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
   }) 
   .run(function($route, $rootScope, $location, $rootScope, facebookConnect) { 
     $rootScope.$on('$routeChangeSuccess', function(scope, newRoute) {
-      console.log("routeChangeSuccess");
+      console.log("routeChangeSuccess:  newRoute...............");
+      console.log(newRoute);
     } )
   })
   .run(function($rootScope, $location, dimAdjuster) {
@@ -351,64 +344,73 @@ function GettingStartedCtrl($scope) {
   $scope.whatifidontwantto = false; // see whoareyou.html
 }
 
-function fooctrl($scope, $location, $route, UserSearch, facebookConnect) {
+function menuctrl($rootScope, $scope, $location, $route) {
+  console.log("menuctrl: fooid="+$route.current.params.fooid);
+  
+  $scope.fooid = $route.current.params.fooid;
+  
+  $scope.ngclick_url = function(where) {  
+    $location.url(where); console.log("$scope.ngclick_url():  where="+where); 
+    $rootScope.$emit("change");
+  }
+  
+  $scope.ngclick_path = function(where) {  
+    $location.path(where); console.log("$scope.ngclick_path():  where="+where); 
+    $rootScope.$emit("change");
+  }
+  
+  $scope.reload = function(where) { 
+    console.log("scope.reload ---------------------------------------");
+    $location.path(where);
+    $rootScope.$emit("change");
+  }
+  
+}
+
+function fooctrl($rootScope, $scope, $location, $route, UserSearch, facebookConnect) {
   console.log("fooctrl: fooid="+$route.current.params.fooid);
   
-  $scope.foo = function() { console.log("$scope.foo"); }
+  $scope.fooid = $route.current.params.fooid;
+  $scope.barid = $route.current.params.barid;
   
-
-    $scope.registerWithFacebook = function() {
-        facebookConnect.askFacebookForAuthentication(
-          function(reason) { // fail
-            $scope.error = reason;
-            console.log("$scope.registerWithFacebook:  reason="+reason);
-          }, 
-          function(user) { // success
-            console.log("$scope.registerWithFacebook:  success...");
-            $scope.fbuser = user;
-            $scope.$apply() // Manual scope evaluation
-          }
-        );
-    }
-    
-    $scope.testsearch = function() {
-      UserSearch.search({search:'bdunklau@gmail.com'}, function(){console.log("$scope.testsearch:  success :)");}, function(){console.log("$scope.testsearch:  failed :(");});
-    }
-    
-    
-  $scope.urlbar = function() {
-    $location.url('bar/4/5');
-  }
-  
-  $scope.urlfoo = function() {
-    $location.url('foo/3');
-  }
+  $rootScope.$on("change", function(event){
+    $scope.fooid = $route.current.params.fooid;
+    console.log("fooctrl: $rootScope.$on() DETECTED CHANGE: $route.current.params.fooid="+$route.current.params.fooid);
+	console.log($route);
+  });
   
 }
 
-function barctrl($scope, $location, $route, $cookieStore) {
+function barctrl($rootScope, $scope, $location, $route, $cookieStore) {
 
-  console.log("barctrl: fooid="+$route.current.params.fooid+", barid="+$route.current.params.barid);
+  console.log("barctrl: $route.current.params.fooid="+$route.current.params.fooid+", $route.current.params.barid="+$route.current.params.barid);
   
-  console.log("barctrl:  before:  cookie="+$cookieStore.get("cookie")+",  $scope.blah="+$scope.blah);
-  $cookieStore.put("cookie", "yum 3333");  
-  $scope.blah = 'whatever!';
-  console.log("barctrl:  after:  cookie="+$cookieStore.get("cookie")+",  $scope.blah="+$scope.blah);
+  $scope.fooid = $route.current.params.fooid;
+  $scope.barid = $route.current.params.barid;
   
-  
-  $scope.urlbar = function() {
-    $location.url('bar/4/5');
-  }
-  
-  $scope.urlfoo = function() {
-    $location.url('foo/3');
-  }
+  $rootScope.$on("change", function(event){
+    $scope.fooid = $route.current.params.fooid;
+    $scope.barid = $route.current.params.barid;
+    console.log("barctrl: $rootScope.$on() DETECTED CHANGE: $route.current.params.fooid="+$route.current.params.fooid);
+	console.log("barctrl: $rootScope.$on() DETECTED CHANGE: $route.current.params.barid="+$route.current.params.barid);
+	console.log($route);
+  });
 }
 
-function bazctrl($scope, $location, $route) {
+function bazctrl($rootScope, $scope, $location, $route) {
   console.log("bazctrl: fooid="+$route.current.params.fooid+", barid="+$route.current.params.barid+", bazid="+$route.current.params.bazid);
   
-  $scope.baz = function() {
-    $location.url('baz');
-  }
+  $scope.fooid = $route.current.params.fooid;
+  $scope.barid = $route.current.params.barid;
+  $scope.bazid = $route.current.params.bazid;
+  
+  $rootScope.$on("change", function(event){
+    $scope.fooid = $route.current.params.fooid;
+    $scope.barid = $route.current.params.barid;
+    $scope.bazid = $route.current.params.bazid;
+    console.log("bazctrl: $rootScope.$on() DETECTED CHANGE: $route.current.params.fooid="+$route.current.params.fooid);
+	console.log("bazctrl: $rootScope.$on() DETECTED CHANGE: $route.current.params.barid="+$route.current.params.barid);
+    console.log("bazctrl: $rootScope.$on() DETECTED CHANGE: $route.current.params.bazid="+$route.current.params.bazid);
+	console.log($route);
+  });
 }

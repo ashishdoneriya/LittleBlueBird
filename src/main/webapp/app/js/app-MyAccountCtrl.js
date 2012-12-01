@@ -19,7 +19,7 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, User ) {
     $rootScope.user = User.save({userId:$rootScope.user.id, notifyonaddtoevent:$rootScope.user.notifyonaddtoevent, notifyondeletegift:$rootScope.user.notifyondeletegift, notifyoneditgift:$rootScope.user.notifyoneditgift, notifyonreturngift:$rootScope.user.notifyonreturngift}, 
                                   function() {
                                     //User.currentUser = $rootScope.user;
-                                    $rootScope.$emit("userchange");
+                                    //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting
                                   },
                                   function() {alert("Uh oh - had a problem updating your profile");}
                                 );
@@ -31,7 +31,7 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, User ) {
                                     //alert("Your profile has been updated"); 
                                     if(user.dateOfBirth == 0) { user.dateOfBirth = ''; } 
                                     //User.currentUser = $rootScope.user;
-                                    $rootScope.$emit("userchange");
+                                    //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting
                                   },
                                   function() {alert("Uh oh - had a problem updating your profile");}
                                 );

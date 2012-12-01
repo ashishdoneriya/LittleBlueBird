@@ -136,7 +136,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                   console.log($rootScope.user);
                   $cookieStore.put("user", $rootScope.user.id);
                   $cookieStore.put("showUser", $rootScope.showUser.id);
-                  $rootScope.$emit("userchange");
+                  //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting
                   console.log("$rootScope.acceptAppRequest:  GO EXPLICITLY TO MYWISHLIST PAGE");
                   $location.url('mywishlist');
                 }
@@ -237,7 +237,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
           function(user) { // success
             console.log("app-FacebookModule.js:  $rootScope.registerWithFacebook:  success...");
             $rootScope.initfbuser(user);
-            $rootScope.$apply() // Manual scope evaluation
+            //$rootScope.$apply() // Manual scope evaluation - commented out on 11/30/12 - experimenting
           }
         );
     } 
@@ -313,7 +313,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                                                  console.log("$rootScope.initfbuser:  $rootScope.$broadcast(\"userchange\")");
                                                  $rootScope.$broadcast("userchange");   
                                                                                         
-                                                 $rootScope.$emit("mywishlist"); 
+                                                 //$rootScope.$emit("mywishlist");  // commented out on 11/30/12 - experimenting
                                                  $location.url('welcome');
                                                }
                                              );
@@ -336,8 +336,8 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', func
                                        function() {
                                          $rootScope.user = uagain; 
                                          $rootScope.showUser = uagain;
-									     $rootScope.$emit("userchange");                                          
-									     $rootScope.$emit("mywishlist");
+									     //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting                                       
+									     //$rootScope.$emit("mywishlist"); // commented out on 11/30/12 - experimenting
 									     $location.url('mywishlist');});
                                        }
                       else if(users.length > 1) {

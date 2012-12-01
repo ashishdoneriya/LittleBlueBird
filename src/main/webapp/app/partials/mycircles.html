@@ -37,7 +37,7 @@
 			    <ul class="dropdown-menu">
 			      <li><a ng-click="classA='span2 offset3';editModalShown = !editModalShown;editcircleFunction(circle);">Edit Event</a></li>
 		          <li><a ng-click="modal2Shown = !modal2Shown;thecircle = circle;">Delete Event</a></li>
-		          <li><a ng-href="#/reminders">Reminders</a></li>
+		          <li><a href="#/reminders" ng-click="currentCircle(circle)">Reminders</a></li>
 			    </ul>
 		      </li>
 		    </ul>

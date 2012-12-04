@@ -3,8 +3,17 @@ function EditCircleCtrl($rootScope) {
   
 }
 
-function MyCircleCtrl($rootScope, $scope) {
-
+function MyCircleCtrl($rootScope, $scope, Circle) {
+  
+  // TODO delete reminders
+  $scope.deletecircle = function(index) {
+    Circle.save({circleId:$rootScope.circle.id, datedeleted:new Date().getTime()},
+                function() {$rootScope.user.circles.splice(index, 1); 
+                            if($rootScope.user.circles.length > 0) {$rootScope.circle = $rootScope.user.circles[0];}
+                            else {delete $rootScope.circle;}
+                            });
+                
+  }
 }
 
 function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch) {
@@ -299,19 +308,6 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
       }
     }
     $rootScope.circle.reminders = angular.copy($rootScope.circle.newreminders);
-  }
-  
-  // TODO delete reminders
-  $scope.deletecircle = function(circle, index) {
-    Circle.save({circleId:circle.id, datedeleted:new Date().getTime()},
-                function() {$rootScope.user.circles.splice(index, 1); 
-                            //User.currentUser=$rootScope.user; 
-                            if($rootScope.user.circles.length > 0) {circle = $rootScope.user.circles[0]; Circle.currentCircle = $rootScope.user.circles[0];}
-                            else {circle = {}; Circle.currentCircle = {};}
-                            //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting
-                            //$rootScope.$emit("circlechange"); // commented out on 11/30/12 - experimenting
-                            });
-                
   }
   
 }

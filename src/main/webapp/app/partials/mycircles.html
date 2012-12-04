@@ -60,14 +60,14 @@
 			  <h3>Delete Event</h3>
 			</div>
 			<div class="modal-body">
-			  Are you sure you want to delete the {{thecircle.name}} event?
+			  Are you sure you want to delete the {{circle.name}} event?
 			  <P/>
 			  This event will also be deleted for the following people:
 			  <P/>
-			  <div class="row" ng-repeat="p in thecircle.participants.receivers">
+			  <div class="row" ng-repeat="p in circle.participants.receivers">
 				<div class="span2">{{p.first}} {{p.last}}</div>
 			  </div>
-			  <div class="row" ng-repeat="p in thecircle.participants.givers">
+			  <div class="row" ng-repeat="p in circle.participants.givers">
 		        <div class="span2">{{p.first}} {{p.last}}</div>
 			  </div>
 		    </div>

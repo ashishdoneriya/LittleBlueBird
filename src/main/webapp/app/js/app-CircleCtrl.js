@@ -1,9 +1,46 @@
 
+function ManagePeopleCtrl($rootScope, $scope, CircleParticipant, Reminder) {
+  
+  // TODO duplicated in AddCircleCtrl
+  $scope.removereceiver = function(index, circle, participant) {
+    circle.participants.receivers.splice(index, 1)
+    if(angular.isDefined(circle.id)) {
+      CircleParticipant.delete({circleId:circle.id, userId:participant.id}, function() {Reminder.delete({circleId:$rootScope.circle.id, userId:participant.id})});
+      // now remove person from circle.reminders...
+      removeremindersforperson(participant);
+    }
+  }
+  
+  
+  // TODO duplicated in AddCircleCtrl
+  $scope.removegiver = function(index, circle, participant) {
+    circle.participants.givers.splice(index, 1)
+    if(angular.isDefined(circle.id)) {
+      CircleParticipant.delete({circleId:circle.id, userId:participant.id}, function() {Reminder.delete({circleId:$rootScope.circle.id, userId:participant.id})});
+      // now remove person from circle.reminders...
+      removeremindersforperson(participant);
+    }
+  }
+  
+  
+  // TODO duplicated in AddCircleCtrl
+  function removeremindersforperson(person) {
+    $rootScope.circle.newreminders = [];
+    for(var i=0; i < $rootScope.circle.reminders.length; i++) {
+      if($rootScope.circle.reminders[i].viewer != person.id) {
+        $rootScope.circle.newreminders.push(angular.copy($rootScope.circle.reminders[i]));
+        console.log($rootScope.circle.reminders[i]);
+      }
+    }
+    $rootScope.circle.reminders = angular.copy($rootScope.circle.newreminders);
+  }
+}
+
 function EditCircleCtrl($rootScope) {
   
 }
 
-function MyCircleCtrl($rootScope, $scope, Circle) {
+function MyCircleCtrl($rootScope, $scope, Circle, $location) {
   
   // TODO delete reminders
   $scope.deletecircle = function(index) {
@@ -13,6 +50,11 @@ function MyCircleCtrl($rootScope, $scope, Circle) {
                             else {delete $rootScope.circle;}
                             });
                 
+  }
+  
+  $scope.addremovepeople = function(circle) {
+    $rootScope.circle = circle;
+    $location.url('managepeople');
   }
 }
 
@@ -56,10 +98,10 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
   }
     
     
-  $scope.addparticipant = function(index, person, circle) {
+  $scope.addparticipant = function(index, person, circle, participationlevel) {
     if(!angular.isDefined(circle.participants))
       circle.participants = {receivers:[], givers:[]};
-    if($scope.participationlevel == 'Giver')
+    if(participationlevel == 'Giver')
       circle.participants.givers.push(person);
     else circle.participants.receivers.push(person);
     
@@ -71,7 +113,7 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
     // if the circle already exists, add the participant to the db immediately
     if(angular.isDefined(circle.id)) {
       console.log("$scope.addparticipant:  $scope.user.id="+$scope.user.id);
-      var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:$scope.participationlevel,
+      var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:participationlevel,
                                          who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$scope.user.fullname},
                                          function() {$scope.circle.reminders = Reminder.query({circleId:$scope.circle.id})});
     }
@@ -100,6 +142,7 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
     //circle.participants.receivers.push($rootScope.user);
   }
   
+  // TODO duplicated in ManagePeopleCtrl
   $scope.removereceiver = function(index, circle, participant) {
     circle.participants.receivers.splice(index, 1)
     if(angular.isDefined(circle.id)) {
@@ -109,6 +152,7 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
     }
   }
   
+  // TODO duplicated in ManagePeopleCtrl
   $scope.removegiver = function(index, circle, participant) {
     circle.participants.givers.splice(index, 1)
     if(angular.isDefined(circle.id)) {
@@ -152,6 +196,8 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
   //  $scope.addparticipant(-1, person, circle);
   //}
   
+  
+  // TODO duplicated in ManagePeopleCtrl
   function removeremindersforperson(person) {
     $rootScope.circle.newreminders = [];
     for(var i=0; i < $rootScope.circle.reminders.length; i++) {

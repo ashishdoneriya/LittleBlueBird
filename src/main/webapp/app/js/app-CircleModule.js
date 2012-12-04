@@ -93,5 +93,22 @@ angular.module('CircleModule', [])
   }
   
   
+  // don't have to pass circle in; it's $rootScope.circle
+  $rootScope.updatecirclename = function() {
+    console.log("CircleModule: updatecirclename !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    Circle.save({circleId:$rootScope.circle.id, name:$rootScope.circle.name});
+  }
+  
+  // don't have to pass circle in; it's $rootScope.circle
+  // similar to $scope.savecircle() in app-CircleCtrl
+  $rootScope.updatecircledate = function(expdate) {
+    $rootScope.circle.expirationdate = new Date(expdate);
+    $rootScope.circle = Circle.save({circleId:$rootScope.circle.id, expirationdate:$rootScope.circle.expirationdate.getTime()});
+  }
+  
+  $rootScope.begineditcircledate = function(expdate) {
+    $rootScope.expdate=$rootScope.circle.dateStr
+  }
+  
     
 });

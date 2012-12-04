@@ -1,0 +1,30 @@
+
+      <div class="row margbottom5">
+        <div class="span4 font16 bold">
+            <span ng-show="editcirclename=='true'">
+              <form novalidate class="form-inline">
+                <input type="text" name="name" ng-model="circle.name"><a class="btn btn-small" ng-click="editcirclename='';updatecirclename()">OK</a><a class="btn btn-small" ng-click="editcirclename=''">Cancel</a>
+              </form>
+            </span>
+            <span ng-hide="editcirclename=='true'">
+              {{circle.name}}
+            </span>
+            <span ng-show="circle != null && editcirclename != 'true'"><a class="icon-pencil" ng-click="editcirclename='true'"></a></span>
+        </div>
+        <div class="span3 pull-right font16 bold">
+          <span ng-show="editcircledate=='true'">
+            <form novalidate class="form-inline pull-right">
+              <input class="input-small" date-picker="expdate" name="expdate" ng-model="expdate" type="text" ng-required="true"></input>
+              <a class="btn btn-small" ng-click="updatecircledate(expdate);editcircledate=''">OK</a><a class="btn btn-small" ng-click="editcircledate=''">Cancel</a>
+            </form>
+          </span>
+          <span ng-hide="editcircledate=='true'" class="pull-right">
+            {{circle.date | date:'EEE MMM d, yyyy'}}
+          </span>          
+          <span ng-show="circle != null && editcircledate != 'true'" class="pull-right"><a class="icon-calendar" ng-click="begineditcircledate(expdate);editcircledate='true'"></a></span>
+        </div>
+            
+      </div> <!-- div class="row" -->
+      
+      <div class="row"><div class="span7 simple-top"></div></div>
+      

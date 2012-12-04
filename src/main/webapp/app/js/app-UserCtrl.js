@@ -132,12 +132,9 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   $scope.mywishlist = function() {
     console.log("check scope.user.id...");
     console.log($rootScope.user.id);
-    gifts = Gift.query({viewerId:$rootScope.user.id}, 
+    $rootScope.gifts = Gift.query({viewerId:$rootScope.user.id}, 
                             function() { 
-                              Circle.gifts = gifts; 
-                              Circle.gifts.mylist=true;
-                              //var x;
-                              //Circle.currentCircle = x; 
+                              $rootScope.gifts.mylist=true;
                               delete $rootScope.circle;
                               console.log("mywishlist(): delete $rootScope.circle:  check below ------------------");
                               console.log($rootScope.circle);

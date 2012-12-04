@@ -17,7 +17,7 @@ hyperlinks, which is what we want if we want to post items to FB.
           
       <div class="row margbottom5">
         <div class="span4">
-          <h3 class="margleft5">{{showUser.fullname}}'s Wish List</h3>
+          <h3 class="margleft0">{{showUser.fullname}}'s Wish List</h3>
         </div>
             
         <div class="span3 pull-right">
@@ -30,11 +30,28 @@ hyperlinks, which is what we want if we want to post items to FB.
           
           
       <div class="row margbottom5">
-        <div class="span5">
-          <h3 class="margleft5">{{circle.name}}</h3>
+        <div class="span4 font16 bold">
+            <span ng-show="editcirclename=='true'">
+              <form novalidate class="form-inline">
+                <input type="text" name="name" ng-model="circle.name"><a class="btn btn-small" ng-click="updatecirclename()">OK</a><a class="btn btn-small" ng-click="editcirclename=''">Cancel</a>
+              </form>
+            </span>
+            <span ng-hide="editcirclename=='true'">
+              {{circle.name}}
+            </span>
+            <span ng-show="circle != null && editcirclename != 'true'"><a class="icon-pencil" ng-click="editcirclename='true'"></a></span>
         </div>
-        <div class="span2 pull-right">
-          <h4 class="pull-right">{{circle.date | date:'EEE MMM d, yyyy'}}</h4>
+        <div class="span3 pull-right font16 bold">
+          <span ng-show="editcircledate=='true'">
+            <form novalidate class="form-inline pull-right">
+              <input class="input-small" date-picker="expdate" name="expdate" ng-model="expdate" type="text" ng-required="true"></input>
+              <a class="btn btn-small" ng-click="updatecircledate(expdate);editcircledate=''">OK</a><a class="btn btn-small" ng-click="editcircledate=''">Cancel</a>
+            </form>
+          </span>
+          <span ng-hide="editcircledate=='true'" class="pull-right">
+            {{circle.date | date:'EEE MMM d, yyyy'}}
+          </span>          
+          <span ng-show="circle != null && editcircledate != 'true'" class="pull-right"><a class="icon-calendar" ng-click="begineditcircledate(expdate);editcircledate='true'"></a></span>
         </div>
             
       </div> <!-- div class="row" -->

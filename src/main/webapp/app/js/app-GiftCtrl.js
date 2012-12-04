@@ -143,6 +143,24 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
     $rootScope.gifts = Circle.gifts;
     //$rootScope should be updated by the function that triggered this event
   });
+  
+  
+  // don't have to pass circle in; it's $rootScope.circle
+  $scope.updatecirclename = function() {
+    Circle.save({circleId:$rootScope.circle.id, name:$rootScope.circle.name});
+  }
+  
+  
+  // don't have to pass circle in; it's $rootScope.circle
+  // similar to $scope.savecircle() in app-CircleCtrl
+  $scope.updatecircledate = function(expdate) {
+    $rootScope.circle.expirationdate = new Date(expdate);
+    $rootScope.circle = Circle.save({circleId:$rootScope.circle.id, expirationdate:$rootScope.circle.expirationdate.getTime()});
+  }
+  
+  $scope.begineditcircledate = function(expdate) {
+    $scope.expdate=$rootScope.circle.dateStr
+  }
 }
 
 function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, Gift, User) { 
@@ -225,7 +243,6 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
   }
                   
   
-  // duplicated in CircleCtrl (doesn't look like it anymore)
   $scope.giftlist = function(circle, participant) {
     
     console.log("$scope.giftlist(): $rootScope.gifts.......commented out stuff");

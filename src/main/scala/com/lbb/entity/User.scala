@@ -691,7 +691,7 @@ object User extends User with LongKeyedMetaMapper[User] {
   
   override def create = {
     val u = super.create
-    u.facebookId(Empty).notifyonaddtoevent("true").notifyondeletegift("true").notifyoneditgift("true").notifyonreturngift("true")
+    u.facebookId(Empty).notifyonaddtoevent("true").notifyondeletegift("true").notifyoneditgift("true").notifyonreturngift("true").profilepic("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg")
   }
   
   def create(name:String, facebookId:String):User = {

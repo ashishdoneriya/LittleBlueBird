@@ -1,4 +1,221 @@
 
+function EditCircleCtrl($rootScope) {
+  
+}
+
+function MyCircleCtrl($rootScope, $scope) {
+
+}
+
+function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch) {
+
+  
+    $scope.usersearch = '';
+  
+    $scope.query = function(sss) {
+      console.log("app-CircleModule: scope.query() -----------------------");
+      $scope.usersearch = 'loading';
+      $scope.people = UserSearch.query({search:sss}, 
+                      function() {
+                        $scope.usersearch = 'loaded'; 
+                        //$scope.people.splice(0, $scope.people.length); // effectively refreshes the people list
+                        
+                        // uncomment for facebook integration
+                        //for(var i=0; i < $scope.user.friends.length; i++) {
+                        //  if(!lbbNamesContainFbName(lbbpeople, $scope.user.friends[i].fullname))
+                        //    $scope.people.push($scope.user.friends[i]);
+                        //}
+                        //for(var i=0; i < lbbpeople.length; i++) {
+                        //  $scope.people.push(lbbpeople[i]);
+                        //}
+                        $scope.noonefound = $scope.people.length==0 ? true : false; 
+                        console.log($scope.people);
+                      }, 
+                      function() {
+                        //$scope.people.splice(0, $scope.people.length);
+                        $scope.usersearch = '';
+                      }
+                    );
+    };
+    
+  
+  // TODO add reminder
+  $scope.addmyselfasgiver = function(circle) {
+    $scope.participationlevel = 'Giver'
+    $scope.addparticipant2($scope.user, circle)
+    //circle.participants.givers.push($scope.user);
+  }
+    
+    
+  $scope.addparticipant = function(index, person, circle) {
+    if(!angular.isDefined(circle.participants))
+      circle.participants = {receivers:[], givers:[]};
+    if($scope.participationlevel == 'Giver')
+      circle.participants.givers.push(person);
+    else circle.participants.receivers.push(person);
+    
+    if(index != -1) {
+      console.log("index = "+index);
+      $scope.people[index].hide = true;
+    }
+    
+    // if the circle already exists, add the participant to the db immediately
+    if(angular.isDefined(circle.id)) {
+      console.log("$scope.addparticipant:  $scope.user.id="+$scope.user.id);
+      var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:$scope.participationlevel,
+                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$scope.user.fullname},
+                                         function() {$scope.circle.reminders = Reminder.query({circleId:$scope.circle.id})});
+    }
+  }
+  
+  // when you're creating a new user and then immediately adding them to the circle
+  $scope.addparticipant2 = function(person, circle) {
+    $scope.addparticipant(-1, person, circle);
+  }
+
+  
+  $scope.newcircleFunction = function(thetype, limit) {
+    $scope.search = '';
+    $scope.people = {};
+    Circle.circleType = thetype;
+    $scope.newcircle = {name:'', creatorId:$rootScope.user.id, receiverLimit:limit, participants:{receivers:[], givers:[]}};
+    $scope.circlecopies = angular.copy($rootScope.user.circles);
+  }
+  
+  $scope.getType = function() {return Circle.circleType;}
+  
+  // TODO add reminder
+  $scope.addmyselfasreceiver = function(circle) {
+    $scope.participationlevel = 'Receiver'
+    $scope.addparticipant2($rootScope.user, circle)
+    //circle.participants.receivers.push($rootScope.user);
+  }
+  
+  $scope.removereceiver = function(index, circle, participant) {
+    circle.participants.receivers.splice(index, 1)
+    if(angular.isDefined(circle.id)) {
+      CircleParticipant.delete({circleId:circle.id, userId:participant.id}, function() {Reminder.delete({circleId:$rootScope.circle.id, userId:participant.id})});
+      // now remove person from circle.reminders...
+      removeremindersforperson(participant);
+    }
+  }
+  
+  $scope.removegiver = function(index, circle, participant) {
+    circle.participants.givers.splice(index, 1)
+    if(angular.isDefined(circle.id)) {
+      CircleParticipant.delete({circleId:circle.id, userId:participant.id}, function() {Reminder.delete({circleId:$rootScope.circle.id, userId:participant.id})});
+      // now remove person from circle.reminders...
+      removeremindersforperson(participant);
+    }
+  }
+    
+  $scope.beginnewuser = function() {
+    $scope.addmethod = 'createaccount';
+    $scope.newuser = {};
+    console.log("app-CircleCtrl:  AddCircleCtrl: beginnewuser:  $scope.addmethod="+$scope.addmethod);
+  }
+    
+  //$scope.addparticipant = function(index, person, circle) {
+  //  //alert("$scope.addparticipant:  person.first="+person.first);
+  //  if(!angular.isDefined(circle.participants))
+  //    circle.participants = {receivers:[], givers:[]};
+  //  if($rootScope.participationlevel == 'Giver')
+  //    circle.participants.givers.push(person);
+  //  else circle.participants.receivers.push(person);
+  //  
+  //  if(index != -1) {
+  //    console.log("index = "+index);
+  //    $scope.people[index].hide = true;
+  //  }
+  //  
+  //  // if the circle already exists, add the participant to the db immediately
+  //  if(angular.isDefined(circle.id)) {
+  //    //alert("circle.id="+circle.id+"\n $rootScope.participationlevel="+$rootScope.participationlevel);
+  //    console.log("$scope.addparticipant:  $rootScope.user.id="+$rootScope.user.id);
+  //    var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$rootScope.user.id, userId:person.id, participationLevel:$rootScope.participationlevel,
+  //                                       who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$rootScope.user.fullname},
+  //                                       function() {$rootScope.circle.reminders = Reminder.query({circleId:$rootScope.circle.id})});
+  //  }
+  //}
+    
+  // when you're creating a new user and then immediately adding them to the circle
+  //$scope.addparticipant2 = function(person, circle) {
+  //  $scope.addparticipant(-1, person, circle);
+  //}
+  
+  function removeremindersforperson(person) {
+    $rootScope.circle.newreminders = [];
+    for(var i=0; i < $rootScope.circle.reminders.length; i++) {
+      if($rootScope.circle.reminders[i].viewer != person.id) {
+        $rootScope.circle.newreminders.push(angular.copy($rootScope.circle.reminders[i]));
+        console.log($rootScope.circle.reminders[i]);
+      }
+    }
+    $rootScope.circle.reminders = angular.copy($rootScope.circle.newreminders);
+  }
+  
+  // duplicated in app-FriendCtrl.js
+  $scope.userfieldsvalid = function(newuser) {
+    var ret = angular.isDefined(newuser) && angular.isDefined(newuser.fullname) && angular.isDefined(newuser.email)
+          && angular.isDefined(newuser.username) && angular.isDefined(newuser.password) 
+          && angular.isDefined(newuser.passwordAgain) && newuser.fullname != '' && newuser.email != '' && newuser.username != ''
+          && newuser.password != '' && newuser.passwordAgain != '' && newuser.password == newuser.passwordAgain;
+    return ret;
+  }
+  
+  $scope.cancelnewuser = function() {
+    $scope.addmethod = 'byname';
+    $scope.usersearch = ''; 
+    $scope.search = '';
+    $scope.newuser = {};
+  }
+  
+  $scope.createonthefly = function(newuser, thecircle) {
+    anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
+                                  function() {$scope.addparticipant2(anewuser, thecircle); $scope.addmethod = 'byname'; $scope.usersearch = ''; $scope.search = '';}
+                                );
+  }
+  
+  // add all the participants in the 'fromcircle' to the 'tocircle'
+  $scope.addparticipants = function(fromcircle, tocircle) {
+    for(var i=0; i < fromcircle.participants.receivers.length; i++) {
+      var hasLimit = angular.isDefined(tocircle.receiverLimit) && tocircle.receiverLimit != -1;
+      if(hasLimit && tocircle.participants.receivers.length == tocircle.receiverLimit)
+        tocircle.participants.givers.push(fromcircle.participants.receivers[i]);
+      else tocircle.participants.receivers.push(fromcircle.participants.receivers[i]);
+    }
+    for(var i=0; i < fromcircle.participants.givers.length; i++) {
+      if(!angular.isDefined(tocircle.receiverLimit) || tocircle.receiverLimit == -1)
+        tocircle.participants.receivers.push(fromcircle.participants.givers[i]);
+      else
+        tocircle.participants.givers.push(fromcircle.participants.givers[i]);
+    }
+  }
+    
+  $scope.cancelnewcircle = function() {
+    $rootScope.circle = {participants:[]};
+    $scope.expdate = undefined;
+  }
+  
+ 
+  $scope.savecircle = function(circle, expdate) {
+    console.log("expdate = "+expdate);
+    circle.expirationdate = new Date(expdate);
+    console.log("circle.expirationdate.getTime() = "+circle.expirationdate.getTime());
+    var savedcircle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:Circle.circleType, 
+                 participants:circle.participants, creatorId:circle.creatorId},
+                 function() {
+                   if(!angular.isDefined(circle.id))
+                     $rootScope.user.circles.push(savedcircle); 
+                   //User.currentUser=$rootScope.user; 
+                   //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting
+                 } 
+               );
+    console.log("end of $scope.savecircle()");
+  }
+  
+}
+
 function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearch, Circle, Gift, CircleParticipant, Reminder, $route) {              
                
   // ugly hack - set fields in the Create Account form so the outer circleForm will pass validation in the USUAL event
@@ -17,85 +234,13 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     $rootScope.circle = Circle.query({circleId:circleId}, function() {console.log("app-CircleCtrl: $rootScope.circle....");console.log($rootScope.circle);}, function() {alert("Could not find Event "+circleId);})
   }
   
-  
-  $scope.addreminder = function() {
-    var remind_date = new Date($scope.remdate).getTime();
-    var people = [];
-    for(var i=0; i < $rootScope.circle.participants.receivers.length; i++) {
-      var p = $rootScope.circle.participants.receivers[i];
-      if(p.checked) {
-        var contains = false;
-        for(var j=0; j < $rootScope.circle.reminders.length; j++) {
-          var rem = $rootScope.circle.reminders[j];
-          if(p.id == rem.person.id && rem.remind_date == remind_date) contains = true;
-        }
-        if(!contains) people.push(angular.copy(p));
-      }
-    }
-    for(var i=0; i < $rootScope.circle.participants.givers.length; i++) {
-      var p = $rootScope.circle.participants.givers[i];
-      if(p.checked) {
-        var contains = false;
-        for(var j=0; j < $rootScope.circle.reminders.length; j++) {
-          var rem = $rootScope.circle.reminders[j];
-          if(p.id == rem.person.id && rem.remind_date == remind_date) contains = true;
-        }
-        if(!contains) people.push(angular.copy(p));
-      }
-    }
-    
-    for(var i=0; i < $rootScope.circle.participants.receivers.length; i++) {
-      $rootScope.circle.participants.receivers[i].checked = false;
-    }
-    for(var i=0; i < $rootScope.circle.participants.givers.length; i++) {
-      $rootScope.circle.participants.givers[i].checked = false;
-    }
-    
-    $scope.remdate = '';
-    
-    if(people.length == 0) return;
-    
-    var reminders = Reminder.save({circleId:$rootScope.circle.id, remind_date:remind_date, people:people}, 
-                                   function(){$rootScope.circle.reminders = reminders;}, 
-                                   function(){alert("Uh Oh!\nHad a problem updating the reminders")});
-  }
-  
-  
-  $scope.removereminder = function(reminder, index) {
-    $rootScope.circle.reminders.splice(index, 1)
-    Reminder.delete({circleId:$rootScope.circle.id, userId:reminder.person.id, remind_date:reminder.remind_date});
-  }
-    
-  
-  $scope.toggleCircle = function(circle) {
-    circle.show = angular.isDefined(circle.show) ? !circle.show : true;
-  }
-    
-  $scope.beginnewuser = function() {
-    console.log("app-CircleCtrl: beginnewuser");
-    $scope.addmethod = 'createaccount';
-    $scope.newuser = {};
-  }
-  
-  $scope.cancelnewuser = function() {
-    $scope.addmethod = 'byname';
-    $scope.usersearch = ''; 
-    $scope.search = '';
-    $scope.newuser = {};
-  }
-  
-  $scope.createonthefly = function(newuser, thecircle) {
-    anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
-                                  function() {$scope.addparticipant2(anewuser, thecircle); $scope.addmethod = 'byname'; $scope.usersearch = ''; $scope.search = '';}
-                                );
-  }
-  
   $scope.nocircle = function() {
     return !angular.isDefined($rootScope.circle);
   }
   
-  $scope.currentCircle = function(circle) { 
+  $scope.reminders = function(circle) { 
     $rootScope.circle = circle;
+    $location.url('/reminders')
   }
 
   //$rootScope.$on("usersearchresults", function(event) {
@@ -124,134 +269,16 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
     return first + " " + last;
   }
   
-  $scope.activeOrNot = function(circle) {
-    if(!angular.isDefined(circle) || !angular.isDefined(Circle.currentCircle))
-      return false;
-    return circle.id == Circle.currentCircle.id ? "active" : "";
-  }
-  
-  $scope.showParticipants = function(circle) {
-    circle.participants = CircleParticipant.query({circleId:circle.id}, 
-                                                  function() {$scope.giftlist(circle, circle.participants.receivers[0]);});
-  }
-  
-  $scope.savecircle = function(circle, expdate) {
-    console.log("expdate = "+expdate);
-    circle.expirationdate = new Date(expdate);
-    console.log("circle.expirationdate.getTime() = "+circle.expirationdate.getTime());
-    var savedcircle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:Circle.circleType, 
-                 participants:circle.participants, creatorId:circle.creatorId},
-                 function() {
-                   if(!angular.isDefined(circle.id))
-                     $rootScope.user.circles.push(savedcircle); 
-                   //User.currentUser=$rootScope.user; 
-                   //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting
-                 } 
-               );
-    console.log("end of $scope.savecircle()");
-  }
-  
-  $scope.newcircleFunction = function(thetype, limit) {
-    $scope.search = '';
-    $scope.people = {};
-    Circle.circleType = thetype;
-    $scope.newcircle = {name:'', creatorId:$rootScope.user.id, receiverLimit:limit, participants:{receivers:[], givers:[]}};
-    $scope.circlecopies = angular.copy($rootScope.user.circles);
-  }
-  
-  $scope.editcircleFunction = function(circle) {
-    $scope.thecircle = circle;
-    $scope.expdate = circle.dateStr;
-    for(var i=0; i < $scope.thecircle.participants.receivers.length; i++) {
-      console.log($rootScope.circle.participants.receivers[i]);
-    }
-    $scope.circlecopies = angular.copy($rootScope.user.circles);
-  }
-  
-  // TODO add reminder
-  $scope.addmyselfasreceiver = function(circle) {
-    $scope.participationlevel = 'Receiver'
-    $scope.addparticipant2($rootScope.user, circle)
-    //circle.participants.receivers.push($rootScope.user);
-  }
-  
-  // TODO add reminder
-  $scope.addmyselfasgiver = function(circle) {
-    $scope.participationlevel = 'Giver'
-    $scope.addparticipant2($rootScope.user, circle)
-    //circle.participants.givers.push($rootScope.user);
-  }
-  
-  $scope.getType = function() {return Circle.circleType;}
-  
   $scope.dateOptions = {
         changeYear: true,
         changeMonth: true,
         yearRange: '1900:-0',
         dateFormat : 'mm/dd/yy'
     };
-    
-  $scope.cancelnewcircle = function() {
-    $rootScope.circle = {participants:[]};
-    $scope.expdate = undefined;
-  }
-    
-  $scope.addparticipant = function(index, person, circle) {
-    //alert("$scope.addparticipant:  person.first="+person.first);
-    if(!angular.isDefined(circle.participants))
-      circle.participants = {receivers:[], givers:[]};
-    if($scope.participationlevel == 'Giver')
-      circle.participants.givers.push(person);
-    else circle.participants.receivers.push(person);
-    
-    if(index != -1) {
-      console.log("index = "+index);
-      $scope.people[index].hide = true;
-    }
-    
-    // if the circle already exists, add the participant to the db immediately
-    if(angular.isDefined(circle.id)) {
-      //alert("circle.id="+circle.id+"\n $scope.participationlevel="+$scope.participationlevel);
-      console.log("$scope.addparticipant:  $rootScope.user.id="+$rootScope.user.id);
-      var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$rootScope.user.id, userId:person.id, participationLevel:$scope.participationlevel,
-                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$rootScope.user.fullname},
-                                         function() {$rootScope.circle.reminders = Reminder.query({circleId:$rootScope.circle.id})});
-    }
-  }
-    
-  // when you're creating a new user and then immediately adding them to the circle
-  $scope.addparticipant2 = function(person, circle) {
-    $scope.addparticipant(-1, person, circle);
-  }
-  
-  // add all the participants in the 'fromcircle' to the 'tocircle'
-  $scope.addparticipants = function(fromcircle, tocircle) {
-    for(var i=0; i < fromcircle.participants.receivers.length; i++) {
-      var hasLimit = angular.isDefined(tocircle.receiverLimit) && tocircle.receiverLimit != -1;
-      if(hasLimit && tocircle.participants.receivers.length == tocircle.receiverLimit)
-        tocircle.participants.givers.push(fromcircle.participants.receivers[i]);
-      else tocircle.participants.receivers.push(fromcircle.participants.receivers[i]);
-    }
-    for(var i=0; i < fromcircle.participants.givers.length; i++) {
-      if(!angular.isDefined(tocircle.receiverLimit) || tocircle.receiverLimit == -1)
-        tocircle.participants.receivers.push(fromcircle.participants.givers[i]);
-      else
-        tocircle.participants.givers.push(fromcircle.participants.givers[i]);
-    }
-  }
   
   $scope.canaddreceiver = function(circle) {
     var isdefined = angular.isDefined(circle) && angular.isDefined(circle.receiverLimit) && angular.isDefined(circle.participants.receivers)
     return isdefined && (circle.receiverLimit == -1 || circle.receiverLimit > circle.participants.receivers.length);
-  }
-  
-  $scope.removereceiver = function(index, circle, participant) {
-    circle.participants.receivers.splice(index, 1)
-    if(angular.isDefined(circle.id)) {
-      CircleParticipant.delete({circleId:circle.id, userId:participant.id}, function() {Reminder.delete({circleId:$rootScope.circle.id, userId:participant.id})});
-      // now remove person from circle.reminders...
-      removeremindersforperson(participant);
-    }
   }
   
   $scope.removegiver = function(index, circle, participant) {
@@ -285,15 +312,6 @@ function CircleCtrl($location, $rootScope, $cookieStore, $scope, User, UserSearc
                             //$rootScope.$emit("circlechange"); // commented out on 11/30/12 - experimenting
                             });
                 
-  }
-  
-  // duplicated in app-FriendCtrl.js
-  $scope.userfieldsvalid = function(newuser) {
-    var ret = angular.isDefined(newuser) && angular.isDefined(newuser.fullname) && angular.isDefined(newuser.email)
-          && angular.isDefined(newuser.username) && angular.isDefined(newuser.password) 
-          && angular.isDefined(newuser.passwordAgain) && newuser.fullname != '' && newuser.email != '' && newuser.username != ''
-          && newuser.password != '' && newuser.passwordAgain != '' && newuser.password == newuser.passwordAgain;
-    return ret;
   }
   
 }

@@ -152,30 +152,5 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       }
   })
   .run(function($rootScope, $location, UserSearch) {
-
-    $rootScope.usersearch = '';
-    $rootScope.people = [];
-  
-    $rootScope.query = function(sss) {
-      console.log("app-UserModule: rootScope.query() -----------------------");
-      $rootScope.usersearch = 'loading';
-      var lbbpeople = UserSearch.query({search:sss}, 
-                      function() {
-                        $rootScope.usersearch = 'loaded'; 
-                        $rootScope.people.splice(0, $rootScope.people.length); // effectively refreshes the people list
-                        
-                        // uncomment for facebook integration
-                        //for(var i=0; i < $rootScope.user.friends.length; i++) {
-                        //  if(!lbbNamesContainFbName(lbbpeople, $rootScope.user.friends[i].fullname))
-                        //    $rootScope.people.push($rootScope.user.friends[i]);
-                        //}
-                        for(var i=0; i < lbbpeople.length; i++) {
-                          $rootScope.people.push(lbbpeople[i]);
-                        }
-                        $rootScope.noonefound = $rootScope.people.length==0 ? true : false; 
-                      }, 
-                      function() {$rootScope.people.splice(0, $rootScope.people.length);$rootScope.usersearch = '';}
-                    );
-    };
     
   });

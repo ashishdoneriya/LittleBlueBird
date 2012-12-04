@@ -2336,7 +2336,7 @@ input[type="submit"].btn.btn-mini {
 }
 .nav > li > a:hover {
   text-decoration: none;
-  background-color: #eeeeee;
+  background-color: #0088cc;
 }
 .nav .nav-header {
   display: block;
@@ -2443,6 +2443,8 @@ input[type="submit"].btn.btn-mini {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
+  background-color:#959b9e;
+  color: #ffffff;
 }
 .nav-pills > .active > a,
 .nav-pills > .active > a:hover {

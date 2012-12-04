@@ -65,6 +65,10 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
   // END: Cleaning up facebook request id's.  This may end up getting moved somewhere else, but it's a nice demonstration
   // of how you delete app requests once they've been accepted.
   
+  $scope.reminders = function(circle) {
+    $rootScope.circle = circle;
+    $location.url('/reminders');
+  }
   
   $scope.initNewGift = function() {
     console.log("initnewgift() ------------------------");

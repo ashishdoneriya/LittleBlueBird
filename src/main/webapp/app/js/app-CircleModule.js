@@ -39,7 +39,7 @@ angular.module('CircleModule', [])
   
   $rootScope.isExpired = function() { 
     var isexpired = angular.isDefined($rootScope.circle) && $rootScope.circle.isExpired; //angular.isDefined($rootScope.circle) && $rootScope.circle.date < new Date().getTime();
-    console.log("CircleModule: rootScope.isExpired(): "+isexpired+" --------------------------------");
+    //console.log("CircleModule: rootScope.isExpired(): "+isexpired+" --------------------------------");
     return isexpired; 
   }
   
@@ -79,8 +79,10 @@ angular.module('CircleModule', [])
   
     // We're expanding this to allow for null circle
     // How do we tell if there's no circle?
+                              console.log("DO IT NOW:  giftlist/"+$rootScope.showUser.id+"/"+$rootScope.circle.id);
+                              $location.url('giftlist/'+$rootScope.showUser.id+'/'+$rootScope.circle.id+'/');
   
-    $rootScope.gifts = Gift.query({viewerId:$rootScope.user.id, circleId:circle.id, recipientId:participant.id}, 
+    $rootScope.gifts = Gift.query({viewerId:$rootScope.user.id, circleId:$rootScope.circle.id, recipientId:participant.id}, 
                             function() { 
                               $rootScope.gifts.ready = true;
                               $rootScope.circle = circle;

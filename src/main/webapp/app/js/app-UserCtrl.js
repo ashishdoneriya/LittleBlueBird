@@ -10,8 +10,89 @@ function ProfilePicCtrl($rootScope, $cookieStore, User) {
 }
 
 
-function CreateAccountCtrl($scope, $rootScope) {
+function CreateAccountCtrl($scope, $rootScope, CircleParticipant, User) {
 
+  
+  // TODO duplicated in RegisterCtrl
+  $scope.isUsernameUnique = function(user, form) {
+    if(!angular.isDefined(user.username)) {
+      return;
+    }
+    checkUsers = User.query({username:user.username}, 
+                                        function() {
+                                          if(checkUsers.length > 0) { form.username.$error.taken = 'true'; }
+                                          else { form.username.$error.taken = 'false'; }
+                                        });
+  } 
+  
+  $scope.cancelnewuser = function() {
+    $scope.addmethod = 'byname';
+    $scope.usersearch = ''; 
+    $scope.search = '';
+    $scope.newuser = {};
+  }
+  
+  // TODO duplicated in app-FriendCtrl.js
+  $scope.userfieldsvalid = function(newuser) {
+    var ret = angular.isDefined(newuser) && angular.isDefined(newuser.fullname) && angular.isDefined(newuser.email)
+          && angular.isDefined(newuser.username) && angular.isDefined(newuser.password) 
+          && angular.isDefined(newuser.passwordAgain) && newuser.fullname != '' && newuser.email != '' && newuser.username != ''
+          && newuser.password != '' && newuser.passwordAgain != '' && newuser.password == newuser.passwordAgain;
+    return ret;
+  }
+    
+  $scope.beginnewgiver = function() {
+    $scope.addgivermethod = 'createaccount';
+    $scope.newuser = {};
+  }
+    
+  $scope.beginnewreceiver = function() {
+    $scope.addreceivermethod = 'createaccount';
+    $scope.newuser = {};
+  }
+  
+  $scope.createonthefly = function(newuser, participationlevel) {
+    anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
+                                  function() {$scope.addparticipant3(anewuser, participationlevel); $scope.addgivermethod = ''; $scope.addreceivermethod = ''; $scope.usersearch = ''; $scope.search = '';}
+                                );
+  }
+  
+  
+  // when you're creating a new user and then immediately adding them to the circle
+  $scope.addparticipant3 = function(person, participationlevel) {
+    $scope.addparticipant(-1, person, participationlevel);
+  }
+    
+  $scope.addparticipant = function(index, person, participationlevel) {
+    var level = participationlevel;
+    if(participationlevel == 'Giver') {
+      $rootScope.circle.participants.givers.push(person);
+      level = 'Giver';
+    }
+    else if($scope.canaddreceiver($rootScope.circle)) {
+      $rootScope.circle.participants.receivers.push(person);
+      level = 'Receiver';
+    }
+    else {
+      $rootScope.circle.participants.givers.push(person);
+      level = 'Giver';
+    }
+    
+    if(index != -1) {
+      console.log("index = "+index);
+      $scope.people[index].hide = true;
+    }
+    
+    // if the circle already exists, add the participant to the db immediately
+    if(angular.isDefined($rootScope.circle.id)) {
+      console.log("$scope.addparticipant:  $scope.user.id="+$scope.user.id);
+      var newcp = CircleParticipant.save({circleId:$rootScope.circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:level,
+                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:$rootScope.circle.name, 
+                                         adder:$rootScope.user.fullname},
+                                         function() {$rootScope.circle.reminders = Reminder.query({circleId:$rootScope.circle.id})});
+    }
+  }
+  
 }
 
 
@@ -183,7 +264,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
     $rootScope.showUser = User.find({userId:$route.current.params.showUserId}, function() {}, function() {alert("Could not find user "+$route.current.params.showUserId);})
   }
   
-  // duplicated in RegisterCtrl
+  // TODO duplicated in RegisterCtrl
   $scope.isUsernameUnique = function(user, form) {
     if(!angular.isDefined(user.username)) {
       return;

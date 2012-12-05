@@ -1,7 +1,7 @@
 <div ng-controller="ManagePeopleCtrl">
 
          
-  <div ng-include="'partials/circleinfo.html'"></div>
+  <div ng-include src="'partials/circleinfo.html'"></div>
   
   <div class="row margbottom20">
     <div class="span2"> 
@@ -18,32 +18,199 @@
           </span> 
     </div>    
     <div class="span5"> 
-      <a class="btn btn-mini pull-right margleft5">Add from Facebook</a> <a class="btn btn-mini pull-right margleft5">Add by Name</a> <a class="btn btn-mini pull-right margleft5">Add from Another Event</a>
+      <a class="btn btn-mini pull-right margleft5">Add from Facebook</a> <a class="btn btn-mini pull-right margleft5" ng-click="addreceivermethod='byname'">Add by Name</a> <a class="btn btn-mini pull-right margleft5" ng-click="addreceivermethod='fromanotherevent';beginaddfromanotherevent()">Add from Another Event</a>
     </div>    
   </div>
   
+  <div class="row">
+    <div class="span4">        
+      <div class="row margtop5" ng-repeat="receiver in circle.participants.receivers">
+        <div class="span5px">
+          <a class="icon-remove" ng-click="removereceiver($index, circle, receiver)" title="Remove {{receiver.first}} {{receiver.last}} from this event"></a>
+        </div>  
+        <div class="span1">
+                  <div style="width:100px; height:100px; overflow:hidden;">
+                    <div style="margin-top:{{receiver.profilepicmargintop100}};margin-left:{{receiver.profilepicmarginleft100}}">
+                        <img height="{{receiver.profilepicadjustedheight100}}" width="{{receiver.profilepicadjustedwidth100}}" ng-src="{{receiver.profilepicUrl}}"/>
+                    </div>
+                  </div>
+        </div> 
+        <div class="span2"> 
+                <a class="font14" href="#/giftlist/{{receiver.id}}/{{circle.id}}" ng-click="giftlist(circle, receiver)">
+                  {{receiver.first}} {{receiver.last}}
+                </a> 
+        </div>  
+      </div> 
+    </div>
+    
+    
+    
+    
+    
+    
+    <div class="span3" ng-show="addreceivermethod=='fromanotherevent'">
+			      <div class="row">
+			        <div class="span3 font14"><div class="navbar marg0"><div class="navbar-inner white pad5">Add from Another Event <a class="icon-remove icon-white pull-right" ng-click="addreceivermethod=''"></a></div></div></div>
+			      </div>
+			      <div class="row">
+			        <div class="span3">
+				      <!-- option a -->
+				      <ul ng-repeat="c in circlecopies" ng-class="'nav nav-pills nav-stacked marg0'">
+
+				        <span ng-show="c.id != circle.id"> <!-- don't show the current circle because you won't ever copy from it -->
+				          <a class="pad10" ng-click="toggleCircle(c);showParticipants(c);">
+	                        <b>{{c.name}}</b>
+	                      </a>
+	                      <span ng-show="c.show">
+				              <div class="row margbottom5 margleft20 highlight-box-white" ng-repeat="receiver in c.participants.receivers" ng-click="addreceiver(receiver)">
+				                <div class="span1 marg0"><img height=50 width=50 ng-src="{{receiver.profilepicUrl}}" /></div>
+				                <div class="span2 marg0 font14">{{receiver.first}} {{receiver.last}}</div>
+				              </div>
+				              <div class="row margbottom5 margleft20 highlight-box-white" ng-repeat="giver in c.participants.givers" ng-click="addreceiver(giver)">
+				                <div class="span1 marg0"><img height=50 width=50 ng-src="{{giver.profilepicUrl}}" /></div>
+				                <div class="span2 marg0 font14">{{giver.first}} {{giver.last}}</div>
+				              </div>
+				          </span> 
+				        </span>  <!-- span ng-show="c.id != circle.id" -->
+					    
+					  </ul>
+			        </div>
+			      </div>
+    </div> <!-- div class="span3" ng-show="addreceivermethod=='fromanotherevent'" -->
+    
+    
+    
+    
+    
+	<div class="span3" ng-show="addreceivermethod=='byname'">
+			      <div class="row">
+			        <div class="span3 font14"><div class="navbar marg0"><div class="navbar-inner white pad5">Add by Name <a class="icon-remove icon-white pull-right" ng-click="addreceivermethod=''"></a></div></div></div>
+			      </div>
+	      
+			      <div class="row">
+		            <div class="span3"><input search-users type="text" class="span3" ng-model="search"></div>
+		          </div>
+				  <div class="row">
+				    <div class="span3">
+				    				      
+				      <span ng-show="usersearch=='loaded'">
+				          <span ng-show="noonefound">
+			                <div class="row">
+			                  <div class="span3">No one found <p><a ng-click="beginnewreceiver();">Create Account for this Person</a></p></div>
+			                </div>
+				          </span>
+				          <span ng-hide="noonefound">
+				            <div ng-repeat="person in people">
+				              <span ng-hide="person.hide">
+				                <div class="row margbottom5 margleft0 highlight-box-white" ng-click="addparticipant($index, person, 'Receiver')">
+				                  <div class="span1 marg0"><img height=50 width=50 ng-src="{{person.profilepicUrl}}" /></div>
+				                  <div class="span2 marg0 padtop5 font14">{{person.fullname}}</div>
+				                </div>
+				              </span>
+				            </div>
+				          </span>
+				      </span>
+				      
+				    </div>
+			      </div>	
+	              
+	</div> <!-- end of div: addreceivermethod='byname' -->
+	
+	
+	
+	<div class="span3" ng-show="addreceivermethod=='createaccount'">
+            <!-- See:  http://docs-next.angularjs.org/guide/dev_guide.forms 
+                 This page is a copy of register.html except the title here is Create Account
+                 and on register.html it's Sign Up.   Also the save button here creates a new
+                 user but doesn't send the user to the welcome screen like in register.html
+            -->
+
+            <div class="row">
+              <div class="span3" ng-form="newuserform" ng-controller="CreateAccountCtrl">
+
+                <div class="row"><div class="span3"><div class="navbar marg0"><div class="navbar-inner white pad5">Create Account</div></div></div></div>
+            
+                <div class="box-white">
+    
+                        <div class="row">
+                          <div class="span1">Name</div>
+                          <div class="span2 margleft0">
+                            <input class="w110" maxlength="140" value="" type="text" name="fullname" ng-model="newuser.fullname" ng-required="true" />
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="span1">Email</div>
+                          <div class="span2 margleft0">
+                            <input class="w110" maxlength="140" value="" name="email" type="email" ng-model="newuser.email" ng-required="true">
+                            <span ng-show="newuserform.email.$dirty">
+                              <span ng-show="newuserform.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
+                            </span>
+                          </div>
+                        </div>  
+
+                        <div class="row">
+                          <div class="span1">Username</div>
+                          <div class="span2 margleft0">
+                            <input class="w110" maxlength="140" value="" name="username" type="text" ng-model="newuser.username" ng-change="isUsernameUnique(newuser, newuserform)" required />
+                            <span ng-show="newuserform.username.$dirty">
+                              <span ng-show="newuserform.username.$error.taken">
+                                <img src="img/red_x.png" id="invalidusername" title="Username is taken">
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="span1">Password</div>
+                          <div class="span2 margleft0">
+                            <input class="w110" ng-model="newuser.password" type="password" name="password" value="*******" ng-required="true" />
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="span1">Again</div>
+                          <div class="span2 margleft0">
+                            <input class="w110" ng-model="newuser.passwordAgain" type="password" name="passwordAgain" value="*******" ng-required="true" />
+                            <span ng-show="newuserform.passwordAgain.$dirty">
+                              <span ng-show="newuser.passwordAgain != newuser.password && !newuserform.passwordAgain.$error.required">
+                                <img src="img/red_x.png" id="passwordsdontmatch" title="Passwords don't match">
+                              </span>
+                            </span> 
+                          </div>
+                        </div>
+
+                </div> <!-- end div:class=box-white -->
+                
+                <div class="row">
+                  <div class="span2 offset1">    
           
-  <div class="row margtop5" ng-repeat="receiver in circle.participants.receivers">
-    <div class="span5px">
-            <a class="icon-remove" ng-click="removereceiver($index, circle, receiver)" title="Remove {{receiver.first}} {{receiver.last}} from this event"></a>
-    </div>  
-    <div class="span1">
-              <div style="width:100px; height:100px; overflow:hidden;">
-                <div style="margin-top:{{receiver.profilepicmargintop100}};margin-left:{{receiver.profilepicmarginleft100}}">
-                    <img height="{{receiver.profilepicadjustedheight100}}" width="{{receiver.profilepicadjustedwidth100}}" ng-src="{{receiver.profilepicUrl}}"/>
+                    <div ng-hide="userfieldsvalid(newuser)" >
+                      <a class="btn" ng-click="$parent.addreceivermethod=''">Cancel</a>
+                      <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet">Save</a>
+                    </div>    
+          
+                    <div ng-show="userfieldsvalid(newuser)" >
+                      <a class="btn" ng-click="$parent.addreceivermethod=''">Cancel</a>
+                      <a class="btn btn-primary" ng-click="$parent.addreceivermethod='';createonthefly(newuser, 'Receiver')">Save</a>
+                    </div>
+      
+                  </div>
                 </div>
+                        
               </div>
-    </div> 
-    <div class="span2"> 
-            <a class="font14" href="#/giftlist/{{receiver.id}}/{{circle.id}}" ng-click="giftlist(circle, receiver)">
-              {{receiver.first}} {{receiver.last}}
-            </a> 
-    </div>  
-  </div> 
+            </div>
+	              
+	</div> <!-- end of div: addreceivermethod='createaccount' -->
+    
+    
+    
+    
+  </div>
 
 
   
-<span ng-show="circle.participants.givers.length > 0">
+<span ng-show="circle.receiverLimit != -1">
   <hr/>
   <div class="row margbottom20">
     <div class="span2">  
@@ -52,27 +219,193 @@
             </div>
     </div>   
     <div class="span5"> 
-      <a class="btn btn-mini pull-right margleft5">Add from Facebook</a> <a class="btn btn-mini pull-right margleft5">Add by Name</a> <a class="btn btn-mini pull-right margleft5">Add from Another Event</a>
+      <a class="btn btn-mini pull-right margleft5">Add from Facebook</a> <a class="btn btn-mini pull-right margleft5" ng-click="addgivermethod='byname'">Add by Name</a> <a class="btn btn-mini pull-right margleft5" ng-click="addgivermethod='fromanotherevent';beginaddfromanotherevent()">Add from Another Event</a>
     </div>     
   </div>
   
           
-  <div class="row margtop5" ng-repeat="giver in circle.participants.givers">
-    <div class="span5px">
+  <div class="row">
+    <div class="span4"> 
+      <div class="row margtop5" ng-repeat="giver in circle.participants.givers">
+        <div class="span5px">
             <a ng-click="removegiver($index, circle, giver)" title="Remove {{giver.first}} {{giver.last}} from this event"><i class="icon-remove"></i></a>
-    </div>  
-    <div class="span1">
+        </div>  
+        <div class="span1">
               <div style="width:100px; height:100px; overflow:hidden;">
                 <div style="margin-top:{{giver.profilepicmargintop100}};margin-left:{{giver.profilepicmarginleft100}}">
                     <img height="{{giver.profilepicadjustedheight100}}" width="{{giver.profilepicadjustedwidth100}}" ng-src="{{giver.profilepicUrl}}"/>
                 </div>
               </div>
-    </div>  
-    <div class="span2 font14">
+        </div>  
+        <div class="span2 font14">
             {{giver.first}} {{giver.last}}
-    </div>  
+        </div>  
+      </div> &nbsp;
+    </div>
+    
+    
+    <div class="span3" ng-show="addgivermethod=='fromanotherevent'">
+			      <div class="row">
+			        <div class="span3 font14"><div class="navbar marg0"><div class="navbar-inner white pad5">Add from Another Event <a class="icon-remove icon-white pull-right" ng-click="addgivermethod=''"></a></div></div></div>
+			      </div>
+			      <div class="row">
+			        <div class="span3">
+				      <!-- option a -->
+				      <ul ng-repeat="c in circlecopies" ng-class="'nav nav-pills nav-stacked marg0'">
+				        <span ng-show="c.id != circle.id"> <!-- don't show the current circle because you won't ever copy from it -->
+				          <a class="pad10" ng-click="toggleCircle(c);showParticipants(c);">
+	                        <b>{{c.name}}</b>
+	                      </a>
+	                      <span ng-show="c.show">
+				              <div class="row margbottom5 margleft20 highlight-box-white" ng-repeat="receiver in c.participants.receivers" ng-click="addgiver(receiver)">
+				                <div class="span1 marg0"><img height=50 width=50 ng-src="{{receiver.profilepicUrl}}" /></div>
+				                <div class="span2 marg0 font14">{{receiver.first}} {{receiver.last}}</div>
+				              </div>
+				              <div class="row margbottom5 margleft20 highlight-box-white" ng-repeat="giver in c.participants.givers" ng-click="addgiver(giver)">
+				                <div class="span1 marg0"><img height=50 width=50 ng-src="{{giver.profilepicUrl}}" /></div>
+				                <div class="span2 marg0 font14">{{giver.first}} {{giver.last}}</div>
+				              </div>
+				          </span> 
+					    </span>
+					  </ul>
+			        </div>
+			      </div>
+    </div> <!-- div class="span3" ng-show="addgivermethod=='fromanotherevent'" -->
+    
+    
+    
+    
+    
+	<div class="span3" ng-show="addgivermethod=='byname'">
+			      <div class="row">
+			        <div class="span3 font14"><div class="navbar marg0"><div class="navbar-inner white pad5">Add by Name <a class="icon-remove icon-white pull-right" ng-click="addgivermethod=''"></a></div></div></div>
+			      </div>
+	      
+			      <div class="row">
+		            <div class="span3"><input search-users type="text" class="span3" ng-model="search"></div>
+		          </div>
+				  <div class="row">
+				    <div class="span3">
+				    				      
+				      <span ng-show="usersearch=='loaded'">
+				          <span ng-show="noonefound">
+			                <div class="row">
+			                  <div class="span3">No one found <p><a ng-click="beginnewgiver();">Create Account for this Person</a></p></div>
+			                </div>
+				          </span>
+				          <span ng-hide="noonefound">
+				            <div ng-repeat="person in people">
+				              <span ng-hide="person.hide">
+				                <div class="row margbottom5 margleft0 highlight-box-white" ng-click="addparticipant($index, person, 'Giver')">
+				                  <div class="span1 marg0"><img height=50 width=50 ng-src="{{person.profilepicUrl}}" /></div>
+				                  <div class="span2 marg0 padtop5 font14">{{person.fullname}}</div>
+				                </div>
+				              </span>
+				            </div>
+				          </span>
+				      </span>
+				      
+				    </div>
+			      </div>	
+	              
+	</div> <!-- end of div: addgivermethod='byname' -->
+	
+	
+	
+	<div class="span3" ng-show="addgivermethod=='createaccount'">
+            <!-- See:  http://docs-next.angularjs.org/guide/dev_guide.forms 
+                 This page is a copy of register.html except the title here is Create Account
+                 and on register.html it's Sign Up.   Also the save button here creates a new
+                 user but doesn't send the user to the welcome screen like in register.html
+            -->
+
+            <div class="row">
+              <div class="span3" ng-form="newuserform" ng-controller="CreateAccountCtrl">
+
+                <div class="row"><div class="span3"><div class="navbar marg0"><div class="navbar-inner white pad5">Create Account</div></div></div></div>
+            
+                <div class="box-white">
+    
+                        <div class="row">
+                          <div class="span1">Name</div>
+                          <div class="span2 margleft0">
+                            <input class="w110" maxlength="140" value="" type="text" name="fullname" ng-model="newuser.fullname" ng-required="true" />
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="span1">Email</div>
+                          <div class="span2 margleft0">
+                            <input class="w110" maxlength="140" value="" name="email" type="email" ng-model="newuser.email" ng-required="true">
+                            <span ng-show="newuserform.email.$dirty">
+                              <span ng-show="newuserform.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
+                            </span>
+                          </div>
+                        </div>  
+
+                        <div class="row">
+                          <div class="span1">Username</div>
+                          <div class="span2 margleft0">
+                            <input class="w110" maxlength="140" value="" name="username" type="text" ng-model="newuser.username" ng-change="isUsernameUnique(newuser, newuserform)" required />
+                            <span ng-show="newuserform.username.$dirty">
+                              <span ng-show="newuserform.username.$error.taken">
+                                <img src="img/red_x.png" id="invalidusername" title="Username is taken">
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="span1">Password</div>
+                          <div class="span2 margleft0">
+                            <input class="w110" ng-model="newuser.password" type="password" name="password" value="*******" ng-required="true" />
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="span1">Again</div>
+                          <div class="span2 margleft0">
+                            <input class="w110" ng-model="newuser.passwordAgain" type="password" name="passwordAgain" value="*******" ng-required="true" />
+                            <span ng-show="newuserform.passwordAgain.$dirty">
+                              <span ng-show="newuser.passwordAgain != newuser.password && !newuserform.passwordAgain.$error.required">
+                                <img src="img/red_x.png" id="passwordsdontmatch" title="Passwords don't match">
+                              </span>
+                            </span> 
+                          </div>
+                        </div>
+
+                </div> <!-- end div:class=box-white -->
+                
+                <div class="row">
+                  <div class="span2 offset1">    
+          
+                    <div ng-hide="userfieldsvalid(newuser)" >
+                      <a class="btn" ng-click="$parent.addgivermethod=''">Cancel</a>
+                      <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet">Save</a>
+                    </div>    
+          
+                    <div ng-show="userfieldsvalid(newuser)" >
+                      <a class="btn" ng-click="$parent.addgivermethod=''">Cancel</a>
+                      <a class="btn btn-primary" ng-click="$parent.addgivermethod='';createonthefly(newuser, 'Giver')">Save</a>
+                    </div>
+      
+                  </div>
+                </div>
+                        
+              </div>
+            </div>
+	              
+	</div> <!-- end of div: addgivermethod='createaccount' -->
+	
+	
+    
+    
+      
   </div>  
-</span> 
+  
+  
+  
+</span> <!-- span ng-show="circle.receiverLimit != -1" -->
   
   
 </div>

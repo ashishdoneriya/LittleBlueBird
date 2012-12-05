@@ -1,5 +1,6 @@
 
-function ManagePeopleCtrl($rootScope, $scope, CircleParticipant, Reminder) {
+function ManagePeopleCtrl($rootScope, $scope, CircleParticipant, Reminder, UserSearch) {
+  
   
   // TODO duplicated in AddCircleCtrl
   $scope.removereceiver = function(index, circle, participant) {
@@ -34,6 +35,95 @@ function ManagePeopleCtrl($rootScope, $scope, CircleParticipant, Reminder) {
     }
     $rootScope.circle.reminders = angular.copy($rootScope.circle.newreminders);
   }
+  
+  
+  $scope.beginaddfromanotherevent = function() {
+    $scope.circlecopies = angular.copy($rootScope.user.circles);
+  }
+  
+  $scope.addreceiver = function(person) {
+    $scope.addparticipant(-1, person, 'Receiver');
+  }
+  
+  $scope.addgiver = function(person) {
+    $scope.addparticipant(-1, person, 'Giver');
+  }
+    
+  $scope.addparticipant = function(index, person, participationlevel) {
+    var level = participationlevel;
+    if(participationlevel == 'Giver') {
+      $rootScope.circle.participants.givers.push(person);
+      level = 'Giver';
+    }
+    else if($scope.canaddreceiver($rootScope.circle)) {
+      $rootScope.circle.participants.receivers.push(person);
+      level = 'Receiver';
+    }
+    else {
+      $rootScope.circle.participants.givers.push(person);
+      level = 'Giver';
+    }
+    
+    if(index != -1) {
+      console.log("index = "+index);
+      $scope.people[index].hide = true;
+    }
+    
+    // if the circle already exists, add the participant to the db immediately
+    if(angular.isDefined($rootScope.circle.id)) {
+      console.log("$scope.addparticipant:  $scope.user.id="+$scope.user.id);
+      var newcp = CircleParticipant.save({circleId:$rootScope.circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:level,
+                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:$rootScope.circle.name, 
+                                         adder:$rootScope.user.fullname},
+                                         function() {$rootScope.circle.reminders = Reminder.query({circleId:$rootScope.circle.id})});
+    }
+  }
+  
+  $scope.canaddreceiver = function(circle) {
+    var isdefined = angular.isDefined(circle) && angular.isDefined(circle.receiverLimit) && angular.isDefined(circle.participants.receivers)
+    return isdefined && (circle.receiverLimit == -1 || circle.receiverLimit > circle.participants.receivers.length);
+  }
+    
+  $scope.beginnewgiver = function() {
+    $scope.addgivermethod = 'createaccount';
+    $scope.newuser = {};
+    console.log("app-CircleCtrl:  ManagePeopleCtrl: scope.beginnewgiver:  $scope.addgivermethod="+$scope.addgivermethod);
+  }
+    
+  $scope.beginnewreceiver = function() {
+    $scope.addreceivermethod = 'createaccount';
+    $scope.newuser = {};
+    console.log("app-CircleCtrl:  ManagePeopleCtrl: scope.beginnewreceiver:  $scope.addreceivermethod="+$scope.addreceivermethod);
+  }
+  
+    $scope.usersearch = '';
+  
+    $scope.query = function(sss) {
+      console.log("ManagePeopleCtrl: scope.query() -----------------------");
+      $scope.usersearch = 'loading';
+      $scope.people = UserSearch.query({search:sss}, 
+                      function() {
+                        $scope.usersearch = 'loaded'; 
+                        //$scope.people.splice(0, $scope.people.length); // effectively refreshes the people list
+                        
+                        // uncomment for facebook integration
+                        //for(var i=0; i < $scope.user.friends.length; i++) {
+                        //  if(!lbbNamesContainFbName(lbbpeople, $scope.user.friends[i].fullname))
+                        //    $scope.people.push($scope.user.friends[i]);
+                        //}
+                        //for(var i=0; i < lbbpeople.length; i++) {
+                        //  $scope.people.push(lbbpeople[i]);
+                        //}
+                        $scope.noonefound = $scope.people.length==0 ? true : false; 
+                        console.log($scope.people);
+                      }, 
+                      function() {
+                        //$scope.people.splice(0, $scope.people.length);
+                        $scope.usersearch = '';
+                      }
+                    );
+    };
+  
 }
 
 function EditCircleCtrl($rootScope) {
@@ -209,7 +299,7 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
     $rootScope.circle.reminders = angular.copy($rootScope.circle.newreminders);
   }
   
-  // duplicated in app-FriendCtrl.js
+  // TODO duplicated in app-FriendCtrl.js
   $scope.userfieldsvalid = function(newuser) {
     var ret = angular.isDefined(newuser) && angular.isDefined(newuser.fullname) && angular.isDefined(newuser.email)
           && angular.isDefined(newuser.username) && angular.isDefined(newuser.password) 

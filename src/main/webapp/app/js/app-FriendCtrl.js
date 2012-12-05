@@ -45,7 +45,7 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
     $scope.mode = 'friends';
   }
   
-  // duplicated in RegisterCtrl and UserCtrl
+  // TODO duplicated in RegisterCtrl and UserCtrl
   $scope.isUsernameUnique = function(user, form) {
     if(!angular.isDefined(user.username)) {
       return;

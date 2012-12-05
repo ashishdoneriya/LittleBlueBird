@@ -52,23 +52,14 @@ angular.module('CircleModule', [])
   
   $rootScope.showParticipants = function(circle) {
     circle.participants = CircleParticipant.query({circleId:circle.id}, 
-                                                  function() {$rootScope.giftlist(circle, circle.participants.receivers[0]);});
+                                                  function() {
+                                                    // $rootScope.giftlist(circle, circle.participants.receivers[0]);
+                                                  });
   }
   
   
   $rootScope.toggleCircle = function(circle) {
     circle.show = angular.isDefined(circle.show) ? !circle.show : true;
-  }
-  
-  $rootScope.editcircleFunction = function(circle) {
-    $rootScope.circle = circle;
-    $rootScope.expdate = circle.dateStr;
-    for(var i=0; i < $rootScope.circle.participants.receivers.length; i++) {
-      console.log($rootScope.circle.participants.receivers[i]);
-    }
-    $rootScope.circlecopies = angular.copy($rootScope.user.circles);
-    
-    $location.url('/editcircle');
   }
   
   

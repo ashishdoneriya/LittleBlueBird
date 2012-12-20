@@ -177,21 +177,13 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
     } // else
   }
   
-    
-  $scope.multipleusers = function() { console.log("multipleusers() called"); return User.multipleUsers; }
-  $scope.sharedemail = function() { return User.email; }
-  
   
   $scope.resendWelcomeEmail = function() {
     Email.send({type:'welcome', from:'info@littlebluebird.com', user:$rootScope.user}, function() {}, function() {});
   }
   
   $scope.mergeaccount = function(user) {
-    user.facebookId = User.facebookId;
-    $rootScope.user = user;
-    User.save({userId:user.id, facebookId:user.facebookId});
-    //$rootScope.$emit("userchange");    // commented out on 11/30/12 - experimenting                 
-    //$rootScope.$emit("mywishlist");    // commented out on 11/30/12 - experimenting                 
+    $rootScope.user = User.save({userId:user.id, facebookId:$rootScope.fbuser.id});
     $location.url('mywishlist');
   }
   
@@ -231,7 +223,8 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   }
   
   $scope.loginpage = function() {
-    $location.url('login');
+    console.log("going to login page ??????????????");
+    $location.url('/login');
   }
   
   $scope.save = function(user) {

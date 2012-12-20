@@ -17,6 +17,9 @@ import net.liftweb.common.Box
 import java.net.URL
 import com.lbb.util.Util
 import net.liftweb.mapper.KeyObfuscator
+import net.liftweb.http.S
+import net.liftweb.json.JsonAST.JObject
+import net.liftweb.mapper.ByList
 
 /**
  * delimiter $$
@@ -95,13 +98,66 @@ class AppRequest extends LongKeyedMapper[AppRequest] with LbbLogger with ManyToM
 object AppRequest extends AppRequest with LongKeyedMetaMapper[AppRequest] {
   
   override def dbTableName = "app_request" // define the DB table name
-  
-//  def toJsonResponse(l:List[AppRequest]) = {
-//    val jsons = l.map(_.asJs)
-//    val jsArr = JsArray(jsons)
-//    val r = JsonResponse(jsArr)
-//    debug("toJsonResponse:  JsonResponse: "+r);
-//    r
-//  }
+    
+  def createFromHttp = {
+    
+    // create the AppRequest objects
+    val vvvv = for(req <- S.request; jvalue <- req.json) yield {
+      debug("saveAppRequests:  ("+jvalue.getClass.getName+")  jvalue = "+jvalue);
+      
+      val appreqlist = jvalue match {
+        case jobj:JObject => {
+          jobj.values.get("requests") match {
+            case Some(list:List[Map[String, Any]]) => {
+              val apprequests = for(map <- list) yield {
+                // would also like to the write to the person table, but all we know about this person is name and facebook id
+                // better to wait till the request is accepted and we know email.  Even that isn't foolproof though if person
+                // exists under a different email
+                val ar = AppRequest.create 
+                for(kv <- map) {
+                  kv match {
+                    case ("parentId", b:BigInt) => { ar.inviter(b.toInt); debug("createFromHttp:  parentId="+b+" (BigInt)") }
+                    case ("facebookId", s:String) => ar.facebookId(s) 
+                    case ("name", s:String) => ar.name(s);
+                    case ("fbreqid", s:String) => ar.fbreqid(s);
+                    case _ => { error("createFromHttp:  unhandled kv pair: "+kv._1+" ("+kv._1.getClass.getName+") and "+kv._2+" ("+kv._2.getClass.getName+")"); }
+                  } // kv match
+                } // for(kv <- map)
+                
+                ar
+              
+              } // val apprequests = for(map <- list)
+              apprequests
+            } // case Some(list:List[Map[String, Any]])
+            
+            case _ => Nil
+          } // jobj.values.get("requests")
+          
+        } // case jobj:JObject
+        case _ => Nil
+      } // val appreqlist = jvalue match {
+      appreqlist      
+    } // for(req <- S.request; jvalue <- req.json) yield {
+    
+    
+    val reqs = vvvv.openOr(Nil)
+    
+    
+    // ^--- These app requests contain facebook id's.  It's possible that some of these people are already in the person
+    // table with a facebook id and an email present.  In this case, we should go ahead and set the app_request.accept_date also.
+    // Setting app_request.accept_date will have the following effect: It means the invited person won't have "pending" under
+    // his name.  We don't want to give the impression that a user isn't fully a user yet when they actually are.
+    val facebookIds = reqs.map(_.facebookId.is)
+    
+    val userswithemail = User.findAll(ByList(User.facebookId, facebookIds)).filter(u => !u.email.isEmpty())
+    val facebookIds_ofpeole_thatarealreadyusers = userswithemail.map(_.facebookId.is)
+    
+    for(req <- reqs; if(facebookIds_ofpeole_thatarealreadyusers.contains(req.facebookId.is))) {
+      req.acceptdate(new Date())
+    }
+    
+    reqs
+
+  }
     
 }

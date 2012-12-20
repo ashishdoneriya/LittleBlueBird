@@ -2,34 +2,41 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
   config(function($routeProvider, $locationProvider, $rootScopeProvider, $cookieStoreProvider){
     //$locationProvider.html5Mode(true);
     
-    $routeProvider.
-      when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}}).
-      when('/foo/:fooid', {templates: {layout: 'foo',               menu: 'partials/foo/menu.html', body:'partials/foo/foo.html'}}).
-      when('/bar/:fooid/:barid', {templates: {layout: 'foo',        menu: 'partials/foo/menu.html', body:'partials/foo/bar.html'}}).
-      when('/baz/:fooid/:barid/:bazid', {templates: {layout: 'foo', menu: 'partials/foo/menu.html', body:'partials/foo/baz.html'}}).
-      when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', one: 'partials/login.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}}).
-      when('/circles', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/friends', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/fbfriends', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/event/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/giftlist/:showUserId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/managepeople/', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/myaccount', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/myaccount/main.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/mywishlist', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/reminders', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/email', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}}).
-      when('/welcome', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+    $routeProvider
+      .when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
+      .when('/foo/:fooid', {templates: {layout: 'foo',               menu: 'partials/foo/menu.html', body:'partials/foo/foo.html'}})
+      .when('/bar/:fooid/:barid', {templates: {layout: 'foo',        menu: 'partials/foo/menu.html', body:'partials/foo/bar.html'}})
+      .when('/baz/:fooid/:barid/:bazid', {templates: {layout: 'foo', menu: 'partials/foo/menu.html', body:'partials/foo/baz.html'}})
+      .when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', one: 'partials/login.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}})
+      .when('/circles', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/friends', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/fbfriends', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/event/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/managepeople/', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/myaccount', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/myaccount/main.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/mywishlist', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/reminders', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/email', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/welcome', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/test', {templates: {layout: 'layout-nli.html', one: 'partials/test.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
+      .otherwise({redirectTo: '/welcome', templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       ;
   
   })
-  .run(function($window, $route, $rootScope, $cookieStore, $location, $rootScope, facebookConnect, User){    
+  .run(function($rootScope, Facebook) {
+    $rootScope.Facebook = Facebook;
+  })
+  .run(function($window, $route, $rootScope, $cookieStore, $location, $rootScope, facebookConnect, $timeout, User, FacebookUser){    
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){
+        console.log("FINAL ROUTECHANGESTART FUNCTION ----------------------------");    
+        
         if (!newRoute || !newRoute.$route) return;
         
         if($window.location.search != '') {
@@ -37,47 +44,130 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
           $cookieStore.put("window.location.search", s); 
           $window.location.search = '';
         }
+    
+        // Rule:  
+        //      First see if $rootScope.user is defined
+        //		If not, then see if someone is logged in to FB => that is the user we'll assume is using LBB
+        // 			If someone is logged in to FB, we need to see if they're responding to an app request
+        //		If there is no FB user, then we'll check the $cookieStore
         
-        if(angular.isDefined($rootScope.user) || $location.url()=='/login' || $location.url()=='/whoareyou' || $location.url().indexOf('foo')!=-1  || $location.url().indexOf('bar')!=-1  || $location.url().indexOf('baz')!=-1 ) {
-          // don't do anything - we have what we need
+        
+        // Applying the rule above: First see if $rootScope.user is defined
+        if(angular.isDefined($rootScope.user)) {
+          console.log("routeChangeStart:  $rootScope.user defined");
           $rootScope.templates = newRoute.$route.templates;
           $rootScope.layoutController = newRoute.$route.controller;
-        }
-        else if(angular.isDefined($cookieStore.get("user"))) {
-          $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){console.log("FOUND user from $cookieStore.get('user')...");console.log($rootScope.user);});
-          $rootScope.templates = newRoute.$route.templates;
-          $rootScope.layoutController = newRoute.$route.controller;
-        }
-        else {
-          console.log("$location.url()="+$location.url());
-          // here's where you check to see if the user is logged in to fb
-          connected = function(res) {
-                console.log("connected()---");
-                $rootScope.templates = newRoute.$route.templates;
-                $rootScope.layoutController = newRoute.$route.controller;
-          }
-          notauthorized = function(res) {
-                console.log("notauthorized()---");
-                $location.url('login');
-                $rootScope.templates = newRoute.$route.templates;
-                $rootScope.layoutController = newRoute.$route.controller;
-          }
-          unknown = function(res) {
-                console.log("unknown()---");
-                $location.url('login');
-                $rootScope.templates = newRoute.$route.templates;
-                $rootScope.layoutController = newRoute.$route.controller;
-          }
-          facebookConnect.getLoginStatus(connected, notauthorized, unknown);
+        } // if(angular.isDefined($rootScope.user))
+        
+        else { // $rootScope.user is undefined
+          // Applying the rule above: see if the user is logged in to FB
+          var p2 = $rootScope.Facebook.status();
+          p2.then(
+            function(fbresponse) { // called if user is logged in and has authorized the app
+              // Yes: we have someone logged in to FB.
+              
+              // Get facebook request id's.  If there are any, it means user is responding to an app request.  We need to mark the app request as accepted.
+              fbreqids_csv = [];
+              
+              // Applying the rule above: If someone is logged in to FB, we need to see if they're responding to an app request
+	          if($cookieStore.get("window.location.search")==undefined || $cookieStore.get("window.location.search").indexOf("request_ids")==-1) {
+	            // no special handling required.  The user is not coming to us from an app request
+	          }
+	          else {  // SPECIAL HANDLING REQUIRED HERE: The user is responding to a app request on FB.  First get the facebook request id(s)...
+	            var parms = $cookieStore.get("window.location.search").split("&")
+                var facebookreqids = [];
+		        if(parms.length > 0) {
+		          for(var i=0; i < parms.length; i++) {
+		            if(parms[i].split("=").length > 1 && (parms[i].split("=")[0] == 'request_ids' || parms[i].split("=")[0] == '?request_ids')) {
+		              fbreqids_csv = parms[i].split("=")[1].split("%2C")
+		              for(var j=0; j < fbreqids_csv.length; j++) {
+		                facebookreqids.push(fbreqids_csv[j]);
+		              }  
+		            }      
+		          }
+		        } // if(parms.length > 0)
+                     
+                if(facebookreqids.length > 0) {
+                  var fbid = fbresponse.authResponse.userID;
+                  for(var i=0; i < facebookreqids.length; i++) {
+                    var reqid_plus_fbid = facebookreqids[i]+'_'+fbid;
+                    $rootScope.Facebook.deleteAppRequest(reqid_plus_fbid);
+                  } // for(var i=0; i < facebookreqids.length; i++)
+                        
+                } // if(facebookreqids.length > 0)
+		                
+	          } // SPECIAL HANDLING REQUIRED HERE: The user is responding to a app request on FB.  First get the facebook request id(s)...
+                      
+              
+              
+              // Does this person match anyone in the LBB database?
+              $rootScope.Facebook.getMe(
+                function(meresponse) { // function inside of $rootScope.Facebook.getMe()
+                  var fbuserparms = {facebookId:meresponse.id, email:meresponse.email, name:meresponse.name};
+                  if(fbreqids_csv != []) fbuserparms.fbreqids = fbreqids_csv;
+                  
+                  console.log("routeChangeStart:  $rootScope.Facebook.getMe() ------------------");
+                  
+                  $rootScope.users = FacebookUser.save(fbuserparms,
+                    function(){ // success function of $rootScope.users = FacebookUser.save()
+                      console.log("$rootScope.users.................");
+                      console.log($rootScope.users);
+                      if($rootScope.users.length == 1) {
+                        $rootScope.user = angular.copy($rootScope.users[0]);
+                        $rootScope.showUser = angular.copy($rootScope.users[0]);
+                        // how do we know if they've never logged in before?  if so, we want to send them to welcome
+                        //$rootScope.templates = {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'};
+                        //$rootScope.layoutController = newRoute.$route.controller;
+                        $location.path('/mywishlist');
+                      } // if($rootScope.users.length == 1)
+                      else if($rootScope.users.length > 1) {
+                        // who are you? you have an email that is shared with multiple people
+                        // Applying the rule above: If someone is logged in to FB, we need to see if they're responding to an app request. HOW DO YOU DO THIS FOR PEOPLE THAT SHARE EMAILS?
+                        $rootScope.sharedemail = meresponse.email;
+                        $rootScope.user = {fullname:meresponse.name, email:meresponse.email, facebookId:meresponse.id};
+                        console.log("WATCH FOR /whoareyou:  $rootScope.users = FacebookUser.save(): $rootScope.user = ..."); 
+                        console.log($rootScope.user);
+                        $rootScope.templates = {layout: 'layout-whoareyou.html', one: 'partials/login.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'};
+                        $rootScope.layoutController = newRoute.$route.controller;
+                      } // else if($rootScope.users.length > 1)
+                      
+                      // We don't handle the length==0 case because RestService.handleFacebookUser always returns a list with at least one user in it.
+                      
+                    }, // success function of $rootScope.users = FacebookUser.save()
+                    
+                    function(){ // fail function of $rootScope.users = FacebookUser.save()
+                      // TODO Do something more here.  This is just a silent failure.
+                      console.log("$rootScope.users = FacebookUser.save(): woops! got the fail function!");
+                    } // fail function of $rootScope.users = FacebookUser.save()
+                  ); // $rootScope.users = FacebookUser.save()
+                } // function inside of $rootScope.Facebook.getMe()
+              ); // $rootScope.Facebook.getMe()
+              
+            }, // function(fbresponse) { // called if user is logged in and has authorized the app
           
-          //$location.url('login');
-          //$rootScope.templates = newRoute.$route.templates;
-          //$rootScope.layoutController = newRoute.$route.controller;
-        }
-
-
+            function(fbresponse) { // called if user is not logged in or has not authorized the app
+              // No: no one is logged in to FB, or has not authorized the app
+              // So is there a user in the $cookieStore?
+              // Yes $cookieStore user: This is an LBB user => allow entry
+              if(angular.isDefined($cookieStore.get("user"))) {
+                console.log("routeChangeStart:  Yes $cookieStore user: This is an LBB user => allow entry");
+                $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){console.log("FOUND user from $cookieStore.get('user')...");console.log($rootScope.user);});
+                $rootScope.templates = newRoute.$route.templates;
+                $rootScope.layoutController = newRoute.$route.controller;
+              }
+              else { // No $cookieStore user: No one is logged in => person has to login or register (WHAT ABOUT VIEW AS GUEST?)
+                console.log("routeChangeStart:  No $cookieStore user: No one is logged in");
+                $rootScope.templates = {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'};
+                $rootScope.layoutController = newRoute.$route.controller;
+              } // else { // No $cookieStore user: No one is logged in => person has to login or register (WHAT ABOUT VIEW AS GUEST?)
+              
+            } // function(fbresponse) { // called if user is not logged in or has not authorized the app
+          
+          ); // p2.then();        
+        } // else { // $rootScope.user is undefined
         
-    }); // $rootScope.$on('$routeChangeStart', function(scope, newRoute)
+        
+    }); // $rootScope.$on('$routeChangeStart', function(scope, newRoute){
     
   }) 
   .run(function($route, $rootScope, $location, $rootScope, facebookConnect) { 
@@ -97,9 +187,91 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       return dimAdjuster.adjustedwidth(auser, limit);
     }
     
-    $rootScope.gotoFriends = function() { $location.url('friends') }
+    $rootScope.gotoFriends = function() { $location.url('/friends') }
     
   });
+
+
+app.factory('Facebook', 
+  function($rootScope, $q) {
+
+    return {
+      login: function() {
+
+        var resp = $q.defer();
+
+        FB.login(function(response) {
+          setTimeout(function() {
+            $rootScope.$apply(function() {
+              resp.resolve(response.authResponse);
+            });
+          },1);
+        });
+
+        $rootScope.Facebook.token = resp.promise;
+
+      },
+      logout: function() {
+
+        var resp = $q.defer();
+
+        FB.logout(function(response) {
+          setTimeout(function() {
+            $rootScope.$apply(function() {
+              resp.resolve(response.authResponse);
+            });
+          },1);
+        });
+
+        $rootScope.Facebook.token = null;   
+
+      },
+      status: function() {
+        console.log("BBBBBBBBBBBBBBBBBBBBBBB");
+        
+        var deferred = $q.defer();
+      
+        setTimeout(function() {
+          // since this fn executes async in a future turn of the event loop, we need to wrap
+          // our code into an $apply call so that the model changes are properly observed.
+          $rootScope.$apply(function() {
+            
+            FB.getLoginStatus(function(response) {
+              if (response.status === 'connected') {
+                var uid = response.authResponse.userID;
+                var accessToken = response.authResponse.accessToken;
+                deferred.resolve(response);
+              } else if (response.status === 'not_authorized') {
+                deferred.reject(response);
+              } else {
+                deferred.reject(response);
+              }
+            });
+            
+          });
+        }, 1000);
+ 
+        return deferred.promise;
+        
+      }, // status: function()
+      
+      deleteAppRequest: function(requestId) {
+        FB.api(requestId, 'delete', function(resp) {});
+      } // deleteAppRequest: function()
+      ,
+      getMe: function(callback) {
+        FB.api('/me', function(meresponse) {
+          callback(meresponse);
+        }) // FB.api('/me', function(meresponse)
+        
+      } // getMe: function()
+  
+    } // return {
+  
+  } // function($rootScope, $q) {
+  
+) // app.factory('Facebook'
+
 
 
 
@@ -192,6 +364,10 @@ function GettingStartedCtrl($scope) {
   $scope.whatifidontwantto = false; // see whoareyou.html
 }
 
+function WelcomeCtrl($scope) {
+  console.log("WelcomeCtrl");
+}
+
 function menuctrl($rootScope, $scope, $location, $route) {
   console.log("menuctrl: fooid="+$route.current.params.fooid);
   
@@ -261,4 +437,8 @@ function bazctrl($rootScope, $scope, $location, $route) {
     console.log("bazctrl: $rootScope.$on() DETECTED CHANGE: $route.current.params.bazid="+$route.current.params.bazid);
 	console.log($route);
   });
+}
+
+function FBCtrl($rootScope, $scope) {
+ // see test.html
 }

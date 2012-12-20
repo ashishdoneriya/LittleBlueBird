@@ -16,7 +16,7 @@
   <div class="span7">
         <a class="btn btn-small pull-right" ng-click="beginnewuser()">Create Account for Someone</a>
         <a class="btn btn-small pull-right" ng-click="addlbbfriend()">Add LittleBlueBird Friends</a>
-        <a class="btn btn-small pull-right" ng-click="fbinvite()">Add Facebook Friends</a>
+        <a class="btn btn-small pull-right" ng-click="fbinviteasfriend()">Add Facebook Friends</a>
   </div>
 </div>
 
@@ -182,14 +182,14 @@
             <div class="span1">
               <div style="width:100px; height:100px; overflow:hidden;">
                 <div style="margin-top:{{friend.profilepicmargintop100}};margin-left:{{friend.profilepicmarginleft100}}">
-                  <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
+                  <a ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
                     <img height="{{friend.profilepicadjustedheight100}}" width="{{friend.profilepicadjustedwidth100}}" ng-src="{{friend.profilepicUrl}}"/>
                   </a>
                 </div>
               </div>
             </div>
             <div class="span1"><a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">{{friend.fullname}}</a>
-              <P>{{friend.appRequestStatus}}</P>
+              <P><a title="{{friend.fullname}} has not accepted the app request yet">{{friend.appRequestStatus}}</a></P>
             </div>
           </div>
         </span>
@@ -203,14 +203,14 @@
             <div class="span1">
               <div style="width:100px; height:100px; overflow:hidden;">
                 <div style="margin-top:{{friend.profilepicmargintop100}};margin-left:{{friend.profilepicmarginleft100}}">
-                  <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
+                  <a ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
                     <img height="{{friend.profilepicadjustedheight100}}" width="{{friend.profilepicadjustedwidth100}}" ng-src="{{friend.profilepicUrl}}"/>
                   </a>
                 </div>
               </div>
             </div>
             <div class="span1"><a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">{{friend.fullname}}</a>
-              <P>{{friend.appRequestStatus}}</P>
+              <P><a title="{{friend.fullname}} has not accepted the app request yet">{{friend.appRequestStatus}}</a></P>
             </div>
           </div>
         </span>
@@ -224,14 +224,14 @@
             <div class="span1">
               <div style="width:100px; height:100px; overflow:hidden;">
                 <div style="margin-top:{{friend.profilepicmargintop100}};margin-left:{{friend.profilepicmarginleft100}}">
-                  <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
+                  <a ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
                     <img height="{{friend.profilepicadjustedheight100}}" width="{{friend.profilepicadjustedwidth100}}" ng-src="{{friend.profilepicUrl}}"/>
                   </a>
                 </div>
               </div>
             </div>
             <div class="span1"><a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">{{friend.fullname}}</a>
-              <P>{{friend.appRequestStatus}}</P>
+              <P><a title="{{friend.fullname}} has not accepted the app request yet">{{friend.appRequestStatus}}</a></P>
             </div>
           </div>
         </span>

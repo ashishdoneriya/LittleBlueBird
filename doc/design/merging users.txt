@@ -1,0 +1,32 @@
+What does it mean to merge users?
+
+It means you have 2 records in the person table to correspond to the same person.  One record contains the person's email.
+The other contains the person's facebook id.
+
+When do we have to do a merge?
+
+Start with an existing user A.  His person record has an email address but no facebook id.
+Now this person's friend, B, comes along and invites A through the FB invite feature.  The FB invite feature doesn't tell B what A's email address is.
+The only thing B knows about A is name and facebook id.  So the only thing LBB can do is query person for facebook id - which will return nothing
+because A hasn't logged in via Facebook yet.
+
+So LBB creates a SECOND RECORD in person, this one having A's facebook id.
+
+Then A gets an app request in FB
+A clicks to accept
+Upon accepting, A gets redirected to LBB
+LBB gets a request containing: facebook request id(s), facebook id, and email.
+
+Only after accepting the app request can we associate facebook id with email.
+
+Now we query the person table and discover that the email FB returned is already in our database.
+
+So 2 records in person point to A - we have to get rid of one of them.  One of the records contains email, the other contains facebook id.
+
+We get rid of the record containing the facebook id.  BUT FIRST, we update the record having the email WITH the facebook id.
+
+Also, we can't just delete the record with the facebook id.  We first have to check every table where it may be referenced and we have to 
+switch the references to A's original person.id.
+
+WHY DO WE HAVE TO DO ALL THIS CHECKING?...  Because as soon as B invites A, B can immediately start adding things to A's list.
+But remember, this is before A has accepted B's app request!  So B is adding things to the SECOND of A's records.

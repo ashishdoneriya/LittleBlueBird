@@ -1,0 +1,32 @@
+app.js contains an $on() function that listens for routeChangeStart events
+
+Most of the time, there will be a $rootScope.user object, so this function doesn't do anything except route the user to the page he wanted.
+
+However, when there IS no $rootScope.user object, things get complicated.  Why is there no $rootScope.user object?  It could be because
+the user hit F5/refresh in the browser and wiped out all the javascript stuff.
+
+It could be because the user is coming to LBB from FB or some other site.
+
+If there's no $rootScope.user object, we will see if the user is logged in to FB.
+
+If the user is logged in to FB, and has authorized the app, then FB will pass to us the name, email and facebook id of the logged in user.
+With this info, we can query the person table and see if this user is in our database yet.  First we query the person table using the
+facebook id (RestService.handleFacebookUser).  If a record is found, a User object is returned in a 1-element List.
+
+If facebook id is not found in the person table, we query person by email.  Here we could get 0, 1 or many rows since emails can be shared.
+If 0 rows are returned, RestService.handleFacebookUser will write a record to the person table.  We know the user's name, email and facebook id
+That's all we need to create a user account.  We also send a welcome email.
+
+If 1 row is returned, this row has the email we're looking for; it just doesn't contain a facebook id yet.  So we update this record's facebook id
+and we update the profile_pic url to match the profile pic on facebook.
+
+If 2 or more rows are returned, RestService.handleFacebookUser returns the List of users to the client without doing anything.  The client
+will check to see how many elements were returned, and for cases where there is more than one user in the array, the client will route the
+user to a "who are you" page.
+
+If the user is coming to us from FB and is responding to an app request, then we need to mark the app request as accepted (app_request.accept_date)
+We also need to delete the app request.
+
+If the user is not logged in to FB, or hasn't authorized the app, we will look for a "user" cookie in the $cookieStore.  When people login using
+their LBB info (as opposed to their FB info), we keep their user id (person.id) in a "user" cookie so that we can recreate the User object
+if the user ever hits F5/refresh.

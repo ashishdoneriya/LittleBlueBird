@@ -3,7 +3,7 @@
         console.log("FB initing --------------- //connect.facebook.net/en_US/all.js");
         FB.init({
           appId      : '136122483829', // App ID
-          channelUrl : 'http://localhost:8080/gf/app/channel.html', // Path to your Channel File
+          channelUrl : 'http://www.littlebluebird.com/gf/app/channel.html', // Path to your Channel File
           status     : true, // check login status
           cookie     : true, // enable cookies to allow the server to access the session
           oauth      : true,
@@ -12,15 +12,15 @@
         
         $.browser.chrome = /chrome/.test(navigator.userAgent.toLowerCase());
 if ($.browser.chrome || $.browser.msie) {
-    FB.XD._origin = window.location.protocol + "//" + document.domain + "/" + FB.guid();
-    FB.XD.Flash.init();
-    FB.XD._transport = "flash";
+    //FB.XD._origin = window.location.protocol + "//" + document.domain + "/" + FB.guid();
+    //FB.XD.Flash.init();
+    //FB.XD._transport = "flash";
   } else if ($.browser.opera) {
     FB.XD._transport = "fragment";
     FB.XD.Fragment._channelUrl = window.location.protocol + "//" + window.location.host + "/";
   }
         
-        angular.bootstrap(document, ['project']);
+        //angular.bootstrap(document, ['project']); // THIS IS WHAT'S CAUSING THE SECOND routeChangeStart event to fire !!!!!!!!!!!!!!!!!!!!!!!!!!!
         
     };
 

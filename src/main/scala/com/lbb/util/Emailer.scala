@@ -149,6 +149,23 @@ object Emailer extends LbbLogger {
     notifyAccountCreatedForYou(user, "undefined")
   }
   
+  /**
+   * Different from other welcome emails: we don't tell the user what his user/pass is
+   * because we don't know
+   */
+  def notifyWelcomeFacebookUser(user:User) = {
+    val body = <div>{user.first.is} {user.last.is},
+              <P>Welcome to LittleBlueBird!</P>
+              <P>LittleBlueBird is <i>the place</i> to put your wish list for Christmas, your birthday, and any other occasion.</P>
+              <P>Share LittleBlueBird with your friends and family and see how it makes gift giving a snap!</P>
+              <P>You are signed in to LittleBlueBird using your Facebook login.  So you don't have to remember another username or password.  The next time you want to login to LittleBlueBird, just use your Facebook login.</P>
+              </div>
+    val msg = createEmail(body)
+    val subj = "Welcome to LittleBlueBird!"
+    val e = Email(user.email.is, "info@littlebluebird.com", "LittleBlueBird.com", subj, msg, Nil, Nil)
+    Emailer.send(e)
+  }
+  
   def notifyAccountCreatedForYou(user:User, creator:String) = {
     val line1 = creator match {
       case s:String if(!s.equals("undefined")) => creator+" created an account for you on LittleBlueBird.com"

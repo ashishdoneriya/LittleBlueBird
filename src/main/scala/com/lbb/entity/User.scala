@@ -464,8 +464,9 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
     this.facebookId.is match {
       case null => ""
       case s:String => {
-        val acceptedrequests = AppRequest.findAll(By(AppRequest.facebookId, s)).filter(ar => ar.acceptdate.is!=null)
-        val pending = if(acceptedrequests.size==0) "pending" else ""
+        val allreqs = AppRequest.findAll(By(AppRequest.facebookId, s))
+        val acceptedrequests = allreqs.filter(ar => ar.acceptdate.is!=null)
+        val pending = if(allreqs.size!=0 && acceptedrequests.size==0) "pending" else ""
         pending
       }
       case _ => ""
@@ -720,7 +721,21 @@ object User extends User with LongKeyedMetaMapper[User] {
     // don't delete the 'delete' person, just add an X to the facebook id
     val fbid = delete.facebookId.is
     delete.first("").last("").facebookId(fbid+"X").username(fbid+"X").password(fbid+"X").save
-    keep.facebookId(fbid).username(fbid).password(fbid).profilepic("http://graph.facebook.com/"+fbid+"/picture?type=large").save
+    keep.facebookId(fbid).profilepic("http://graph.facebook.com/"+fbid+"/picture?type=large").save
     keep
+  }
+  
+  def createFromAppRequests(apprequests:List[AppRequest]) = {
+    val facebookIds = apprequests.map(_.facebookId.is)
+    val xxx = facebookIds.map(facebookId => {
+      val gg = apprequests.filter(ar => ar.facebookId.equals(facebookId)) // <- a trick to find that one apprequest having the current iteration value of facebook id
+      val names = gg.map(_.name.is)
+      names match {
+        case name :: ns => Full(User.create(name, facebookId))
+        case _ => Empty
+      }
+    })
+    val insertTheseUsers = for(xx <- xxx; user <- xx) yield user
+    insertTheseUsers
   }
 }

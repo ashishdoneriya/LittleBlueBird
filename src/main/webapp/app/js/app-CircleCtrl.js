@@ -205,7 +205,7 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
       console.log("$scope.addparticipant:  $scope.user.id="+$scope.user.id);
       var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:participationlevel,
                                          who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$scope.user.fullname},
-                                         function() {$scope.circle.reminders = Reminder.query({circleId:$scope.circle.id})});
+                                         function() {$rootScope.circle.reminders = Reminder.query({circleId:$rootScope.circle.id})});
     }
   }
   

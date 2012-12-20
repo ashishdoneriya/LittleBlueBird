@@ -1,0 +1,16 @@
+<section ng-app='project'>
+    <button class='btn' ng-click="Facebook.login()">Connect with Facebook</button>
+    
+    <div ng-controller="FBCtrl">   
+      status.status: {{status.status}}
+      <P>status.authResponse: {{status.authResponse}}</P>
+    </div>
+
+    <div ng-show="Facebook.token">
+        <h4>Access Token:</h4>
+        <p ng-bind="Facebook.token.accessToken"></p>
+        <button class='btn btn-small' ng-click="Facebook.logout()">Logout</button>
+    </div>
+
+    <div id='fb-root'></div>
+</section>

@@ -3,8 +3,8 @@
 	<div class="row"><div class="span9"><h1>Who Are You?</h1></div></div>
 	
 	<div class="row">
-	  <div class="span9 font14">We actually have {{multipleusers().length}} people in our system that share
-	    the email address {{sharedemail()}}.
+	  <div class="span9 font14">We actually have {{users.length}} people in our system that share
+	    the email address {{sharedemail}}.
 	    <P class="font14">Before we can complete your login, we need to know who this email address actually belongs to.</P>
 	  </div>
 	</div>
@@ -33,28 +33,36 @@
 	
 	<div class="row simple-top">
 	  <div class="span3">
-		<div ng-repeat="auser in multipleusers()">
+		<div ng-repeat="auser in users">
 		  <span ng-show="$index % 2 == 0">
 		    <div class="row">
 		      <div class="span3 align-top bold margbottom20">
 		        <a ng-href="" ng-click="mergeaccount(auser)" title="Click here if this is you">
-		          <div class="crop100"><img height="{{adjustedheight(auser, 100)}}" width="{{adjustedwidth(auser, 100)}}" ng-src="{{auser.profilepicUrl}}"/></div>
+		          <div style="width:100px; height:100px; overflow:hidden;">
+                    <div style="margin-top:{{auser.profilepicmargintop100}};margin-left:{{auser.profilepicmarginleft100}}">
+		              <img height="{{auser.profilepicadjustedheight100}}" width="{{auser.profilepicadjustedwidth100}}" ng-src="{{auser.profilepicUrl}}"/>
+		            </div>
+		          </div>
 		        </a>
-		        <a ng-href="" ng-click="mergeaccount(auser)" title="Click here if this is you">{{auser.first}} {{auser.last}}</a>
+		        <a ng-click="mergeaccount(auser)" title="Click here if this is you">{{auser.first}} {{auser.last}}</a>
 		      </div>
 		    </div>
 		  </span>
 		</div>
 	  </div>
 	  <div class="span3 offset1">
-		<div ng-repeat="auser in multipleusers()">
+		<div ng-repeat="auser in users">
 		  <span ng-show="$index % 2 == 1">
 		    <div class="row">
 		      <div class="span3 align-top bold margbottom20">
 		        <a ng-href="" ng-click="mergeaccount(auser)" title="Click here if this is you">
-		          <div class="crop100"><img height="{{adjustedheight(auser, 100)}}" width="{{adjustedwidth(auser, 100)}}" ng-src="{{auser.profilepicUrl}}"/></div>
+		          <div style="width:100px; height:100px; overflow:hidden;">
+                    <div style="margin-top:{{auser.profilepicmargintop100}};margin-left:{{auser.profilepicmarginleft100}}">
+		              <img height="{{auser.profilepicadjustedheight100}}" width="{{auser.profilepicadjustedwidth100}}" ng-src="{{auser.profilepicUrl}}"/>
+		            </div>
+		          </div>
 		        </a>
-		        <a ng-href="" ng-click="mergeaccount(auser)" title="Click here if this is you">{{auser.first}} {{auser.last}}</a>
+		        <a ng-click="mergeaccount(auser)" title="Click here if this is you">{{auser.first}} {{auser.last}}</a>
 		      </div>
 		    </div>
 		  </span>

@@ -1,0 +1,26 @@
+A is an existing LBB user, but the email A used when registering is not the same as his FB email.
+
+A decides he wants to use the new Login with FB feature.
+
+A gets a new person record assigned to him but doesn't know it.  To A, it looks like his wish list got obliterated!
+
+Why did this happen?
+
+Because all LBB can do is query the person table by facebook id and by facebook email.  In this case, A's record had a null
+facebook id because he's an old school user.  So a query by facebook id turns up nothing.
+
+The killer though is that A's LBB email doesn't match his FB email.  So when he logs in via FB, FB passes us the FB email
+We query on that and again get nothing.  So all we can assume is that this person is represented in our person table yet
+
+Which of course is wrong!
+
+And there's not much you can do about it except for trying to do some kind of name-matching thing which can get pretty
+complicated.
+
+So for now (12/18/12), the approach is: wait for an email from people complaining about "where's my list!"
+
+============================================================================================================================
+
+The same kind of problem - duplicate person records - can also happen if one person invites another person to LBB.
+If the person being invited is already an LBB user, and registered with an email different from FB email, then this 
+will also generate a duplicate person record for the exact same reasons described above.

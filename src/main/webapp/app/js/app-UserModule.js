@@ -23,18 +23,18 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return User;
   }).
   factory('AppRequest', function($resource){
-      var AppRequest = $resource('/gf/apprequest', {requests:'@requests'}, 
+      var AppRequest = $resource('/gf/apprequest', {requests:'@requests', circlestuff:'@circlestuff'}, 
                        {
-                         save: {method:'POST', isArray:true}
+                         save: {method:'POST', isArray:false}
                        });
       return AppRequest;
   }).
-  factory('AppRequestAccepted', function($resource){
-      var AppRequestAccepted = $resource('/gf/apprequestaccepted/:facebookId/:name', {facebookId:'@facebookId', email:'@email', name:'@name', fbreqids:'@fbreqids'}, 
+  factory('FacebookUser', function($resource){
+      var FacebookUser = $resource('/gf/facebookusers/:facebookId/:email/:name', {facebookId:'@facebookId', email:'@email', name:'@name', fbreqids:'@fbreqids'}, 
                        {
                          save: {method:'POST', isArray:true}
                        });
-      return AppRequestAccepted;
+      return FacebookUser;
   }).
   factory('Logout', function($resource) {
       var Logout = $resource('/gf/logout', {}, {logout: {method:'POST'}});

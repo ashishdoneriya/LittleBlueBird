@@ -1,3 +1,8 @@
+facebook.js:  
+This call: angular.bootstrap(document, ['project']);  appears to make the routeChangeStart event fire a second or
+even a third time
+
+
 When you're listening for events via $emit, $broadcast and $on BE AWARE that the controller has to be initialized
 or else it won't receive the event.
 AND FROM THEN ON, every controller that's been initialized will receive the event, whether the page/controller is being displayed or not.

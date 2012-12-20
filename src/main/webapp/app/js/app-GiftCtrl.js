@@ -60,7 +60,7 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
   // BEGIN: Check for facebook request id in url.  If it's there, delete it.  The logged in user is the person
   // who received the request.  This is pretty nice clean up of request id's.
   
-  $scope.acceptAppRequest($window, facebookConnect);
+  //$scope.acceptAppRequest($window, facebookConnect);
   
   // END: Cleaning up facebook request id's.  This may end up getting moved somewhere else, but it's a nice demonstration
   // of how you delete app requests once they've been accepted.
@@ -106,7 +106,7 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
       }
     }
     
-    var savedgift = Gift.save({giftId:gift.id, updater:$rootScope.user.fullname, circleId:$scope.circle.id, description:gift.description, url:gift.url, 
+    var savedgift = Gift.save({giftId:gift.id, updater:$rootScope.user.fullname, circleId:$rootScope.circle.id, description:gift.description, url:gift.url, 
                addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id, 
                senderId:gift.sender, senderName:gift.sender_name},
                function() {
@@ -126,8 +126,12 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
       }
     }
     
-    var savedgift = Gift.save({updater:$rootScope.user.fullname, circleId:$scope.circle.id, description:gift.description, url:gift.url, 
-               addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id},
+    var saveparms = {updater:$rootScope.user.fullname, description:gift.description, url:gift.url, 
+               addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id};
+    if($rootScope.circle != undefined)
+      saveparms.circleId = $rootScope.circle.id;
+    
+    var savedgift = Gift.save(saveparms,
                function() {
                  if(add) {$rootScope.gifts.reverse();$rootScope.gifts.push(savedgift);$rootScope.gifts.reverse();}
                  $scope.newgift = {};
@@ -197,7 +201,7 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
   
   
   $scope.buygift = function(index, gift, recdate) {
-    var circleId = angular.isDefined($scope.circle) ? $scope.circle.id : -1;
+    var circleId = angular.isDefined($rootScope.circle) ? $rootScope.circle.id : -1;
     gift.receivedate = new Date(recdate);
     var savedgift = Gift.save({giftId:gift.id, updater:$rootScope.user.fullname, circleId:circleId, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id, senderId:gift.senderId, senderName:gift.senderName, receivedate:gift.receivedate.getTime()},
                function() { $rootScope.gifts.splice(index, 1, savedgift); });
@@ -205,7 +209,7 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
   
   
   $scope.returngift = function(index, gift) {
-    var circleId = angular.isDefined($scope.circle) ? $scope.circle.id : -1;
+    var circleId = angular.isDefined($rootScope.circle) ? $rootScope.circle.id : -1;
     var savedgift = Gift.save({giftId:gift.id, updater:$rootScope.user.fullname, circleId:circleId, recipients:gift.recipients, viewerId:$rootScope.user.id, 
                                recipientId:$rootScope.showUser.id, senderId:-1, senderName:''},
                function() { $rootScope.gifts.splice(index, 1, savedgift); });
@@ -213,7 +217,7 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
     
   
   $scope.editgift = function(gift) {
-    gift.possiblerecipients = angular.copy($scope.circle.participants.receivers)
+    gift.possiblerecipients = angular.copy($rootScope.circle.participants.receivers)
       
     for(var j=0; j < gift.recipients.length; j++) {
       for(var i=0; i < gift.possiblerecipients.length; i++) {

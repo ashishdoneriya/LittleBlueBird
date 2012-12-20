@@ -183,7 +183,7 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   }
   
   $scope.mergeaccount = function(user) {
-    $rootScope.user = User.save({userId:user.id, facebookId:$rootScope.fbuser.id});
+    $rootScope.user = User.save({userId:user.id, facebookId:$rootScope.fbuser.id}, function() {$rootScope.showUser = angular.copy($rootScope.user);});
     $location.url('mywishlist');
   }
   

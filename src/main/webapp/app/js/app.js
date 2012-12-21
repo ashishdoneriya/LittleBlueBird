@@ -108,6 +108,8 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
                   
                   console.log("routeChangeStart:  $rootScope.Facebook.getMe() ------------------");
                   
+                  $rootScope.fbuser = angular.copy(meresponse);
+                  
                   $rootScope.users = FacebookUser.save(fbuserparms,
                     function(){ // success function of $rootScope.users = FacebookUser.save()
                       console.log("$rootScope.users.................");

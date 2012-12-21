@@ -114,6 +114,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
           // get the user info of the person who just accepted the app request
           // and write this to the db
           FB.api('/me', function(meresponse) {
+            $rootScope.fbuser = angular.copy(meresponse);
             console.log("app.js:  meresponse..."); // will have: name, email, first_name, last_name, id, and other stuff
             console.log(meresponse);
             // queries person table for everyone that has either facebook id or email

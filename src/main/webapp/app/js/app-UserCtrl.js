@@ -98,7 +98,7 @@ function CreateAccountCtrl($scope, $rootScope, CircleParticipant, User) {
 
 // main.html, personalinfo.html, circleinfo.html, friends.html, giftlist.html, mycircles.html, navbar.html,
 // profilepic.html, welcome.html, whoareyou.html, ddbtn-addcircle.html
-function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, UserSearch, Email, Gift, Circle, CircleParticipant) {
+function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, UserSearch, Email, Gift, Circle, CircleParticipant, MergeUsers) {
   
   //console.log("UserCtrl called");
   
@@ -183,7 +183,8 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   }
   
   $scope.mergeaccount = function(user) {
-    $rootScope.user = User.save({userId:user.id, facebookId:$rootScope.fbuser.id}, function() {$rootScope.showUser = angular.copy($rootScope.user);});
+    console.log("$scope.mergeaccount() --------------------------------------------");
+    $rootScope.user = MergeUsers.save({userId:user.id, facebookId:$rootScope.fbuser.id, email:$rootScope.fbuser.email}, function() {$rootScope.showUser = angular.copy($rootScope.user);});
     $location.url('mywishlist');
   }
   

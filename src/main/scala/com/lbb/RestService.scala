@@ -48,7 +48,7 @@ object RestService extends RestHelper with LbbLogger {
   serve {
     case JsonPost("apprequest" :: _, (json, req)) => saveAppRequests
     case JsonPost("facebookusers" :: facebookId :: email :: name :: _, (json, req)) => handleFacebookUser(facebookId, email, name)
-    case JsonPost("facebookusersXXX" :: facebookId :: email :: name :: _, _) => handleFacebookUserXXXX(facebookId, email, name)
+    case JsonPost("mergeusers" :: AsLong(userId) :: facebookId :: email :: _, _) => mergeUsers(userId, facebookId, email)
   }
 
   // ref:  http://www.assembla.com/spaces/liftweb/wiki/REST_Web_Services
@@ -94,45 +94,6 @@ object RestService extends RestHelper with LbbLogger {
     case _ => debug("RestService.serve:  666666666"); debugRequest
   }
   
-  /**
-   * Use this method when you're dealing with facebook users (people who all you know about them
-   * is their facebook id, email and name)
-   * This method will figure out if the user needs to be inserted or just updated.
-   * This method returns a list of User objects (0, 1 or more) having the given facebook id, email and name
-   */
-  def handleFacebookUserXXXX(facebookId:String, email:String, name:String) = {
-    debug("handleFacebookUser");
-    val users = User.findAll(By(User.facebookId, facebookId))
-    val returnusers = users match {
-      case u :: us => debug("did NOT create a new user: "+u); List(u)
-      case Nil => {
-        // The user COULD already exist under the email - check...
-        val u2 = User.findAll(By(User.email, email))
-        // possible that the email is shared
-        u2 match {
-          case list:List[User] if(list.size == 1) => {
-            val founduser = list.head.facebookId(facebookId).profilepic("http://graph.facebook.com/"+facebookId+"/picture?type=large")            
-            founduser.save
-            List(founduser)
-          } // case list:List[User] if(list.size == 1)
-          
-          case Nil => {
-            // brand new user - save the user and send welcome email
-            val newuser = User.create(name, facebookId).email(email)
-            newuser.save
-            debug("handleFacebookUser:  calling Emailer.notifyWelcomeFacebookUser(newuser)");
-            Emailer.notifyWelcomeFacebookUser(newuser)
-            List(newuser)
-          } //  case Nil
-          
-          case _ => u2 // case _: multiple people with the given email.  The client should detect the array being bigger than 1 and send the user to the "who are you?" page.
-          
-        } // u2 match
-        
-      } // case Nil
-    } // val returnuser = users match 
-    Util.toJsonResponse(returnusers)
-  }
   
   /**
    * Write to app_request table for every app request here
@@ -335,69 +296,35 @@ object RestService extends RestHelper with LbbLogger {
 
     Util.toJsonResponse(returnusers)
     
+  }
+
+  
+  /**
+   * Poor naming: We MAY merge users or we may not.  Depends on who 'keep'
+   * and 'delete' are.
+   */
+  def mergeUsers(userId:Long, facebookId:String, email:String) = {
+    val box = (User.findByKey(userId), User.findAll(By(User.facebookId, facebookId))) match {
+      case (Full(keep), Nil) => {
+        keep.facebookId(facebookId).profilepic("http://graph.facebook.com/"+facebookId+"/picture?type=large").save
+        Full(keep)
+      }
+      case (Full(keep), delete :: deletes) if(keep.id.is!=delete.id.is) => {
+        val mergeduser = User.merge(keep, delete);
+        Full(mergeduser)
+      } // case (Full(keep), delete :: deletes)
+      case (Empty, u2 :: us) => {
+        u2.email(email).save
+        Full(u2)
+      }
+      case _ => Empty
+      
+    } // (User.findByKey(userId), User.findAll(By(User.facebookId, facebookId))) match
     
-    
-    
-//    //val inviterIds = apprequests.map(_.inviter.is) // person may be responding to more than one app request from more than one person
-//    
-//    // Now we have an email address - didn't have that at the time the app request was issued.
-//    // Do we have 2 person records that will have to be merged?  This is where we will find out.
-//    
-//    val peoplewithemail = User.findAll(By(User.email, email))
-//    val personRecordsWithEmailAndFacebookId = peoplewithemail.filter(p => p.facebookId.is==facebookId) // can only be 1 or 0
-//    val personRecordExistsWithEmailAndFacebookId = personRecordsWithEmailAndFacebookId.size==1
-//    val personwithfacebookid = User.findAll(By(User.facebookId, facebookId)).head // should always return 1 row
-//    // because we wrote this record in saveAppRequests or else the user logged in without an invitation
-//    
-//    
-//    val returnList = (peoplewithemail.size, personRecordExistsWithEmailAndFacebookId) match {
-//      
-//      case (_, true) => {
-//        debug("saveAcceptedAppRequest:  case (_, true) => LIKE THIS CASE: There is already a person record with facebook id and email - no merge necessary");
-//        // LIKE THIS CASE: There is already a person record with facebook id and email - no merge necessary
-//        // Welcome email:  This person has already received a welcome email.  You know this because the person record already has email and facebook id filled in
-//        personRecordsWithEmailAndFacebookId
-//        
-//      } // case (i1:Int, true)
-//      
-//      case (howmanyemails:Int, false) if(howmanyemails==0) => {
-//        debug("saveAcceptedAppRequest:  case (howmanyemails:Int, false) if(howmanyemails==0) =>  no one has the email we were looking for - so 'personwithfacebookid' is the person record we're going with");
-//        // no one has the email we were looking for - so 'personwithfacebookid' is the person record we're going with
-//        personwithfacebookid.email(email).save
-//        
-//        // TODO Improvement: Maybe query by name to see if this person already exists in LBB.  That's really problematic though:
-//        // Facebook returns first and last name as one string and lots of people have 3 names, initials and other funny characters (M William 'Bill' Dunklau)
-//        // Welcome email: SEND IN THIS CASE.  Even though the person may exist in this case, we can't tell.
-//        debug("saveAcceptedAppRequest:  calling Emailer.notifyWelcomeFacebookUser(newuser)");
-//        Emailer.notifyWelcomeFacebookUser(personwithfacebookid)
-//        List(personwithfacebookid)
-//        
-//      } // case (i1:Int, _) if(i1==0)
-//      
-//      
-//      case (howmanyemails:Int, false) if(howmanyemails==1) => {
-//        debug("saveAcceptedAppRequest:  case (howmanyemails:Int, false) if(howmanyemails==1) => MERGE:  We have a person record with the right email.  And we have another with the right facebook id");
-//        // MERGE:  We have a person record with the right email.  And we have another with the right facebook id
-//        // We have to merge one in with the other and delete one.  We keep the record with the email and delete 
-//        // the record with the facebook id
-//        // Welcome email: This person has already received a welcome email.  You know this because the person table already contains a record having the facebook user's email
-//        val mergeduser = User.merge(peoplewithemail.head, personwithfacebookid)
-//        List(mergeduser)
-//      } // case (howmanyemails:Int, false) if(howmanyemails==1)
-//      
-//      
-//      case _ => {
-//        debug("saveAcceptedAppRequest:  case _ =>  WHO ARE YOU case");
-//        // WHO ARE YOU case.  We know the 2nd arg is false because we took care of true up front.  And we know peoplewithemail.size > 1 because we already
-//        // took care of the 0 and 1 cases
-//        // Welcome email: This person has already received a welcome email.  We don't know which LBB account is going to be linked to the FB account, but it doesn't matter, welcome emails are sent when LBB accounts are created.
-//        peoplewithemail
-//      }
-//      
-//    } // (peoplewithemail, personwithfacebookid) match
-//    
-//    
-//    Util.toJsonResponse(returnList)
+    box match {
+      case Full(user) => JsonResponse(user.asJs)
+      case _ => NoContentResponse()
+    }
     
   }
   

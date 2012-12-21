@@ -36,6 +36,13 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
                        });
       return FacebookUser;
   }).
+  factory('MergeUsers', function($resource){
+      var MergeUsers = $resource('/gf/mergeusers/:userId/:facebookId/:email', {userId:'@userId', facebookId:'@facebookId', email:'@email'}, 
+                       {
+                         save: {method:'POST', isArray:false}
+                       });
+      return MergeUsers;
+  }).
   factory('Logout', function($resource) {
       var Logout = $resource('/gf/logout', {}, {logout: {method:'POST'}});
       return Logout;

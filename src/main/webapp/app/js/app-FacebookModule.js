@@ -303,7 +303,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                       console.log("$rootScope.initfbuser():  $rootScope.user="+$rootScope.user);
                       if(alreadymergedaccount) {
                         console.log("app-FacebookModule:  this is already a merged account, so going now to mywishlist");
-                        $location.url('mywishlist');
+                        $location.url('me');
                       } 
                       else { // ...but in the beginning, this is what will happen - no record in our person table contains this facebookId
                         if($rootScope.users.length == 0) {

@@ -100,84 +100,6 @@ function CreateAccountCtrl($scope, $rootScope, CircleParticipant, User) {
 // profilepic.html, welcome.html, whoareyou.html, ddbtn-addcircle.html
 function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, UserSearch, Email, Gift, Circle, CircleParticipant, MergeUsers) {
   
-  //console.log("UserCtrl called");
-  
-  
-  $scope.userExists = function() {
-    //console.log("scope.userExists:  true (HARD-CODED)");
-    return true;
-  }
-  
-  $scope.userExistsWORKONTHIS = function() {
-    if(angular.isDefined($rootScope.user) && angular.isDefined($rootScope.user.id)) {
-      //console.log("$scope.userExists():  return true because $rootScope.user is defined");
-      return true;
-    }
-    else if($scope.lookingforuser) {
-      //console.log("$scope.lookingforuser="+$scope.lookingforuser+"  ...so hang on and return false from $scope.userExists()");
-      return false;
-    }
-    else {
-      $scope.lookingforuser = true;
-      //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because there's no $rootScope.user yet...");
-      
-      // see if the user is logged in to FB
-      FB.getLoginStatus(function(response) {
-        // 'connected', 'not_authorized', 'unknown'
-        $scope.fbstatus = response.status;
-        //console.log("FB login status response...");
-        //console.log(response);
-        if(response.status == 'connected') {
-          FB.api('/me', 
-            function(user) { // success
-              //console.log("User IS logged in to FB... let's try setting a cookie...");
-              $cookieStore.put("fbid", user.id);
-              $scope.initfbuser(user);
-              $scope.lookingforuser = false;
-              //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because FB.api returned a user");
-              //$scope.$apply() // Manual scope evaluation - commented out on 11/30/12 - experimenting
-            }
-          );
-        } // if(response.status == 'connected')
-        else {
-          //console.log("User is NOT logged in to FB");
-          
-          // maybe there's an LBB cookie because they don't have a FB account...
-          if(angular.isDefined($cookieStore.get("user"))) {
-            //console.log("$scope.userExists():  $rootScope.user is not defined, but there is a userId cookie: emit userchange");
-            $rootScope.user = User.find({userId:$cookieStore.get("user")}, 
-                      function(){
-                                 //User.currentUser = $rootScope.user; 
-                                 $scope.lookingforuser = false;
-                                 //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because we found the LBB cookie: userId");
-                                 //console.log("$rootScope.user.id="+$rootScope.user.id); 
-                                 //console.log("$rootScope.user.first="+$rootScope.user.first); 
-                                 //console.log($rootScope.user); 
-                                 //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting
-                                 }
-                      );
-          } // if(angular.isDefined($cookieStore.get("user")))
-          else {
-            // They're not logged in to FB and there's no LBB cookie, so send them to the login page 
-            $scope.lookingforuser = false;
-            //console.log("setting $scope.lookingforuser="+$scope.lookingforuser+"  because we are redirecting to /login");
-            //console.log("redirecting to:  /login");
-            $location.url("/login");
-          }
-        
-        } // else: if(response.status == 'connected') 
-        
-      
-      }); // FB.getLoginStatus(function(response) {
-      
-      
-      //console.log("$scope.userExists():  return false because it seemed like the right thing to do here");
-      return false;
-      
-    } // else
-  }
-  
-  
   $scope.resendWelcomeEmail = function() {
     Email.send({type:'welcome', from:'info@littlebluebird.com', user:$rootScope.user}, function() {}, function() {});
   }
@@ -235,8 +157,6 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
                                   }
                                 );
   }
-  
-  $scope.userobj = function() { return $rootScope.user; }
 
   $rootScope.$on("userchange", function(event) {
     console.log("app-UserCtrl: $rootScope.$on(\"userchange\", function(event):  $rootScope.user.................");

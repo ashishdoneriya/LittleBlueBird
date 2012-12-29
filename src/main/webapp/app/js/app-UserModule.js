@@ -1,5 +1,5 @@
 
-angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap.modal']).
+angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap.modal', 'ui.bootstrap.dropdownToggle']).
   factory('UserSearch', function($resource) {
       var UserSearch = $resource('/gf/usersearch', {search:'@search'}, 
                     {

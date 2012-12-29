@@ -1,0 +1,33 @@
+
+<div class="row  margleft0">
+  <div class="span9 bgbluegradient white roundedtop10 margleft_5 pad0" ng-mouseover="showEdit='true'" ng-mouseleave="showEdit='false'">
+    <div class="row">
+      <div class="span9 pull-right" style="min-height:30px;padding-top:10px;padding-right:10px;">&nbsp;<span ng-show="showEdit=='true'"><button class="btn pull-right">Edit</button></span></div>
+    </div>
+    <div class="row">
+    
+      <div style="margin-top:{{user.profilepicmargintop}};margin-left:{{user.profilepicmarginleft}};text-align:center;
+          overflow:hidden;padding-left:30px;">
+        <img height="{{user.profilepicadjustedheight}}" width="{{user.profilepicadjustedwidth}}" ng-src="{{user.profilepicUrl}}"/>
+      </div>
+      
+    </div>
+    <div class="row">
+      <div class="span9 font24 pad10 center">
+        {{user.fullname}}
+      </div>
+    </div>
+  
+  </div>
+
+</div>
+
+<div class="row margleft0">
+  <div class="span9 roundedbottom10 margleft_5 pad0 bgwhite">
+    <div class="row">
+      <div class="span1 borderright_009dcb pad5">1<a ng-href="#/friends" ng-click="setactive('friends');"><P>Friends</P></a></div>
+      <div class="span1 borderright_009dcb pad5 marg0">1<a ng-href="#/events" ng-click="setactive('events');"><P>Events</P></a></div>
+      <div class="span7 pad5 marg0">55<a ng-href="#/mywishlist" ng-click="setactive('me');"><P>Wish List</P></a></div>
+    </div>  
+  </div>
+</div>

@@ -12,15 +12,17 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/friends', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/friends', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/fbfriends', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/event/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/events', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/events.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/managepeople/', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/me', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/myaccount/me.html', five:'partials/navbar.html'}})
       .when('/myaccount', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/myaccount/main.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/mywishlist', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/mywishlist', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/reminders', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/email', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/welcome', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
@@ -118,9 +120,10 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
                         $rootScope.user = angular.copy($rootScope.users[0]);
                         $rootScope.showUser = angular.copy($rootScope.users[0]);
                         // how do we know if they've never logged in before?  if so, we want to send them to welcome
-                        //$rootScope.templates = {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'};
-                        //$rootScope.layoutController = newRoute.$route.controller;
-                        $location.path('/mywishlist');
+                        //$rootScope.templates = {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'};
+                        $rootScope.templates = newRoute.$route.templates;
+                        $rootScope.layoutController = newRoute.$route.controller;
+                        //$location.path('/mywishlist');
                       } // if($rootScope.users.length == 1)
                       else if($rootScope.users.length > 1) {
                         // who are you? you have an email that is shared with multiple people
@@ -179,6 +182,19 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
     } )
   })
   .run(function($rootScope, $location, dimAdjuster) {
+    $rootScope.menuitems = ['me', 'friends', 'events'];
+    $rootScope.activeitem = 'me';
+
+    $rootScope.setactive = function(menuitem) {
+      for(var i=0; i < $rootScope.menuitems.length; i++) {
+        if(menuitem == $rootScope.menuitems[i]) $rootScope.activeitem = menuitem;
+      }
+    }
+  
+    $rootScope.state = function(menuitem) {
+      if(menuitem == $rootScope.activeitem) return 'active';
+      else return '';
+    }
 
     // adjust dims for large profile pics
     $rootScope.adjustedheight = function(auser, limit) { 
@@ -443,4 +459,8 @@ function bazctrl($rootScope, $scope, $location, $route) {
 
 function FBCtrl($rootScope, $scope) {
  // see test.html
+}
+
+function SideMenuCtrl($scope) {
+  console.log("SideMenuCtrl: everything commented out");
 }

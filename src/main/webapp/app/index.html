@@ -20,6 +20,7 @@
     <script src="js/bootstrap-popover.js"></script>
     <script src="js/bootstrap-modal.js"></script>
     <script src="js/date.js"></script>
+    <script src="js/dropdownToggle.js"></script>
     <link rel="stylesheet" media="screen" href="css/bootstrap.css" />
     <link rel="stylesheet" media="screen" href="css/jquery-ui-1.8.20.custom.css" />
     <link rel="stylesheet" media="screen" href="css/lbb.css" />
@@ -77,7 +78,8 @@
 	    </div>
 	  </div> <!-- end hero-unit -->
 
-      <div class="container"> 
+      <div class="bgwhite">
+      <div class="container pad50"> 
 	
 	    <div class="row">
 	      <div class="span4">
@@ -180,6 +182,7 @@
 	    </div>
 	    
       </div> <!-- end container -->
+      </div> <!-- end div class=bgwhite -->
     </script>
     
     
@@ -205,26 +208,25 @@
     
     <script type="text/ng-template" id="layout.html">
     <div ng-include src="templates.five"></div>
-    <div class="container">
-      <div class="row margtop20"> <!-- one big row -->
+    <div class="container bgd3e8f2 margtop30 height100pc">
+      <div class="row height100pc">
+        <div class="span12 height100pc pad10">
+            <div class="container">
+              <div class="row margtop20"> <!-- one big row -->
   
-        <div class="span2"> <!-- 2 main cols -->
-          <div class="row"><div class="span150 simple-bottom"><div ng-include src="templates.six"></div></div></div>
-          <!-- review usage of: box shadow well-tiny -->
-          <div class="row">
-            <div class="span2 margbottom20"><div ng-include src="templates.three"></div></div>
-          </div>
-        </div> <!-- end of first main col -->
+                <div class="span2"> <!-- 2 main cols -->
+                  <div ng-include src="templates.three"></div>
+                  <div></div>
+                </div> <!-- end of first main col -->
     
-        <div class="span7"> <!-- 2nd main col -->
-          <div class="row"><div class="span7"><div ng-include src="templates.four"></div></div></div>
-        </div> <!-- end of 2nd main col -->
+                <div class="span10"> <!-- 2nd main col -->
+                  <div ng-include src="templates.four"></div>
+                </div> <!-- end of 2nd main col -->
     
-        <div class="span2">
-          <div class="row"><div class="span2 margleft35"><iframe src="http://rcm.amazon.com/e/cm?t=wwwlittleb040-20&o=1&p=29&l=ur1&category=dvd&banner=1GM7J5TZSG5X8AQRXX02&f=ifr&lt1=_new" width="120" height="600" scrolling="no" border="0" marginwidth="0" style="border:none;" frameborder="0"></iframe></div></div></div>
+              </div>  <!-- one big row -->
+            </div>
         </div>
-    
-      </div>  <!-- one big row -->
+      </div>
     </div>
     </script>
     
@@ -244,7 +246,7 @@
     
     </head>
     <body class="body1">
-      <div ng-include src="templates.layout" scope=""></div>
+          <div class="height100pc" ng-include src="templates.layout" scope=""></div>
     </body>
     
 </html>

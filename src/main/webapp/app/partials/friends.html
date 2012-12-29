@@ -1,25 +1,28 @@
 
 <div ng-controller="FriendCtrl">
 
-
-<div class="navbar">
-  <div class="navbar-inner bggraygradient">
-    <div class="container">
-      <span class="brand font14">Friends</span>
+<div class="row">
+  <div class="span7 box bg_efefef">
+    <div class="row">
+      <div class="span7">
+        <span class="font24 marg10">Friends</span>
+          <div class="pull-right">
+            <div class="btn-group">
+			    <a class="btn dropdown-toggle" data-toggle="dropdown">+</a>
+			    <ul class="dropdown-menu">
+			        <li><a ng-click="fbinviteasfriend()">Add Facebook Friends</a></li>
+			        <li><a ng-click="addlbbfriend()">Add LittleBlueBird Friends</a></li>
+			        <li><a ng-click="beginnewuser()">Create Account for Someone</a></li>
+			    </ul>
+			</div>
+	      </div>
+      </div>
     </div>
   </div>
 </div>
 
 
-
-<div class="row">
-  <div class="span7">
-        <a class="btn btn-small pull-right" ng-click="beginnewuser()">Create Account for Someone</a>
-        <a class="btn btn-small pull-right" ng-click="addlbbfriend()">Add LittleBlueBird Friends</a>
-        <a class="btn btn-small pull-right" ng-click="fbinviteasfriend()">Add Facebook Friends</a>
-  </div>
-</div>
-
+<!-- BEGIN OLD STUFF -->
 
 
             <!-- See:  http://docs-next.angularjs.org/guide/dev_guide.forms 

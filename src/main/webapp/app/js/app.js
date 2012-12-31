@@ -16,7 +16,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/fbfriends', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/event/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/events', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/events.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/events', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/events/events.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/managepeople/', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})

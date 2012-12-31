@@ -54,7 +54,7 @@
         
 	    <div class="span3">
 	      <div class="row">
-	        <div class="span3 box shadow well-tiny">
+	        <div class="span3 box pad3 shadow well-tiny">
 	          <span ng-show="newcircle.receiverLimit == -1"><b>Participants</b></span>
 	          <span ng-show="newcircle.receiverLimit == 1"><b>Honoree</b></span>
 	          <span ng-show="newcircle.receiverLimit > 1"><b>Honorees</b></span>
@@ -95,7 +95,7 @@
 	      
 	      
 	      <div class="row" ng-show="newcircle.receiverLimit != -1">
-	        <div class="span3 box shadow well-tiny">
+	        <div class="span3 box pad3 shadow well-tiny">
 	          <b>Guests</b>
               <div class="btn-group pull-right">
 	            <a class="btn btn-mini btn-success font14 bold dropdown-toggle" 
@@ -125,7 +125,7 @@
 	    </div>
 	    
 	    <div class="span3">
-	      <div class="box shadow well-tiny margright_5" ng-show="addmethod=='byname'">
+	      <div class="box pad3 shadow well-tiny margright_5" ng-show="addmethod=='byname'">
 			      <div class="row">
 			        <div class="span3"><h5>Add by Name</h5></div>
 			      </div>
@@ -161,7 +161,7 @@
 	      </div> <!-- end of div: addmethod='byname' -->
 	      
 	      
-	      <div class="box shadow well-tiny margright_5" ng-show="addmethod=='createaccount'">
+	      <div class="box pad3 shadow well-tiny margright_5" ng-show="addmethod=='createaccount'">
 	      
             <!-- See:  http://docs-next.angularjs.org/guide/dev_guide.forms 
                  This page is a copy of register.html except the title here is Create Account
@@ -252,7 +252,7 @@
 	      </div> <!-- end of div: addmethod='createaccount' -->
 	      
 	      
-	      <div class="box shadow well-tiny margright_5" ng-show="addmethod=='fromanotherevent'">
+	      <div class="box pad3 shadow well-tiny margright_5" ng-show="addmethod=='fromanotherevent'">
 			      <div class="row">
 			        <div class="span3"><h5>Add from another Event</h5></div>
 			      </div>
@@ -266,7 +266,7 @@
 	                      </a>
 	                      <span ng-show="c.show">
 	                        <div class="box-white">
-	                          <div class="row margbottom5 margleft0 box well-tiny">
+	                          <div class="row margbottom5 margleft0 box pad3 well-tiny">
 	                            <div class="offset2 span1"><div class="margleft_35"><a ng-click="addparticipants(c, newcircle);">Select All</a></div></div>
 	                          </div>
 				              <div class="row margbottom5 margleft0 highlight-box-white" ng-repeat="receiver in c.participants.receivers" ng-click="addparticipant2(receiver, newcircle)">

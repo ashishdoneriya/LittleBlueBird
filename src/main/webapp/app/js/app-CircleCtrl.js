@@ -96,33 +96,6 @@ function ManagePeopleCtrl($rootScope, $scope, CircleParticipant, Reminder, UserS
     console.log("app-CircleCtrl:  ManagePeopleCtrl: scope.beginnewreceiver:  $scope.addreceivermethod="+$scope.addreceivermethod);
   }
   
-    $scope.usersearch = '';
-  
-    $scope.query = function(sss) {
-      console.log("ManagePeopleCtrl: scope.query() -----------------------");
-      $scope.usersearch = 'loading';
-      $scope.people = UserSearch.query({search:sss}, 
-                      function() {
-                        $scope.usersearch = 'loaded'; 
-                        //$scope.people.splice(0, $scope.people.length); // effectively refreshes the people list
-                        
-                        // uncomment for facebook integration
-                        //for(var i=0; i < $scope.user.friends.length; i++) {
-                        //  if(!lbbNamesContainFbName(lbbpeople, $scope.user.friends[i].fullname))
-                        //    $scope.people.push($scope.user.friends[i]);
-                        //}
-                        //for(var i=0; i < lbbpeople.length; i++) {
-                        //  $scope.people.push(lbbpeople[i]);
-                        //}
-                        $scope.noonefound = $scope.people.length==0 ? true : false; 
-                        console.log($scope.people);
-                      }, 
-                      function() {
-                        //$scope.people.splice(0, $scope.people.length);
-                        $scope.usersearch = '';
-                      }
-                    );
-    };
   
 }
 

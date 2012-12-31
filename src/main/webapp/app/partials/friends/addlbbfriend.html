@@ -1,0 +1,36 @@
+
+			      <div class="row">
+		            <div class="span3"><h4>Add LittleBlueBird Friends</h4></div>
+		          </div>
+			      <div class="row">
+		            <div class="span3"><input search-users type="text" class="span3" ng-model="search"></div>
+		          </div>
+				  <div class="row">
+				    <div class="span3">      
+				      <span ng-show="usersearch=='loaded'">
+	                    <div class="box-white">
+				          <span ng-show="noonefound">
+			                <div class="row">
+			                  <div class="span3">No one found <p><a ng-click="beginnewuser();">Create Account for this Person</a></p></div>
+			                </div>
+				          </span>
+				          <span ng-hide="noonefound">
+				            <div ng-repeat="person in people | filter:search">
+				              <span ng-hide="person.hide">
+				                <div class="row margbottom5 margleft0 highlight-box-white" ng-click="addparticipant($index, person, newcircle)">
+				                  <div class="span1 marg0"><img height=50 width=50 ng-src="{{person.profilepicUrl}}" /></div>
+				                  <div class="span2 marg0 padtop5 font14">{{person.fullname}}</div>
+				                </div>
+				              </span>
+				            </div>
+				          </span>
+				        </div>
+				      </span>
+				      
+				    </div>
+			      </div>
+				  <div class="row">
+				    <div class="span3"> 
+                      <a class="btn" ng-click="cancel();">Cancel</a>
+				    </div>
+			      </div> 	

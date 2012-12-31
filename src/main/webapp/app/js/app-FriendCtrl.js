@@ -7,6 +7,7 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
   console.log("FriendCtrl called:  ----------------");
   
   $scope.mode = 'friends';
+  $rootScope.activeitem = 'friends';
     
   // duplicated almost - similar to app-CircleCtrl.js
   $scope.beginnewuser = function() {

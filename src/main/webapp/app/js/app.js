@@ -12,7 +12,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/friends', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/friends', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/friends/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/fbfriends', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/event/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
@@ -181,7 +181,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       console.log(newRoute);
     } )
   })
-  .run(function($rootScope, $location, dimAdjuster) {
+  .run(function($rootScope, $location, dimAdjuster, UserSearch) {
     $rootScope.menuitems = ['me', 'friends', 'events'];
     $rootScope.activeitem = 'me';
 
@@ -206,6 +206,35 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
     }
     
     $rootScope.gotoFriends = function() { $location.url('/friends') }
+    
+    
+    $rootScope.usersearch = '';
+  
+    $rootScope.query = function(sss) {
+      console.log("ManagePeopleCtrl: scope.query() -----------------------");
+      $rootScope.usersearch = 'loading';
+      $rootScope.people = UserSearch.query({search:sss}, 
+                      function() {
+                        $rootScope.usersearch = 'loaded'; 
+                        //$rootScope.people.splice(0, $rootScope.people.length); // effectively refreshes the people list
+                        
+                        // uncomment for facebook integration
+                        //for(var i=0; i < $rootScope.user.friends.length; i++) {
+                        //  if(!lbbNamesContainFbName(lbbpeople, $rootScope.user.friends[i].fullname))
+                        //    $rootScope.people.push($rootScope.user.friends[i]);
+                        //}
+                        //for(var i=0; i < lbbpeople.length; i++) {
+                        //  $rootScope.people.push(lbbpeople[i]);
+                        //}
+                        $rootScope.noonefound = $rootScope.people.length==0 ? true : false; 
+                        console.log($rootScope.people);
+                      }, 
+                      function() {
+                        //$rootScope.people.splice(0, $rootScope.people.length);
+                        $rootScope.usersearch = '';
+                      }
+                    );
+    };
     
   });
 

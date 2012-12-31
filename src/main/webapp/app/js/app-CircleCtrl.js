@@ -121,6 +121,7 @@ function MyCircleCtrl($rootScope, $scope, Circle, $location) {
   }
 }
 
+// DEPRECATED: being replaced by AddEventCtrl
 function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch) {
 
   

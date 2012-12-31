@@ -2,9 +2,10 @@
 <div ng-controller="FriendCtrl">
 
 <div class="row">
-  <div class="span7 box bg_efefef">
+  <div class="span7 box">
+  
     <div class="row">
-      <div class="span7">
+      <div class="span7 bg_efefef">
         <span class="font24 marg10">Friends</span>
           <div class="pull-right">
             <div class="btn-group">
@@ -18,6 +19,13 @@
 	      </div>
       </div>
     </div>
+    
+    <div class="row">
+      <div class="span7 bgwhite">
+      </div>
+    </div>
+    
+    
   </div>
 </div>
 
@@ -178,71 +186,13 @@
   
   <span ng-hide="user.friends.length==0">
   <div class="row">
-    <div class="span2">
+    <div class="span6">
       <div ng-repeat="friend in user.friends">
-        <span ng-show="$index % 3 == 0">
-          <div class="row">
-            <div class="span1">
-              <div style="width:100px; height:100px; overflow:hidden;">
-                <div style="margin-top:{{friend.profilepicmargintop100}};margin-left:{{friend.profilepicmarginleft100}}">
-                  <a ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
-                    <img height="{{friend.profilepicadjustedheight100}}" width="{{friend.profilepicadjustedwidth100}}" ng-src="{{friend.profilepicUrl}}"/>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="span1"><a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">{{friend.fullname}}</a>
-              <P><a title="{{friend.fullname}} has not accepted the app request yet">{{friend.appRequestStatus}}</a></P>
-            </div>
-          </div>
-        </span>
+          <div ng-include src="'partials/friend.html'"></div>
       </div>
-    </div>
-    
-    <div class="span2">
-      <div ng-repeat="friend in user.friends">
-        <span ng-show="$index % 3 == 1">
-          <div class="row">
-            <div class="span1">
-              <div style="width:100px; height:100px; overflow:hidden;">
-                <div style="margin-top:{{friend.profilepicmargintop100}};margin-left:{{friend.profilepicmarginleft100}}">
-                  <a ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
-                    <img height="{{friend.profilepicadjustedheight100}}" width="{{friend.profilepicadjustedwidth100}}" ng-src="{{friend.profilepicUrl}}"/>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="span1"><a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">{{friend.fullname}}</a>
-              <P><a title="{{friend.fullname}} has not accepted the app request yet">{{friend.appRequestStatus}}</a></P>
-            </div>
-          </div>
-        </span>
-      </div>
-    </div>
-    
-    <div class="span2">
-      <div ng-repeat="friend in user.friends">
-        <span ng-show="$index % 3 == 2">
-          <div class="row">
-            <div class="span1">
-              <div style="width:100px; height:100px; overflow:hidden;">
-                <div style="margin-top:{{friend.profilepicmargintop100}};margin-left:{{friend.profilepicmarginleft100}}">
-                  <a ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
-                    <img height="{{friend.profilepicadjustedheight100}}" width="{{friend.profilepicadjustedwidth100}}" ng-src="{{friend.profilepicUrl}}"/>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="span1"><a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">{{friend.fullname}}</a>
-              <P><a title="{{friend.fullname}} has not accepted the app request yet">{{friend.appRequestStatus}}</a></P>
-            </div>
-          </div>
-        </span>
-      </div>
-    </div>
-    </span> <!-- span ng-hide="user.friends.length==0" -->
-    
+    </div>    
   </div>
+  </span> <!-- span ng-hide="user.friends.length==0" -->
   
 </span> 
 

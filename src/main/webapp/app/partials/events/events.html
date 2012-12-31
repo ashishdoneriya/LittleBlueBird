@@ -27,19 +27,32 @@
   </div>
 </div> <!-- header row -->
 
-<div class="row">  <!-- body row -->
-  <div class="span7 roundedbottom10 bgwhite pad10">
-    <P>events listed here</P>
-    <P>events listed here</P>
-    <P>events listed here</P>
-    <P>events listed here</P>
-    <P>events listed here</P>
-    <P>events listed here</P>
-    <P>events listed here</P>
-    <P>events listed here</P>
-    <P>events listed here</P>
-    <P>events listed here</P>
-  </div>
-</div>  <!-- body row -->
+
+
+
+<div ng-repeat="event in user.circles">
+  <div class="row">  <!-- event row -->
+    
+    <!-- THIS SUCKS - show/hide just to identify the last row so it can be styled with the nice rounded border -->
+    <span ng-hide="$index == user.circles.length-1">
+      <a ng-href="#/event/{{event.id}}">
+        <div class="span7 event">
+          {{event.name}} <span class="pull-right font12">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
+        </div>
+      </a>
+    </span>
+    
+    <span ng-show="$index == user.circles.length-1">
+      <a ng-href="#/event/{{event.id}}">
+        <div class="span7 event lastrow">
+          {{event.name}} <span class="pull-right font12">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
+        </div>
+      </a>
+    </span>
+    
+  </div>  <!-- event row -->
+</div>
+
+
 
 </div>

@@ -3,6 +3,12 @@ function EventCtrl($rootScope, $scope, Circle, CircleParticipant) {
 
   $rootScope.activeitem = 'events';
   
+  $scope.tempevents = [{name:'My Birthday', date:'Dec 15, 2012'}, 
+                       {name:'Christmas', date:'Dec 25, 2012'}, 
+                       {name:'Francy\'s Birthday', date:'Jan 11, 2013'}, 
+                       {name:'Mom\'s Birthday', date:'Feb 25, 2013'},
+                       {name:'Trent\'s Birthday', date:'Apr 2, 2013'} ];
+  
   $scope.newcircleFunction = function(thetype, limit) {
     console.log("EventCtrl: $scope.newcircleFunction() --------------------------------");
     $scope.search = '';

@@ -71,6 +71,8 @@
 
 .blue { background-color: blue; }
 
+body { height:92%; }
+
 .body2 {
   background-color: #ffffff;
   padding-top:40px;
@@ -114,6 +116,17 @@
 .crop150X imgX { 
   margin:0px 0px 0px -24px; 
 }
+
+.event {
+  border-left: 1px solid #009dcb;
+  border-right: 1px solid #009dcb;
+  border-top: 1px solid #009dcb;
+  background-color:#ffffff;
+  padding:10px;
+  font-size:16px;
+}
+
+.event:hover, .event-last:hover { background-color:#efefef; }
 
 .font10 { font-size:10px; }
 
@@ -225,12 +238,19 @@
 
 html { height:100%; }
 
-body { height:92%; }
-
 .inset {
   -webkit-box-shadow: inset 1px 1px 0 0 #333333;
 	   -moz-box-shadow: inset 1px 1px 0 0 #333333;
 	        box-shadow: inset 1px 1px 0 0 #333333;
+}
+
+.lastrow { 
+  -webkit-border-radius: 0 0 10px 10px;
+  -moz-border-radius: 0 0 10px 10px;
+  border-radius: 0 0 10px 10px;
+  border-bottom: 1px solid #009dcb;
+  border-right: 1px solid #009dcb;
+  border-left: 1px solid #009dcb;
 }
 
 .marg0 { margin:0; }
@@ -383,6 +403,8 @@ body { height:92%; }
   padding-top:50px;
 }
 
+.rightside { border-right: 1px solid #009dcb; }
+
 .roundedtop10 {
   -webkit-border-radius: 10px 10px 0 0;
   -moz-border-radius: 10px 10px 0 0;
@@ -443,6 +465,8 @@ body { height:92%; }
 .spantiny {
   width: 15px;
 }
+
+.topside { border-top: 1px solid #009dcb; }
 
 .well-tiny {
   padding: 3px;

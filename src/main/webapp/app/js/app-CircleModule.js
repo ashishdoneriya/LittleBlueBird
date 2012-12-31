@@ -26,6 +26,8 @@ angular.module('CircleModule', [])
 .run(function($rootScope, $location, Circle, CircleParticipant, Reminder, UserSearch, Gift) {
 
   // define $rootScope functions here to make them globally available
+  
+  // also referenced from events.html
   $rootScope.makeActive = function(index, circle) {
     console.log("CircleModule: rootScope.makeActive() ----------------------------");
     circle.index = index; // for deleting
@@ -43,13 +45,14 @@ angular.module('CircleModule', [])
     return isexpired; 
   }
   
-  
+  // also referenced from events.html
   $rootScope.activeOrNot = function(circle) {
     if(!angular.isDefined($rootScope.circle))
       return false;
     return circle.id == $rootScope.circle.id ? "active" : "";
   }
   
+  // also referenced from events.html
   $rootScope.showParticipants = function(circle) {
     circle.participants = CircleParticipant.query({circleId:circle.id}, 
                                                   function() {
@@ -58,6 +61,7 @@ angular.module('CircleModule', [])
   }
   
   
+  // also referenced from events.html
   $rootScope.toggleCircle = function(circle) {
     circle.show = angular.isDefined(circle.show) ? !circle.show : true;
   }

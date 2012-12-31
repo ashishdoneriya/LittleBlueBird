@@ -36,7 +36,8 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
   }
   
   // duplicated ...almost from app-CircleCtrl.js.  The difference here is no circle
-  $scope.createonthefly = function(newuser) {
+  $scope.createfriendonthefly = function(newuser) {
+    console.log("$scope.createfriendonthefly():  CALLED ----------------------------------------");
     anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, 
                           email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth, 
                           creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname, profilepicLimit:100}, 

@@ -1,3 +1,9 @@
+Twitter Bootstrap Modals:
+Angular-UI offers 2 ways of opening modals.  One of those ways involves using href="#modalName".  This way doesn't work - not exactly sure
+why.  But you can still use the ng-model way of opening modals.  Works great.
+
+
+
 facebook.js:  
 This call: angular.bootstrap(document, ['project']);  appears to make the routeChangeStart event fire a second or
 even a third time

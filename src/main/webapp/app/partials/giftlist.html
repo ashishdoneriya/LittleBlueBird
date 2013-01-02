@@ -14,54 +14,56 @@ hyperlinks, which is what we want if we want to post items to FB.
 
 <div ng-controller="GiftListCtrl">
           
-          
-      <div class="row margbottom5">
-        <div class="span4">
-          <h3 class="margleft0">{{showUser.fullname}}'s Wish List</h3>
-        </div>
-            
-        <div class="span3 pull-right">
-          <a class="uibutton confirm" title="Share this list on Facebook" ng-click="fbsharelist(showUser)">Share on Facebook</a>
-          <span ng-hide="gift.adding">
-            <a class="btn btn-mini btn-success font18 pull-right" title="Add an item to this wish list" ng-click="gift.adding=true;initNewGift();">+</a>
-          </span>
-        </div>
-      </div> <!-- div class="row" -->
-          
-         
+<div class="row"> <!-- header row -->
+  <div class="span7 roundedtop10 bgbluegradient white pad10">
+  
+      <span class="font24">{{showUser.fullname}}'s Wish List</span>
+      <div class="pull-right">
+        <a class="uibutton confirm" title="Share this list on Facebook" ng-click="fbsharelist(showUser)">Share on Facebook</a>
+        &nbsp;
+	    <a class="btn btn-mini btn-success font18 pull-right" title="Add an item to this wish list" ng-click="addGiftFormModalShown = !addGiftFormModalShown;gift.adding=true;initNewGift();">+</a>
+	  </div>
+	  
+	  <div ng-include src="'partials/giftlist/addgiftform.html'"></div>
+    
       <div ng-include src="'partials/circleinfo.html'"></div>
+  </div>
+</div> <!-- header row -->
+
+          
+          
           
     
+    <span ng-show="isExpired()">
       <div class="row">
-        <div class="span7">
-        <span ng-show="isExpired()">
-          <div class="row alert alert-success margleft0">
-            <div class="span6 padright30 margleft0">
+        <div class="span7 list">
+          <div class="row alert alert-success marg0">
+            <div class="span6 padright30 marg0">
               <h4 class="alert-heading">{{circle.name}} has past</h4>
               This is what {{showUser.first}} got for {{circle.name}}
             </div>
           </div>
-        </span>
         </div>
       </div>
+    </span>
           
-          
-          
+    <span ng-show="gifts.ready && gifts.length==0 && !isExpired()">
       <div class="row">
-            
-        <!-- everything goes in here -->
-        <div class="span7">
-        
-          <span ng-show="gifts.ready && gifts.length==0 && !isExpired()">
+        <div class="span7 list lastrow">
             <P><h4 class="font16">This list is empty</h4></P>
             <span ng-show="user.id != showUser.id">
               <P class="font16">Did you know you can add items to this list even though it's not <I>your</I> list?</P>
               <P class="font16">And anything you add will be hidden from {{showUser.fullname}}. LittleBlueBird won't spoil the surprise!</P>
               <P class="font16">Everyone else will be able to see it though</P>
             </span>
-          </span>
-            
-          <span ng-show="gifts.length==0 && isExpired()">
+        </div>
+      </div>
+    </span>
+          
+          
+    <span ng-show="gifts.length==0 && isExpired()">
+      <div class="row">
+        <div class="span7 list lastrow">
             <P>
               <h4 class="font16">
                 According to LittleBlueBird, <span ng-show="user.id == showUser.id">you</span><span ng-hide="user.id == showUser.id">{{showUser.fullname}}</span> didn't get anything at this event.
@@ -71,17 +73,20 @@ hyperlinks, which is what we want if we want to post items to FB.
               <span ng-show="user.id == showUser.id">You</span><span ng-hide="user.id == showUser.id">{{showUser.fullname}}</span> probably did get something,
                 it just wasn't bought through LittleBlueBird.
             </P>
-          </span>
+        </div>
+      </div>
+    </span>
+    
+          
+    <div ng-repeat="gift in gifts">
+      <div class="row">
             
-          <span ng-show="gift.adding==true">
-	        <div ng-include src="'partials/giftlist/addgiftform.html'"></div>
-          </span>
-
-          <div ng-repeat="gift in gifts">
-            <!-- review usage of: gift -->
+        <!-- everything goes in here -->
+        <div class="{{isLastRow('span7 list', $index, gifts.length)}}">
+        
               
             <span ng-hide="gift.editing || gift.buying"> 
-              <div class="row gift marg0 margtop5">   
+              <div class="row  marg0 margtop5">   
 	            <div ng-include src="'partials/giftlist/viewitem.html'"></div>  
               </div>                
             </span>
@@ -89,7 +94,7 @@ hyperlinks, which is what we want if we want to post items to FB.
               
               
             <span ng-show="gift.buying">
-              <div class="row gift marg0 margtop5">   
+              <div class="row  marg0 margtop5">   
 	            <div ng-include src="'partials/giftlist/buygiftform.html'"></div>   
               </div>                
             </span>
@@ -97,19 +102,19 @@ hyperlinks, which is what we want if we want to post items to FB.
               
                   
             <span ng-show="gift.editing">
-              <div class="row gift marg0 margtop5">   
+              <div class="row  marg0 margtop5">   
 	            <div ng-include src="'partials/giftlist/editgiftform.html'"></div>  
               </div>                
             </span>
             <!-- end:  show gift.editing -->    
                   
-          </div> <!-- div ng-repeat="gift in gifts" -->
 
             
         </div>
         <!-- everything goes in here -->
             
       </div> <!-- div class="row" -->
+    </div> <!-- div ng-repeat="gift in gifts" -->
           
       
 </div>  <!-- GiftListCtrl -->

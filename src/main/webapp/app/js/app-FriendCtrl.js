@@ -59,24 +59,6 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
                                         });
   } 
   
-  
-  // just like $scope.giftlist above but no circle here
-  $scope.friendwishlist = function(friend) {
-    $rootScope.showUser = friend;
-    console.log("viewerId:$rootScope.user.id="+$rootScope.user.id);
-    $rootScope.gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, 
-                            function() { 
-                              $rootScope.gifts.mylist=false;
-                              $rootScope.gifts.ready="true";
-                              delete $rootScope.circle;
-                              console.log("$scope.friendwishlist():  delete $rootScope.circle - check below");
-                              console.log($rootScope.circle);
-                              //$rootScope.$emit("circlechange"); // commented out on 11/30/12 - experimenting
-                              //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting
-                            }, 
-                            function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
-  }
-  
   $rootScope.$on("friends", function(event) {
     // fbinvite() sets $rootScope.user.friends so need to do anything here except listen for the event
   });

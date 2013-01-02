@@ -1,11 +1,13 @@
+<div class="row">
+  <div class="span6">
 
   <!--
   MODAL
   -->
 <form novalidate name="circleForm" class="margbottom0">
-  <div id="myModal" class="modal hide fade" ng-model="modalShown">
+  <div ui-modal class="fade" ng-model="addEventModalShown">
 	<div class="modal-header bgbluegradient white">
-	  <button class="close padtop5" data-dismiss="modal" ng-click="$parent.modalShown = false"><i class="icon-remove"></i></button>
+	  <button class="close padtop5" data-dismiss="modal" ng-click="$parent.addEventModalShown = false"><i class="icon-remove"></i></button>
 	  <h3>New {{getType()}} Event</h3>
 	</div>
 	<div class="modal-body">
@@ -261,14 +263,41 @@
 	</div>
 	<div class="modal-footer">	
               <div ng-show="circleForm.name.$error.required || circleForm.expdate.$error.required">
-                <a ng-click="$parent.modalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a>
+                <a ng-click="$parent.addEventModalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a>
                 <a ng-disabled="true" class="btn" id="invalidform">Save</a>
               </div>    
           
               <div ng-hide="circleForm.name.$error.required || circleForm.expdate.$error.required">
-                <a ng-click="$parent.modalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a> 
-                <a class="btn btn-primary" ng-click="savecircle(newcircle, expdate);$parent.modalShown = false;showRegister=false;search='';">Save</a>
+                <a ng-click="$parent.addEventModalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a> 
+                <a class="btn btn-primary" ng-click="savecircle(newcircle, expdate);$parent.addEventModalShown = false;showRegister=false;search='';">Save</a>
               </div>
 	</div>
   </div>
 </form>
+
+  </div> <!-- end of div span6 -->
+  
+  
+  <div class="span1">
+
+	    
+	    <!-- Lesson Learned:  Not sure why, but this has to come AFTER the modal code (above) or else the modal will only open once and thereafter, it won't open -->
+        <div class="pull-right">
+          <div class="btn-group">
+		    <a class="btn btn-small dropdown-toggle font16 bold" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
+		    <ul class="dropdown-menu">
+		      <li><a ng-click="newcircleFunction('Christmas', -1)">Christmas</a></li>
+		      <li><a ng-click="newcircleFunction('Birthday', -1)">Birthday</a></li>
+		      <li><a ng-click="newcircleFunction('Anniversary', -1)">Anniversary</a></li>
+		      <li><a ng-click="newcircleFunction('Mothers Day', -1)">Mothers Day</a></li>
+		      <li><a ng-click="newcircleFunction('Fathers Day', -1)">Fathers Day</a></li>
+		      <li><a ng-click="newcircleFunction('Valentines Day', -1)">Valentines Day</a></li>
+		      <li><a ng-click="newcircleFunction('Graduation', -1)">Graduation</a></li>
+		      <li><a ng-click="newcircleFunction('Baby Shower', -1)">Baby Shower</a></li>
+		      <li><a ng-click="newcircleFunction('Other', -1)">Other</a></li>
+		    </ul>
+		  </div>
+	    </div>
+	    
+  </div> <!-- end of div span1 -->
+</div> <!-- The whole page is in this one row -->

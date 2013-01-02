@@ -12,12 +12,12 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/friends', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/friends/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/friends',              {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/fbfriends', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/event/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/events', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/events/events.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
       .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/managepeople/', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/me', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/myaccount/me.html', five:'partials/navbar.html'}})
@@ -206,6 +206,30 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
     }
     
     $rootScope.gotoFriends = function() { $location.url('/friends') }
+    
+    // general function trying to determine if we're on the last row of a list or not
+    $rootScope.isLastRow = function(style, index, size) {
+      lastrow = index == size-1;
+      if(lastrow) return style + ' lastrow'; 
+      else return style;
+    }
+    
+    
+    $rootScope.friendwishlist = function(friend) {
+      $rootScope.showUser = friend;
+      console.log("app.js: viewerId:$rootScope.user.id="+$rootScope.user.id);
+      $rootScope.gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, 
+                            function() { 
+                              $rootScope.gifts.mylist=false;
+                              $rootScope.gifts.ready="true";
+                              delete $rootScope.circle;
+                              console.log("$rootScope.friendwishlist():  delete $rootScope.circle - check below");
+                              console.log($rootScope.circle);
+                              //$rootScope.$emit("circlechange"); // commented out on 11/30/12 - experimenting
+                              //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting
+                            }, 
+                            function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
+    }
     
     
     $rootScope.usersearch = '';

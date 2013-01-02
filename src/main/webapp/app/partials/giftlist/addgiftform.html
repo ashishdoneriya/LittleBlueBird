@@ -1,6 +1,14 @@
 
 <form novalidate name="addGiftForm">
-          <div class="row gift giftadd marg0">
+  <div id="addGiftFormModal" class="modal hide fade" ng-model="addGiftFormModalShown">
+	<div class="modal-header bgbluegradient white">
+	  <button class="close padtop5" data-dismiss="modal" ng-click="$parent.addGiftFormModalShown = false"><i class="icon-remove"></i></button>
+	  <h3>Add Item</h3>
+	</div>
+	
+	<div class="modal-body">
+	
+          <div class="row giftadd marg0">
             <div class="span7">
               <div class="row margleft_35">
                 <div class="span4">
@@ -40,6 +48,12 @@
                 
                 
               </div>
+            </div>
+          </div>
+	
+	</div> <!-- modal-body -->
+	
+	<div class="modal-footer">	
               <div class="row margleft_35">
                     <div class="span1">
                       <a class="btn" ng-click="gift.adding=false">Cancel</a>
@@ -54,6 +68,8 @@
                       </div>
                     </div>
               </div>
-            </div>
-          </div>
+	
+	</div> <!-- modal-footer -->
+	
+  </div>
 </form>

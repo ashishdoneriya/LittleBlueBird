@@ -3,26 +3,17 @@
 
 <div class="row"> <!-- header row -->
   <div class="span7 roundedtop10 bgbluegradient pad10">
-  
+    <div class="row">
+      <div class="span6">
+
         <span class="font28 white">Events</span>
-        <div class="pull-right">
-          <div class="btn-group">
-		    <a class="btn btn-small dropdown-toggle font16 bold" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
-		    <ul class="dropdown-menu">
-		      <li><a ng-click="modalShown = !modalShown;newcircleFunction('Christmas', -1)">Christmas</a></li>
-		      <li><a ng-click="modalShown = !modalShown;newcircleFunction('Birthday', -1)">Birthday</a></li>
-		      <li><a ng-click="modalShown = !modalShown;newcircleFunction('Anniversary', -1)">Anniversary</a></li>
-		      <li><a ng-click="modalShown = !modalShown;newcircleFunction('Mothers Day', -1)">Mothers Day</a></li>
-		      <li><a ng-click="modalShown = !modalShown;newcircleFunction('Fathers Day', -1)">Fathers Day</a></li>
-		      <li><a ng-click="modalShown = !modalShown;newcircleFunction('Valentines Day', -1)">Valentines Day</a></li>
-		      <li><a ng-click="modalShown = !modalShown;newcircleFunction('Graduation', -1)">Graduation</a></li>
-		      <li><a ng-click="modalShown = !modalShown;newcircleFunction('Baby Shower', -1)">Baby Shower</a></li>
-		      <li><a ng-click="modalShown = !modalShown;newcircleFunction('Other', -1)">Other</a></li>
-		    </ul>
-		  </div>
-	    </div>
+	    
     
-        <div ng-include src="'partials/events/modal_addevent.html'"></div>
+      </div>
+      <div class="span1">
+	    <div ng-include src="'partials/events/modal_addevent.html'"></div>
+      </div>
+    </div>
     
   </div>
 </div> <!-- header row -->
@@ -33,22 +24,11 @@
 <div ng-repeat="event in user.circles">
   <div class="row">  <!-- event row -->
     
-    <!-- THIS SUCKS - show/hide just to identify the last row so it can be styled with the nice rounded border -->
-    <span ng-hide="$index == user.circles.length-1">
       <a ng-href="#/event/{{event.id}}">
-        <div class="span7 event">
+        <div class="{{isLastRow('span7 list', $index, user.circles.length)}}">
           {{event.name}} <span class="pull-right font12">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
         </div>
       </a>
-    </span>
-    
-    <span ng-show="$index == user.circles.length-1">
-      <a ng-href="#/event/{{event.id}}">
-        <div class="span7 event lastrow">
-          {{event.name}} <span class="pull-right font12">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
-        </div>
-      </a>
-    </span>
     
   </div>  <!-- event row -->
 </div>

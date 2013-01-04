@@ -2,7 +2,7 @@
 
 // main.html, personalinfo.html, circleinfo.html, friends.html, giftlist.html, mycircles.html, navbar.html,
 // profilepic.html, welcome.html, whoareyou.html, ddbtn-addcircle.html
-function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookFriends, AppRequest) {
+function FriendCtrl($scope, $rootScope, User, Friend) {
   
   console.log("FriendCtrl called:  ----------------");
   
@@ -80,6 +80,21 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
     $scope.selectedfriends = []; 
     $rootScope.search = '';
     $rootScope.usersearch = 'not loaded';
+  }
+  
+  $scope.removefriend = function($event, friend) {
+    console.log("$event.preventDefault() and stop propagation");
+    $event.preventDefault();
+    $event.stopPropagation(); // friends.html contains an <a> tag that wraps each friend line.  This <a> tag sends the user
+    // to the friends wish list page.  But we don't want to go there in this case, so we call $event.stopPropagation()
+    // and $event.preventDefault() - we actually need both in this case
+    for(var i=0; i < $rootScope.user.friends.length; i++) {
+      if(friend.id == $rootScope.user.friends[i].id) {
+        $rootScope.user.friends.splice(i, 1);
+        Friend.delete({userId:$rootScope.user.id, friendId:friend.id});
+        break;
+      }
+    }
   }
   
   $rootScope.$on("friends", function(event) {

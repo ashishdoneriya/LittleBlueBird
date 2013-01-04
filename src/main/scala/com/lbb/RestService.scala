@@ -49,6 +49,7 @@ object RestService extends RestHelper with LbbLogger {
     case JsonPost("apprequest" :: _, (json, req)) => saveAppRequests
     case JsonPost("facebookusers" :: facebookId :: email :: name :: _, (json, req)) => handleFacebookUser(facebookId, email, name)
     case JsonPost("mergeusers" :: AsLong(userId) :: facebookId :: email :: _, _) => mergeUsers(userId, facebookId, email)
+    case Delete("friend" :: AsLong(userId) :: AsLong(friendId) :: _, _) => deleteFriend(userId, friendId)
   }
 
   // ref:  http://www.assembla.com/spaces/liftweb/wiki/REST_Web_Services
@@ -92,6 +93,14 @@ object RestService extends RestHelper with LbbLogger {
     case Get("circles" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  88888888"); findCircle(circleId)
     case Get("circleparticipants" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  77777777777"); findCircleParticipants(circleId)
     case _ => debug("RestService.serve:  666666666"); debugRequest
+  }
+  
+  
+  def deleteFriend(userId:Long, friendId:Long) = {
+    val f1 = Friend.findAll(By(Friend.friend, friendId), By(Friend.user, userId))
+    val f2 = Friend.findAll(By(Friend.friend, userId), By(Friend.user, friendId))
+    (f1 :: f2 :: Nil).flatten.foreach(_.delete_!)
+    NoContentResponse()
   }
   
   

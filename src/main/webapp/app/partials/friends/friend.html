@@ -1,5 +1,5 @@
 
-          <div class="row">
+          <div class="row" ng-mouseover="hoverindex=$index" ng-mouseleave="hoverindex=-1">
             <div class="span1">
                   <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
                     <div style="margin-top:{{friend.profilepicmargintop50}};margin-left:{{friend.profilepicmarginleft50}}">
@@ -12,6 +12,9 @@
                   <P style="font-size:16px;"><span style="font-weight:normal;" title="{{friend.fullname}} has not accepted the app request yet">{{friend.appRequestStatus}}</span></P>
             </div>
             <div class="span1">
-                <span class="pull-right font12"><i class="icon-chevron-right"></i></span>
+                <span class="pull-right">
+                  <span ng-show="hoverindex==$index"><i class="icon-remove" title="Remove {{friend.fullname}}" ng-click="removefriend($event, friend)"></i></span>
+                  <i class="icon-chevron-right"></i>
+                </span>
             </div>
           </div>

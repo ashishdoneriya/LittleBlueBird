@@ -22,6 +22,13 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
 
       return User;
   }).
+  factory('Friend', function($resource) {
+      var Friend = $resource('/gf/friend/:userId/:friendId', {userId:'@userId', friendId:'@friendId'},
+                    {
+                      delete: {method:'DELETE'}
+                    });
+      return Friend;
+  }).
   factory('AppRequest', function($resource){
       var AppRequest = $resource('/gf/apprequest', {requests:'@requests', circlestuff:'@circlestuff'}, 
                        {

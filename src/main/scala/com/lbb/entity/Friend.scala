@@ -25,16 +25,23 @@ class Friend extends LongKeyedMapper[Friend] with IdPK with LbbLogger {
   }
   
   override def save = {
-    try {
-      debug("attempt to save: user="+user+"  friend="+friend);
-      val saved = super.save
-      debug("attempt to save: user="+user+"  friend="+friend+"  =>  saved="+saved);
-      saved
+    (friend.is, user.is) match {
+      case (f, u) if(f!=u) => {
+        // as long as you're not trying to friend yourself, go ahead and save
+        try {
+          debug("attempt to save: user="+user+"  friend="+friend);
+          val saved = super.save
+          debug("attempt to save: user="+user+"  friend="+friend+"  =>  saved="+saved);
+          saved
+        }
+        catch { 
+          case e:MySQLIntegrityConstraintViolationException => debug(e.getClass().getName+": "+e.getMessage); false 
+          case e => error(e.getClass().getName+": "+e.getMessage); false 
+        }
+      }
+      case _ => false
     }
-    catch { 
-      case e:MySQLIntegrityConstraintViolationException => debug(e.getClass().getName+": "+e.getMessage); false 
-      case e => error(e.getClass().getName+": "+e.getMessage); false 
-    }
+    
   }
 }
 

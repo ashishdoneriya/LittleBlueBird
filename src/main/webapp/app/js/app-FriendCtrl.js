@@ -47,11 +47,12 @@ function FriendCtrl($scope, $rootScope, User, Friend) {
                                         });
   } 
   
+  // don't let the user friend himself
   $scope.clicklbbuser = function(index, person, people) {
     if(angular.isDefined(person.selected)) {
       delete person.selected;
       for(var i=0; i < $scope.selectedfriends.length; i++) {
-        if($scope.selectedfriends[i].id = person.id) {
+        if($scope.selectedfriends[i].id == person.id) {
           $scope.selectedfriends.splice(i, 1);
           break;
         }
@@ -59,7 +60,8 @@ function FriendCtrl($scope, $rootScope, User, Friend) {
     }
     else {
       person.selected = true; 
-      $scope.selectedfriends.push(person);
+      if($rootScope.user.id != person.id)
+        $scope.selectedfriends.push(person);
     }
     console.log($scope.selectedfriends);
   }

@@ -6,54 +6,33 @@
   
         <span class="font28">Friends</span>
         <div class="pull-right">
-          <div class="btn-group">
-		    <a class="btn btn-small dropdown-toggle font16 bold" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
-		    <ul class="dropdown-menu">
-		      <li><a ng-click="fbinviteasfriend()">Add Facebook Friends</a></li>
-		      <li><a ng-click="addlbbfriend()">Add LittleBlueBird Friends</a></li>
-		      <li><a ng-click="beginnewuser()">Create Account for Someone</a></li>
-		    </ul>
-		  </div>
+          <div ng-include src="'partials/friends/btn_addfriend.html'"></div>
 	    </div>
     
   </div>
 </div> <!-- header row -->
 
 
-<div class="row">  <!-- body row -->
-  <div class="span7 roundedbottom10 bgwhite pad10">
+
+<div ng-repeat="friend in user.friends">
+  <div class="row">
     
-		<span ng-show="mode=='createaccount'">
-		  <div ng-include src="'partials/friends/createaccount.html'"></div>
-		</span> <!-- end of span: mode='createaccount' --> 
-		
-		
-		<span ng-show="mode=='addlbbfriend'">
-		  <div ng-include src="'partials/friends/addlbbfriend.html'"></div>
-		</span> <!-- mode=='addlbbfriend' -->
-		
-		
-		<span ng-show="mode=='friends'">
-		  <div class="row"><div class="span7">&nbsp;</div></div>
-		  
-		  <span ng-show="user.friends.length==0">
-		    <div ng-include src="'partials/friends/none.html'"></div>
-		  </span>
-		  
-		  <span ng-hide="user.friends.length==0">
-		  <div class="row">
-		    <div class="span6">
-		      <div ng-repeat="friend in user.friends">
-		          <div ng-include src="'partials/friends/friend.html'"></div>
-		      </div>
-		    </div>    
-		  </div>
-		  </span> <!-- span ng-hide="user.friends.length==0" -->
-		  
-		</span>  <!-- mode=='friends' -->
-    
+      <a style="font-weight:bold;background-color:#555555;display:block;" ng-href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
+        <div class="{{isLastRow('span7 list pad10', $index, user.friends.length)}}">
+          <div ng-include src="'partials/friends/friend.html'"></div>
+        </div>
+      </a>
     
   </div>
-</div>  <!-- body row -->
+</div>
+
+<span ng-show="user.friends.length==0">
+  <div class="row">
+    <div class="span7 roundedbottom10 bgwhite pad10">
+	  <div ng-include src="'partials/friends/none.html'"></div>
+    </div>
+  </div>
+</span>
+
 
 </div>

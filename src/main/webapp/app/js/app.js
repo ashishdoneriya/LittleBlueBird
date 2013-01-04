@@ -8,27 +8,27 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/bar/:fooid/:barid', {templates: {layout: 'foo',        menu: 'partials/foo/menu.html', body:'partials/foo/bar.html'}})
       .when('/baz/:fooid/:barid/:bazid', {templates: {layout: 'foo', menu: 'partials/foo/menu.html', body:'partials/foo/baz.html'}})
       .when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', one: 'partials/login.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}})
-      .when('/circles', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/friends',              {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/friends/friends.html', five:'partials/navbar.html'}})
-      .when('/fbfriends', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/event/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/circles', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/friends', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/fbfriends', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/event/:circleId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/events/event.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/events', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/events/events.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
-      .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/managepeople/', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/managepeople/', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/me', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/myaccount/me.html', five:'partials/navbar.html'}})
-      .when('/myaccount', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/myaccount/main.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/myaccount', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/myaccount/main.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/mywishlist', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/reminders', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/email', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/welcome', {templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/reminders', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/email', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/welcome', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/test', {templates: {layout: 'layout-nli.html', one: 'partials/test.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
-      .otherwise({redirectTo: '/welcome', templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', three: 'partials/mycircles.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .otherwise({redirectTo: '/welcome', templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       ;
   
   })
@@ -235,7 +235,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
     $rootScope.usersearch = '';
   
     $rootScope.query = function(sss) {
-      console.log("ManagePeopleCtrl: scope.query() -----------------------");
+      console.log("app.js: scope.query() -----------------------");
       $rootScope.usersearch = 'loading';
       $rootScope.people = UserSearch.query({search:sss}, 
                       function() {

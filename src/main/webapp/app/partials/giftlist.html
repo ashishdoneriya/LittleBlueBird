@@ -36,7 +36,7 @@ hyperlinks, which is what we want if we want to post items to FB.
     
     <span ng-show="isExpired()">
       <div class="row">
-        <div class="span7 list">
+        <div class="span7 list pad10">
           <div class="row alert alert-success marg0">
             <div class="span6 padright30 marg0">
               <h4 class="alert-heading">{{circle.name}} has past</h4>
@@ -49,7 +49,7 @@ hyperlinks, which is what we want if we want to post items to FB.
           
     <span ng-show="gifts.ready && gifts.length==0 && !isExpired()">
       <div class="row">
-        <div class="span7 list lastrow">
+        <div class="span7 list pad10 lastrow">
             <P><h4 class="font16">This list is empty</h4></P>
             <span ng-show="user.id != showUser.id">
               <P class="font16">Did you know you can add items to this list even though it's not <I>your</I> list?</P>
@@ -63,7 +63,7 @@ hyperlinks, which is what we want if we want to post items to FB.
           
     <span ng-show="gifts.length==0 && isExpired()">
       <div class="row">
-        <div class="span7 list lastrow">
+        <div class="span7 list pad10 lastrow">
             <P>
               <h4 class="font16">
                 According to LittleBlueBird, <span ng-show="user.id == showUser.id">you</span><span ng-hide="user.id == showUser.id">{{showUser.fullname}}</span> didn't get anything at this event.
@@ -82,7 +82,7 @@ hyperlinks, which is what we want if we want to post items to FB.
       <div class="row">
             
         <!-- everything goes in here -->
-        <div class="{{isLastRow('span7 list', $index, gifts.length)}}">
+        <div class="{{isLastRow('span7 list pad10', $index, gifts.length)}}">
         
               
             <span ng-hide="gift.editing || gift.buying"> 

@@ -89,6 +89,10 @@ class AppRequest extends LongKeyedMapper[AppRequest] with LbbLogger with ManyToM
          ,("profilepicadjustedwidth100", Util.calculateAdjustedWidth(100, profilepicUrl))
          ,("profilepicmargintop100", JString(Util.calculateMarginTop(100, profilepicUrl)))
          ,("profilepicmarginleft100", JString(Util.calculateMarginLeft(100, profilepicUrl)))
+         ,("profilepicadjustedheight50", Util.calculateAdjustedHeight(50, profilepicUrl))
+         ,("profilepicadjustedwidth50", Util.calculateAdjustedWidth(50, profilepicUrl))
+         ,("profilepicmargintop50", JString(Util.calculateMarginTop(50, profilepicUrl)))
+         ,("profilepicmarginleft50", JString(Util.calculateMarginLeft(50, profilepicUrl)))
          )        
   }
   

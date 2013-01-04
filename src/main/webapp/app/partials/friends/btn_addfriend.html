@@ -1,0 +1,99 @@
+<!--  
+THERE ARE 2 MODAL DIALOGS ON THIS PAGE.  THE FIRST IS THE "ADD LITTLEBLUEBIRD FRIEND" MODAL
+THE SECOND IS THE "ADD NEW USER" MODAL.  TRIED PUTTING THESE MODALS INTO SEPARATE PAGES AND ng-include-ing THEM
+BUT THAT DIDN'T WORK - THE MODAL WOULD OPEN ONCE THEN NEVER AGAIN.  SO WE'RE STUCK WITH 2 BIG UGLY MODALS ALL IN THIS PAGE
+-->
+
+
+  <div ui-modal class="fade" ng-model="addLbbFriendModal">
+	<div class="modal-header bgbluegradient">
+	  <button class="close padtop5" data-dismiss="modal"><i class="icon-remove" data-dismiss="modal"></i></button>
+	  <h3 class="white">Add LittleBlueBird Friends</h3>
+	</div>
+	<div class="modal-body txtblack">
+
+      <div class="row">
+		<div class="span3 padbottom5"><input search-users type="text" class="input-large search-query" ng-model="search" placeholder="Search by Name"></div>
+	  </div>
+		          
+	  <span ng-show="usersearch=='loaded'">
+        <div class="row"> <!-- header row -->
+          <div class="span3 roundedtop10 bgbluegradient white pad5">
+            LittleBlueBird Users...
+          </div>
+        </div> <!-- header row -->
+		          
+	    <span ng-show="noonefound">
+		  <div class="row">
+			<div class="span3 list pad5 lastrow">No one found <p><a ng-click="beginnewuser();">Create account for this person?</a></p></div>
+	      </div>
+		</span>
+				          
+        <span ng-hide="noonefound">
+	      <div ng-repeat="person in people | filter:search">
+			  <div class="row" ng-click="clicklbbuser($index, person, people)">
+				<div class="{{selectedOrNotStyle('span3 list pad5', $index, people.length, person)}}">
+				  <div class="row">
+				    <div class="span1">
+
+                      <div style="width:50px; height:50px; overflow:hidden;">
+                        <div style="margin-top:{{person.profilepicmargintop50}};margin-left:{{person.profilepicmarginleft50}}">
+                           <img height="{{person.profilepicadjustedheight50}}" width="{{person.profilepicadjustedwidth50}}" ng-src="{{person.profilepicUrl}}"/>
+                        </div>
+                      </div>
+
+				    </div>
+				    <div class="span2 marg0 padtop5 font14">{{person.fullname}}</div>
+				  
+				  </div>
+	            </div>
+	          </div>
+	      </div>
+		</span>
+				          
+	  </span> <!-- "usersearch=='loaded'" -->
+		          
+		          
+	</div>
+	<div class="modal-footer">
+	  <span ng-show="selectedfriends.length > 0">
+	    <a class="btn btn-primary" ng-click="addLbbFriendModal=false;addselectedfriends();">Add {{selectedfriends.length}} Friend<span ng-show="selectedfriends.length > 1">s</span></a>
+	  </span>
+	  <span ng-show="selectedfriends.length == 0">
+	    <a class="btn btn-primary disabled">Add Friends</a>
+	  </span>
+	  <a class="btn" ng-click="addLbbFriendModal=false;cancelselectedfriends()">Cancel</a>
+	</div>
+  </div>
+  
+  <!-- END MODAL:  Add LittleBlueBird Friend -->
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div ui-modal class="fade" ng-model="addNewUserModal">
+	<div class="modal-header bgbluegradient white">
+	  <button class="close padtop5" data-dismiss="modal" ng-click="addNewUserModal = false"><i class="icon-remove"></i></button>
+	  <h3>Add New User</h3>
+	</div>
+	<div class="modal-body">
+	</div>
+	<div class="modal-footer">
+	</div>
+  </div>
+
+
+
+          <div class="btn-group">
+		    <a class="btn btn-small dropdown-toggle font16 bold" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
+		    <ul class="dropdown-menu">
+		      <li><a ng-click="fbinviteasfriend()">Add Facebook Friends</a></li>
+		      <li><a ng-click="addLbbFriendModal=true">Add LittleBlueBird Friends</a></li>
+		      <li><a ng-click="addNewUserModal=true;beginnewuser()">Add New User</a></li>
+		    </ul>
+		  </div>

@@ -1,8 +1,22 @@
 
-function EventCtrl($rootScope, $scope, Circle, CircleParticipant) {
+function EventCtrl($rootScope, $scope, $route, Circle, CircleParticipant) {
 
   $rootScope.activeitem = 'events';
   
+  $scope.$on("$routeChangeSuccess", 
+    function( scope, newRoute ){
+      // Create a render() function and put the stuff below in that
+      //render();
+      console.log("newRoute.params.circleId="+newRoute.params.circleId);
+      if(angular.isDefined(newRoute.params.circleId))
+        for(var i=0; i < $rootScope.user.circles.length; i++) {
+          if($rootScope.user.circles[i].id == newRoute.params.circleId) {
+            $rootScope.circle = $rootScope.user.circles[i];
+            $rootScope.circle.participants = CircleParticipant.query({circleId:$rootScope.circle.id});
+          }
+        }
+    }
+  );
   
   $scope.newcircleFunction = function(thetype, limit) {
     $scope.addEventModalShown = true;
@@ -105,7 +119,7 @@ function EventCtrl($rootScope, $scope, Circle, CircleParticipant) {
   $scope.beginnewuser = function() {
     $scope.addmethod = 'createaccount';
     $scope.newuser = {};
-    console.log("app-CircleCtrl:  AddCircleCtrl: beginnewuser:  $scope.addmethod="+$scope.addmethod);
+    console.log("app-EventCtrl:  beginnewuser:  $scope.addmethod="+$scope.addmethod);
   } 
     
   $scope.addparticipant = function(index, person, circle, participationlevel) {

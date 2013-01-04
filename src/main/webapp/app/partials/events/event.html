@@ -1,0 +1,40 @@
+
+<div ng-controller="EventCtrl">
+
+<div class="row"> <!-- header row -->
+  <div class="span7 roundedtop10 bgbluegradient pad10">
+        <span class="font28 white">{{circle.name}}</span>
+  </div>
+</div> <!-- header row -->
+
+
+
+
+<div ng-repeat="p in circle.participants.receivers">
+  <div class="row">  <!-- participant row -->
+    
+      <a ng-href="#/giftlist/{{p.id}}/{{circle.id}}">
+        <div class="span7 list pad10">
+          {{p.fullname}} <span class="pull-right font12"><i class="icon-chevron-right"></i></span>
+        </div>
+      </a>
+    
+  </div>  <!-- participant row -->
+</div>
+
+
+<div ng-repeat="p in circle.participants.givers">
+  <div class="row">  <!-- participant row -->
+    
+      <a>
+        <div class="span7 list pad10">
+          {{p.fullname}} <span class="pull-right font12"><i class="icon-chevron-right"></i></span>
+        </div>
+      </a>
+    
+  </div>  <!-- participant row -->
+</div>
+
+
+
+</div>

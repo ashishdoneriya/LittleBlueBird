@@ -6,25 +6,15 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
   
   console.log("FriendCtrl called:  ----------------");
   
-  $scope.mode = 'friends';
   $rootScope.activeitem = 'friends';
-    
-  // duplicated almost - similar to app-CircleCtrl.js
-  $scope.beginnewuser = function() {
-     $scope.mode = 'createaccount';
-    console.log("$scope.mode="+$scope.mode);
-    $scope.newuser = {};
-  }
-  
-  $scope.addlbbfriend = function() {
-    $scope.mode = 'addlbbfriend';
-    console.log("$scope.mode="+$scope.mode);
-  }
-  
-  $scope.cancel = function() {
-    console.log("cancel() -------------------");
-    $scope.mode = 'friends';
-  }
+  $scope.selectedfriends = [];
+      
+  $scope.$on("$routeChangeSuccess", 
+    function( scope, newRoute ){
+      // Create a render() function and put the stuff below in that
+      //render();
+    }
+  );
   
   // duplicated in app-CircleCtrl.js
   $scope.userfieldsvalid = function(newuser) {
@@ -43,8 +33,6 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
                           creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname, profilepicLimit:100}, 
                                   function() {$rootScope.user.friends.push(anewuser);}
                                 );
-                                
-    $scope.mode = 'friends';
   }
   
   // TODO duplicated in RegisterCtrl and UserCtrl
@@ -58,6 +46,41 @@ function FriendCtrl($scope, $rootScope, $location, Gift, Circle, User, facebookF
                                           else { form.username.$error.taken = 'false'; }
                                         });
   } 
+  
+  $scope.clicklbbuser = function(index, person, people) {
+    if(angular.isDefined(person.selected)) {
+      delete person.selected;
+      for(var i=0; i < $scope.selectedfriends.length; i++) {
+        if($scope.selectedfriends[i].id = person.id) {
+          $scope.selectedfriends.splice(i, 1);
+          break;
+        }
+      }
+    }
+    else {
+      person.selected = true; 
+      $scope.selectedfriends.push(person);
+    }
+    console.log($scope.selectedfriends);
+  }
+  
+  // returns the selected or not-selected style of a person's row
+  $scope.selectedOrNotStyle = function(style, index, size, person) {
+    if(angular.isDefined(person.selected) && person.selected==true)
+      style = style + ' selected';
+    return $rootScope.isLastRow(style, index, size);
+  }
+  
+  $scope.addselectedfriends = function() {
+    $rootScope.usersearch = 'not loaded';
+    $rootScope.user = User.save({userId:$rootScope.user.id, lbbfriends:$scope.selectedfriends}, function() {$scope.selectedfriends=[];});
+  }
+  
+  $scope.cancelselectedfriends = function() { 
+    $scope.selectedfriends = []; 
+    $rootScope.search = '';
+    $rootScope.usersearch = 'not loaded';
+  }
   
   $rootScope.$on("friends", function(event) {
     // fbinvite() sets $rootScope.user.friends so need to do anything here except listen for the event

@@ -555,6 +555,10 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
          ,JField("profilepicadjustedwidth100", JInt(Util.calculateAdjustedWidth(100, profilepicUrl)))
          ,JField("profilepicmargintop100", JString(Util.calculateMarginTop(100, profilepicUrl)))
          ,JField("profilepicmarginleft100", JString(Util.calculateMarginLeft(100, profilepicUrl)))
+         ,JField("profilepicadjustedheight50", JInt(Util.calculateAdjustedHeight(50, profilepicUrl)))
+         ,JField("profilepicadjustedwidth50", JInt(Util.calculateAdjustedWidth(50, profilepicUrl)))
+         ,JField("profilepicmargintop50", JString(Util.calculateMarginTop(50, profilepicUrl)))
+         ,JField("profilepicmarginleft50", JString(Util.calculateMarginLeft(50, profilepicUrl)))
                  ,JField("email", JString(this.email)),
                  JField("bio", JString(this.bio)),
                  JField("age", JInt(this.age.is)),
@@ -631,6 +635,10 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
          ,("profilepicadjustedwidth100", Util.calculateAdjustedWidth(100, profilepicUrl))
          ,("profilepicmargintop100", JString(Util.calculateMarginTop(100, profilepicUrl)))
          ,("profilepicmarginleft100", JString(Util.calculateMarginLeft(100, profilepicUrl)))
+         ,("profilepicadjustedheight50", Util.calculateAdjustedHeight(50, profilepicUrl))
+         ,("profilepicadjustedwidth50", Util.calculateAdjustedWidth(50, profilepicUrl))
+         ,("profilepicmargintop50", JString(Util.calculateMarginTop(50, profilepicUrl)))
+         ,("profilepicmarginleft50", JString(Util.calculateMarginLeft(50, profilepicUrl)))
          )        
   }
   
@@ -638,6 +646,14 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
     Friend.join(this, friend)
   }
   
+  // This is for adding friends that are LBB users
+  def addlbbfriends(list:List[Map[String, Any]]) = {
+    for(map <- list; friendid <- map.get("id")) {
+      Friend.associate(this.id.is, friendid.toString().toInt)
+    }
+  }
+  
+  // This is only for adding FACEBOOK friends, not friends that are LBB users
   def addfriends(list:List[Map[String, Any]]) = {
           
     // This is all your friends from FB

@@ -1,24 +1,17 @@
 
-          
-          
           <div class="row">
-            <div class="span6">
-              <div style="width:400px; height:125px;">
-                <div style="width:120px; height:100px; display:table-cell">
-                
-                  <div style="width:100px; height:100px; overflow:hidden;">
-                    <div style="margin-top:{{friend.profilepicmargintop100}};margin-left:{{friend.profilepicmarginleft100}}">
-                      <a ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
-                        <img height="{{friend.profilepicadjustedheight100}}" width="{{friend.profilepicadjustedwidth100}}" ng-src="{{friend.profilepicUrl}}"/>
-                      </a>
+            <div class="span1">
+                  <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
+                    <div style="margin-top:{{friend.profilepicmargintop50}};margin-left:{{friend.profilepicmarginleft50}}">
+                        <img height="{{friend.profilepicadjustedheight50}}" width="{{friend.profilepicadjustedwidth50}}" ng-src="{{friend.profilepicUrl}}"/>
                     </div>
                   </div>
-                
-                </div>
-                <div style="width:280px; height:100px;display:table-cell;vertical-align:top;font-size:16px;">
-                  <a style="font-weight:bold;" href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">{{friend.fullname}}</a>
-                  <P style="font-size:16px;">fasfadf <a title="{{friend.fullname}} has not accepted the app request yet">{{friend.appRequestStatus}}</a></P>
-                </div>
-              </div>
+            </div>
+            <div class="span5">
+                  {{friend.fullname}}
+                  <P style="font-size:16px;"><span style="font-weight:normal;" title="{{friend.fullname}} has not accepted the app request yet">{{friend.appRequestStatus}}</span></P>
+            </div>
+            <div class="span1">
+                <span class="pull-right font12"><i class="icon-chevron-right"></i></span>
             </div>
           </div>

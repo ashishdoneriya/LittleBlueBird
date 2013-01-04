@@ -22,15 +22,15 @@
 
 
 <div ng-repeat="event in user.circles">
-  <div class="row">  <!-- event row -->
+  <div class="row">
     
       <a ng-href="#/event/{{event.id}}">
-        <div class="{{isLastRow('span7 list', $index, user.circles.length)}}">
+        <div class="{{isLastRow('span7 list pad10', $index, user.circles.length)}}">
           {{event.name}} <span class="pull-right font12">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
         </div>
       </a>
     
-  </div>  <!-- event row -->
+  </div>
 </div>
 
 

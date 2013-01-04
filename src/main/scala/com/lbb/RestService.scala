@@ -617,6 +617,7 @@ object RestService extends RestHelper with LbbLogger {
                 case ("profilepic", s:String) => user.profilepic(s)
                 case ("facebookId", a:Any) => user.facebookId(a.toString())
                 case ("friends", list:List[Map[String, Any]]) => user.addfriends(list)
+                case ("lbbfriends", list:List[Map[String, Any]]) => user.addlbbfriends(list)
                 case ("notifyonaddtoevent", b:Boolean) => user.notifyonaddtoevent(b.toString())
                 case ("notifyondeletegift", b:Boolean) => user.notifyondeletegift(b.toString())
                 case ("notifyoneditgift", b:Boolean) => user.notifyoneditgift(b.toString())

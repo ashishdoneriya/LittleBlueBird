@@ -71,8 +71,8 @@ function ManagePeopleCtrl($rootScope, $scope, CircleParticipant, Reminder, UserS
     
     // if the circle already exists, add the participant to the db immediately
     if(angular.isDefined($rootScope.circle.id)) {
-      console.log("$scope.addparticipant:  $scope.user.id="+$scope.user.id);
-      var newcp = CircleParticipant.save({circleId:$rootScope.circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:level,
+      console.log("$scope.addparticipant:  $rootScope.user.id="+$rootScope.user.id);
+      var newcp = CircleParticipant.save({circleId:$rootScope.circle.id, inviterId:$rootScope.user.id, userId:person.id, participationLevel:level,
                                          who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:$rootScope.circle.name, 
                                          adder:$rootScope.user.fullname},
                                          function() {$rootScope.circle.reminders = Reminder.query({circleId:$rootScope.circle.id})});
@@ -136,9 +136,9 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
                         //$scope.people.splice(0, $scope.people.length); // effectively refreshes the people list
                         
                         // uncomment for facebook integration
-                        //for(var i=0; i < $scope.user.friends.length; i++) {
-                        //  if(!lbbNamesContainFbName(lbbpeople, $scope.user.friends[i].fullname))
-                        //    $scope.people.push($scope.user.friends[i]);
+                        //for(var i=0; i < $rootScope.user.friends.length; i++) {
+                        //  if(!lbbNamesContainFbName(lbbpeople, $rootScope.user.friends[i].fullname))
+                        //    $scope.people.push($rootScope.user.friends[i]);
                         //}
                         //for(var i=0; i < lbbpeople.length; i++) {
                         //  $scope.people.push(lbbpeople[i]);
@@ -157,8 +157,8 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
   // TODO add reminder
   $scope.addmyselfasgiver = function(circle) {
     $scope.participationlevel = 'Giver'
-    $scope.addparticipant2($scope.user, circle)
-    //circle.participants.givers.push($scope.user);
+    $scope.addparticipant2($rootScope.user, circle)
+    //circle.participants.givers.push($rootScope.user);
   }
     
     
@@ -176,9 +176,9 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
     
     // if the circle already exists, add the participant to the db immediately
     if(angular.isDefined(circle.id)) {
-      console.log("$scope.addparticipant:  $scope.user.id="+$scope.user.id);
-      var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:participationlevel,
-                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$scope.user.fullname},
+      console.log("$scope.addparticipant:  $rootScope.user.id="+$rootScope.user.id);
+      var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$rootScope.user.id, userId:person.id, participationLevel:participationlevel,
+                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$rootScope.user.fullname},
                                          function() {$rootScope.circle.reminders = Reminder.query({circleId:$rootScope.circle.id})});
     }
   }

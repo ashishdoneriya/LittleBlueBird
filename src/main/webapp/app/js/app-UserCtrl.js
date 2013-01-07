@@ -85,8 +85,8 @@ function CreateAccountCtrl($scope, $rootScope, CircleParticipant, User) {
     
     // if the circle already exists, add the participant to the db immediately
     if(angular.isDefined($rootScope.circle.id)) {
-      console.log("$scope.addparticipant:  $scope.user.id="+$scope.user.id);
-      var newcp = CircleParticipant.save({circleId:$rootScope.circle.id, inviterId:$scope.user.id, userId:person.id, participationLevel:level,
+      console.log("$scope.addparticipant:  $rootScope.user.id="+$rootScope.user.id);
+      var newcp = CircleParticipant.save({circleId:$rootScope.circle.id, inviterId:$rootScope.user.id, userId:person.id, participationLevel:level,
                                          who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:$rootScope.circle.name, 
                                          adder:$rootScope.user.fullname},
                                          function() {$rootScope.circle.reminders = Reminder.query({circleId:$rootScope.circle.id})});

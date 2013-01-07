@@ -1,9 +1,31 @@
 
 <div ng-controller="MyAccountCtrl">
-<P></P>
-<P><input type="checkbox" ng-checked="notifyonaddtoevent=='true'" ng-model="notifyonaddtoevent"/> Notify me when someone adds me to an event</P>
-<P><input type="checkbox" ng-checked="notifyondeletegift=='true'" ng-model="notifyondeletegift"/> Notify me when someone deletes a gift I have bought</P>
-<P><input type="checkbox" ng-checked="notifyoneditgift=='true'" ng-model="notifyoneditgift"/> Notify me when someone changes the description of a gift I have bought</P>
-<P><input type="checkbox" ng-checked="notifyonreturngift=='true'" ng-model="notifyonreturngift"/> Notify me when someone returns a gift, making it available again</P>
-<a class="btn" ng-click="updateemailprefs()">Update</a>
+
+    <div class="row">
+      <div class="span7 roundedtop10 bgbluegradient white pad10">
+        <span class="font28">Email Preferences</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span7 roundedbottom10 pad10 bgwhite">
+
+<P><input type="checkbox" ng-checked="user.notifyonaddtoevent=='true'" ng-model="notifyonaddtoevent"/> Notify me when someone adds me to an event</P>
+<P><input type="checkbox" ng-checked="user.notifyondeletegift=='true'" ng-model="notifyondeletegift"/> Notify me when someone deletes a gift I have bought</P>
+<P><input type="checkbox" ng-checked="user.notifyoneditgift=='true'" ng-model="notifyoneditgift"/> Notify me when someone changes the description of a gift I have bought</P>
+<P><input type="checkbox" ng-checked="user.notifyonreturngift=='true'" ng-model="notifyonreturngift"/> Notify me when someone returns a gift, making it available again</P>
+
+        <div class="row">
+          <div class="span1 offset1">
+            <a class="btn btn-primary" href="#/me" ng-click="updateemailprefs()">Update</a>
+          </div>
+          <div class="span1">
+            <a href="#/me" class="btn span1">Cancel</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    
+    
 </div>

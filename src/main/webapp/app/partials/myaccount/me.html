@@ -2,7 +2,20 @@
 <div class="row  margleft0">
   <div class="span7 bgbluegradient white roundedtop10 margleft_5 pad0" ng-mouseover="showEdit='true'" ng-mouseleave="showEdit='false'">
     <div class="row">
-      <div class="span7 pull-right" style="min-height:30px;padding-top:10px;padding-right:10px;">&nbsp;<span ng-show="showEdit=='true'"><button class="btn pull-right">Edit</button></span></div>
+      <div class="span7 pull-right" style="min-height:30px;padding-top:10px;padding-right:10px;">
+        &nbsp;
+        <span ng-show="showEdit=='true'" class="pull-right">
+
+          <div class="btn-group">
+		    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown">Edit</a> <!-- see dropdownToggle.js -->
+		    <ul class="dropdown-menu">
+		      <li><a href="#/personalinfo">Personal Info</a></li>
+		      <li><a href="#/emailprefs">Email Preferences</a></li>
+		    </ul>
+		  </div>
+          
+        </span>
+      </div>
     </div>
     <div class="row">
     

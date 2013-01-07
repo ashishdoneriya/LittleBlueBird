@@ -1,5 +1,15 @@
 
 <div ng-controller="MyAccountCtrl">
+
+    <div class="row">
+      <div class="span7 roundedtop10 bgbluegradient white pad10">
+        <span class="font28">Personal Info</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span7 roundedbottom10 pad10 bgwhite">
+      
 <form novalidate name="regForm">
         <div class="row">
           <div class="span3">
@@ -83,16 +93,23 @@
 
 
         <div class="row">
-          <div class="span1 offset1">    
+          <div class="span3 offset1">    
             <div ng-show="regForm.$invalid" >
               <a ng-disabled="true" class="btn span1" id="invalidform" title="Not Ready Yet" data-content="The form isn't ready to submit yet.  You still have fields to fix and complete.">Save</a>
+              <a href="#/me" class="btn span1">Cancel</a>
             </div>    
           
             <div ng-show="regForm.$valid" >
-              <a href="#/myaccount" class="btn btn-primary span1" ng-click="save(user)">Save</a>
+              <a href="#/me" class="btn btn-primary span1" ng-click="save(user)">Save</a>
+              <a href="#/me" class="btn span1">Cancel</a>
             </div>
           </div>
     
         </div>
 </form>
+
+      </div> <!-- div class="span7 roundedbottom10" -->
+    </div>
+
+
 </div>

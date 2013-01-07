@@ -35,17 +35,17 @@ function EventCtrl($rootScope, $scope, $route, Circle, CircleParticipant) {
   
   // TODO add reminder
   $scope.addmyselfasreceiver = function(circle) {
-    $scope.participationlevel = 'Receiver'
-    $scope.addparticipant2($rootScope.user, circle)
+    $scope.addparticipant2($rootScope.user, circle, 'Receiver')
     //circle.participants.receivers.push($rootScope.user);
   }
   
   // when you're creating a new user and then immediately adding them to the circle
-  $scope.addparticipant2 = function(person, circle) {
-    $scope.addparticipant(-1, person, circle);
+  $scope.addparticipant2 = function(person, circle, participationlevel) {
+    $scope.addparticipant(-1, person, circle, participationlevel);
   }
     
   $scope.addparticipant = function(index, person, participationlevel) {
+    console.log("$scope.addparticipant = function(index, person, participationlevel):  participationlevel="+participationlevel);
     var level = participationlevel;
     if(participationlevel == 'Giver') {
       $rootScope.circle.participants.givers.push(person);
@@ -99,8 +99,7 @@ function EventCtrl($rootScope, $scope, $route, Circle, CircleParticipant) {
   
   // TODO add reminder
   $scope.addmyselfasgiver = function(circle) {
-    $scope.participationlevel = 'Giver'
-    $scope.addparticipant2($rootScope.user, circle)
+    $scope.addparticipant2($rootScope.user, circle, 'Giver')
     //circle.participants.givers.push($rootScope.user);
   }
   
@@ -121,6 +120,7 @@ function EventCtrl($rootScope, $scope, $route, Circle, CircleParticipant) {
   } 
     
   $scope.addparticipant = function(index, person, circle, participationlevel) {
+    console.log("$scope.addparticipant = function(index, person, circle, participationlevel) ------------------------------------");
     if(!angular.isDefined(circle.participants))
       circle.participants = {receivers:[], givers:[]};
     if(participationlevel == 'Giver')

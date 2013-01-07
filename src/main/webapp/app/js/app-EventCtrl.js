@@ -19,8 +19,6 @@ function EventCtrl($rootScope, $scope, $route, Circle, CircleParticipant) {
   );
   
   $scope.newcircleFunction = function(thetype, limit) {
-    $scope.addEventModalShown = true;
-    console.log("EventCtrl: $scope.newcircleFunction():  modalShown="+$scope.addEventModalShown);
     $scope.search = '';
     $scope.people = {};
     Circle.circleType = thetype;

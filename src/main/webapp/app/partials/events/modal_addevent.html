@@ -41,11 +41,11 @@
 	          
 	          <span ng-show="canaddreceiver">
                 <div class="btn-group pull-right">
-	              <a class="btn btn-mini btn-primary font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
+	              <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
 			      <ul class="dropdown-menu">
 			        <li><a ng-click="addmyselfasreceiver(newcircle)">Add myself</a></li>
 			        <li><a ng-click="addmethod='byname';participationlevel='Receiver';">Add by name</a></li>
-			        <li><a ng-click="addmethod='fromanotherevent';participationlevel='Receiver';">Add from another event</a></li>
+			        <span ng-hide="user.circles.length == 0"><li><a ng-click="addmethod='fromanotherevent';participationlevel='Receiver';">Add from another event</a></li></span>
 			      </ul>	
 	            </div>
 	          </span>
@@ -61,7 +61,7 @@
 	      <span ng-repeat="participant in newcircle.participants.receivers">
 	      <div class="row">
 	        <div class="{{isLastRow('span3 list pad5', $index, newcircle.participants.receivers.length)}}">
-	          <a ng-click="removereceiver($index, newcircle, participant)"><i class="icon-remove"></i></a>{{participant.fullname}}
+	          <a class="align-bottom" ng-click="removereceiver($index, newcircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
 	        </div>
 	      </div>
 		  </span>
@@ -87,11 +87,11 @@
 	        <div class="row margtop10">
 	          <div class="span3 roundedtop10 bgbluegradient pad5 white">Guests
                 <div class="btn-group pull-right">
-	              <a class="btn btn-mini btn-primary font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
+	              <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
 			      <ul class="dropdown-menu">
 			        <li><a ng-click="addmyselfasgiver(newcircle)">Add myself</a></li>
 			        <li><a ng-click="addmethod='byname';participationlevel='Giver';">Add by name</a></li>
-			        <li><a ng-click="addmethod='fromanotherevent';participationlevel='Giver';">Add from another event</a></li>
+			        <span ng-hide="user.circles.length == 0"><li><a ng-click="addmethod='fromanotherevent';participationlevel='Giver';">Add from another event</a></li></span>
 			      </ul>	
 	            </div>
 	          </div>
@@ -100,7 +100,7 @@
 	        <span ng-repeat="participant in newcircle.participants.givers">
 	          <div class="row">
 	            <div class="{{isLastRow('span3 list pad5', $index, newcircle.participants.givers.length)}}">
-	              <a ng-click="removegiver($index, newcircle, participant)"><i class="icon-remove"></i></a>{{participant.fullname}}
+	              <a class="align-bottom" ng-click="removegiver($index, newcircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
 	            </div>
 	          </div>
 		    </span>

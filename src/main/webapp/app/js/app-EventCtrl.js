@@ -20,7 +20,7 @@ function EventCtrl($rootScope, $scope, $route, Circle, CircleParticipant) {
   
   $scope.newcircleFunction = function(thetype, limit) {
     $scope.search = '';
-    $scope.people = {};
+    $rootScope.peoplesearchresults = [];
     Circle.circleType = thetype;
     $scope.newcircle = {name:'', creatorId:$rootScope.user.id, receiverLimit:limit, participants:{receivers:[], givers:[]}};
     $scope.circlecopies = angular.copy($rootScope.user.circles);
@@ -66,7 +66,7 @@ function EventCtrl($rootScope, $scope, $route, Circle, CircleParticipant) {
     
     if(index != -1) {
       console.log("index = "+index);
-      $scope.people[index].hide = true;
+      $rootScope.peoplesearchresults[index].hide = true;
     }
     
     // if the circle already exists, add the participant to the db immediately
@@ -127,17 +127,26 @@ function EventCtrl($rootScope, $scope, $route, Circle, CircleParticipant) {
     console.log("app-EventCtrl:  beginnewuser:  $scope.addmethod="+$scope.addmethod);
   } 
     
+  // I think circle in this case is always(?) 'newcircle' and that the other overload of this function (where we don't pass in a circle) uses $rootScope.circle
+  // This function here was created because $rootScope.circle doesn't exist yet.  We're in the process of creating this circle when we reach this function
   $scope.addparticipant = function(index, person, circle, participationlevel) {
     console.log("$scope.addparticipant = function(index, person, circle, participationlevel) ------------------------------------");
     if(!angular.isDefined(circle.participants))
       circle.participants = {receivers:[], givers:[]};
     if(participationlevel == 'Giver')
       circle.participants.givers.push(person);
-    else circle.participants.receivers.push(person);
+    else if(circle.receiverLimit == -1) { // no limit on receivers
+      circle.participants.receivers.push(person);
+    }
+    else {
+      if(circle.participants.receivers.length < circle.receiverLimit)
+        circle.participants.receivers.push(person);
+      else  circle.participants.givers.push(person);
+    }
     
     if(index != -1) {
       console.log("index = "+index);
-      $scope.people[index].hide = true;
+      $rootScope.peoplesearchresults[index].hide = true;
     }
     
     // if the circle already exists, add the participant to the db immediately

@@ -66,13 +66,6 @@ function FriendCtrl($scope, $rootScope, User, Friend) {
     console.log($scope.selectedfriends);
   }
   
-  // returns the selected or not-selected style of a person's row
-  $scope.selectedOrNotStyle = function(style, index, size, person) {
-    if(angular.isDefined(person.selected) && person.selected==true)
-      style = style + ' selected';
-    return $rootScope.isLastRow(style, index, size);
-  }
-  
   $scope.savenewfriend = function(newuser) {
     newuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password}, 
                                   function() { 

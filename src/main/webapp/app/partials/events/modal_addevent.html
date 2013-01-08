@@ -126,132 +126,51 @@
 		            <div class="span3"><input search-users type="text" class="span3 search-query" ng-model="search" placeholder="Search by Name"></div>
 		          </div>
 		          
-				  <span ng-show="usersearch=='loaded'">
+				  <span ng-show="search != '' && usersearch=='loaded'">
 			        <div class="row margtop10">
-			          <div class="span3 roundedtop10 bgbluegradient white pad5">Found...people {{people}}</div>
+			          <div class="span3 roundedtop10 bgbluegradient white pad5">Found...</div>
 			        </div>
 			      
-			      <span ng-show="noonefound">
+			        <span ng-show="noonefound">
 			        <div class="row">
 			          <div class="span3 roundedbottom10 pad5">
 			            No one found matching the search criteria
 			            <p><a ng-click="beginnewuser();">Create Account for this Person?</a></p>
 			          </div>
 			        </div>
-			      </span>
-			      
+			        </span>
 
-
-	      
-				    <div class="row">
-				      <div class="span3">  
-	                      <div class="box-white">
-				            <span ng-hide="noonefound">
-				              <div ng-repeat="person in peoplesearchresults | filter:search">
-				                <span ng-hide="person.hide">
-				                  <div class="row margbottom5 margleft0 highlight-box-white" ng-click="addparticipant($index, person, newcircle, participationlevel)">
-				                    <div class="span1 marg0"><img height=50 width=50 ng-src="{{person.profilepicUrl}}" /></div>
-				                    <div class="span2 marg0 padtop5 font14">{{person.fullname}}</div>
-  				                  </div>
-				                </span>
-				              </div>
-				            </span>
+				          
+				    <div ng-repeat="person in peoplesearchresults | filter:search">
+				      <span ng-hide="person.hide">
+						  <div class="row" ng-click="addparticipant($index, person, newcircle, participationlevel)">
+							<div class="{{isLastRow('span3 list pad5', $index, peoplesearchresults.length)}}">
+							  <div class="row">
+							    <div class="span1">
+			
+			                      <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
+			                        <div style="margin-top:{{person.profilepicmargintop50}};margin-left:{{person.profilepicmarginleft50}}">
+			                           <img height="{{person.profilepicadjustedheight50}}" width="{{person.profilepicadjustedwidth50}}" ng-src="{{person.profilepicUrl}}"/>
+			                        </div>
+			                      </div>
+			
+							    </div>
+							    <div class="span2 marg0 padtop5 font14">{{person.fullname}}</div>
+							  
+							  </div>
+				            </div>
 				          </div>
-				      
-				      </div>
-			        </div>	
-				  </span>
+			          </span>
+			        </div>
+			        
+			        
+				  </span>  <!-- span ng-show="usersearch=='loaded'" -->
 	              
 	      </div> <!-- end of div: addmethod='byname' -->
 	      
 	      
 	      <div ng-show="addmethod=='createaccount'">
 	      
-            <!-- See:  http://docs-next.angularjs.org/guide/dev_guide.forms 
-                 This page is a copy of register.html except the title here is Create Account
-                 and on register.html it's Sign Up.   Also the save button here creates a new
-                 user but doesn't send the user to the welcome screen like in register.html
-            -->
-
-            <div class="row">
-              <div class="span3" ng-form="newuserform" ng-controller="UserCtrl">
-
-                <div class="row"><div class="span3"><h4>Create Account</h4></div></div>
-            
-                <div class="row">
-                  <div class="span3">All fields required</div>
-                </div>
-                
-                <div class="box-white">
-    
-                        <div class="row">
-                          <div class="span1">Name</div>
-                          <div class="span2 margleft0">
-                            <input class="w110" maxlength="140" value="" type="text" name="fullname" ng-model="newuser.fullname" ng-required="true" />
-                          </div>
-                        </div>
-
-                        <div class="row">
-                          <div class="span1">Email</div>
-                          <div class="span2 margleft0">
-                            <input class="w110" maxlength="140" value="" name="email" type="email" ng-model="newuser.email" ng-required="true">
-                            <span ng-show="newuserform.email.$dirty">
-                              <span ng-show="newuserform.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
-                            </span>
-                          </div>
-                        </div>  
-
-                        <div class="row">
-                          <div class="span1">Username</div>
-                          <div class="span2 margleft0">
-                            <input class="w110" maxlength="140" value="" name="username" type="text" ng-model="newuser.username" ng-change="isUsernameUnique(newuser, newuserform)" required />
-                            <span ng-show="newuserform.username.$dirty">
-                              <span ng-show="newuserform.username.$error.taken">
-                                <img src="img/red_x.png" id="invalidusername" title="Username is taken">
-                              </span>
-                            </span>
-                          </div>
-                        </div>
-
-                        <div class="row">
-                          <div class="span1">Password</div>
-                          <div class="span2 margleft0">
-                            <input class="w110" ng-model="newuser.password" type="password" name="password" value="*******" ng-required="true" />
-                          </div>
-                        </div>
-
-                        <div class="row">
-                          <div class="span1">Again</div>
-                          <div class="span2 margleft0">
-                            <input class="w110" ng-model="newuser.passwordAgain" type="password" name="passwordAgain" value="*******" ng-required="true" />
-                            <span ng-show="newuserform.passwordAgain.$dirty">
-                              <span ng-show="newuser.passwordAgain != newuser.password && !newuserform.passwordAgain.$error.required">
-                                <img src="img/red_x.png" id="passwordsdontmatch" title="Passwords don't match">
-                              </span>
-                            </span> 
-                          </div>
-                        </div>
-
-                </div> <!-- end div:class=box-white -->
-                
-                <div class="row">
-                  <div class="span2 offset1">    
-          
-                    <div ng-hide="userfieldsvalid(newuser)" >
-                      <a class="btn" ng-click="cancelnewuser();">Cancel</a>
-                      <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet">Save</a>
-                    </div>    
-          
-                    <div ng-show="userfieldsvalid(newuser)" >
-                      <a class="btn" ng-click="cancelnewuser();">Cancel</a>
-                      <a class="btn btn-primary" ng-click="createonthefly(newuser, newcircle)">Save</a>
-                    </div>
-      
-                  </div>
-                </div>
-                        
-              </div>
-            </div>
 	              
 	      </div> <!-- end of div: addmethod='createaccount' -->
 	      
@@ -296,13 +215,13 @@
 	</div>
 	<div class="modal-footer">	
               <div ng-show="circleForm.name.$error.required || circleForm.expdate.$error.required">
-                <a ng-click="addEventModalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a>
                 <a ng-disabled="true" class="btn" id="invalidform">Save</a>
+                <a ng-click="addEventModalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a>
               </div>    
           
               <div ng-hide="circleForm.name.$error.required || circleForm.expdate.$error.required">
-                <a ng-click="addEventModalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a> 
                 <a class="btn btn-primary" ng-click="savecircle(newcircle, expdate);addEventModalShown = false;showRegister=false;search='';">Save</a>
+                <a ng-click="addEventModalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a> 
               </div>
 	</div>
   </div>

@@ -28,14 +28,13 @@ BUT THAT DIDN'T WORK - THE MODAL WOULD OPEN ONCE THEN NEVER AGAIN.  SO WE'RE STU
 	      </div>
 		</span>
 				          
-        <span ng-hide="noonefound">
-	      <div ng-repeat="person in peoplesearchresults | filter:search">
-			  <div class="row" ng-click="clicklbbuser($index, person, people)">
-				<div class="{{selectedOrNotStyle('span3 list pad5', $index, people.length, person)}}">
+	    <div ng-repeat="person in peoplesearchresults | filter:search">
+			  <div class="row" ng-click="clicklbbuser($index, person, peoplesearchresults)">
+				<div class="{{selectedOrNotStyle('span3 list pad5', $index, peoplesearchresults.length, person)}}">
 				  <div class="row">
 				    <div class="span1">
 
-                      <div style="width:50px; height:50px; overflow:hidden;">
+                      <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
                         <div style="margin-top:{{person.profilepicmargintop50}};margin-left:{{person.profilepicmarginleft50}}">
                            <img height="{{person.profilepicadjustedheight50}}" width="{{person.profilepicadjustedwidth50}}" ng-src="{{person.profilepicUrl}}"/>
                         </div>
@@ -47,8 +46,7 @@ BUT THAT DIDN'T WORK - THE MODAL WOULD OPEN ONCE THEN NEVER AGAIN.  SO WE'RE STU
 				  </div>
 	            </div>
 	          </div>
-	      </div>
-		</span>
+        </div>
 				          
 	  </span> <!-- "usersearch=='loaded'" -->
 		          

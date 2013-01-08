@@ -214,6 +214,13 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       if(lastrow) return style + ' lastrow'; 
       else return style;
     }
+  
+    // returns the selected or not-selected style of a person's row
+    $rootScope.selectedOrNotStyle = function(style, index, size, person) {
+      if(angular.isDefined(person.selected) && person.selected==true)
+        style = style + ' selected';
+      return $rootScope.isLastRow(style, index, size);
+    }
     
     
     $rootScope.friendwishlist = function(friend) {
@@ -236,7 +243,10 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
     $rootScope.usersearch = '';
   
     $rootScope.query = function(sss) {
-      console.log("app.js: scope.query() -----------------------");
+      var trimmed = sss.replace(/^\s+|\s+$/g,"");
+      if(trimmed == '') return
+
+      $rootScope.foo = 'else';
       $rootScope.usersearch = 'loading';
       $rootScope.peoplesearchresults = UserSearch.query({search:sss}, 
                       function() {

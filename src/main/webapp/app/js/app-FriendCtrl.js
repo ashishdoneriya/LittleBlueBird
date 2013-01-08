@@ -73,6 +73,14 @@ function FriendCtrl($scope, $rootScope, User, Friend) {
     return $rootScope.isLastRow(style, index, size);
   }
   
+  $scope.savenewfriend = function(newuser) {
+    newuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password}, 
+                                  function() { 
+                                    $rootScope.user = User.save({userId:$rootScope.user.id, lbbfriends:[newuser]});
+                                  }
+                                );
+  }
+  
   $scope.addselectedfriends = function() {
     $rootScope.usersearch = 'not loaded';
     $rootScope.user = User.save({userId:$rootScope.user.id, lbbfriends:$scope.selectedfriends}, function() {$scope.selectedfriends=[];});
@@ -97,6 +105,10 @@ function FriendCtrl($scope, $rootScope, User, Friend) {
         break;
       }
     }
+  }
+    
+  $scope.createafriend = function() {
+    $scope.newuser = {};
   }
   
   $rootScope.$on("friends", function(event) {

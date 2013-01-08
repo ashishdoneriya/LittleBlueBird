@@ -7,7 +7,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/foo/:fooid', {templates: {layout: 'foo',               menu: 'partials/foo/menu.html', body:'partials/foo/foo.html'}})
       .when('/bar/:fooid/:barid', {templates: {layout: 'foo',        menu: 'partials/foo/menu.html', body:'partials/foo/bar.html'}})
       .when('/baz/:fooid/:barid/:bazid', {templates: {layout: 'foo', menu: 'partials/foo/menu.html', body:'partials/foo/baz.html'}})
-      .when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', one: 'partials/login.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}})
+      .when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}})
       .when('/circles', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})

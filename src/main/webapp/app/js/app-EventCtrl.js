@@ -35,8 +35,12 @@ function EventCtrl($rootScope, $scope, $route, Circle, CircleParticipant) {
   
   // TODO add reminder
   $scope.addmyselfasreceiver = function(circle) {
-    $scope.addparticipant2($rootScope.user, circle, 'Receiver')
-    //circle.participants.receivers.push($rootScope.user);
+    $scope.addparticipant2($rootScope.user, circle, 'Receiver');
+    // if 'you' happen to be a 'giver', remove yourself from 'givers'...
+    for(var i=0; i < circle.participants.givers.length; i++) {
+      if(circle.participants.givers[i].id == $rootScope.user.id)
+        circle.participants.givers.splice(i, 1);
+    }
   }
   
   // when you're creating a new user and then immediately adding them to the circle
@@ -100,7 +104,11 @@ function EventCtrl($rootScope, $scope, $route, Circle, CircleParticipant) {
   // TODO add reminder
   $scope.addmyselfasgiver = function(circle) {
     $scope.addparticipant2($rootScope.user, circle, 'Giver')
-    //circle.participants.givers.push($rootScope.user);
+    // if 'you' happen to be a 'receiver', remove yourself from 'receivers'...
+    for(var i=0; i < circle.participants.receivers.length; i++) {
+      if(circle.participants.receivers[i].id == $rootScope.user.id)
+        circle.participants.receivers.splice(i, 1);
+    }
   }
   
   // TODO duplicated in ManagePeopleCtrl

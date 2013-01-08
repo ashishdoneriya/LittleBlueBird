@@ -83,35 +83,37 @@
 	      <!-- ------------------------------------------------------- -->
 	      <!-- BEGIN: Guests section (for those events that have them) -->
 	      <!-- ------------------------------------------------------- -->
-	      <div class="row margtop10" ng-show="newcircle.receiverLimit != -1">
-	        <div class="span3 roundedtop10 bgbluegradient pad5 white">Guests
-              <div class="btn-group pull-right">
-	            <a class="btn btn-mini btn-primary font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
-			    <ul class="dropdown-menu">
-			      <li><a ng-click="addmyselfasgiver(newcircle)">Add myself</a></li>
-			      <li><a ng-click="addmethod='byname';participationlevel='Giver';">Add by name</a></li>
-			      <li><a ng-click="addmethod='fromanotherevent';participationlevel='Giver';">Add from another event</a></li>
-			    </ul>	
+	      <span ng-show="newcircle.receiverLimit != -1">
+	        <div class="row margtop10">
+	          <div class="span3 roundedtop10 bgbluegradient pad5 white">Guests
+                <div class="btn-group pull-right">
+	              <a class="btn btn-mini btn-primary font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
+			      <ul class="dropdown-menu">
+			        <li><a ng-click="addmyselfasgiver(newcircle)">Add myself</a></li>
+			        <li><a ng-click="addmethod='byname';participationlevel='Giver';">Add by name</a></li>
+			        <li><a ng-click="addmethod='fromanotherevent';participationlevel='Giver';">Add from another event</a></li>
+			      </ul>	
+	            </div>
 	          </div>
 	        </div>
-	      </div>
 	      
-	      <span ng-repeat="participant in newcircle.participants.givers">
-	      <div class="row">
-	        <div class="{{isLastRow('span3 list pad5', $index, newcircle.participants.givers.length)}}">
-	          <a ng-click="removegiver($index, newcircle, participant)"><i class="icon-remove"></i></a>{{participant.fullname}}
-	        </div>
-	      </div>
-		  </span>
+	        <span ng-repeat="participant in newcircle.participants.givers">
+	          <div class="row">
+	            <div class="{{isLastRow('span3 list pad5', $index, newcircle.participants.givers.length)}}">
+	              <a ng-click="removegiver($index, newcircle, participant)"><i class="icon-remove"></i></a>{{participant.fullname}}
+	            </div>
+	          </div>
+		    </span>
 	   
 	   
-	      <span ng-show="newcircle.participants.givers == 0">
-	      <div class="row">
-	        <div class="span3 roundedbottom10 pad5">
-			    Add Guests to this event so they can view the Honoree(s) wish list.  Don't forget yourself if you are also a Guest.
-	        </div>
-	      </div>
-	      </span>
+	        <span ng-show="newcircle.participants.givers == 0">
+	          <div class="row">
+	            <div class="span3 roundedbottom10 pad5">
+			        Add Guests to this event so they can view the Honoree(s) wish list.  Don't forget yourself if you are also a Guest.
+	            </div>
+	          </div>
+	        </span>
+	      </span> <!-- ng-show="newcircle.receiverLimit != -1" -->
 	      <!-- ----------------------------------------------------- -->
 	      <!-- END: Guests section (for those events that have them) -->
 	      <!-- ----------------------------------------------------- -->

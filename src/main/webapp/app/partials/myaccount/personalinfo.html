@@ -10,19 +10,33 @@
     <div class="row">
       <div class="span7 roundedbottom10 pad10 bgwhite">
       
-<form novalidate name="regForm">
+      
+      <span ng-show="user.facebookId != null" class="font14">
+      <P>&nbsp;</P>
+      <P class="font14">Your personal information like name and email address is stored on Facebook</P>
+      <P>&nbsp;</P>
+      </span> <!-- ng-show user.facebookId != null -->
+      
+      <span ng-show="user.facebookId == null">
+      <form novalidate name="regForm">
         <div class="row">
-          <div class="span3">
+          <div class="span5">
                                       
             <div class="row">
               <div class="span1">Name</div>
-              <div class="span2"><input class="input-small" maxlength="140" value="" type="text" name="fullname" ng-model="user.fullname" /></div>
+              <div class="span4">
+                <input class="span3" maxlength="140" value="" type="text" name="fullname" ng-model="user.fullname" required />
+                <span ng-show="regForm.fullname.$pristine">*</span>
+                <span ng-show="regForm.fullname.$dirty">
+                  <span ng-show="regForm.fullname.$error.required"><img src="img/red_x.png" id="fullnamerequired" title="Name is required"></span>
+                </span>
+              </div>
               <input class="input-small" maxlength="140" value="" type="hidden" name="id" ng-model="user.id" />
             </div>
             <div class="row">
               <div class="span1">Email</div>
-              <div class="span2">
-                <input class="input-small" maxlength="140" value="" name="email" type="email" ng-model="user.email" required>
+              <div class="span4">
+                <input class="span3" maxlength="140" value="" name="email" type="email" ng-model="user.email" required>
                 <span ng-show="regForm.email.$pristine">*</span>
                 <span ng-show="regForm.email.$dirty">
                   <span ng-show="regForm.email.$error.required"><img src="img/red_x.png" id="emailrequired" title="Email is required"></span>
@@ -32,8 +46,8 @@
             </div>  
             <div class="row">
               <div class="span1">Username</div>
-              <div class="span2">
-                <input class="input-small" maxlength="140" value="" name="username" type="text" ng-model="user.username" required />
+              <div class="span4">
+                <input class="span3" maxlength="140" value="" name="username" type="text" ng-model="user.username" required />
                 <span ng-show="regForm.username.$pristine">*</span>
                 <span ng-show="regForm.username.$dirty">
                   <span ng-show="regForm.username.$error.required">
@@ -44,8 +58,8 @@
             </div>
             <div class="row">
               <div class="span1">Birthday</div>
-              <div class="span2">
-                <input class="input-small" type="text" ng-model="user.dateOfBirthStr" name="dateOfBirth" ng-pattern="/^(\d{1,2})/(\d{1,2})/(\d{4})$/" />
+              <div class="span4">
+                <input class="span3" type="text" ng-model="user.dateOfBirthStr" name="dateOfBirth" ng-pattern="/^(\d{1,2})/(\d{1,2})/(\d{4})$/" />
                 <span ng-show="regForm.dateOfBirth.$dirty">
                   <span ng-show="regForm.dateOfBirth.$error.pattern">
                     <img src="img/red_x.png" id="invaliddobb" title="Enter Birthday as MM/dd/yyyy">
@@ -55,12 +69,14 @@
             </div>
           </div>
     
-          <div class="span1">
+          <div class="span2">
           
             <div class="row">
-              <div class="span1">
-                <div class="crop" ng-controller="UserCtrl"><img height="{{adjustedheight(user)}}" width="{{adjustedwidth(user)}}" ng-src="{{user.profilepicUrl}}"/></div>
-              </div>
+                  <div style="width:150px; height:150px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
+                    <div style="margin-top:{{user.profilepicmargintop}};margin-left:{{user.profilepicmarginleft}}">
+                        <img height="{{user.profilepicadjustedheight}}" width="{{user.profilepicadjustedwidth}}" ng-src="{{user.profilepicUrl}}"/>
+                    </div>
+                  </div>
             </div>
             
           </div>
@@ -69,8 +85,8 @@
   
         <div class="row">
           <div class="span1">Profile Pic</div>
-          <div class="span4">
-                <input class="span3" maxlength="1028" value="" type="url" ng-model="user.profilepic" name="profilepic" ng-validate="url" />
+          <div class="span6">
+                <input class="span5" maxlength="1028" value="" type="url" ng-model="user.profilepic" name="profilepic" ng-validate="url" />
                 <span ng-show="regForm.username.$pristine">&nbsp;&nbsp;</span>
                 <span ng-show="regForm.profilepic.$dirty">
                   <span ng-show="regForm.profilepic.$error.url">
@@ -85,8 +101,8 @@
         </div>
       
         <div class="row">
-          <div class="span5">
-            <textarea class="span5" rows="10" ng-model="user.bio" cols="80"></textarea>
+          <div class="span7">
+            <textarea class="span7" rows="10" ng-model="user.bio" cols="80"></textarea>
           </div>
         </div>
 
@@ -106,7 +122,8 @@
           </div>
     
         </div>
-</form>
+      </form>
+      </span> <!-- ng-show user.facebookId == null -->
 
       </div> <!-- div class="span7 roundedbottom10" -->
     </div>

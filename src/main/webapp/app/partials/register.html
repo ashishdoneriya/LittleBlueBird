@@ -48,8 +48,10 @@
                   <span ng-show="regForm.username.$error.required">
                     <img src="img/red_x.png" id="invalidusername" title="Username is required">
                   </span>
-                  <span ng-show="regForm.username.$error.taken">
-                    <img src="img/red_x.png" id="invalidusername" title="Username is taken">
+                  <span ng-hide="regForm.username.$error.required"> <!-- without this outer ng-hide, we were getting both red x's after entering a taken username then blanking out the field -->
+                    <span ng-show="regForm.username.$error.taken">
+                      <img src="img/red_x.png" id="invalidusername" title="Username is taken">
+                    </span>
                   </span>
                 </span>
               </div>

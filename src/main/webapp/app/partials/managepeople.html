@@ -101,7 +101,7 @@
 			                </div>
 				          </span>
 				          <span ng-hide="noonefound">
-				            <div ng-repeat="person in people">
+				            <div ng-repeat="person in peoplesearchresults">
 				              <span ng-hide="person.hide">
 				                <div class="row margbottom5 margleft0 highlight-box-white" ng-click="addparticipant($index, person, 'Receiver')">
 				                  <div class="span1 marg0"><img height=50 width=50 ng-src="{{person.profilepicUrl}}" /></div>
@@ -296,7 +296,7 @@
 			                </div>
 				          </span>
 				          <span ng-hide="noonefound">
-				            <div ng-repeat="person in people">
+				            <div ng-repeat="person in peoplesearchresults">
 				              <span ng-hide="person.hide">
 				                <div class="row margbottom5 margleft0 highlight-box-white" ng-click="addparticipant($index, person, 'Giver')">
 				                  <div class="span1 marg0"><img height=50 width=50 ng-src="{{person.profilepicUrl}}" /></div>

@@ -159,6 +159,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
         link: function(scope, element, attrs, controller) {
            element.bind("keyup", 
              function() {
+               // see app.js: $rootScope.query()
                scope.query(scope.search);
              }
            );

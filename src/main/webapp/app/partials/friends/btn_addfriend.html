@@ -29,7 +29,7 @@ BUT THAT DIDN'T WORK - THE MODAL WOULD OPEN ONCE THEN NEVER AGAIN.  SO WE'RE STU
 		</span>
 				          
         <span ng-hide="noonefound">
-	      <div ng-repeat="person in people | filter:search">
+	      <div ng-repeat="person in peoplesearchresults | filter:search">
 			  <div class="row" ng-click="clicklbbuser($index, person, people)">
 				<div class="{{selectedOrNotStyle('span3 list pad5', $index, people.length, person)}}">
 				  <div class="row">

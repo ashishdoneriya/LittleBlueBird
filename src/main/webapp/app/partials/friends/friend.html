@@ -1,20 +1,28 @@
 
           <div class="row" ng-mouseover="hoverindex=$index" ng-mouseleave="hoverindex=-1">
-            <div class="span1">
+            <div class="span50">
                   <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
                     <div style="margin-top:{{friend.profilepicmargintop50}};margin-left:{{friend.profilepicmarginleft50}}">
                         <img height="{{friend.profilepicadjustedheight50}}" width="{{friend.profilepicadjustedwidth50}}" ng-src="{{friend.profilepicUrl}}"/>
                     </div>
                   </div>
             </div>
-            <div class="span5">
+            
+            <div class="span1 font12 normal">
                   {{friend.fullname}}
-                  <P style="font-size:16px;"><span style="font-weight:normal;" title="{{friend.fullname}} has not accepted the app request yet">{{friend.appRequestStatus}}</span></P>
             </div>
-            <div class="span1">
-                <span class="pull-right">
-                  <span ng-show="hoverindex==$index"><i class="icon-remove" title="Remove {{friend.fullname}}" ng-click="removefriend($event, friend)"></i></span>
-                  <i class="icon-chevron-right"></i>
-                </span>
+            
+            <div class="span1 font12">
+              <div class="row">
+                <div class="span1 pull-right">
+                  <span class="pull-right">
+                    <span ng-show="hoverindex==$index"><i class="icon-remove" title="Remove {{friend.fullname}}" ng-click="removefriend($event, friend)"></i></span>
+                    <i class="icon-chevron-right"></i>
+                  </span>
+                </div>
+              </div>
+            
+              <div class="row"><div class="span1"><span style="font-weight:normal;" title="{{friend.fullname}} has not accepted the app request yet">{{friend.appRequestStatus}}</span></div></div>
+            
             </div>
           </div>

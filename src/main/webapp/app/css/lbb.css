@@ -443,6 +443,8 @@ html { height:100%; }
 
 .span5px {width: 5px;}
 
+.span50 {width: 50px;}
+
 .span100 {width: 100px;}
 
 .span150 {width: 150px;}
@@ -456,6 +458,8 @@ html { height:100%; }
 .topside { border-top: 1px solid #009dcb; }
 
 .txtblack {color:#000000;}
+
+.txtgray {color:#787878;}
 
 .well-tiny {
   padding: 3px;

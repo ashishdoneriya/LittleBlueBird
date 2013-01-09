@@ -2,9 +2,9 @@
 <div ng-controller="FriendCtrl">
 
 <div class="row"> <!-- header row -->
-  <div class="span7 roundedtop10 bgbluegradient white pad10">
+  <div class="span3 roundedtop10 bgbluegradient white pad5">
   
-        <span class="font28">Friends</span>
+        Friends
         <div class="pull-right">
           <div ng-include src="'partials/friends/btn_addfriend.html'"></div>
 	    </div>
@@ -18,7 +18,7 @@
   <div class="row">
     
       <a style="font-weight:bold;background-color:#555555;display:block;" ng-href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
-        <div class="{{isLastRow('span7 list pad10', $index, user.friends.length)}}">
+        <div class="{{isLastRow('span3 list pad5', $index, user.friends.length)}}">
           <div ng-include src="'partials/friends/friend.html'"></div>
         </div>
       </a>
@@ -28,7 +28,7 @@
 
 <span ng-show="user.friends.length==0">
   <div class="row">
-    <div class="span7 roundedbottom10 bgwhite pad10">
+    <div class="span3 roundedbottom10 bgwhite pad5">
 	  <div ng-include src="'partials/friends/none.html'"></div>
     </div>
   </div>

@@ -2,14 +2,9 @@
 <div ng-controller="EventCtrl">
 
 <div class="row"> <!-- header row -->
-  <div class="span7 roundedtop10 bgbluegradient pad10">
+  <div class="span3 roundedtop10 bgbluegradient pad5">
     <div class="row">
-      <div class="span6">
-
-        <span class="font28 white">Events</span>
-	    
-    
-      </div>
+      <div class="span2 white">Events</div>
       <div class="span1">
 	    <div ng-include src="'partials/events/modal_addevent.html'"></div>
       </div>
@@ -25,7 +20,7 @@
   <div class="row">
     
       <a ng-href="#/event/{{event.id}}">
-        <div class="{{isLastRow('span7 list pad10', $index, user.circles.length)}}">
+        <div class="{{isLastRow('span3 list pad5', $index, user.circles.length)}}">
           {{event.name}} <span class="pull-right font12">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
         </div>
       </a>
@@ -36,7 +31,7 @@
 
 <span ng-show="user.circles.length==0">
 <div class="row">
-  <div class="span7 roundedbottom10 pad10 bgwhite">
+  <div class="span3 roundedbottom10 pad5 bgwhite">
     <P>You don't belong to any events yet</P>
     <P>Create events for each gift-giving occasion</P>
     <P>Add your friends and family to these events so you can see their wish lists, and they can see yours</P>

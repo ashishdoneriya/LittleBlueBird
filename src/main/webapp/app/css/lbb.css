@@ -242,7 +242,6 @@ html { height:100%; }
   border-right: 1px solid #009dcb;
   border-bottom: 1px solid #009dcb;
   background-color:#ffffff;
-  font-size:16px;
 }
 
 .list:hover { background-color:#efefef; }

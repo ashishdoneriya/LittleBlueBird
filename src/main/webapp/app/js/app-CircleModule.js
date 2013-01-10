@@ -52,7 +52,8 @@ angular.module('CircleModule', [])
     return circle.id == $rootScope.circle.id ? "active" : "";
   }
   
-  // also referenced from events.html
+  // I think this is being phased out.  app-EventCtrl:routeChangeSuccess makes the same call to
+  // CircleParticipant.query()
   $rootScope.showParticipants = function(circle) {
     circle.participants = CircleParticipant.query({circleId:circle.id}, 
                                                   function() {
@@ -88,6 +89,7 @@ angular.module('CircleModule', [])
   }
   
   
+  // called from event.html
   // don't have to pass circle in; it's $rootScope.circle
   $rootScope.updatecirclename = function() {
     console.log("CircleModule: updatecirclename !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -97,10 +99,20 @@ angular.module('CircleModule', [])
   // don't have to pass circle in; it's $rootScope.circle
   // similar to $scope.savecircle() in app-CircleCtrl
   $rootScope.updatecircledate = function(expdate) {
-    $rootScope.circle.expirationdate = new Date(expdate);
-    $rootScope.circle = Circle.save({circleId:$rootScope.circle.id, expirationdate:$rootScope.circle.expirationdate.getTime()});
+    $rootScope.circle.date = new Date(expdate);
+    Circle.save({circleId:$rootScope.circle.id, expirationdate:$rootScope.circle.date.getTime()},
+      function() {
+        for(var i=0; i < $rootScope.user.circles.length; i++) {
+	      if($rootScope.user.circles[i].id == $rootScope.circle.id) {
+	        $rootScope.user.circles[i].date = new Date(expdate);
+	      }
+	    }
+      } // success function of Circle.save(
+    ); // Circle.save()
+	    
   }
   
+  // called from event.html
   $rootScope.begineditcircledate = function(expdate) {
     $rootScope.expdate=$rootScope.circle.dateStr
   }

@@ -2,39 +2,76 @@
 <div ng-controller="EventCtrl">
 
 <div class="row"> <!-- header row -->
-  <div class="span7 roundedtop10 bgbluegradient pad10">
-        <span class="font28 white">{{circle.name}}</span>
+  <div class="span7 roundedtop bgbluegradient pad10 white">
+    <div class="row">
+      <div class="span4">    
+        
+        <span ng-show="editcirclename=='true'">
+          <form novalidate class="form-inline marg0">
+            <input type="text" class="span3" name="name" ng-model="circle.name"><a class="btn btn-small" ng-click="editcirclename='';updatecirclename()">OK</a><a class="btn btn-small" ng-click="editcirclename=''">Cancel</a>
+          </form>
+        </span>
+        <span ng-hide="editcirclename=='true'">
+          <span class="font16">{{circle.name}}</span>
+        </span>
+        
+      </div>
+      
+      <div class="span2">
+          
+          <span ng-show="editcircledate=='true'">
+            <form novalidate class="form-inline pull-right marg0">
+              <input class="input-small" date-picker="expdate" name="expdate" ng-model="expdate" type="text" ng-required="true"></input>
+              <a class="btn btn-small" ng-click="updatecircledate(expdate);editcircledate=''">OK</a><a class="btn btn-small" ng-click="editcircledate=''">Cancel</a>  &nbsp;
+            </form>
+          </span>
+          <span ng-hide="editcircledate=='true'" class="pull-right">
+            {{circle.date | date:'MMM d, yyyy'}} &nbsp;
+          </span>          
+          
+      </div>
+      
+      <div class="span1">
+
+        <span class="pull-right">
+          <div class="btn-group">
+		    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown"><i class="icon-edit"></i></a> <!-- see dropdownToggle.js -->
+		    <ul class="dropdown-menu">
+		      <li><a ng-click="editcirclename='true'">Edit Name</a></li>
+		      <li><a ng-click="editcircledate='true';begineditcircledate(expdate);">Edit Date</a></li>
+		      <li class="divider"></li>
+		      <li><a ng-click="">Add People</a></li>
+		      <li><a ng-click="">Remove People</a></li>
+		    </ul>
+          </div>
+        </span>
+      </div>
+    </div>
   </div>
 </div> <!-- header row -->
 
 
 
-
-<div ng-repeat="p in circle.participants.receivers">
+<!-- see app-EventCtrl.js, routeChangeSuccess - that's where we combine givers and receivers -->
+<div ng-repeat="p in circle.participants.both">
   <div class="row">  <!-- participant row -->
-    
+      
+    <span ng-show="p.isReceiver">
       <a ng-href="#/giftlist/{{p.id}}/{{circle.id}}">
-        <div class="span7 list pad10">
-          {{p.fullname}} <span class="pull-right font12"><i class="icon-chevron-right"></i></span>
+        <div class="{{isLastRow('span7 list pad10 font16', $index, circle.participants.both.length)}}">
+          {{p.fullname}} <span class="pull-right font12 txtblack"><span ng-show="circle.receiverLimit != -1">Honoree </span> <i class="icon-chevron-right"></i></span>
         </div>
       </a>
+    </span>
+    
+    <span ng-show="p.isGiver">
+      <div class="{{isLastRow('span7 list pad10 font16', $index, circle.participants.both.length)}}">
+        {{p.fullname}} <span class="pull-right font12 txtblack">Guest <i class="icon-chevron-right"></i></span>
+      </div>
+    </span>
     
   </div>  <!-- participant row -->
 </div>
-
-
-<div ng-repeat="p in circle.participants.givers">
-  <div class="row">  <!-- participant row -->
-    
-      <a>
-        <div class="span7 list pad10">
-          {{p.fullname}} <span class="pull-right font12"><i class="icon-chevron-right"></i></span>
-        </div>
-      </a>
-    
-  </div>  <!-- participant row -->
-</div>
-
 
 
 </div>

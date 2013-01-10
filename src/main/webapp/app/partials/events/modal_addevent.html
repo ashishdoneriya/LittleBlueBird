@@ -34,7 +34,7 @@
 	      <!-- BEGIN: Participants/Honorees section -->
 	      <!-- ------------------------------------ -->
 	      <div class="row"> <!-- header row -->
-	        <div class="span3 roundedtop10 bgbluegradient pad5 white">
+	        <div class="span3 roundedtop bgbluegradient pad5 white">
 	          <span ng-show="newcircle.receiverLimit == -1">Participants</span>
 	          <span ng-show="newcircle.receiverLimit == 1">Honoree</span>
 	          <span ng-show="newcircle.receiverLimit > 1">Honorees</span>
@@ -69,7 +69,7 @@
 	   
 	      <span ng-show="newcircle.participants.receivers == 0">
 	      <div class="row">
-	        <div class="span3 roundedbottom10 pad5">
+	        <div class="span3 roundedbottom pad5">
 		     <span ng-show="newcircle.receiverLimit == -1">Add Participants to this event, including yourself.  That's how you see everyone's wish list.</span>
 			 <span ng-show="newcircle.receiverLimit == 1">Add the Honoree.  That's how you see his/her wish list.</span>
 			 <span ng-show="newcircle.receiverLimit > 1">Add the Honorees to this event.  That's how you see their wish lists.</span>
@@ -85,7 +85,7 @@
 	      <!-- ------------------------------------------------------- -->
 	      <span ng-show="newcircle.receiverLimit != -1">
 	        <div class="row margtop10">
-	          <div class="span3 roundedtop10 bgbluegradient pad5 white">Guests
+	          <div class="span3 roundedtop bgbluegradient pad5 white">Guests
                 <div class="btn-group pull-right">
 	              <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
 			      <ul class="dropdown-menu">
@@ -108,7 +108,7 @@
 	   
 	        <span ng-show="newcircle.participants.givers == 0">
 	          <div class="row">
-	            <div class="span3 roundedbottom10 pad5">
+	            <div class="span3 roundedbottom pad5">
 			        Add Guests to this event so they can view the Honoree(s) wish list.  Don't forget yourself if you are also a Guest.
 	            </div>
 	          </div>
@@ -128,12 +128,12 @@
 		          
 				  <span ng-show="search != '' && usersearch=='loaded'">
 			        <div class="row margtop10">
-			          <div class="span3 roundedtop10 bgbluegradient white pad5">Found...</div>
+			          <div class="span3 roundedtop bgbluegradient white pad5">Found...</div>
 			        </div>
 			      
 			        <span ng-show="noonefound">
 			        <div class="row">
-			          <div class="span3 roundedbottom10 pad5">
+			          <div class="span3 roundedbottom pad5">
 			            No one found matching the search criteria
 			            <p><a ng-click="beginnewuser();">Create Account for this Person?</a></p>
 			          </div>

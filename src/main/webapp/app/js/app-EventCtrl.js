@@ -8,13 +8,46 @@ function EventCtrl($rootScope, $scope, $route, Circle, CircleParticipant) {
       // Create a render() function and put the stuff below in that
       //render();
       console.log("newRoute.params.circleId="+newRoute.params.circleId);
-      if(angular.isDefined(newRoute.params.circleId))
+      if(angular.isDefined(newRoute.params.circleId)) {
         for(var i=0; i < $rootScope.user.circles.length; i++) {
           if($rootScope.user.circles[i].id == newRoute.params.circleId) {
             $rootScope.circle = $rootScope.user.circles[i];
             $rootScope.circle.participants = CircleParticipant.query({circleId:$rootScope.circle.id});
           }
         }
+      }
+      
+      console.log("app-EventCtrl: routeChangeSuccess -----------------------------");
+      
+      // THIS IS KINDA DUMB...
+      if(angular.isDefined($rootScope.circle)) {
+        $rootScope.circle.participants = CircleParticipant.query({circleId:$rootScope.circle.id}, 
+            function() {
+                console.log("app-EventCtrl: routeChangeSuccess:  $rootScope.circle.participants.....");
+                console.log($rootScope.circle.participants);
+            
+		        // the only reason that I'm combining the givers and receivers here is so that I can 
+		        // tell where the last row is on event.html  Otherwise, all I know is that I have a collection
+		        // of givers and another collection of receivers and I can only tell where the last row 
+		        // of each group is.
+		        $rootScope.circle.participants.both = [];
+		        for(var i=0; i < $rootScope.circle.participants.receivers.length; i++) {
+		          var p = $rootScope.circle.participants.receivers[i];
+		          p.isReceiver = true;
+		          $rootScope.circle.participants.both.push(p);
+		        }
+		        for(var i=0; i < $rootScope.circle.participants.givers.length; i++) {
+		          var p = $rootScope.circle.participants.givers[i];
+		          p.isGiver = true;
+		          $rootScope.circle.participants.both.push(p);
+		        }
+                console.log("app-EventCtrl: routeChangeSuccess:  $rootScope.circle.participants.both.....");
+                console.log($rootScope.circle.participants.both);
+                
+            } // success function of CircleParticipant.query
+        ); // CircleParticipant.query
+        
+      } // if(angular.isDefined($rootScope.circle)) 
     }
   );
   

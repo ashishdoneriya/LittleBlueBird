@@ -5,9 +5,9 @@
   MODAL
   -->
 <form novalidate name="circleForm" class="margbottom0">
-  <div ui-modal class="fade" ng-model="addEventModalShown">
+  <div ui-modal class="fade" ng-model="eventModalShown">
 	<div class="modal-header bgbluegradient white">
-	  <button class="close padtop5" data-dismiss="modal" ng-click="addEventModalShown = false"><i class="icon-remove"></i></button>
+	  <button class="close padtop5" data-dismiss="modal" ng-click="eventModalShown = false"><i class="icon-remove"></i></button>
 	  <h3>New {{getType()}} Event</h3>
 	</div>
 	<div class="modal-body">
@@ -216,12 +216,12 @@
 	<div class="modal-footer">	
               <div ng-show="circleForm.name.$error.required || circleForm.expdate.$error.required">
                 <a ng-disabled="true" class="btn" id="invalidform">Save</a>
-                <a ng-click="addEventModalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a>
+                <a ng-click="eventModalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a>
               </div>    
           
               <div ng-hide="circleForm.name.$error.required || circleForm.expdate.$error.required">
-                <a class="btn btn-primary" ng-click="savecircle(newcircle, expdate);addEventModalShown = false;showRegister=false;search='';">Save</a>
-                <a ng-click="addEventModalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a> 
+                <a class="btn btn-primary" ng-click="savecircle(newcircle, expdate);eventModalShown = false;showRegister=false;search='';">Save</a>
+                <a ng-click="eventModalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a> 
               </div>
 	</div>
   </div>
@@ -238,15 +238,15 @@
           <div class="btn-group">
 		    <a class="btn btn-mini dropdown-toggle font16 bold txtgray" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
 		    <ul class="dropdown-menu">
-		      <li><a ng-click="addEventModalShown = true;newcircleFunction('Christmas', -1)">Christmas</a></li>
-		      <li><a ng-click="addEventModalShown = true;newcircleFunction('Birthday', 1)">Birthday</a></li>
-		      <li><a ng-click="addEventModalShown = true;newcircleFunction('Anniversary', 2)">Anniversary</a></li>
-		      <li><a ng-click="addEventModalShown = true;newcircleFunction('Mothers Day', 1)">Mothers Day</a></li>
-		      <li><a ng-click="addEventModalShown = true;newcircleFunction('Fathers Day', 1)">Fathers Day</a></li>
-		      <li><a ng-click="addEventModalShown = true;newcircleFunction('Valentines Day', -1)">Valentines Day</a></li>
-		      <li><a ng-click="addEventModalShown = true;newcircleFunction('Graduation', -1)">Graduation</a></li>
-		      <li><a ng-click="addEventModalShown = true;newcircleFunction('Baby Shower', 1)">Baby Shower</a></li>
-		      <li><a ng-click="addEventModalShown = true;newcircleFunction('Other', -1)">Other</a></li>
+		      <li><a ng-click="eventModalShown = true;newcircleFunction('Christmas', -1)">Christmas</a></li>
+		      <li><a ng-click="eventModalShown = true;newcircleFunction('Birthday', 1)">Birthday</a></li>
+		      <li><a ng-click="eventModalShown = true;newcircleFunction('Anniversary', 2)">Anniversary</a></li>
+		      <li><a ng-click="eventModalShown = true;newcircleFunction('Mothers Day', 1)">Mothers Day</a></li>
+		      <li><a ng-click="eventModalShown = true;newcircleFunction('Fathers Day', 1)">Fathers Day</a></li>
+		      <li><a ng-click="eventModalShown = true;newcircleFunction('Valentines Day', -1)">Valentines Day</a></li>
+		      <li><a ng-click="eventModalShown = true;newcircleFunction('Graduation', -1)">Graduation</a></li>
+		      <li><a ng-click="eventModalShown = true;newcircleFunction('Baby Shower', 1)">Baby Shower</a></li>
+		      <li><a ng-click="eventModalShown = true;newcircleFunction('Other', -1)">Other</a></li>
 		    </ul>
 		  </div>
 	    </div>

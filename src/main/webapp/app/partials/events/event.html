@@ -2,9 +2,9 @@
 <div ng-controller="EventCtrl">
 
 <div class="row"> <!-- header row -->
-  <div class="span7 roundedtop bgbluegradient pad10 white">
+  <div class="span7 roundedtop bgbluegradient pad10">
     <div class="row">
-      <div class="span4">    
+      <div class="span4 white">    
         
         <span ng-show="editcirclename=='true'">
           <form novalidate class="form-inline marg0">
@@ -17,7 +17,7 @@
         
       </div>
       
-      <div class="span2">
+      <div class="span2 white">
           
           <span ng-show="editcircledate=='true'">
             <form novalidate class="form-inline pull-right marg0">
@@ -34,8 +34,10 @@
       <div class="span1">
 
         <span class="pull-right">
+		  <div ng-include src="'partials/events/btn_editevent.html'"></div>
+		  
           <div class="btn-group">
-		    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown"><i class="icon-edit"></i></a> <!-- see dropdownToggle.js -->
+		    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" title="Edit Event">X</a> <!-- see dropdownToggle.js -->
 		    <ul class="dropdown-menu">
 		      <li><a ng-click="editcirclename='true'">Edit Name</a></li>
 		      <li><a ng-click="editcircledate='true';begineditcircledate(expdate);">Edit Date</a></li>

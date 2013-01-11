@@ -23,7 +23,7 @@ angular.module('CircleModule', [])
 
       return CircleParticipant;
   })
-.run(function($rootScope, $location, Circle, CircleParticipant, Reminder, UserSearch, Gift) {
+.run(function($rootScope, $location, Circle, CircleParticipant, Reminder, UserSearch, Gift, Reminder) {
 
   // define $rootScope functions here to make them globally available
   
@@ -115,6 +115,101 @@ angular.module('CircleModule', [])
   // called from event.html
   $rootScope.begineditcircledate = function(expdate) {
     $rootScope.expdate=$rootScope.circle.dateStr
+  }
+  
+  
+  // TODO duplicated in ManagePeopleCtrl
+  $rootScope.removereceiver = function(index, circle, participant) {
+    circle.participants.receivers.splice(index, 1);
+    removefromboth(circle, participant);
+    if(angular.isDefined(circle.id)) {
+      CircleParticipant.delete({circleId:circle.id, userId:participant.id}, function() {Reminder.delete({circleId:circle.id, userId:participant.id})});
+      // now remove person from circle.reminders...
+      $rootScope.removeremindersforperson(participant);
+    }
+  }
+  
+  function removefromboth(circle, participant) {
+    if(angular.isDefined(circle.participants.both)) {
+      for(var i=0; i < circle.participants.both.length; i++) {
+        if(circle.participants.both[i].id == participant.id)
+          circle.participants.both.splice(i, 1);
+      }
+    }
+  }
+  
+  // TODO duplicated in ManagePeopleCtrl
+  $rootScope.removegiver = function(index, circle, participant) {
+    circle.participants.givers.splice(index, 1);
+    removefromboth(circle, participant);
+    if(angular.isDefined(circle.id)) {
+      CircleParticipant.delete({circleId:circle.id, userId:participant.id}, function() {Reminder.delete({circleId:circle.id, userId:participant.id})});
+      // now remove person from circle.reminders...
+      $rootScope.removeremindersforperson(participant);
+    }
+  }
+  
+  // TODO duplicated in ManagePeopleCtrl
+  $rootScope.removeremindersforperson = function(person) {
+    $rootScope.circle.newreminders = [];
+    for(var i=0; i < $rootScope.circle.reminders.length; i++) {
+      if($rootScope.circle.reminders[i].viewer != person.id) {
+        $rootScope.circle.newreminders.push(angular.copy($rootScope.circle.reminders[i]));
+        console.log($rootScope.circle.reminders[i]);
+      }
+    }
+    $rootScope.circle.reminders = angular.copy($rootScope.circle.newreminders);
+  }
+  
+    
+  // We pass in circle here because this function is used for new circles where there is no circle id yet
+  // as well as for existing circles.
+  $rootScope.addparticipant = function(index, person, circle, participationlevel) {
+    console.log("$rootScope.addparticipant = function(index, person, circle, participationlevel) ------------------------------------");
+    if(!angular.isDefined(circle.participants))
+      circle.participants = {receivers:[], givers:[]};
+    if(participationlevel == 'Giver') {
+      circle.participants.givers.push(person);
+      person.isGiver = true; // YUCK!  Only doing this because circle.participants.both exists
+    }
+    else if(circle.receiverLimit == -1) { // no limit on receivers
+      circle.participants.receivers.push(person);
+      person.isReceiver = true; // YUCK!  Only doing this because circle.participants.both exists
+    }
+    else {
+      if(circle.participants.receivers.length < circle.receiverLimit) {
+        circle.participants.receivers.push(person);
+        person.isReceiver = true; // YUCK!  Only doing this because circle.participants.both exists
+      }
+      else {
+        circle.participants.givers.push(person);
+        person.isGiver = true; // YUCK!  Only doing this because circle.participants.both exists
+      }
+    }
+
+    
+    // YUCK!  Add to 'both' also just so the new person will show up in event.html
+    if(angular.isDefined(circle.participants.both)) { 
+      var alreadythere = false;
+      for(var i=0; i < circle.participants.both.length; i++) {
+        if(circle.participants.both[i].id == person.id) alreadythere = true;
+      }
+      if(!alreadythere) circle.participants.both.push(person); 
+    }
+
+    
+    if(index != -1) {
+      console.log("index = "+index);
+      $rootScope.peoplesearchresults[index].hide = true;
+    }
+    
+    // if the circle already exists, add the participant to the db immediately
+    if(angular.isDefined(circle.id)) {
+      console.log("$rootScope.addparticipant:  $rootScope.user.id="+$rootScope.user.id);
+      var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$rootScope.user.id, userId:person.id, participationLevel:participationlevel,
+                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$rootScope.user.fullname},
+                                         function() {circle.reminders = Reminder.query({circleId:circle.id})});
+    }
   }
   
     

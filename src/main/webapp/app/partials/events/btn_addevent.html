@@ -2,7 +2,9 @@
   <div class="span2">
 
   <!--
-  MODAL
+  MODAL:  THIS IS BASICALLY THE EXACT SAME MODAL THAT YOU SEE IN btn_editevent.hml
+  		  IF YOU TRY TO DO AN ng-include, THE MODAL WILL ONLY OPEN ONCE AND THEN NEVER AGAIN
+  		  SO FOR NOW I HAVE THIS GIANT MODAL IN 2 PLACES !!!!!!!!!
   -->
 <form novalidate name="circleForm" class="margbottom0">
   <div ui-modal class="fade" ng-model="eventModalShown">
@@ -192,11 +194,11 @@
 	                          <div class="row margbottom5 margleft0 box pad5 well-tiny">
 	                            <div class="offset2 span1"><div class="margleft_35"><a ng-click="addparticipants(c, newcircle);">Select All</a></div></div>
 	                          </div>
-				              <div class="row margbottom5 margleft0 highlight-box-white" ng-repeat="receiver in c.participants.receivers" ng-click="addparticipant2(receiver, newcircle)">
+				              <div class="row margbottom5 margleft0 highlight-box-white" ng-repeat="receiver in c.participants.receivers" ng-click="addparticipant2(receiver, newcircle, 'Receiver')">
 				                <div class="span1 marg0"><img height=50 width=50 ng-src="{{receiver.profilepicUrl}}" /></div>
 				                <div class="span2 marg0 font14">{{receiver.first}} {{receiver.last}}</div>
 				              </div>
-				              <div class="row margbottom5 margleft0 highlight-box-white" ng-repeat="giver in c.participants.givers" ng-click="addparticipant2(giver, newcircle)">
+				              <div class="row margbottom5 margleft0 highlight-box-white" ng-repeat="giver in c.participants.givers" ng-click="addparticipant2(giver, newcircle, 'Giver')">
 				                <div class="span1 marg0"><img height=50 width=50 ng-src="{{giver.profilepicUrl}}" /></div>
 				                <div class="span2 marg0 font14">{{giver.first}} {{giver.last}}</div>
 				              </div>

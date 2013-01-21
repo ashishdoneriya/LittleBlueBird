@@ -1,6 +1,5 @@
 var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', 'FacebookModule']).
   config(function($routeProvider, $locationProvider, $rootScopeProvider, $cookieStoreProvider){
-    //$locationProvider.html5Mode(true);
     
     $routeProvider
       .when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
@@ -27,10 +26,13 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/reminders', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/email', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/welcome', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/state', {templates: {layout: 'foo',               menu: 'partials/foo/menu.html', body:'partials/foo/foo.html'}})
       .when('/test', {templates: {layout: 'layout-nli.html', one: 'partials/test.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       .otherwise({redirectTo: '/welcome', templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       ;
+      
+    //$locationProvider.html5Mode(true).hashPrefix('');
   
   })
   .run(function($rootScope, Facebook) {
@@ -435,8 +437,20 @@ function GettingStartedCtrl($scope) {
   $scope.whatifidontwantto = false; // see whoareyou.html
 }
 
-function WelcomeCtrl($scope) {
-  console.log("WelcomeCtrl");
+function WelcomeCtrl($rootScope, $scope, $location) {
+  console.log("WelcomeCtrl -----------------------------");
+  
+  $location.path('/login');
+  
+  $rootScope.$on("$routeChangeStart", function(scope, next, current){
+    console.log('WelcomeCtrl:  Changing from '+angular.toJson(current)+' to '+angular.toJson(next));
+  });
+  
+  $rootScope.$on("$routeChangeSuccess", 
+    function( scope, newRoute ){
+      console.log("WelcomeCtrl: routeChangeSuccess ----------------------------- doing nothing");
+    }
+  );
 }
 
 function menuctrl($rootScope, $scope, $location, $route) {

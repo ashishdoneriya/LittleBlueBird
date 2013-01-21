@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <script>
+      function appendResults(text) {
+        var results = document.getElementById('results');
+        results.appendChild(document.createElement('P'));
+        results.appendChild(document.createTextNode(text));
+      }
+
+      function makeRequest() {
+        var request = gapi.client.urlshortener.url.get({
+          'shortUrl': 'http://goo.gl/fbsS'
+        });
+        request.execute(function(response) {
+          appendResults(response.longUrl);
+        });
+      }
+
+      function makeContactRequest() {
+        
+      }
+
+      function load() {
+        //gapi.client.setApiKey('YOUR API KEY');
+        //gapi.client.load('urlshortener', 'v1', makeRequest);
+        gapi.client.load('contacts', 'v3', makeContactRequest);
+        console.log("gapi.client...");
+        console.log(gapi.client);
+      }
+    </script>
+    <script src="https://apis.google.com/js/client.js?onload=load"></script>
+  </head>
+  <body>
+    <a href="https://accounts.google.com/o/oauth2/auth&response_type=token&client_id=401499105309.apps.googleusercontent.com&scope=https://www.google.com/m8/feeds">
+      https://accounts.google.com/o/oauth2/auth&response_type=token&client_id=401499105309.apps.googleusercontent.com&scope=https://www.google.com/m8/feeds
+    </a>
+    <P><a href="https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=%2Fprofile&redirect_uri=http%3A%2F%2Fwww.littlebluebird.com%2Fgf%2Fapp%2Findex.html&response_type=token&client_id=401499105309-85e4td8s89s9gk019d74r84ld2jjooah.apps.googleusercontent.com">
+      https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=%2Fprofile&redirect_uri=http%3A%2F%2Fwww.littlebluebird.com%2Fgf%2Fapp%2Findex.html&response_type=token&client_id=401499105309-85e4td8s89s9gk019d74r84ld2jjooah.apps.googleusercontent.com
+    </a></P>
+    <P><a href="https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F%2Fwww.google.com%2Fm8%2Ffeeds&state=%2Fprofile&redirect_uri=http%3A%2F%2Fwww.littlebluebird.com%2Fgf%2Fapp%2Findex.html&response_type=token&client_id=401499105309-85e4td8s89s9gk019d74r84ld2jjooah.apps.googleusercontent.com">
+      https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F%2Fwww.google.com%2Fm8%2Ffeeds&state=%2Fprofile&redirect_uri=http%3A%2F%2Fwww.littlebluebird.com%2Fgf%2Fapp%2Findex.html&response_type=token&client_id=401499105309-85e4td8s89s9gk019d74r84ld2jjooah.apps.googleusercontent.com
+    </a></P>
+    
+    <P>
+    Say your redirect_uri is:  http://www.littlebluebird.com/gf/app/index.html
+    </P>
+    
+    <P>
+    Google will redirect to:  http://www.littlebluebird.com/gf/app/index.html#state=/profile&access_token=ya29.AHES6ZSMcKb-W_ZFWw0ncucnZgYozjNYvI58-A18Dc4WxNM&token_type=Bearer&expires_in=3600
+    </P>
+      
+  </body>
+</html>

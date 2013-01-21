@@ -1,7 +1,7 @@
 
 angular.module('CircleModule', [])
 .factory('Circle', function($resource) {
-      var Circle = $resource('/gf/circles/:circleId', {circleId:'@circleId', circleType:'@circleType', name:'@name', expirationdate:'@expirationdate', creatorId:'@creatorId', participants:'@participants', datedeleted:'@datedeleted'}, 
+      var Circle = $resource('/gf/rest/circles/:circleId', {circleId:'@circleId', circleType:'@circleType', name:'@name', expirationdate:'@expirationdate', creatorId:'@creatorId', participants:'@participants', datedeleted:'@datedeleted'}, 
                     {
                       query: {method:'GET', isArray:false}, 
                       activeEvents: {method:'GET', isArray:true}, 
@@ -12,7 +12,7 @@ angular.module('CircleModule', [])
       return Circle;
   })
 .factory('CircleParticipant', function($resource) {
-      var CircleParticipant = $resource('/gf/circleparticipants/:circleId', {circleId:'@circleId', userId:'@userId', inviterId:'@inviterId', 
+      var CircleParticipant = $resource('/gf/rest/circleparticipants/:circleId', {circleId:'@circleId', userId:'@userId', inviterId:'@inviterId', 
                                          participationLevel:'@participationLevel', who:'@who', email:'@email', circle:'@circle', adder:'@adder',
                                          notifyonaddtoevent:'@notifyonaddtoevent'}, 
                     {
@@ -212,5 +212,54 @@ angular.module('CircleModule', [])
     }
   }
   
+  $rootScope.determineCurrentCircle = function(newRoute) {
+    console.log("$rootScope.determineCurrentCircle -----------------------------------------------");
+    
+    if(angular.isDefined(newRoute.params.circleId)) {
+        for(var i=0; i < $rootScope.user.circles.length; i++) {
+          if($rootScope.user.circles[i].id == newRoute.params.circleId) {
+            $rootScope.circle = $rootScope.user.circles[i];
+            $rootScope.circle.participants = CircleParticipant.query({circleId:$rootScope.circle.id}, 
+	            function() {
+	                console.log("app-EventCtrl: routeChangeSuccess:  $rootScope.circle.participants.....");
+	                console.log($rootScope.circle.participants);
+	                console.log("app-EventCtrl: routeChangeSuccess:  $rootScope.circle.participants.receivers.....");
+	                console.log($rootScope.circle.participants.receivers);
+	            
+                    // THIS IS KINDA DUMB...
+			        // the only reason that I'm combining the givers and receivers here is so that I can 
+			        // tell where the last row is on event.html  Otherwise, all I know is that I have a collection
+			        // of givers and another collection of receivers and I can only tell where the last row 
+			        // of each group is.
+			        $rootScope.circle.participants.both = [];
+			        for(var i=0; i < $rootScope.circle.participants.receivers.length; i++) {
+			          var p = $rootScope.circle.participants.receivers[i];
+			          p.isReceiver = true;
+			          $rootScope.circle.participants.both.push(p);
+			        }
+			        for(var i=0; i < $rootScope.circle.participants.givers.length; i++) {
+			          var p = $rootScope.circle.participants.givers[i];
+			          p.isGiver = true;
+			          $rootScope.circle.participants.both.push(p);
+			        }
+	                console.log("app-EventCtrl: routeChangeSuccess:  $rootScope.circle.participants.both.....");
+	                console.log($rootScope.circle.participants.both);
+	                
+	            } // success function of CircleParticipant.query
+	        ); // CircleParticipant.query
+            
+            
+            
+          } // if($rootScope.user.circles[i].id == newRoute.params.circleId)
+        } // for(var i=0; i < $rootScope.user.circles.length; i++)
+    } // if(angular.isDefined(newRoute.params.circleId))
+  }
+    
+  $rootScope.canaddreceiver = function(circle) {
+    console.log("$rootScope.canaddreceiver:  circle=....");
+    console.log(circle);
+    var isdefined = angular.isDefined(circle) && angular.isDefined(circle.receiverLimit) && angular.isDefined(circle.participants.receivers)
+    return isdefined && (circle.receiverLimit == -1 || circle.receiverLimit > circle.participants.receivers.length);
+  }
     
 });

@@ -1,0 +1,22 @@
+https://developer.apps.yahoo.com/manage
+https://accounts.google.com/ManageDomains
+	There is a file called google94991a5b6dcabb65.html in webapps/ROOT that has to stay there for google
+	If it ever gets deleted, it contains only one line:
+		google-site-verification: google94991a5b6dcabb65.html
+	So the file can be recreated if lost/deleted
+	
+	OAuth Consumer Key: 	www.littlebluebird.com
+	OAuth Consumer Secret: 	5w8lGMvZmUugM9hfB3SG9kYZ 
+	 
+	https://developers.google.com/google-apps/contacts/v3/
+	
+	Your private key's password is 'notasecret'. You must present this password to use the key. 
+	
+	Private key file is:  a8e2f9fa7a095c34e4c10977c32ade0dfeb1d2de-privatekey.p12  located here: C:\Users\bdunklau\LittleBlueBird\src\main\resources
+	
+	client_secrets.json  also put here:  C:\Users\bdunklau\LittleBlueBird\src\main\resources
+	
+	Google APIs in different languages:  (javascript, java, etc)
+		https://developers.google.com/google-apps/tasks/downloads
+		
+	API Key:  AIzaSyAdPV8bQ5EqBpwYWwMyOJxgswe2OH3_BNQ

@@ -46,53 +46,72 @@ import net.liftweb.common.Box
 object RestService extends RestHelper with LbbLogger {
   
   serve {
-    case JsonPost("apprequest" :: _, (json, req)) => saveAppRequests
-    case JsonPost("facebookusers" :: facebookId :: email :: name :: _, (json, req)) => handleFacebookUser(facebookId, email, name)
-    case JsonPost("mergeusers" :: AsLong(userId) :: facebookId :: email :: _, _) => mergeUsers(userId, facebookId, email)
-    case Delete("friend" :: AsLong(userId) :: AsLong(friendId) :: _, _) => deleteFriend(userId, friendId)
+    case JsonPost("rest" :: "apprequest" :: _, (json, req)) => saveAppRequests
+    case JsonPost("rest" :: "facebookusers" :: facebookId :: email :: name :: _, (json, req)) => handleFacebookUser(facebookId, email, name)
+    case JsonPost("rest" :: "mergeusers" :: AsLong(userId) :: facebookId :: email :: _, _) => mergeUsers(userId, facebookId, email)
+    case Delete("rest" :: "friend" :: AsLong(userId) :: AsLong(friendId) :: _, _) => deleteFriend(userId, friendId)
   }
 
   // ref:  http://www.assembla.com/spaces/liftweb/wiki/REST_Web_Services
   serve {
     
     // gifts...
-    case Get("gifts" :: AsLong(giftId) :: _, _) => debug("RestService.serve:  999999999"); findGift(giftId)
-    case Get("gifts" :: _, _) => debug("RestService.serve:  AAAAAAAAA"); findGifts
+    case Get("rest" :: "gifts" :: AsLong(giftId) :: _, _) => debug("RestService.serve:  999999999"); findGift(giftId)
+    case Get("rest" :: "gifts" :: _, _) => debug("RestService.serve:  AAAAAAAAA"); findGifts
+  }
+  
+  serve {
     
-    case JsonPost("circles" :: AsLong(circleId) :: _, (json, req)) => debug("updateCircle: "+circleId); updateCircle(circleId)
-    case JsonPost("circleparticipants" :: AsLong(circleId) :: _, (json, req)) => insertParticipant(circleId)
-    case Delete("circleparticipants" :: AsLong(circleId) :: _, req) => deleteParticipant(circleId)
-    case Delete("gifts" :: AsLong(giftId) :: deleter :: _, _) => deleteGift(giftId, deleter)
+    case JsonPost("rest" :: "circles" :: AsLong(circleId) :: _, (json, req)) => debug("updateCircle: "+circleId); updateCircle(circleId)
+    case JsonPost("rest" :: "circleparticipants" :: AsLong(circleId) :: _, (json, req)) => insertParticipant(circleId)
+    case Delete("rest" :: "circleparticipants" :: AsLong(circleId) :: _, req) => deleteParticipant(circleId)
+    case Delete("rest" :: "gifts" :: AsLong(giftId) :: deleter :: _, _) => deleteGift(giftId, deleter)
+  }
+  
+  serve {
     
-    case Get("reminders" :: AsLong(circleId) :: _, _) => getReminders(circleId)
-    case Delete("reminders" :: AsLong(circleId) :: _, _) => deleteReminders(circleId)
-    case JsonPost("reminders" :: AsLong(circleId) :: _, (json,req)) => insertReminders(circleId)
+    case Get("rest" :: "reminders" :: AsLong(circleId) :: _, _) => getReminders(circleId)
+    case Delete("rest" :: "reminders" :: AsLong(circleId) :: _, _) => deleteReminders(circleId)
+    case JsonPost("rest" :: "reminders" :: AsLong(circleId) :: _, (json,req)) => insertReminders(circleId)
+  }
+  
+  serve {
+    
+    // circles...
+    case Get("rest" :: "circles" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  88888888"); findCircle(circleId)
+    case Get("rest" :: "circleparticipants" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  77777777777"); findCircleParticipants(circleId)
   }
   
   serve {
     // Get someone's wish list outside the context of any circle
     // Can't use the url pattern:  gifts/userId because we already have gifts/giftId - would be ambiguous
     // So we have wishlist/userId - kinda lame
-    case Get("wishlist" :: AsLong(userId) :: _, _) => wishlist(userId)
-    case Get("users" :: AsLong(userId) :: _, _) => debug("RestService.serve:  22222222222222"); findUser(userId)
-    case Get("users" :: _, _) => debug("RestService.serve:  333333333333333333333333"); findUsers
-    case Post("logout" :: _, _) => logout
-    case JsonPost("email" :: _, (json, req)) => email 
-    case JsonPost("gifts" :: AsLong(giftId) :: updaterName :: _, (json, req)) => debug("RestService.serve:  BBBBBBBB"); updateGift(updaterName, giftId)
-    case JsonPost("gifts" :: _ :: Nil, (json, req)) => debug("RestService.serve:  CCCCCCC"); debug(json); insertGift
-    case JsonPost("users" :: AsLong(userId) :: _, (json, req)) => debug("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
-    case JsonPost("users" :: Nil, (json, req)) => debug("RestService.serve:  4444444444444444"); debug(json); insertUser
-    case Get("usersearch" :: _, _) => debug("RestService.serve:  Get: usersearch"); SearchHelper.usersearch
-    case JsonPost("circles" :: Nil, (json, req)) => insertCircle
+    case Get("rest" :: "wishlist" :: AsLong(userId) :: _, _) => wishlist(userId)
+    case Get("rest" :: "users" :: AsLong(userId) :: _, _) => debug("RestService.serve:  22222222222222"); findUser(userId)
+    case Get("rest" :: "users" :: _, _) => debug("RestService.serve:  333333333333333333333333"); findUsers
+  }
+  
+  serve {
+    case Post("rest" :: "logout" :: _, _) => logout
+    case JsonPost("rest" :: "email" :: _, (json, req)) => email 
+    case JsonPost("rest" :: "gifts" :: AsLong(giftId) :: updaterName :: _, (json, req)) => debug("RestService.serve:  BBBBBBBB"); updateGift(updaterName, giftId)
+  }
+  
+  serve {
+    case JsonPost("rest" :: "gifts" :: _ :: Nil, (json, req)) => debug("RestService.serve:  CCCCCCC"); debug(json); insertGift
+    case JsonPost("rest" :: "users" :: AsLong(userId) :: _, (json, req)) => debug("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
+    case JsonPost("rest" :: "users" :: Nil, (json, req)) => debug("RestService.serve:  4444444444444444"); debug(json); insertUser
+  }
+  
+  serve {
+    case Get("rest" :: "usersearch" :: _, _) => debug("RestService.serve:  Get: usersearch"); SearchHelper.usersearch
+    case JsonPost("rest" :: "circles" :: Nil, (json, req)) => insertCircle
     
-    case Post("users" :: _, _) => debug("RestService.serve:  Post(api :: users  :: _, _)  S.uri="+S.uri); JsonResponse("Post(api :: users  :: _, _)  S.uri="+S.uri)
+    case Post("rest" :: "users" :: _, _) => debug("RestService.serve:  Post(api :: users  :: _, _)  S.uri="+S.uri); JsonResponse("Post(api :: users  :: _, _)  S.uri="+S.uri)
     
     case Post(_, _) => debug("RestService.serve:  case Post(_, _)"); JsonResponse("Post(_, _)  S.uri="+S.uri)
     
-    // circles...
-    case Get("circles" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  88888888"); findCircle(circleId)
-    case Get("circleparticipants" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  77777777777"); findCircleParticipants(circleId)
-    case _ => debug("RestService.serve:  666666666"); debugRequest
+    //case _ => debug("RestService.serve:  666666666"); debugRequest 
   }
   
   

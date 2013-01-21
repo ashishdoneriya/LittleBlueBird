@@ -1,0 +1,26 @@
+http://www.tuckey.org/urlrewrite/
+
+Put this in web.xml right after <web-app>
+
+<filter>
+    <filter-name>UrlRewriteFilter</filter-name>
+    <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class><init-param>
+    <param-name>logLevel</param-name>
+    <param-value>DEBUG</param-value>
+    </init-param>
+</filter>
+
+Put this in web.xml - make it the first <filter-mapping>:
+  
+<filter-mapping>
+    <filter-name>UrlRewriteFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+</filter-mapping>
+
+Copy urlrewrite.xml from this directory over to: C:\Users\bdunklau\LittleBlueBird\src\main\webapp\WEB-INF
+
+In C:\Users\bdunklau\LittleBlueBird\build.sbt, add the following to libraryDependencies:
+
+  "org.tuckey" % "urlrewritefilter" % "4.0.3" % "container",

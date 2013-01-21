@@ -1,7 +1,7 @@
 
 angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap.modal', 'ui.bootstrap.dropdownToggle']).
   factory('UserSearch', function($resource) {
-      var UserSearch = $resource('/gf/usersearch', {search:'@search'}, 
+      var UserSearch = $resource('/gf/rest/usersearch', {search:'@search'}, 
                     {
                       query: {method:'GET', isArray:true}
                     });
@@ -9,7 +9,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return UserSearch;
   }).
   factory('User', function($resource) {
-      var User = $resource('/gf/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', 
+      var User = $resource('/gf/rest/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', 
                                                  password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login', 
                                                  creatorId:'@creatorId', creatorName:'@creatorName', facebookId:'@facebookId', friends:'@friends', lbbfriends:'@lbbfriends',
                                                  notifyonaddtoevent:'@notifyonaddtoevent', notifyondeletegift:'@notifyondeletegift', 
@@ -23,39 +23,39 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return User;
   }).
   factory('Friend', function($resource) {
-      var Friend = $resource('/gf/friend/:userId/:friendId', {userId:'@userId', friendId:'@friendId'},
+      var Friend = $resource('/gf/rest/friend/:userId/:friendId', {userId:'@userId', friendId:'@friendId'},
                     {
                       delete: {method:'DELETE'}
                     });
       return Friend;
   }).
   factory('AppRequest', function($resource){
-      var AppRequest = $resource('/gf/apprequest', {requests:'@requests', circlestuff:'@circlestuff'}, 
+      var AppRequest = $resource('/gf/rest/apprequest', {requests:'@requests', circlestuff:'@circlestuff'}, 
                        {
                          save: {method:'POST', isArray:false}
                        });
       return AppRequest;
   }).
   factory('FacebookUser', function($resource){
-      var FacebookUser = $resource('/gf/facebookusers/:facebookId/:email/:name', {facebookId:'@facebookId', email:'@email', name:'@name', fbreqids:'@fbreqids'}, 
+      var FacebookUser = $resource('/gf/rest/facebookusers/:facebookId/:email/:name', {facebookId:'@facebookId', email:'@email', name:'@name', fbreqids:'@fbreqids'}, 
                        {
                          save: {method:'POST', isArray:true}
                        });
       return FacebookUser;
   }).
   factory('MergeUsers', function($resource){
-      var MergeUsers = $resource('/gf/mergeusers/:userId/:facebookId/:email', {userId:'@userId', facebookId:'@facebookId', email:'@email'}, 
+      var MergeUsers = $resource('/gf/rest/mergeusers/:userId/:facebookId/:email', {userId:'@userId', facebookId:'@facebookId', email:'@email'}, 
                        {
                          save: {method:'POST', isArray:false}
                        });
       return MergeUsers;
   }).
   factory('Logout', function($resource) {
-      var Logout = $resource('/gf/logout', {}, {logout: {method:'POST'}});
+      var Logout = $resource('/gf/rest/logout', {}, {logout: {method:'POST'}});
       return Logout;
   }).
   factory('Reminder', function($resource) {
-      var Reminder = $resource('/gf/reminders/:circleId', {circleId:'@circleId', userId:'@userId', remind_date:'@remind_date', people:'@people'},
+      var Reminder = $resource('/gf/rest/reminders/:circleId', {circleId:'@circleId', userId:'@userId', remind_date:'@remind_date', people:'@people'},
                      {
                        query: {method:'GET', isArray:true},
                        delete: {method:'DELETE'},
@@ -65,7 +65,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return Reminder;
   }).
   factory('Gift', function($resource) {
-      var Gift = $resource('/gf/gifts/:giftId/:updater', {giftId:'@giftId', updater:'@updater', viewerId:'@viewerId', recipientId:'@recipientId', recipients:'@recipients', circleId:'@circleId', description:'@description', url:'@url', addedBy:'@addedBy', status:'@status', senderId:'@senderId', senderName:'@senderName', reallyWants:'@reallyWants', deleted:'@deleted', urlAff:'@urlAff', affiliateId:'@affiliateId', receivedate:'@receivedate'}, 
+      var Gift = $resource('/gf/rest/gifts/:giftId/:updater', {giftId:'@giftId', updater:'@updater', viewerId:'@viewerId', recipientId:'@recipientId', recipients:'@recipients', circleId:'@circleId', description:'@description', url:'@url', addedBy:'@addedBy', status:'@status', senderId:'@senderId', senderName:'@senderName', reallyWants:'@reallyWants', deleted:'@deleted', urlAff:'@urlAff', affiliateId:'@affiliateId', receivedate:'@receivedate'}, 
                     {
                       query: {method:'GET', isArray:true}, 
                       delete: {method:'DELETE'},
@@ -75,7 +75,7 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return Gift;
   }).
   factory('Email', function($resource) {
-      var Email = $resource('/gf/email', {to:'@to', from:'@from', subject:'@subject', message:'@message', type:'@type', user:'@user'}, 
+      var Email = $resource('/gf/rest/email', {to:'@to', from:'@from', subject:'@subject', message:'@message', type:'@type', user:'@user'}, 
                     {
                       send: {method:'POST'}
                     });

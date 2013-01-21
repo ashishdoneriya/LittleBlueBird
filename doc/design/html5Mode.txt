@@ -1,0 +1,11 @@
+In app.js, uncomment this line:
+
+	$locationProvider.html5Mode(true)
+	
+There may be a hashPrefix() call chained to the end.
+
+1/21/13 - Still don't know how to implement html5 mode with (tuckey) url rewriting.  So have taken both of these out.
+
+Note on the menu links:  When you're in html5 mode, href's should not contain #'s
+
+But when you are NOT in html5 mode, you DO need the #'s.

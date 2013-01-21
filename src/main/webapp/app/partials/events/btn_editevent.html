@@ -2,7 +2,7 @@
   <div class="span2">
 
   <!--
-  MODAL:  THIS IS BASICALLY THE EXACT SAME MODAL THAT YOU SEE IN btn_editevent.hml
+  MODAL:  THIS IS BASICALLY THE EXACT SAME MODAL THAT YOU SEE IN btn_addevent.hml
   		  IF YOU TRY TO DO AN ng-include, THE MODAL WILL ONLY OPEN ONCE AND THEN NEVER AGAIN
   		  SO FOR NOW I HAVE THIS GIANT MODAL IN 2 PLACES !!!!!!!!!
   -->
@@ -10,18 +10,18 @@
   <div ui-modal class="fade" ng-model="eventModalShown">
 	<div class="modal-header bgbluegradient white">
 	  <button class="close padtop5" data-dismiss="modal" ng-click="eventModalShown = false"><i class="icon-remove"></i></button>
-	  <h3>New {{getType()}} Event</h3>
+	  <h3>Edit Event</h3>
 	</div>
 	<div class="modal-body">
 	  <div class="row">
 	    <div class="span3">
-	      Event Name<input type="hidden" ng-model="newcircle.creatorId">
+	      Event Name<input type="hidden" ng-model="circle.creatorId">
 	    </div>
 	    <div class="span2">Date</div>
 	  </div>
 	  <div class="row">
 	    <div class="span3">
-	      <input class="span3" maxlength="140" value="" type="text" name="name" ng-model="newcircle.name" ng-required="true" />
+	      <input class="span3" maxlength="140" value="" type="text" name="name" ng-model="circle.name" ng-required="true" />
 	    </div>
 	    <div class="span2">
           <input class="input-small" date-picker="expdate" name="expdate" ng-model="expdate" type="text" ng-required="true"></input>
@@ -36,23 +36,25 @@
 	      <!-- BEGIN: Participants/Honorees section -->
 	      <!-- ------------------------------------ -->
 	      <div class="row"> <!-- header row -->
-	        <div class="span3 roundedtop bgbluegradient pad5 white">
-	          <span ng-show="newcircle.receiverLimit == -1">Participants</span>
-	          <span ng-show="newcircle.receiverLimit == 1">Honoree</span>
-	          <span ng-show="newcircle.receiverLimit > 1">Honorees</span>
+	        <div class="span3 roundedtop bgbluegradient pad5">
+	          <span class="white">
+	            <span ng-show="circle.receiverLimit == -1">Participants</span>
+	            <span ng-show="circle.receiverLimit == 1">Honoree</span>
+	            <span ng-show="circle.receiverLimit > 1">Honorees</span>
+	          </span>
 	          
-	          <span ng-show="canaddreceiver(newcircle)">
+	          <span ng-show="canaddreceiver(circle)">
                 <div class="btn-group pull-right">
 	              <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
 			      <ul class="dropdown-menu">
-			        <li><a ng-click="addmyselfasreceiver(newcircle)">Add myself</a></li>
+			        <li><a ng-click="addmyselfasreceiver(circle)">Add myself</a></li>
 			        <li><a ng-click="addmethod='byname';participationlevel='Receiver';">Add by name</a></li>
 			        <span ng-hide="user.circles.length == 0"><li><a ng-click="addmethod='fromanotherevent';participationlevel='Receiver';">Add from another event</a></li></span>
 			      </ul>	
 	            </div>
 	          </span>
 	          
-	          <span ng-hide="canaddreceiver(newcircle)">
+	          <span ng-hide="canaddreceiver(circle)">
                 <div class="btn-group pull-right">
 	              <a class="btn btn-mini font14 bold" ng-disabled="true">+</a>
 	            </div>
@@ -60,21 +62,21 @@
 	        </div>
 	      </div> <!-- header row -->
 	      
-	      <span ng-repeat="participant in newcircle.participants.receivers">
+	      <span ng-repeat="participant in circle.participants.receivers">
 	      <div class="row">
-	        <div class="{{isLastRow('span3 list pad5', $index, newcircle.participants.receivers.length)}}">
-	          <a class="align-bottom" ng-click="removereceiver($index, newcircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
+	        <div class="{{isLastRow('span3 list pad5', $index, circle.participants.receivers.length)}}">
+	          <a class="align-bottom" ng-click="removereceiver($index, circle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
 	        </div>
 	      </div>
 		  </span>
 	          
 	   
-	      <span ng-show="newcircle.participants.receivers == 0">
+	      <span ng-show="circle.participants.receivers == 0">
 	      <div class="row">
 	        <div class="span3 roundedbottom pad5">
-		     <span ng-show="newcircle.receiverLimit == -1">Add Participants to this event, including yourself.  That's how you see everyone's wish list.</span>
-			 <span ng-show="newcircle.receiverLimit == 1">Add the Honoree.  That's how you see his/her wish list.</span>
-			 <span ng-show="newcircle.receiverLimit > 1">Add the Honorees to this event.  That's how you see their wish lists.</span>
+		     <span ng-show="circle.receiverLimit == -1">Add Participants to this event, including yourself.  That's how you see everyone's wish list.</span>
+			 <span ng-show="circle.receiverLimit == 1">Add the Honoree.  That's how you see his/her wish list.</span>
+			 <span ng-show="circle.receiverLimit > 1">Add the Honorees to this event.  That's how you see their wish lists.</span>
 	        </div>
 	      </div>
 	      </span>
@@ -85,13 +87,13 @@
 	      <!-- ------------------------------------------------------- -->
 	      <!-- BEGIN: Guests section (for those events that have them) -->
 	      <!-- ------------------------------------------------------- -->
-	      <span ng-show="newcircle.receiverLimit != -1">
+	      <span ng-show="circle.receiverLimit != -1">
 	        <div class="row margtop10">
-	          <div class="span3 roundedtop bgbluegradient pad5 white">Guests
+	          <div class="span3 roundedtop bgbluegradient pad5"><span class="white">Guests</span>
                 <div class="btn-group pull-right">
 	              <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
 			      <ul class="dropdown-menu">
-			        <li><a ng-click="addmyselfasgiver(newcircle)">Add myself</a></li>
+			        <li><a ng-click="addmyselfasgiver(circle)">Add myself</a></li>
 			        <li><a ng-click="addmethod='byname';participationlevel='Giver';">Add by name</a></li>
 			        <span ng-hide="user.circles.length == 0"><li><a ng-click="addmethod='fromanotherevent';participationlevel='Giver';">Add from another event</a></li></span>
 			      </ul>	
@@ -99,23 +101,23 @@
 	          </div>
 	        </div>
 	      
-	        <span ng-repeat="participant in newcircle.participants.givers">
+	        <span ng-repeat="participant in circle.participants.givers">
 	          <div class="row">
-	            <div class="{{isLastRow('span3 list pad5', $index, newcircle.participants.givers.length)}}">
-	              <a class="align-bottom" ng-click="removegiver($index, newcircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
+	            <div class="{{isLastRow('span3 list pad5', $index, circle.participants.givers.length)}}">
+	              <a class="align-bottom" ng-click="removegiver($index, circle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
 	            </div>
 	          </div>
 		    </span>
 	   
 	   
-	        <span ng-show="newcircle.participants.givers == 0">
+	        <span ng-show="circle.participants.givers == 0">
 	          <div class="row">
 	            <div class="span3 roundedbottom pad5">
 			        Add Guests to this event so they can view the Honoree(s) wish list.  Don't forget yourself if you are also a Guest.
 	            </div>
 	          </div>
 	        </span>
-	      </span> <!-- ng-show="newcircle.receiverLimit != -1" -->
+	      </span> <!-- ng-show="circle.receiverLimit != -1" -->
 	      <!-- ----------------------------------------------------- -->
 	      <!-- END: Guests section (for those events that have them) -->
 	      <!-- ----------------------------------------------------- -->
@@ -145,7 +147,7 @@
 				          
 				    <div ng-repeat="person in peoplesearchresults | filter:search">
 				      <span ng-hide="person.hide">
-						  <div class="row" ng-click="addparticipant($index, person, newcircle, participationlevel)">
+						  <div class="row" ng-click="addparticipant($index, person, circle, participationlevel)">
 							<div class="{{isLastRow('span3 list pad5', $index, peoplesearchresults.length)}}">
 							  <div class="row">
 							    <div class="span1">
@@ -192,13 +194,13 @@
 	                      <span ng-show="c.show">
 	                        <div class="box-white">
 	                          <div class="row margbottom5 margleft0 box pad5 well-tiny">
-	                            <div class="offset2 span1"><div class="margleft_35"><a ng-click="addparticipants(c, newcircle);">Select All</a></div></div>
+	                            <div class="offset2 span1"><div class="margleft_35"><a ng-click="addparticipants(c, circle);">Select All</a></div></div>
 	                          </div>
-				              <div class="row margbottom5 margleft0 highlight-box-white" ng-repeat="receiver in c.participants.receivers" ng-click="addparticipant2(receiver, newcircle, 'Receiver')">
+				              <div class="row margbottom5 margleft0 highlight-box-white" ng-repeat="receiver in c.participants.receivers" ng-click="addparticipant2(receiver, circle)">
 				                <div class="span1 marg0"><img height=50 width=50 ng-src="{{receiver.profilepicUrl}}" /></div>
 				                <div class="span2 marg0 font14">{{receiver.first}} {{receiver.last}}</div>
 				              </div>
-				              <div class="row margbottom5 margleft0 highlight-box-white" ng-repeat="giver in c.participants.givers" ng-click="addparticipant2(giver, newcircle, 'Giver')">
+				              <div class="row margbottom5 margleft0 highlight-box-white" ng-repeat="giver in c.participants.givers" ng-click="addparticipant2(giver, circle)">
 				                <div class="span1 marg0"><img height=50 width=50 ng-src="{{giver.profilepicUrl}}" /></div>
 				                <div class="span2 marg0 font14">{{giver.first}} {{giver.last}}</div>
 				              </div>
@@ -218,12 +220,12 @@
 	<div class="modal-footer">	
               <div ng-show="circleForm.name.$error.required || circleForm.expdate.$error.required">
                 <a ng-disabled="true" class="btn" id="invalidform">Save</a>
-                <a ng-click="eventModalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a>
+                <a ng-click="eventModalShown = false;canceleditcircle();addmethod='';search='';" class="btn">Cancel</a>
               </div>    
           
               <div ng-hide="circleForm.name.$error.required || circleForm.expdate.$error.required">
-                <a class="btn btn-primary" ng-click="savecircle(newcircle, expdate);eventModalShown = false;showRegister=false;search='';">Save</a>
-                <a ng-click="eventModalShown = false;cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a> 
+                <a class="btn btn-primary" ng-click="savecircle(circle, expdate);eventModalShown = false;showRegister=false;search='';">Save</a>
+                <a ng-click="eventModalShown = false;canceleditcircle();addmethod='';search='';" class="btn">Cancel</a> 
               </div>
 	</div>
   </div>
@@ -232,26 +234,10 @@
   </div> <!-- end of div span2 -->
   
   
-  <div class="span1">
-
+  <!-- Lesson Learned:  Not sure why, but this has to come AFTER the modal code (above) or else the modal will only open once and thereafter, it won't open -->
+  <div class="span1 pull-right">
 	    
-	    <!-- Lesson Learned:  Not sure why, but this has to come AFTER the modal code (above) or else the modal will only open once and thereafter, it won't open -->
-        <div class="pull-right">
-          <div class="btn-group">
-		    <a class="btn btn-mini dropdown-toggle font16 bold txtgray" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
-		    <ul class="dropdown-menu">
-		      <li><a ng-click="eventModalShown = true;newcircleFunction('Christmas', -1)">Christmas</a></li>
-		      <li><a ng-click="eventModalShown = true;newcircleFunction('Birthday', 1)">Birthday</a></li>
-		      <li><a ng-click="eventModalShown = true;newcircleFunction('Anniversary', 2)">Anniversary</a></li>
-		      <li><a ng-click="eventModalShown = true;newcircleFunction('Mothers Day', 1)">Mothers Day</a></li>
-		      <li><a ng-click="eventModalShown = true;newcircleFunction('Fathers Day', 1)">Fathers Day</a></li>
-		      <li><a ng-click="eventModalShown = true;newcircleFunction('Valentines Day', -1)">Valentines Day</a></li>
-		      <li><a ng-click="eventModalShown = true;newcircleFunction('Graduation', -1)">Graduation</a></li>
-		      <li><a ng-click="eventModalShown = true;newcircleFunction('Baby Shower', 1)">Baby Shower</a></li>
-		      <li><a ng-click="eventModalShown = true;newcircleFunction('Other', -1)">Other</a></li>
-		    </ul>
-		  </div>
-	    </div>
+		  <a class="btn btn-mini" ng-click="eventModalShown=true;begineditcircle()" title="Edit Event"><i class="icon-edit"></i></a>
 	    
   </div> <!-- end of div span1 -->
 </div> <!-- The whole page is in this one row -->

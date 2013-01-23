@@ -1,3 +1,17 @@
+1/22/13:  routeChangeStart/routeChangeSuccess events on browser refresh
+I was listening for routeChangeStart/routeChangeSuccess events inside NewEventCtrl (app-EventCtrl.js)
+and also inside the run() method of app-CircleModule.js
+When I click the new event button (in events.html) and chose an event, I would see the event get recognized by
+both NewEventCtrl and by app-CircleModule:run().
+BUT *************************************
+When I refreshed the browser, only the function in app-CircleModule:run() was called.  It's like the event
+got broadcasted to app-CircleModule but not to NewEventCtrl/app-EventsCtrl
+
+SO THE LESSON IS: **************************************
+Listen for routeChangeStart/routeChangeSuccess events inside run() methods for the time being.
+
+
+
 Twitter Bootstrap Modals:
 Angular-UI offers 2 ways of opening modals.  One of those ways involves using href="#modalName".  This way doesn't work - not exactly sure
 why.  But you can still use the ng-model way of opening modals.  Works great.

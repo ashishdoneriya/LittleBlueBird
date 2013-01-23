@@ -1,5 +1,15 @@
 
-function EventsCtrl($rootScope, $scope, Circle, Reminder) {
+function NewEventCtrl($rootScope, $scope) {
+  
+  $scope.$on("$routeChangeSuccess", 
+    function(){
+      console.log("NewEventCtrl: routeChangeSuccess -----------------------------");
+    }
+  );
+        
+}
+
+function EventsCtrl($rootScope, $scope, Circle, Reminder, $location) {
 
   
   $scope.$on("$routeChangeSuccess", 
@@ -9,15 +19,17 @@ function EventsCtrl($rootScope, $scope, Circle, Reminder) {
     }
   );
   
+  // TODO shouldn't need this anymore.  Look at app-CircleModule:EventHelper. It's a global function that captures the event type and how many receivers are allowed.
   $scope.getType = function() {return Circle.circleType;}
 
-  
+  // NOT USED ANYMORE?  REPLACING THIS FUNCTION WITH AN <a href> TAG
   $scope.newcircleFunction = function(thetype, limit) {
     $scope.search = '';
     $rootScope.peoplesearchresults = [];
     Circle.circleType = thetype;
     $scope.newcircle = {name:'', creatorId:$rootScope.user.id, receiverLimit:limit, participants:{receivers:[], givers:[]}};
     $scope.circlecopies = angular.copy($rootScope.user.circles);
+    $location.url('/newevent/'+thetype+'/'+limit);
   }
     
   $scope.cancelnewcircle = function() {

@@ -23,6 +23,43 @@ angular.module('CircleModule', [])
 
       return CircleParticipant;
   })
+.factory('EventHelper', function() {
+
+    var limits = [{type:'Christmas', limit:-1},
+                {type:'Birthday', limit:1},
+                {type:'Anniversary', limit:2},
+                {type:'Mothers Day', limit:1},
+                {type:'Fathers Day', limit:1},
+                {type:'Valentines Day', limit:-1},
+                {type:'Graduation', limit:1},
+                {type:'Baby Shower', limit:1},
+                {type:'Other', limit:-1}];
+                
+    var EventHelper = {};
+    
+    EventHelper.getTypeInfo = function(newRoute) {
+      var thetype = newRoute.params.type;
+      for(var i=0; i < limits.length; i++) {
+        if(limits[i].type == thetype) {
+          console.log("app-CircleModule: EventHelper.getTypeInfo(): FOUND limits["+i+"].type = "+limits[i].type+", limits["+i+"].limit = "+limits[i].limit);
+          return limits[i];
+        }
+      }
+      return {type:'Other', limit:-1};
+    }
+    
+    return EventHelper; 
+                
+  })
+.run(function($rootScope, EventHelper) {
+  
+    $rootScope.$on('$routeChangeStart', function(scope, newRoute){ 
+      console.log("app-CircleModule.run():  routeChangeStart:  $rootScope.typeInfo = ......");  
+      $rootScope.typeInfo = EventHelper.getTypeInfo(newRoute);
+      console.log($rootScope.typeInfo);  
+    })
+    
+  })
 .run(function($rootScope, $location, Circle, CircleParticipant, Reminder, UserSearch, Gift, Reminder) {
 
   // define $rootScope functions here to make them globally available

@@ -22,6 +22,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/managepeople/', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/me', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/myaccount/me.html', five:'partials/navbar.html'}})
       .when('/mywishlist', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/newevent/:type', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/events/newevent.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/personalinfo', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/myaccount/personalinfo.html', five:'partials/navbar.html'}})
       .when('/reminders', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/email', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
@@ -38,7 +39,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
   .run(function($rootScope, Facebook) {
     $rootScope.Facebook = Facebook;
   })
-  .run(function($window, $route, $rootScope, $cookieStore, $location, $rootScope, facebookConnect, $timeout, User, FacebookUser){    
+  .run(function($window, $route, $rootScope, $cookieStore, $location, facebookConnect, $timeout, User, FacebookUser){    
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){
         console.log("FINAL ROUTECHANGESTART FUNCTION ----------------------------");    
         

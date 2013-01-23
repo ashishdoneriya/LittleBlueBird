@@ -197,6 +197,7 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
     $scope.circlecopies = angular.copy($rootScope.user.circles);
   }
   
+  // TODO shouldn't need this anymore.  Look at app-CircleModule:EventHelper. It's a global function that captures the event type and how many receivers are allowed.
   $scope.getType = function() {return Circle.circleType;}
   
   // TODO add reminder

@@ -230,6 +230,13 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLog
     justreceivers.size == recipients.size
   }
   
+  /**
+   * Couple reasons why we capture the circle's creator even though it's not saved to the db:
+   * 1. When a circle is being created and the creator creates an account for someone, that person gets
+   * an email saying the creator created an account for them.
+   * 2. When a circle is being created, as people are being added to the circle, each person gets an email
+   * saying the creator of the circle just added them to the circle.
+   */
   object creator extends MappedInt(this) {
     override def ignoreField_? = true
   }

@@ -12,15 +12,15 @@
 		    <a class="btn btn-mini dropdown-toggle font16 bold txtgray" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
 		    <ul class="dropdown-menu">
 		      <!-- See app-CircleModule:run():routeChangeStart that references this page -->
-		      <li><a ng-href="#/newevent/Christmas">Christmas</a></li>
-		      <li><a ng-href="#/newevent/Birthday">Birthday</a></li>
-		      <li><a ng-href="#/newevent/Anniversary">Anniversary</a></li>
-		      <li><a ng-href="#/newevent/Mothers Day">Mothers Day</a></li>
-		      <li><a ng-href="#/newevent/Fathers Day">Fathers Day</a></li>
-		      <li><a ng-href="#/newevent/Valentines Day">Valentines Day</a></li>
-		      <li><a ng-href="#/newevent/Graduation">Graduation</a></li>
-		      <li><a ng-href="#/newevent/Baby Shower">Baby Shower</a></li>
-		      <li><a ng-href="#/newevent/Other">Other</a></li>
+		      <li><a ng-href="newevent/Christmas">Christmas</a></li>
+		      <li><a ng-href="newevent/Birthday">Birthday</a></li>
+		      <li><a ng-href="newevent/Anniversary">Anniversary</a></li>
+		      <li><a ng-href="newevent/Mothers Day">Mothers Day</a></li>
+		      <li><a ng-href="newevent/Fathers Day">Fathers Day</a></li>
+		      <li><a ng-href="newevent/Valentines Day">Valentines Day</a></li>
+		      <li><a ng-href="newevent/Graduation">Graduation</a></li>
+		      <li><a ng-href="newevent/Baby Shower">Baby Shower</a></li>
+		      <li><a ng-href="newevent/Other">Other</a></li>
 		    </ul>
 		  </div>
 	    </div>
@@ -37,7 +37,7 @@
 <div ng-repeat="event in user.circles">
   <div class="row">
     
-      <a ng-href="#/event/{{event.id}}">
+      <a ng-href="event/{{event.id}}">
         <div class="{{isLastRow('span3 list pad5 font14', $index, user.circles.length)}}">
           {{event.name}} <span class="pull-right font12 txtgray">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
         </div>

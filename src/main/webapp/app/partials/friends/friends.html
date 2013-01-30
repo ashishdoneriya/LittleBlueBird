@@ -17,7 +17,7 @@
 <div ng-repeat="friend in user.friends">
   <div class="row">
     
-      <a style="font-weight:bold;display:block;" ng-href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
+      <a style="font-weight:bold;display:block;" ng-href="giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
         <div class="{{isLastRow('span3 list pad5', $index, user.friends.length)}}">
           <div ng-include src="'partials/friends/friend.html'"></div>
         </div>

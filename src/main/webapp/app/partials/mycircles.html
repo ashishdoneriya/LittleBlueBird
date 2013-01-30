@@ -1,7 +1,7 @@
 <div ng-controller="MyCircleCtrl">
 
   <div class="row">
-    <div class="span2 bold margbottom5"><h4><a href="#/friends" ng-click="gotoFriends()">Friends</a></h4></div>
+    <div class="span2 bold margbottom5"><h4><a href="friends" ng-click="gotoFriends()">Friends</a></h4></div>
   </div>
   
   <div class="row">
@@ -15,7 +15,7 @@
   
     <ul ng-repeat="c in user.circles" ng-class="'nav nav-pills nav-stacked marg0'">
       <li ng-class="activeOrNot(c)">
-        <a href="#/event/{{c.id}}" ng-click="makeActive($index, c);toggleCircle(c);showParticipants(c);">
+        <a href="event/{{c.id}}" ng-click="makeActive($index, c);toggleCircle(c);showParticipants(c);">
           <span class="caret margleft_5 margtop5"></span> <b>{{c.name}}</b>
         </a>
           <div ng-show="c.show" class="box-white">
@@ -39,7 +39,7 @@
             </span> 
           
             <div ng-repeat="receiver in c.participants.receivers" class="margleft5">
-              <a href="#/giftlist/{{receiver.id}}/{{c.id}}" ng-click="giftlist(c, receiver)">
+              <a href="giftlist/{{receiver.id}}/{{c.id}}" ng-click="giftlist(c, receiver)">
                 {{receiver.first}} {{receiver.last}}
               </a> 
             </div>

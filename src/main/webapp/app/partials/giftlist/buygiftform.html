@@ -8,8 +8,8 @@
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret pad0"></span></a>
 	      <ul class="dropdown-menu">
-		    <span ng-show="gift.canedit"><li><a href="#/editgift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="gift.buying=false;editgift(gift);"><i class="icon-pencil"></i> Edit</a></li></span> 
-            <span ng-show="gift.candelete"><li><a href="#/deletegift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="deletegift($index, gift)"><i class="icon-remove"></i> Delete</a></li></span>
+		    <span ng-show="gift.canedit"><li><a href="editgift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="gift.buying=false;editgift(gift);"><i class="icon-pencil"></i> Edit</a></li></span> 
+            <span ng-show="gift.candelete"><li><a href="deletegift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="deletegift($index, gift)"><i class="icon-remove"></i> Delete</a></li></span>
 		    <span ng-hide="gift.canedit"><li><a ng-click="alertcannotedit()"><i class="icon-pencil"></i> Edit</a></li></span> 
 		    <span ng-hide="gift.candelete"><li><a ng-click="alertcannotdelete()"><i class="icon-remove"></i> Delete</a></li></span>
 		  </ul>

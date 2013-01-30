@@ -9,8 +9,8 @@
           <div class="btn-group">
 		    <a class="btn btn-small dropdown-toggle" data-toggle="dropdown">Edit</a> <!-- see dropdownToggle.js -->
 		    <ul class="dropdown-menu">
-		      <li><a href="#/personalinfo">Personal Info</a></li>
-		      <li><a href="#/emailprefs">Email Preferences</a></li>
+		      <li><a href="personalinfo">Personal Info</a></li>
+		      <li><a href="emailprefs">Email Preferences</a></li>
 		    </ul>
 		  </div>
           
@@ -38,9 +38,9 @@
 <div class="row margleft0">
   <div class="span7 roundedbottom margleft_5 pad0 bgwhite">
     <div class="row">
-      <div class="span1 borderright_009dcb pad5">{{user.friends.length}}<a ng-href="#/friends" ng-click="setactive('friends');"><P>Friends</P></a></div>
-      <div class="span1 borderright_009dcb pad5 marg0">{{user.circles.length}}<a ng-href="#/events" ng-click="setactive('events');"><P>Events</P></a></div>
-      <div class="span5 pad5 marg0">55<a ng-href="#/mywishlist" ng-click="setactive('me');"><P>Wish List</P></a></div>
+      <div class="span1 borderright_009dcb pad5">{{user.friends.length}}<a ng-href="friends" ng-click="setactive('friends');"><P>Friends</P></a></div>
+      <div class="span1 borderright_009dcb pad5 marg0">{{user.circles.length}}<a ng-href="events" ng-click="setactive('events');"><P>Events</P></a></div>
+      <div class="span5 pad5 marg0">55<a ng-href="mywishlist" ng-click="setactive('me');"><P>Wish List</P></a></div>
     </div>  
   </div>
 </div>

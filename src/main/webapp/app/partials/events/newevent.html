@@ -11,14 +11,14 @@
           <div ng-show="circleForm.name.$error.required || circleForm.expdate.$error.required">
             <div class="btn-group pull-right">
               <a ng-disabled="true" class="btn btn-primary btn-small" id="invalidform">Save</a>
-              <a ng-href="#/events" class="btn btn-small" ng-click="cancelnewcircle();addmethod='';search='';">Cancel</a>
+              <a ng-href="events" class="btn btn-small" ng-click="cancelnewcircle();addmethod='';search='';">Cancel</a>
             </div>
           </div>    
           
           <div ng-hide="circleForm.name.$error.required || circleForm.expdate.$error.required">
             <div class="btn-group pull-right">
               <a class="btn btn-primary btn-small" ng-click="savecircle(newcircle, expdate);showRegister=false;search='';">Save</a>
-              <a ng-href="#/events" class="btn btn-small" ng-click="cancelnewcircle();addmethod='';search='';">Cancel</a>
+              <a ng-href="events" class="btn btn-small" ng-click="cancelnewcircle();addmethod='';search='';">Cancel</a>
             </div>
           </div>
           

@@ -12,11 +12,11 @@
       <span ng-show="$index % 2 == 0">  
       <div class="row">
         <div class="span3 margbottom5 align-top">
-          <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
+          <a href="giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
             <div class="crop100"><img height={{adjustedheight(friend,100)}} width={{adjustedwidth(friend,100)}} ng-src="{{friend.profilepicUrl}}" /></div>
           </a> 
   
-          <a class="align-top bold" href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
+          <a class="align-top bold" href="giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
             {{friend.fullname}}
           </a> 
         </div>
@@ -31,11 +31,11 @@
       <span ng-show="$index % 2 == 1">  
       <div class="row">
         <div class="span3 margbottom5 align-top">
-          <a href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
+          <a href="giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
             <div class="crop100"><img height={{adjustedheight(friend,100)}} width={{adjustedwidth(friend,100)}} ng-src="{{friend.profilepicUrl}}" /></div>
           </a> 
   
-          <a class="align-top bold" href="#/giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
+          <a class="align-top bold" href="giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="{{friend.first}}'s wish list">
             {{friend.fullname}}
           </a> 
         </div>

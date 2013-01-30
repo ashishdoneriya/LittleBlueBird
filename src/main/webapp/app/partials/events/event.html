@@ -59,7 +59,7 @@
   <div class="row">  <!-- participant row -->
       
     <span ng-show="p.isReceiver">
-      <a ng-href="#/giftlist/{{p.id}}/{{circle.id}}">
+      <a ng-href="giftlist/{{p.id}}/{{circle.id}}">
         <div class="{{isLastRow('span7 list pad10 font16', $index, circle.participants.both.length)}}">
           {{p.fullname}} <span class="pull-right font12 txtblack"><span ng-show="circle.receiverLimit != -1">Honoree </span> <i class="icon-chevron-right"></i></span>
         </div>

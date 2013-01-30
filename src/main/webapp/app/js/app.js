@@ -16,7 +16,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/fbfriends', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/event/:circleId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/events/event.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/events', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/myaccount/me.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/events', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/events/whatareevents.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
       .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/managepeople/', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
@@ -33,7 +33,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       ;
       
-    //$locationProvider.html5Mode(true).hashPrefix('');
+    $locationProvider.html5Mode(true);
   
   })
   .run(function($rootScope, Facebook) {

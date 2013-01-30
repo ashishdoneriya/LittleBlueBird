@@ -227,40 +227,6 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
     }
   }
     
-  $scope.beginnewuser = function() {
-    $scope.addmethod = 'createaccount';
-    $scope.newuser = {};
-    console.log("app-CircleCtrl:  AddCircleCtrl: beginnewuser:  $scope.addmethod="+$scope.addmethod);
-  }
-    
-  //$scope.addparticipant = function(index, person, circle) {
-  //  //alert("$scope.addparticipant:  person.first="+person.first);
-  //  if(!angular.isDefined(circle.participants))
-  //    circle.participants = {receivers:[], givers:[]};
-  //  if($rootScope.participationlevel == 'Giver')
-  //    circle.participants.givers.push(person);
-  //  else circle.participants.receivers.push(person);
-  //  
-  //  if(index != -1) {
-  //    console.log("index = "+index);
-  //    $scope.people[index].hide = true;
-  //  }
-  //  
-  //  // if the circle already exists, add the participant to the db immediately
-  //  if(angular.isDefined(circle.id)) {
-  //    //alert("circle.id="+circle.id+"\n $rootScope.participationlevel="+$rootScope.participationlevel);
-  //    console.log("$scope.addparticipant:  $rootScope.user.id="+$rootScope.user.id);
-  //    var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$rootScope.user.id, userId:person.id, participationLevel:$rootScope.participationlevel,
-  //                                       who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$rootScope.user.fullname},
-  //                                       function() {$rootScope.circle.reminders = Reminder.query({circleId:$rootScope.circle.id})});
-  //  }
-  //}
-    
-  // when you're creating a new user and then immediately adding them to the circle
-  //$scope.addparticipant2 = function(person, circle) {
-  //  $scope.addparticipant(-1, person, circle);
-  //}
-  
   
   // TODO duplicated in ManagePeopleCtrl
   function removeremindersforperson(person) {

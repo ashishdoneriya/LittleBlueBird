@@ -1,12 +1,121 @@
 
 function NewEventCtrl($rootScope, $scope) {
+
+  $scope.back = function() {
+    $rootScope.addmethod = 'fromanotherevent';
+  }
   
-  $scope.$on("$routeChangeSuccess", 
-    function(){
-      console.log("NewEventCtrl: routeChangeSuccess -----------------------------");
+  $scope.clicklbbuser = function(index, person, people) {
+    if(angular.isDefined(person.selected)) {
+      delete person.selected;
+      for(var i=0; i < $rootScope.selectedpeople.length; i++) {
+        if($rootScope.selectedpeople[i].id == person.id) {
+          $rootScope.selectedpeople.splice(i, 1);
+          break;
+        }
+      }
     }
-  );
-        
+    else {
+      person.selected = true; 
+      $rootScope.selectedpeople.push(person);
+    }
+    console.log($rootScope.selectedpeople);
+  }
+  
+  $scope.selectAllParticipants = function(people) {
+    delete $rootScope.selectedpeople;
+    $rootScope.selectedpeople = [];
+    for(var i=0; i < people.length; i++) {
+      people[i].selected = true;
+      $rootScope.selectedpeople.push(people[i]);
+    }
+  }
+  
+  $scope.addSelectedPeople = function(circle) {
+    $rootScope.addmethod = 'fromanotherevent';
+    if(!angular.isDefined(circle.participants.both)) {
+      circle.participants.both = [];
+    }
+    for(var i=0; i < $rootScope.selectedpeople.length; i++) {
+      //////////////////////////////////////////////////
+      // ADD TO 'both'
+      // make sure the person isn't already in 'both'
+      var inboth = false;
+      for(var j=0; j < circle.participants.both.length; j++) {
+        if(circle.participants.both[j].id == $rootScope.selectedpeople[i].id) {
+          inboth = true;
+          break;
+        }
+      } 
+      if(!inboth) {
+        circle.participants.both.push($rootScope.selectedpeople[i]);
+        console.log("ADDED TO 'both': $rootScope.selectedpeople["+i+"]....");
+        console.log($rootScope.selectedpeople[i]);
+      }
+      
+      //////////////////////////////////////////////////
+      // ADD TO 'givers'
+      if($rootScope.participationLevel == 'Giver') {
+        // make sure the person isn't already in 'givers'
+        var ingivers = false;
+        for(var j=0; j < circle.participants.givers.length; j++) {
+          if(circle.participants.givers[j].id == $rootScope.selectedpeople[i].id) {
+            ingivers = true;
+            break;
+          }
+        } 
+        if(!ingivers) {
+          circle.participants.givers.push($rootScope.selectedpeople[i]);
+          console.log("ADDED TO 'givers': $rootScope.selectedpeople["+i+"]....");
+          console.log($rootScope.selectedpeople[i]);
+        }
+      }
+      
+      //////////////////////////////////////////////////
+      // ADD TO 'receivers'
+      else {
+        // NO LIMIT OR LIMIT NOT YET REACHED
+        if(circle.receiverLimit == -1 || circle.participants.receivers.length < circle.receiverLimit) {
+          // make sure the person isn't already in 'receivers'
+          var inreceivers = false;
+          for(var j=0; j < circle.participants.receivers.length; j++) {
+            if(circle.participants.receivers[j].id == $rootScope.selectedpeople[i].id) {
+              inreceivers = true;
+              break;
+            }
+          } 
+          if(!inreceivers) {
+            circle.participants.receivers.push($rootScope.selectedpeople[i]);
+            console.log("ADDED TO 'receivers': $rootScope.selectedpeople["+i+"]....");
+            console.log($rootScope.selectedpeople[i]);
+          }
+        } // NO LIMIT OR LIMIT NOT YET REACHED
+
+        //////////////////////////////////////////////////////////////////////
+        // IN THIS CASE, THE RECEIVER LIMIT HAS BEEN REACHED, SO EVEN THOUGH WE SELECTED participationLevel 'Receiver',
+        // THIS PERSON/THESE PEOPLE ARE GOING TO BE ADDED AS Givers INSTEAD.
+        else {
+          var ingivers = false;
+          for(var j=0; j < circle.participants.givers.length; j++) {
+            if(circle.participants.givers[j].id == $rootScope.selectedpeople[i].id) {
+              ingivers = true;
+              break;
+            }
+          } 
+          if(!ingivers) {
+            circle.participants.givers.push($rootScope.selectedpeople[i]);
+            console.log("ADDED TO 'givers': $rootScope.selectedpeople["+i+"]....");
+            console.log($rootScope.selectedpeople[i]);
+          }
+
+        } 
+        // IN THIS CASE, THE RECEIVER LIMIT HAS BEEN REACHED, SO EVEN THOUGH WE SELECTED participationLevel 'Receiver',
+        // THIS PERSON/THESE PEOPLE ARE GOING TO BE ADDED AS Givers INSTEAD. 
+        //////////////////////////////////////////////////////////////////////       
+      }
+    }
+  }
+
 }
 
 function EventsCtrl($rootScope, $scope, Circle, Reminder, $location) {
@@ -36,67 +145,6 @@ function EventsCtrl($rootScope, $scope, Circle, Reminder, $location) {
     $scope.newcircle = {participants:[]};
     delete $rootScope.expdate;
   }
- 
-  $scope.savecircle = function(circle, expdate) {
-    console.log("expdate = "+expdate);
-    circle.expirationdate = new Date(expdate);
-    console.log("circle.expirationdate.getTime() = "+circle.expirationdate.getTime());
-    var savedcircle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:Circle.circleType, 
-                 participants:circle.participants, creatorId:circle.creatorId},
-                 function() {
-                   if(!angular.isDefined(circle.id))
-                     $rootScope.user.circles.push(savedcircle); 
-                 } 
-               );
-    console.log("end of $scope.savecircle()");
-  }
-  
-  // when you're creating a new user and then immediately adding them to the circle
-  $scope.addparticipant2 = function(person, circle, participationlevel) {
-    $scope.addparticipant(-1, person, circle, participationlevel);
-  }
-  
-  // add all the participants in the 'fromcircle' to the 'tocircle'
-  $scope.addparticipants = function(fromcircle, tocircle) {
-    for(var i=0; i < fromcircle.participants.receivers.length; i++) {
-      var hasLimit = angular.isDefined(tocircle.receiverLimit) && tocircle.receiverLimit != -1;
-      if(hasLimit && tocircle.participants.receivers.length == tocircle.receiverLimit)
-        tocircle.participants.givers.push(fromcircle.participants.receivers[i]);
-      else tocircle.participants.receivers.push(fromcircle.participants.receivers[i]);
-    }
-    for(var i=0; i < fromcircle.participants.givers.length; i++) {
-      if(!angular.isDefined(tocircle.receiverLimit) || tocircle.receiverLimit == -1)
-        tocircle.participants.receivers.push(fromcircle.participants.givers[i]);
-      else
-        tocircle.participants.givers.push(fromcircle.participants.givers[i]);
-    }
-  }
-    
-  $scope.beginnewuser = function() {
-    $scope.addmethod = 'createaccount';
-    $scope.newuser = {};
-    console.log("app-EventCtrl:  beginnewuser:  $scope.addmethod="+$scope.addmethod);
-  } 
-  
-  // TODO add reminder
-  $scope.addmyselfasgiver = function(circle) {
-    $scope.addparticipant2($rootScope.user, circle, 'Giver')
-    // if 'you' happen to be a 'receiver', remove yourself from 'receivers'...
-    for(var i=0; i < circle.participants.receivers.length; i++) {
-      if(circle.participants.receivers[i].id == $rootScope.user.id)
-        circle.participants.receivers.splice(i, 1);
-    }
-  }
-  
-  // TODO add reminder
-  $scope.addmyselfasreceiver = function(circle) {
-    $scope.addparticipant2($rootScope.user, circle, 'Receiver');
-    // if 'you' happen to be a 'giver', remove yourself from 'givers'...
-    for(var i=0; i < circle.participants.givers.length; i++) {
-      if(circle.participants.givers[i].id == $rootScope.user.id)
-        circle.participants.givers.splice(i, 1);
-    }
-  }
 }
 
 
@@ -117,16 +165,6 @@ function EventCtrl($rootScope, $scope, $route, Circle, CircleParticipant, Remind
   // edit the $rootScope.circle
   $scope.begineditcircle = function() {
     $rootScope.expdate=$rootScope.circle.dateStr;
-  }
-  
-  // TODO add reminder
-  $scope.addmyselfasreceiver = function(circle) {
-    $scope.addparticipant2($rootScope.user, circle, 'Receiver');
-    // if 'you' happen to be a 'giver', remove yourself from 'givers'...
-    for(var i=0; i < circle.participants.givers.length; i++) {
-      if(circle.participants.givers[i].id == $rootScope.user.id)
-        circle.participants.givers.splice(i, 1);
-    }
   }
     
   $scope.addparticipant_4ARGROOTSCOPEVERSIONSHOULDBEGETTINGCALLED = function(index, person, participationlevel) {
@@ -157,16 +195,6 @@ function EventCtrl($rootScope, $scope, $route, Circle, CircleParticipant, Remind
                                          who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:$rootScope.circle.name, 
                                          adder:$rootScope.user.fullname},
                                          function() {$rootScope.circle.reminders = Reminder.query({circleId:$rootScope.circle.id})});
-    }
-  }
-  
-  // TODO add reminder
-  $scope.addmyselfasgiver = function(circle) {
-    $scope.addparticipant2($rootScope.user, circle, 'Giver')
-    // if 'you' happen to be a 'receiver', remove yourself from 'receivers'...
-    for(var i=0; i < circle.participants.receivers.length; i++) {
-      if(circle.participants.receivers[i].id == $rootScope.user.id)
-        circle.participants.receivers.splice(i, 1);
     }
   }
 }

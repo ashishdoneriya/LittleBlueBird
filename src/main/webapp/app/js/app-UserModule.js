@@ -167,5 +167,11 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       }
   })
   .run(function($rootScope, $location, UserSearch) {
-    
+
+    $rootScope.beginnewuser = function() {
+      $rootScope.addmethod = 'createaccount';
+      $rootScope.newuser = {};
+      console.log("app-UserModule:  beginnewuser:  $rootScope.addmethod="+$rootScope.addmethod);
+    } 
+
   });

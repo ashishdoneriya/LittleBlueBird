@@ -1,4 +1,13 @@
-http://www.tuckey.org/urlrewrite/
+
+Resource --------------------------------------------------------------------------
+
+Download  http://www.tuckey.org/urlrewrite/
+
+
+
+
+
+web.xml --------------------------------------------------------------------------
 
 Put this in web.xml right after <web-app>
 
@@ -19,8 +28,34 @@ Put this in web.xml - make it the first <filter-mapping>:
     <dispatcher>FORWARD</dispatcher>
 </filter-mapping>
 
-Copy urlrewrite.xml from this directory over to: C:\Users\bdunklau\LittleBlueBird\src\main\webapp\WEB-INF
+
+
+
+
+WEB-INF/urlrewrite.xml ----------------------------------------------------------------------------
+
+C:\Users\bdunklau\LittleBlueBird\src\main\webapp\WEB-INF\urlrewrite.xml
+
+This file contains the patterns that the tuckey servlet filter looks for.  Notice that how all
+patterns get rewritten to index.html
+
+
+
+
+
+
+build.sbt -----------------------------------------------------------------------------
 
 In C:\Users\bdunklau\LittleBlueBird\build.sbt, add the following to libraryDependencies:
 
   "org.tuckey" % "urlrewritefilter" % "4.0.3" % "container",
+  
+  
+  
+  
+  
+index.html -------------------------------------------------------------------------
+
+Need this just after the <head> tag:
+
+<base href="http://www.littlebluebird.com/gf/app/" />

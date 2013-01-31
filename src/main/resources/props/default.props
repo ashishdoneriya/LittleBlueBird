@@ -1,12 +1,9 @@
-# /src/main/resources/props
-# /src/test/resources/props
-
 mail.transport.protocol=smtp
 mail.smtp.starttls.enable=true
 mail.smtp.auth=true
 mail.smtp.host=plus.smtp.mail.yahoo.com
 mail.smtp.port=587
 mail.user=brentdunklau@sbcglobal.net
-mail.password=Pi...
+mail.password=***********
 db.user=bdunklau
-db.pass=Pi...
+db.pass=***********

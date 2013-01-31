@@ -7,30 +7,30 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/bar/:fooid/:barid', {templates: {layout: 'foo',        menu: 'partials/foo/menu.html', body:'partials/foo/bar.html'}})
       .when('/baz/:fooid/:barid/:bazid', {templates: {layout: 'foo', menu: 'partials/foo/menu.html', body:'partials/foo/baz.html'}})
       .when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}})
-      .when('/circles', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/emailprefs', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/myaccount/emailprefs.html', five:'partials/navbar.html'}})
-      .when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/friends', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/friends/whatarefriends.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
-      .when('/fbfriends', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/event/:circleId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/events/event.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/events', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/events/whatareevents.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
-      .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
-      .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/managepeople/', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/me', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/myaccount/me.html', five:'partials/navbar.html'}})
-      .when('/mywishlist', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/newevent/:type', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/events/newevent.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
-      .when('/personalinfo', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/myaccount/personalinfo.html', five:'partials/navbar.html'}})
-      .when('/reminders', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/email', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/welcome', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/circles', {templates: {layout: 'layout.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/emailprefs', {templates: {layout: 'layout.html', four: 'partials/myaccount/emailprefs.html', five:'partials/navbar.html'}})
+      .when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/friends', {templates: {layout: 'layout.html', four: 'partials/friends/whatarefriends.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/fbfriends', {templates: {layout: 'layout.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/gettingstarted', {templates: {layout: 'layout.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/event/:circleId', {templates: {layout: 'layout.html', four: 'partials/events/event.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/events', {templates: {layout: 'layout.html', four: 'partials/events/whatareevents.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
+      .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/managepeople/', {templates: {layout: 'layout.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/me', {templates: {layout: 'layout.html', four: 'partials/myaccount/me.html', five:'partials/navbar.html'}})
+      .when('/mywishlist', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/newevent/:type', {templates: {layout: 'layout.html', four: 'partials/events/newevent.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/personalinfo', {templates: {layout: 'layout.html', four: 'partials/myaccount/personalinfo.html', five:'partials/navbar.html'}})
+      .when('/reminders', {templates: {layout: 'layout.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/email', {templates: {layout: 'layout.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/welcome', {templates: {layout: 'layout.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/state', {templates: {layout: 'foo',               menu: 'partials/foo/menu.html', body:'partials/foo/foo.html'}})
       .when('/test', {templates: {layout: 'layout-nli.html', one: 'partials/test.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
-      .otherwise({redirectTo: '/welcome', templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .otherwise({redirectTo: '/welcome', templates: {layout: 'layout.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       ;
       
     $locationProvider.html5Mode(true);
@@ -125,11 +125,8 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
                       if($rootScope.users.length == 1) {
                         $rootScope.user = angular.copy($rootScope.users[0]);
                         $rootScope.showUser = angular.copy($rootScope.users[0]);
-                        // how do we know if they've never logged in before?  if so, we want to send them to welcome
-                        //$rootScope.templates = {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'};
                         $rootScope.templates = newRoute.$route.templates;
                         $rootScope.layoutController = newRoute.$route.controller;
-                        //$location.path('/mywishlist');
                       } // if($rootScope.users.length == 1)
                       else if($rootScope.users.length > 1) {
                         // who are you? you have an email that is shared with multiple people
@@ -191,6 +188,8 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
     $rootScope.menuitems = ['me', 'friends', 'events'];
     $rootScope.activeitem = 'me';
 
+    // TODO Repurpose this if necessary so that the links in the navbar.html have their active/inactive states change when this function is called
+    // This function was originally developed for sidemenu.html, which only had links of "Events", "Friends" and "Me".  That menu has gone away.
     $rootScope.setactive = function(menuitem) {
       for(var i=0; i < $rootScope.menuitems.length; i++) {
         if(menuitem == $rootScope.menuitems[i]) $rootScope.activeitem = menuitem;

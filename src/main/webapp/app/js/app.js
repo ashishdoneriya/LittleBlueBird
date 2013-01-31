@@ -12,7 +12,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/emailprefs', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/myaccount/emailprefs.html', five:'partials/navbar.html'}})
       .when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/friends', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/myaccount/me.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/friends', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/friends/whatarefriends.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/fbfriends', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/gettingstarted', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/event/:circleId', {templates: {layout: 'layout.html', three: 'partials/sidemenu.html', four: 'partials/events/event.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
@@ -44,6 +44,8 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
         console.log("FINAL ROUTECHANGESTART FUNCTION ----------------------------");    
         
         if (!newRoute || !newRoute.$route) return;
+        
+        $rootScope.currentlocation = "/gf/app" + $location.path();
         
         if($window.location.search != '') {
           var s = $window.location.search;

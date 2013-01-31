@@ -17,7 +17,7 @@
           
           <div ng-hide="circleForm.name.$error.required || circleForm.expdate.$error.required">
             <div class="btn-group pull-right">
-              <a class="btn btn-primary btn-small" ng-click="savecircle(newcircle, expdate);showRegister=false;search='';">Save</a>
+              <a ng-href="{{currentlocation}}" class="btn btn-primary btn-small" ng-click="savecircle(newcircle, expdate);showRegister=false;search='';">Save</a>
               <a ng-href="events" class="btn btn-small" ng-click="cancelnewcircle();addmethod='';search='';">Cancel</a>
             </div>
           </div>
@@ -70,11 +70,11 @@
 	          
 	          <span ng-show="canaddreceiver(newcircle)">
                 <div class="btn-group pull-right">
-	              <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
+	              <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown">+</a>
 			      <ul class="dropdown-menu">
-			        <li><a ng-click="addmyselfasreceiver(newcircle)">Add myself</a></li>
-			        <li><a ng-click="beginAddingByName('Receiver');">Add by name</a></li>
-			        <span ng-hide="user.circles.length == 0"><li><a ng-click="beginAddingFromAnotherEvent('Receiver');">Add from another event</a></li></span>
+			        <li><a ng-href="{{currentlocation}}" ng-click="addmyselfasreceiver(newcircle)">Add myself</a></li>
+			        <li><a ng-href="{{currentlocation}}" ng-click="beginAddingByName('Receiver');">Add by name</a></li>
+			        <span ng-hide="user.circles.length == 0"><li><a ng-href="{{currentlocation}}" ng-click="beginAddingFromAnotherEvent('Receiver');">Add from another event</a></li></span>
 			      </ul>	
 	            </div>
 	          </span>
@@ -90,7 +90,7 @@
           <span ng-repeat="participant in newcircle.participants.receivers">
           <div class="row">
 	        <div class="{{isLastRow('span3 list pad5', $index, newcircle.participants.receivers.length)}}">
-	          <a class="align-bottom" ng-click="removereceiver($index, newcircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
+	          <a ng-href="{{currentlocation}}" class="align-bottom" ng-click="removereceiver($index, newcircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
 	        </div>
           </div>
           </span>
@@ -119,9 +119,9 @@
                 <div class="btn-group pull-right">
 	              <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
 			      <ul class="dropdown-menu">
-			        <li><a ng-click="addmyselfasgiver(newcircle)">Add myself</a></li>
-			        <li><a ng-click="beginAddingByName('Giver');">Add by name</a></li>
-			        <span ng-hide="user.circles.length == 0"><li><a ng-click="beginAddingFromAnotherEvent('Giver');">Add from another event</a></li></span>
+			        <li><a ng-href="{{currentlocation}}" ng-click="addmyselfasgiver(newcircle)">Add myself</a></li>
+			        <li><a ng-href="{{currentlocation}}" ng-click="beginAddingByName('Giver');">Add by name</a></li>
+			        <span ng-hide="user.circles.length == 0"><li><a ng-href="{{currentlocation}}" ng-click="beginAddingFromAnotherEvent('Giver');">Add from another event</a></li></span>
 			      </ul>	
 	            </div>
 	          </div>
@@ -130,7 +130,7 @@
 	        <span ng-repeat="participant in newcircle.participants.givers">
 	          <div class="row">
 	            <div class="{{isLastRow('span3 list pad5', $index, newcircle.participants.givers.length)}}">
-	              <a class="align-bottom" ng-click="removegiver($index, newcircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
+	              <a ng-href="{{currentlocation}}" class="align-bottom" ng-click="removegiver($index, newcircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
 	            </div>
 	          </div>
 		    </span>
@@ -175,7 +175,7 @@
 	        <div class="row">
 	          <div class="span3 roundedbottom pad5">
 	            No one found matching the search criteria
-	            <p><a ng-click="beginnewuser();">Create Account for this Person?</a></p>
+	            <p><a ng-href="{{currentlocation}}" ng-click="beginnewuser();">Create Account for this Person?</a></p>
 	          </div>
 	        </div>
 	        </span>
@@ -224,7 +224,7 @@
 			<div ng-repeat="c in circlecopies">
 			<div class="row">
               <div class="{{isLastRow('span3 list pad5', $index, circlecopies.length)}}">
-			    <a ng-click="selectEventToAddFrom(c);" style="text-decoration:none;">
+			    <a ng-href="{{currentlocation}}" ng-click="selectEventToAddFrom(c);" style="text-decoration:none;">
 	              {{c.name}}<span class="pull-right"><i class="icon-chevron-right"></i></span>
 	            </a>
 			  </div>
@@ -240,7 +240,7 @@
 			<div class="row">
 			  <div class="span3 roundedtop bgbluegradient pad5 white">
 			    Add from {{sourceEvent.name}}
-		        <a class="btn btn-primary btn-mini pull-right" ng-click="selectAllParticipants(sourceEvent.participants.both);">Select All</a>
+		        <a ng-href="{{currentlocation}}" class="btn btn-primary btn-mini pull-right" ng-click="selectAllParticipants(sourceEvent.participants.both);">Select All</a>
 			  </div>
 			</div>
 			
@@ -256,9 +256,9 @@
 		    <div class="row">
 		      <div class="span3 listfooter pad5">
 		        <span class="pull-right">
-		        <a class="btn btn-primary btn-mini" ng-click="addSelectedPeople(newcircle);">Done</a>
+		        <a ng-href="{{currentlocation}}" class="btn btn-primary btn-mini" ng-click="addSelectedPeople(newcircle);">Done</a>
 		        &nbsp;
-		        <a class="btn btn-mini" ng-click="back();">Cancel</a>
+		        <a ng-href="{{currentlocation}}" class="btn btn-mini" ng-click="back();">Cancel</a>
 		        </span>
 		      </div>
 		    </div>

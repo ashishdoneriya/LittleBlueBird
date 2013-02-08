@@ -1,3 +1,21 @@
+2/8/13:  jQueryUI datepicker...
+See this bug ticket:  http://bugs.jqueryui.com/ticket/8403
+I had to modify jquery-ui-1.10.0.custom.js, line 8507.  Had to remove the # symbol in href="#".  With that # in there, you would click a date and
+get sent to www.littlebluebird.com/gf/#  ...definitely not what we want to happen.  With the # removed, the datepicker works the
+way we want it to. 
+
+
+2/7/13:  <div> tags and table layouts...
+There is no notion of column spanning with div tags.
+So don't try to make the first row have one column that's 500 wide, and then a second row with 2 columns, each 250 wide.
+What will happen is: You will get a table that is 2x2, where the first column is 500 wide and the second is 250 wide.
+And if you expect everything to fit in a 500-wide box, your second column will end up getting word-wrapped to the next line.
+
+ONE POSSIBLE FIX:  Make your tables only 1-column wide.  For rows that need multiple columns, embed a whole new table
+in that cell
+
+
+
 1/22/13:  routeChangeStart/routeChangeSuccess events on browser refresh
 I was listening for routeChangeStart/routeChangeSuccess events inside NewEventCtrl (app-EventCtrl.js)
 and also inside the run() method of app-CircleModule.js

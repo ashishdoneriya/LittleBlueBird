@@ -1,0 +1,33 @@
+Here is the js function. At one time (3/20/13), this function was located in app-CircleModule.js.
+
+This function could probably be put just about anywhere.
+
+================================================================================================
+BEGIN FUNCTION
+
+
+// http://stackoverflow.com/questions/12603914/reset-form-to-pristine-state-angularjs-1-0-x
+// see app-EventCtrl.js:  $scope.resetInviteByEmailForm()
+angular.resetForm = function (scope, formName, defaults) {
+    $('form[name=' + formName + '], form[name=' + formName + '] .ng-dirty').removeClass('ng-dirty').addClass('ng-pristine');
+    var form = scope[formName];
+    form.$dirty = false;
+    form.$pristine = true;
+    for(var field in form) {
+      if(angular.isDefined(form[field])){
+        if(form[field].$pristine === false) {
+          form[field].$pristine = true;
+        }
+        if(form[field].$dirty === true) {
+          form[field].$dirty = false;
+        }
+      }
+    }
+    
+    for(var d in defaults) {
+      scope[d] = defaults[d];
+    }
+};
+
+END FUNCTION
+================================================================================================

@@ -1,0 +1,37 @@
+
+
+<div class="table">
+  <div class="tablerow">
+    <div class="w725 h30 bgbluegradient padleft5 padtop5 rounded">
+      
+      <div class="table h30">
+        <div class="tablerow h30">
+          
+          <div class="w150 h30">
+		      <div style="width:150px; height:150px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
+		        <div style="margin-top:{{user.profilepicmargintop}};margin-left:{{user.profilepicmarginleft}}">
+		            <img height="{{user.profilepicadjustedheight}}" width="{{user.profilepicadjustedwidth}}" ng-src="{{user.profilepicUrl}}"/>
+		        </div>
+		      </div>
+          </div>
+          <div class="w200 h30 padleft170 margtop_25">
+            <span class="font24 white">Account Info</span>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <div class="tablerow">
+    <div class="padleft170 padtop0 margtop_40">
+      <div ng-include src="'partials/myaccount/personalinfo.html'"></div>
+    </div>
+  </div>
+  <div class="tablerow">
+    <div class="padleft170 padtop0 margtop_40">
+      <div ng-include src="'partials/myaccount/emailprefs.html'"></div>
+    </div>
+  </div>
+</div>

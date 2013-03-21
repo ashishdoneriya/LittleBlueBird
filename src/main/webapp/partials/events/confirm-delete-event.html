@@ -1,0 +1,60 @@
+
+  <div ui-modal class="fade" ng-model="deleteEventModal">
+	<div class="modal-header bgbluegradient">
+	  <button class="close padleft5 padright5" data-dismiss="modal"><i class="icon-remove" data-dismiss="modal"></i></button>
+	  <h3 class="white align-left">Confirm Delete Event</h3>
+	</div>
+	<div class="modal-body txtblack">
+	  <div class="row">
+	    <div class="span5">
+	      Are you sure you want to delete "{{deleteevent.name}}"?  If you delete this event, you will be deleting it for all of these people also.
+	    </div>
+	  </div>
+	  <div class="row">
+	    <div class="span5 padtop10">
+	    
+	    
+	    
+	    
+	    
+	    
+<div ng-repeat="p in deleteevent.participants.both">
+
+      <div class="row padtop10">
+      
+        <!-- this cell only holds the profile pic  -->
+        <div class="span1">
+          <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
+            <div style="margin-top:{{p.profilepicmargintop50}};margin-left:{{p.profilepicmarginleft50}}">
+               <img height="{{p.profilepicadjustedheight50}}" width="{{p.profilepicadjustedwidth50}}" ng-src="{{p.profilepicUrl}}"/>
+            </div>
+          </div>
+        </div>
+        
+        <div class="span3">
+          {{p.fullname}}
+        </div>
+  
+      </div>
+            
+</div>
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    </div>
+	  </div>
+	</div>
+	<div class="modal-footer">
+	  <span class="pull-right">
+	    <button class="btn btn-danger" data-dismiss="modal" ng-click="deletecircle($event)">Delete</button>
+	    <button class="btn" data-dismiss="modal">Cancel</button>
+	  </span>
+	</div>
+  </div>

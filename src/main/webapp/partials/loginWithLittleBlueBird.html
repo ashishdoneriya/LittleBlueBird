@@ -1,0 +1,30 @@
+<!-- 3/1/13  This page replaces login.html, which had a login with facebook button on it.
+Instead, this page has JUST the username/password fields needed to login to LBB -->
+
+
+<div ng-controller="LoginCtrl">   
+	  <form novalidate>
+	    <div class="row">
+	      <div class="span2 padleft30">
+		    <input type="text" title="username" placeholder="Username" ng-model="username"  class="span2 font16"/> 
+          </div>
+        </div>
+	    <div class="row">
+	      <div class="span2 padleft30">
+		    <input type="password" title="password" placeholder="Password" ng-model="password" class="span2 font16"/>
+	      </div>
+        </div>
+	    <div class="row">
+	      <div class="span2">
+		    <a class="btn btn-primary span2 padleft0 padright0" ng-click="login()">Login</a>
+	      </div>
+        </div>
+	  </form>
+	  <div class="row">
+	    <div class="span2 padleft30">
+	      <a ng-href="emailit">Forgot your login?</a> | <a ng-href="register">Register</a>
+        </div>
+      </div>
+        
+      <span ng-show="loginfail"><div class="alert alert-error">Wrong username/password</div></span>
+</div>

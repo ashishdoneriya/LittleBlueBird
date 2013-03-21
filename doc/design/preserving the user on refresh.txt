@@ -1,0 +1,21 @@
+When you click F5/Refresh, how does the user get preserved since that info is store in js?
+
+Non-Facebook Users:
+app-LoginCtrl.js: $scope.login() sets a 'user' cookie
+When you click refresh, app.js detects the routeChangeStart event.
+
+See this line just under all the route definitions:
+
+$rootScope.$on('$routeChangeStart', function(scope, newRoute){
+
+You will see a comment block defining the rules for constructing the $rootScope.user object.  On refresh, there won't be a $rootScope.user object, so the next thing we look for
+is a "user" cookie stored in the $cookieStore.  If that cookie is found, we query for the User object again and that becomes $rootScope.user
+
+If there is no "user" cookie either, we see if the user is logged in to Facebook, and *that* person becomes the $rootScope.user object
+
+
+For Facebook Login people, the situation is (SHOULD BE!) the same.  
+loginWithFacebook.html contains the fb login button.  Clicking it calls $rootScope.registerWithFacebook() in app-FacebookModule.js
+
+$rootScope.registerWithFacebook() calls $rootScope.initfbuser() also in app-FacebookModule.js
+$rootScope.initfbuser() sets a "user" cookie just like $scope.login() does.

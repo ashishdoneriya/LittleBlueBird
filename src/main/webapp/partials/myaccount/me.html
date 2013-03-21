@@ -1,8 +1,63 @@
 
-<div class="row  margleft0">
-  <div class="span7 bgbluegradient white roundedtop margleft_5 pad0" ng-mouseover="showEdit='true'" ng-mouseleave="showEdit='false'">
-    <div class="row">
-      <div class="span7 pull-right" style="min-height:30px;padding-top:10px;padding-right:10px;">
+
+<div class="table">
+  <div class="tablerow">
+    <div class="w500 h30 bgbluegradient padleft5 padtop5 rounded">
+      <img style="-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;" height="{{user.profilepicadjustedheight}}" width="{{user.profilepicadjustedwidth}}" ng-src="{{user.profilepicUrl}}"/>
+      <span class="font24 align-top white">{{user.fullname}}</span>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="table">
+  <div class="tablerow w500">
+    <div class="tablecell500 bgbluegradient white roundedtop margleft_5 pad0" ng-mouseover="showEdit='true'" ng-mouseleave="showEdit='false'">
+      
+      <div class="table h60">
+        <div class="tablerow w500 h60">
+	      <div class="tablecell w100">
+	        <div style="margin-top:{{user.profilepicmargintop}};margin-left:{{user.profilepicmarginleft}};
+	          padding-left:10px;padding-top:10px;">
+	          <img style="-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;" height="{{user.profilepicadjustedheight}}" width="{{user.profilepicadjustedwidth}}" ng-src="{{user.profilepicUrl}}"/>
+	        </div>
+	      </div>
+	      
+	      <div class="tablecell font24 pad10 align-top">
+	        {{user.fullname}}
+	      </div>
+	      
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="table">
+
+<div class="tablerow w500  margleft0">
+  <div class="tablecell500 bgbluegradient white roundedtop margleft_5 pad0" ng-mouseover="showEdit='true'" ng-mouseleave="showEdit='false'">
+    
+    <div class="tablerow w500">
+      <div class="tablecell w200 bgblack">
+        <div style="margin-top:{{user.profilepicmargintop}};margin-left:{{user.profilepicmarginleft}};
+          overflow:hidden;padding-left:10px;padding-top:10px;">
+          <img style="-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;" height="{{user.profilepicadjustedheight}}" width="{{user.profilepicadjustedwidth}}" ng-src="{{user.profilepicUrl}}"/>
+        </div>
+      </div>
+      <div class="tablecell w250 font24">
+        {{user.fullname}}
+      </div>
+    </div>
+    
+    <div class="tablerow w500">
+      <div class="tablecell500 pull-right" style="min-height:30px;padding-top:10px;padding-right:10px;">
         &nbsp;
         <span ng-show="showEdit=='true'" class="pull-right">
 
@@ -17,16 +72,8 @@
         </span>
       </div>
     </div>
-    <div class="row">
-    
-      <div style="margin-top:{{user.profilepicmargintop}};margin-left:{{user.profilepicmarginleft}};text-align:center;
-          overflow:hidden;padding-left:30px;">
-        <img style="-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;" height="{{user.profilepicadjustedheight}}" width="{{user.profilepicadjustedwidth}}" ng-src="{{user.profilepicUrl}}"/>
-      </div>
-      
-    </div>
-    <div class="row">
-      <div class="span7 font24 pad10 center">
+    <div class="tablerow w500">
+      <div class="tablecell500 font24 pad10 center">
         {{user.fullname}}
       </div>
     </div>
@@ -35,12 +82,12 @@
 
 </div>
 
-<div class="row margleft0">
-  <div class="span7 roundedbottom margleft_5 pad0 bgwhite">
-    <div class="row">
-      <div class="span1 borderright_009dcb pad5">{{user.friends.length}}<a ng-href="friends" ng-click="setactive('friends');"><P>Friends</P></a></div>
-      <div class="span1 borderright_009dcb pad5 marg0">{{user.circles.length}}<a ng-href="events" ng-click="setactive('events');"><P>Events</P></a></div>
-      <div class="span5 pad5 marg0">55<a ng-href="mywishlist" ng-click="setactive('me');"><P>Wish List</P></a></div>
+<div class="tablerow w500 margleft0">
+  <div class="tablecell500 roundedbottom margleft_5 pad0 bgwhite">
+    <div class="tablerow w500">
+      <div class="tablecell w500 pad5 marg0">##<a ng-href="mywishlist" ng-click="setactive('me');"><P>Wish List</P></a></div>
     </div>  
   </div>
+</div>
+
 </div>

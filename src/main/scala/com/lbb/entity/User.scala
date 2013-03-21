@@ -3,13 +3,22 @@ package com.lbb.entity
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
+
 import scala.math.BigInt.int2bigInt
 import scala.math.BigInt.long2bigInt
-import scala.xml.Elem
 import scala.xml.NodeSeq
 import scala.xml.Text
+
 import org.joda.time.DateMidnight
 import org.joda.time.Years
+
+import com.lbb.gui.MappedDateExtended
+import com.lbb.gui.MappedEmailExtended
+import com.lbb.gui.MappedTextareaExtended
+import com.lbb.util.LbbLogger
+import com.lbb.util.Util
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
+
 import javax.swing.ImageIcon
 import net.liftweb.common.Box.box2Iterable
 import net.liftweb.common.Box
@@ -20,6 +29,10 @@ import net.liftweb.http.js.JsExp.intToJsExp
 import net.liftweb.http.js.JsExp.jValueToJsExp
 import net.liftweb.http.js.JsExp.strToJsExp
 import net.liftweb.http.js.JsExp
+import net.liftweb.http.JsonResponse
+import net.liftweb.http.S
+import net.liftweb.json.JsonAST.JArray
+import net.liftweb.json.JsonAST.JBool
 import net.liftweb.json.JsonAST.JField
 import net.liftweb.json.JsonAST.JInt
 import net.liftweb.json.JsonAST.JObject
@@ -28,33 +41,20 @@ import net.liftweb.json.JsonAST.JValue
 import net.liftweb.json.JsonAST
 import net.liftweb.mapper.MappedField.mapToType
 import net.liftweb.mapper.By
+import net.liftweb.mapper.ByList
 import net.liftweb.mapper.Cmp
 import net.liftweb.mapper.IHaveValidatedThisSQL
 import net.liftweb.mapper.KeyObfuscator
 import net.liftweb.mapper.LongKeyedMapper
 import net.liftweb.mapper.LongKeyedMetaMapper
+import net.liftweb.mapper.ManyToMany
+import net.liftweb.mapper.MappedBoolean
+import net.liftweb.mapper.MappedInt
+import net.liftweb.mapper.MappedLongForeignKey
+import net.liftweb.mapper.MappedLongIndex
+import net.liftweb.mapper.MappedString
 import net.liftweb.mapper.OprEnum
 import net.liftweb.util.FieldError
-import net.liftweb.mapper.MappedInt
-import com.lbb.gui.MappedDateExtended
-import com.lbb.gui.MappedTextareaExtended
-import com.lbb.gui.MappedEmailExtended
-import net.liftweb.mapper.MappedLongIndex
-import net.liftweb.json.JsonAST.JBool
-import com.lbb.util.LbbLogger
-import net.liftweb.mapper.MappedString
-import net.liftweb.json.JsonAST.JArray
-import net.liftweb.mapper.In
-import net.liftweb.mapper.ByList
-import net.liftweb.mapper.MappedBoolean
-import net.liftweb.http.JsonResponse
-import net.liftweb.http.S
-import com.lbb.util.RequestHelper
-import net.liftweb.mapper.ManyToMany
-import net.liftweb.mapper.MappedLongForeignKey
-import com.lbb.util.Util
-import net.liftweb.mapper.Distinct
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
 
 
 /**
@@ -131,6 +131,24 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
   override def save = {
     try {
       debug("attempt to save: user="+this);
+      
+      if(needToDetermineUsername) {
+        // 2/23/13 - update - don't need to this every time - only on inserts and only when there is no username already
+        // Find out if the username is already taken.  This could happen is one person is creating an account for
+        // another person.  When one person creates an account for someone else, typically, the person creating the
+        // account only supplies the other person's name and maybe the other person's email.  Parents could
+        // supply the child name but the parent's email.  So all we can really count on is that we will know the
+        // person's name.  We construct the username from the first name.  First names can be duplicated all over
+        // the place, so we first have to figure out how many times the first name exists.  Then use that as the
+        // index on the new person
+        val unames = Util.determineUsernamesLike(this.first.is)
+        debug("save:  usernames like "+this.first.is+":  "+unames)
+        val uname = determineUsernameBasedOnFirstName(unames)
+        debug("determined username to be: "+uname);
+        this.username(uname)
+        this.password(this.email.is) // we don't want the username and password to be the same - that's pretty easy to hack
+      }
+      
       val saved = super.save
       debug("attempt to save: user="+this+"  =>  saved="+saved);
       saved
@@ -691,6 +709,28 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
       Friend.associate(newfriend.id.is, this.id.is)
     }
                     
+  }
+
+  
+  // 2/23/13
+  def needToDetermineUsername = {
+    if(this.id.is == -1) {
+      if(this.username.isEmpty()) { debug("needToDetermineUsername:  return true"); true }
+      else  { debug("needToDetermineUsername:  return false because username is already set to: '"+this.username+"'"); false }
+    }
+    else { debug("needToDetermineUsername:  return false because user id is already set"); false }
+  }
+  
+  // 2/26/13
+  def determineUsernameBasedOnFirstName(existingUsernames:List[String]) = {
+    val initialIdx = existingUsernames.size;
+    loopIdx(this.first.is, initialIdx, existingUsernames) 
+  }
+  
+  // 2/26/13
+  private def loopIdx(first:String, idx:Integer, list:List[String]):String = {
+    if(list.indexOf(first+idx) == -1) first+idx // we found it
+    else loopIdx(first, idx+1, list) // recurse - keep looking
   }
 
 }

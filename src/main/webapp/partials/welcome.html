@@ -1,28 +1,140 @@
 <div ng-controller="WelcomeCtrl">
 <h1>Welcome to LittleBlueBird</h1>
 
-<P>&nbsp;</P>
+<div class="row">
+  <div class="span5 box padleft10 padright10 bgwhite">
+  
+    <div class="row">
+      <a ng-click="toggleemail()">
+      <div class="span5 pad0">
+        <span class="font16">Check Your Email</span>
+        <span class="pull-right">
+          <span ng-hide="checkemail">
+            <i class="icon-chevron-down"/>
+          </span>
+          <span ng-show="checkemail">
+            <i class="icon-chevron-up"/>
+          </span>
+        </span>
+      </div>
+      </a>
+    </div>
+    
+    <span ng-show="checkemail">
+    <div class="row">
+      <div class="span5">
+			<div class="row">
+			  <div class="span5">
+				You should have received a welcome email from 
+				<a href="mailto:info@littlebluebird.com">info@littlebluebird.com</a> with your username and password.
+				If it went to your spam folder, add us to your contacts.
+				If you didn't receive this email, add us to your contacts and then click <span ng-controller="UserCtrl"><a ng-click="resendWelcomeEmail()">resend</a></span>.
+				
+				<P>&nbsp;</P>
+				
+				<P>LittleBlueBird.com will never spam you or sell your email address.</P>
+				<P>We use your email for
+				  <ul>
+				    <li>password recovery</li>
+				    <li>to notify you of upcoming events</li>
+				  </ul>
+				</P>
+				You can control these notifications from your <a href="myaccount">My Account</a> page.
+			  </div>
+			</div>
+      </div>
+    </div>
+    </span>
+  </div>
+</div>
 
-<h3>Check Your Email</h3>
-<P>You should have received a welcome email from 
-<a href="mailto:info@littlebluebird.com">info@littlebluebird.com</a> with your username and password.</P>
-<P>If it went to your spam folder, add us to your contacts.</P>
-<P>If you didn't receive this email, add us to your contacts and then click <span ng-controller="UserCtrl"><a ng-click="resendWelcomeEmail()">resend</a></span>.</P>
-
-<P>&nbsp;</P>
-
-<P>LittleBlueBird.com will never spam you or sell your email address.</P>
-<P>We use your email for
-  <ul>
-    <li>password recovery</li>
-    <li>to notify you of upcoming events</li>
-  </ul>
-</P>
-<P>You can control these notifications from your <a href="myaccount">My Account</a> page.</P>
-<P>&nbsp;</P>
 
 
-<h3>What Next?</h3>
-<P>Check out the <a href="gettingstarted">Getting Started</a> page.</P>
-<P>It will tell you everything you need to know about creating events and your wish list.</P>
+
+
+<div class="row">
+  <div class="span5 box padleft10 padright10 bgwhite">
+    <div class="row">
+      <a ng-click="togglefriends()">
+      <div class="span5 pad0">
+        <span class="font16">Add Your Friends</span>
+        <span class="pull-right">
+          <span ng-hide="friends">
+            <i class="icon-chevron-down"/>
+          </span>
+          <span ng-show="friends">
+            <i class="icon-chevron-up"/>
+          </span>
+        </span>
+      </div>
+      </a>
+    </div>
+    
+    
+    <span ng-show="friends">
+    <div class="row">
+      <div class="span5">
+			<div class="row">
+			  <div class="span5">
+    <P class="font16"><img src="img/user_group-72.png"/> Add your friends and family to LittleBlueBird.</P>
+    <P class="font16">You can invite them through Facebook</P>
+    <P class="font16">You can invite them via email</P>
+    <P class="font16">You can even create their accounts for them - great for families with children that aren't on Facebook or don't have email</P>
+    <P>&nbsp;</P>
+    <P class="font16"><img src="img/gift-blue-64.png"/> See what's on everyone's wish list without having to create an Event.  
+      The Friends feature is perfect when you want to give a gift for no reason.</P>
+			  </div>
+			</div>
+      </div>
+    </div>
+    </span>
+    
+  </div>
+</div>
+
+
+
+
+
+<div class="row">
+  <div class="span5 box padleft10 padright10 bgwhite">
+    <div class="row">
+      <a ng-click="toggleevents()">
+      <div class="span5 pad0">
+        <span class="font16">Create Events</span>
+        <span class="pull-right">
+          <span ng-hide="events">
+            <i class="icon-chevron-down"/>
+          </span>
+          <span ng-show="events">
+            <i class="icon-chevron-up"/>
+          </span>
+        </span>
+      </div>
+      </a>
+    </div>
+    
+    
+    <span ng-show="events">
+    <div class="row">
+      <div class="span5">
+			<div class="row">
+			  <div class="span5">
+    <P class="font16"><img src="img/calendar-64.png"/> Create events for all your gift-giving occasions</P>
+    <P>&nbsp;</P>
+    <P class="font16"><img src="img/user_group-72.png"/> Add your friends and family to each event</P>
+    <P>&nbsp;</P>
+    <P class="font16"><img src="img/gift-blue-64.png"/> See what's on everyone's wish list!</P>
+			  </div>
+			</div>
+      </div>
+    </div>
+    </span>
+    
+  </div>
+</div>
+
+
+
+
 </div>

@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns:ng="http://angularjs.org/" ng-app="project">
 <head>
-  <base href="http://www.littlebluebird.com/gf/app/" />
+  <base href="http://www.littlebluebird.com/gf/" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="-1">
@@ -9,7 +9,7 @@
   <title>LittleBlueBird</title>
     <script src="css/less-1.3.0.min.js" type="text/javascript"></script>
     <script src="js/jquery-1.7.1.js"></script>
-    <script src="js/jquery-ui-1.8.20.custom.min.js"></script>
+    <script src="js/jquery-ui-1.10.0.custom.js"></script>
     <script src="js/angular-1.0.2.js"></script>
     <script src="js/angular-resource-1.0.2.js"></script>
     <script src="js/angular-cookies-1.0.2.js"></script>
@@ -40,7 +40,6 @@
         
     <link rel="stylesheet" media="screen" href="css/angular-ui.css" />
     <link rel="stylesheet" media="screen" href="css/bootstrap.css" />
-    <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" media="screen" href="css/jquery-ui-1.8.20.custom.css" />
     <link rel="stylesheet" media="screen" href="css/lbb.css" />
     <link rel="stylesheet" media="screen" href="css/fb-buttons.css" />
@@ -55,7 +54,148 @@
 	    </div>
 	  </div>
     </script>
+      
+      
+    <!-- 3/1/13: Created to be a replacement for layout-nli.  Didn't want to butcher layout-nli
+    because I need it to help create this layout.  But when I'm done, layout-nli can go away -->  
+    <script type="text/ng-template" id="home">
+      <div ng-include src="templates.four"></div>
+      
+      <div class="hero-unit2 margtop30">
+        <div class="container">
+              <div class="row">
+                <div class="span6 padtop10 padbottom5 white">
+                  <P><span style="font-size:48px;">LittleBlueBird</P>
+		        </div>
+	          </div>
+              <div class="row">
+                <div class="span4 offset2 padtop10 padbottom50 white">
+                  <div class="row"><div class="span4 pull-right font24">Give what THEY want</div></div>
+                  <div class="row"><div class="span4 pull-right font24 padtop20">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get what YOU want</div></div>
+		        </div>
+	          </div>
+              <div class="row">
+		        <div class="span3"><img src="img/biglogo-bluebackgr.gif"/></div>
+                <div class="span3 padtop0">
+                  <div ng-include src="templates.one"></div>
+	            </div>
+		        <div class="span4" style="border-left:1px solid #cef0fa;padding-left:75px;">
+		          <div ng-include src="templates.two"></div>
+		        </div>
+	          </div>
+	          
+	    </div>
+	  </div> <!-- end hero-unit -->
+
+      <div class="bgwhite">
+      <div class="container pad50"> 
+	
+	    <div class="row">
+	      <div class="span4">
+	        <h1>For Any Occasion</h1>
+	        <P>&nbsp;</P>
+	        <P class="font16">Use LittleBlueBird for Christmas, birthdays, anniversaries, ...any occasion</P>
+	        <P class="font16">If you need to give a gift, you need to use LittleBlueBird</P>
+	      </div>
+	      <div class="span4">
+	        <h1>For Any Item</h1>
+	        <P>&nbsp;</P>
+	        <P class="font16">Post anything you want</P>
+	        <P class="font16">We don't limit you to certain merchants</P>
+	      </div>
+	      <div class="span4">
+	        <h1>For Any<I>body</i></h1>
+	        <P>&nbsp;</P>
+	        <P class="font16">LittleBlueBird is free to use</P>
+	        <P class="font16">And when we say anybody can use it, we mean <I>anybody</I>!</P>
+	        <P class="font16">No email?  No problem</P>
+	        <P class="font16">Under 18?  No problem</P>
+	        <P class="font16">Parents, you can create accounts for your children.  
+	        They're safe, private, and you are in control because they're linked to your email address.</P>
+	      </div>
+	    </div>
+	    <div class="row"><div class="span1">&nbsp;</div></div>
+	    <div class="row"><div class="span1">&nbsp;</div></div>
+	    <div class="row"><div class="span1">&nbsp;</div></div>
+	    <div class="row"><div class="span1">&nbsp;</div></div>
+	    <div class="row">
+	      <div class="span12">
+	        <h1>What Makes LittleBlueBird Different ?</h1>
+	        <P>&nbsp;</P>
+	        <P class="font16">Have you <i>tried</i> other wish list sites? Yeah... they're lame!</P>
+	        <P class="font16">They don't do what you need them to do.</P>
+	        <P class="font16">First of all, they have no concept of an event like Christmas or your birthday.</P>
+	        <P class="font16">And how do you share your wish list with others?  You end up emailing your list to
+	        everyone you know.</P>
+	        <P class="font16">Can you say "tacky" ?</P>
+	      </div>
+	    </div>
+	    <div class="row"><div class="span1">&nbsp;</div></div>
+	    <div class="row"><div class="span1">&nbsp;</div></div>
+	    <div class="row">
+	      <div class="span6">
+	        <h1>It's Event-based</h1>
+	        <P>&nbsp;</P>
+	        <P class="font16">LittleBlueBird is all about <i>Events</i> because that's why we give gifts.</P>
+	        <P class="font16">You give gifts <i>for</i> Christmas, <i>for</i> someone's birthday, <i>for</i> 
+	        someone's anniversary.</P>
+	        <P class="font16">These events happen on certain dates and LittleBlueBird keeps track of that.  
+	        LittleBlueBird knows if the event has happened or not.</P>
+	      </div>
+
+	      <div class="span6">
+	        <h1>It's <I>You</I>-based</h1>
+	        <P>&nbsp;</P>
+	        <P class="font16">LittleBlueBird was <b>built with you in mind</b>.</P>
+	        <P class="font16">Think about it... What do you need a wish list site to do?</P>
+	        <P class="font16">You need to be able to post your wish list.  But you need a lot more than that.</P>
+	        <P class="font16">
+	        You need to be able to see everyone else's list.  You need to be able to buy things for your friends and family.
+	        And you need to know what has been bought already and what's still available.</P>
+	        <P class="font16">These should be no-brainers but no one else <b>coordinates the gift exchange</b> like
+	        LittleBlueBird.</P>
+	      </div>
+	    </div>
+	    <div class="row"><div class="span1">&nbsp;</div></div>
+	    <div class="row"><div class="span1">&nbsp;</div></div>
+	    <div class="row">
+	      <div class="span6">
+	        <h1>It Won't Spoil the Surprise!</h1>
+	        <P>&nbsp;</P>
+	        <P class="font16">What's the point of a wish list site that tells you what you're getting?</P>
+	        <P class="font16">Yet that's what a whole lot of sites do.  They don't even <I>try</I> to hide what
+	        you're getting.</P>
+	        <P class="font16"><B>LittleBlueBird's golden rule is "Don't Spoil the Surprise!"</B></P>
+	        <P class="font16">We make sure that you never know what you're getting until the event has passed.</P>
+	        <P class="font16">LittleBlueBird contains several features to preserve the surprise.  Some of them you won't 
+	        even notice right away.</P>
+	        <P class="font16">For example, with LittleBlueBird, not only can you add items to your own wish list, but 
+	        <b>you can
+	        add items to someone <I>else's</I> list</b>.  What's more, that other person won't even see the item on his/her
+	        list - because that would spoil the surprise!  However, everyone else <I>can see</I> this item.  This is important.
+	        Everyone needs to know what everyone else wants and what everyone else is getting.
+	        
+	      </div>
+
+	      <div class="span6">
+	        <h1>It Does All the Work for You</h1>
+	        <P>&nbsp;</P>
+	        <P class="font16">Handling wish lists for everyone in your family is tough if you're trying to do it yourself.</P>
+	        <P class="font16">Let LittleBlueBird handle all this for you.</P>
+	        <P class="font16">LittleBlueBird knows what everyone wants and knows what everyone is getting.  When you login, 
+	        you'll be able to see all of this in an instant.</P>
+	        <P class="font16">No more emailing lists back and forth to everybody</P>
+	        <P class="font16">No more getting the same gift twice</P>
+	        <P class="font16">With LittleBlueBird, all of that is a thing of the past!</P>
+	      </div>
+	    </div>
+	    
+      </div> <!-- end container -->
+      </div> <!-- end div class=bgwhite -->
+    </script> <!-- end: home -->
         
+        
+    <!-- 3/1/13: move away from this layout and start using the "home" layout -->    
     <script type="text/ng-template" id="layout-nli.html">
       <div ng-include src="templates.four"></div>
       
@@ -187,21 +327,32 @@
 	    
       </div> <!-- end container -->
       </div> <!-- end div class=bgwhite -->
-    </script>
+    </script> <!-- end: layout-nli -->
     
     
     
     
     
-    <script type="text/ng-template" id="welcome.html">
-    <div class="container">
-      <div class="row margtop20"> <!-- one big row -->
-  
-        <div class="span7"> <!-- 2nd main col -->
-          <div class="row"><div class="span7"><div ng-include src="templates.four"></div></div></div>
-        </div> <!-- end of 2nd main col -->
+    <script type="text/ng-template" id="accountinfo">
+    <div ng-include src="templates.five">
+    </div>
+
+    <div class="container2 w750 height100pc">
+      <div class="minheight100pc w750 bgebf3f7"><!-- This one wants to be 100% height -->
+      <div style="padding-top:50px;margin-left:auto;margin-right:auto;width:7y0px;">
+
+            <div class="table_space5 container2 bgebf3f7">
+              <div class="tablerow"> <!-- one big row -->
     
-      </div>  <!-- one big row -->
+                <div class="tablecell w725 align-top"> <!-- 2nd main col -->
+                  <div class="tablerow"><div class="tablecell w725"><div ng-include src="templates.four"></div></div></div>
+                </div> <!-- end of 2nd main col -->
+    
+              </div>  <!-- one big row -->
+            </div>
+            
+      </div> 
+      </div> 
     </div>
     </script>
     
@@ -209,28 +360,70 @@
     
     
     
-    
     <script type="text/ng-template" id="layout.html">
-    <div ng-include src="templates.five"></div>
-    <div class="container bgd3e8f2 margtop30 height100pc">
-      <div class="row height100pc">
-        <div class="span12 height100pc pad10">
-            <div class="container">
-              <div class="row margtop20"> <!-- one big row -->
+    <div ng-include src="templates.five">
+    </div>
+    
+    <div class="container2 w750 height100pc">
+      <div class="minheight100pc w750 bgebf3f7"><!-- This one wants to be 100% height -->
+      <div style="padding-top:50px;margin-left:auto;margin-right:auto;width:7y0px;">
+      
+
+            <div class="table_space5 container2 bgebf3f7">
+              <div class="tablerow"> <!-- one big row -->
   
-                <div class="span3"> <!-- 2 main cols -->
-                  <div class="row"><div class="span3"><div ng-include src="templates.eventlist"></div></div></div>
-                  <div class="row margtop10"><div class="span3"><div ng-include src="templates.friendlist"></div></div></div>
+                <div class="tablecell w200"> <!-- 2 main cols -->
+                  <div class="tablerow"><div class="tablecell w200"><div ng-include src="templates.one"></div></div></div>
+                  <div class="tablerow"><div class="tablecell w200"><div ng-include src="templates.two"></div></div></div>
                 </div> <!-- end of first main col -->
     
-                <div class="span8"> <!-- 2nd main col -->
-                  <div ng-include src="templates.four"></div>
+                <div class="tablecell500 align-top"> <!-- 2nd main col -->
+                  <div class="tablerow"><div class="tablecell500"><div ng-include src="templates.four"></div></div></div>
                 </div> <!-- end of 2nd main col -->
     
               </div>  <!-- one big row -->
             </div>
-        </div>
-      </div>
+            
+
+      
+      </div> 
+      </div> 
+    </div>
+    </script>
+    
+    
+    
+    
+    <!-- FOO layout, aka test layout -->
+    <script type="text/ng-template" id="foo.html">
+    <div ng-include src="templates.five">
+    </div>
+    
+
+    <div class="container2 w700 minheight100pc">
+      <div class="minheight100pc w700 bgebf3f7"><!-- This one wants to be 100% height -->
+      <div style="padding-top:50px;padding-bottom:10px;margin-left:auto;margin-right:auto;width:700px;">
+      
+
+            <div class="table_space5 container2 bgebf3f7">
+              <div class="tablerow"> <!-- one big row -->
+  
+                <div class="tablecell150"> <!-- 2 main cols -->
+                  <div class="tablerow"><div class="tablecell150"><div ng-include src="templates.one"></div></div></div>
+                  <div class="tablerow"><div class="tablecell150"><div ng-include src="templates.two"></div></div></div>
+                </div> <!-- end of first main col -->
+    
+                <div class="tablecell500 align-top"> <!-- 2nd main col -->
+                  <div class="tablerow"><div class="tablecell500"><div ng-include src="templates.four"></div></div></div>
+                </div> <!-- end of 2nd main col -->
+    
+              </div>  <!-- one big row -->
+            </div>
+            
+
+      
+      </div> 
+      </div> 
     </div>
     </script>
     

@@ -3,13 +3,10 @@
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
-      <a class="brand" ng-click="loginpage();">LittleBlueBird</a>
+      <a class="brand" ng-href="home">LittleBlueBird</a>
       <ul class="nav">
-        <li ng-class="navstate('classA')">
-          <a href="events" ng-click="activenav='classA'">Events</a>
-        </li>
-        <li ng-class="navstate('classB')">
-          <a href="friends" ng-click="activenav='classB'">Friends</a>
+        <li ng-class="navstate('classE')">
+          <a href="welcome" ng-click="activenav='classE'">Welcome</a>
         </li>
         <li ng-class="navstate('classC')">
           <a href="me" ng-click="activenav='classC'">Me</a>
@@ -30,7 +27,10 @@
     <li class="dropdown">
       <a class="dropdown-toggle" data-toggle="dropdown">{{user.fullname}} <b class="caret"></b></a>
       <ul class="dropdown-menu">
-        <li><a class="font12" ng-click="fblogout()">Logout</a></li>
+        <li><a class="font12" ng-href="mywishlist">My Wish List</a></li>
+        <li><a class="font12" ng-href="accountinfo">Account Info</a></li>
+        <li class="divider"></li>
+        <li><a class="font12" ng-href="home" ng-click="logout()">Logout</a></li>
       </ul>
     </li>
   </ul>

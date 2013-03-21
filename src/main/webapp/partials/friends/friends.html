@@ -1,9 +1,15 @@
 
 <div ng-controller="FriendCtrl">
+<div class="table w210">
 
-<div class="row"> <!-- header row -->
-  <div class="span3 roundedtop bgbluegradient white pad5">
-  
+<div class="tablerow w200"> <!-- header row -->
+  <div class="tablecell w200 roundedtop bgbluegradient white pad5 font14 center">
+    <span ng-show="friendeditmode=='true'">
+      <span class="pull-left"><a class="btn btn-mini" ng-click="friendeditmode='false'">Done</a></span>
+    </span>
+    <span ng-hide="friendeditmode=='true'">
+      <span class="pull-left"><a class="btn btn-mini btn-primary" ng-click="friendeditmode='true'">&nbsp;Edit&nbsp;&nbsp;</a></span>
+    </span>
         Friends
         <div class="pull-right">
           <div ng-include src="'partials/friends/btn_addfriend.html'"></div>
@@ -15,11 +21,11 @@
 
 
 <div ng-repeat="friend in user.friends">
-  <div class="row">
+  <div class="tablerow w200">
     
-      <a style="font-weight:bold;display:block;" ng-href="giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
-        <div class="{{isLastRow('span3 list pad5', $index, user.friends.length)}}">
-          <div ng-include src="'partials/friends/friend.html'"></div>
+      <a ng-href="giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
+        <div class="{{isLastRow('tablecell w200 list pad5 overflow-hidden', $index, user.friends.length)}}">
+          <div class="w200" ng-include src="'partials/friends/friend.html'"></div>
         </div>
       </a>
     
@@ -27,12 +33,14 @@
 </div>
 
 <span ng-show="user.friends.length==0">
-  <div class="row">
-    <div class="span3 roundedbottom bgwhite pad5">
-	  <div ng-include src="'partials/friends/none.html'"></div>
+  <div class="tablerow">
+    <div class="tablecell w200 roundedbottom bgwhite pad5">
+	  <P>You don't have any friends in LittleBlueBird yet.</P>
+	  <P>Add your friends and family to see their wish lists without having to create an event.</P>
     </div>
   </div>
 </span>
 
 
+</div>
 </div>

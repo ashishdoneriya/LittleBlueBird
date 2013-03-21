@@ -611,7 +611,15 @@ object RestService extends RestHelper with LbbLogger {
               case ("name", s:String) => circle.name(s)
               case ("expirationdate", b:BigInt) => circle.date(new Date(b.toLong))
               case ("circleType", s:String) => circle.circleType(s)
-              case ("participants", _) => {/*TODO not sure how to handle participants on an update yet - maybe ignore*/}
+              case ("creatorId", b:BigInt) => { /* ignore creator on updates - creator doesn't change */ }
+              case ("participants", _) => {
+                /* This is not where we save participants.  Participants are only inserted and deleted - not updated
+                 * If we were to mess with participants here, we would have to figure out who is in the db now
+                 * and then compare to what got passed in, inserting only those participants that didn't already 
+                 * exist in the db ...OR we could delete all participants and re-add those that got passed in here
+                 * But that would trigger duplicate emails to people that were already in the circle - definitely not what we want to do.
+                 */
+              }
             } // kv => (kv._1, kv._2) match
           } // jvalue.values foreach
             
@@ -769,7 +777,7 @@ object RestService extends RestHelper with LbbLogger {
   
   /**
    * It's possible that there won't be a 'viewer' (current user)
-   * You may click a link in FB like  www.littlebluebird.com/gf/app/giftlist/552/17, which is the wishlist
+   * You may click a link in FB like  www.littlebluebird.com/gf/giftlist/552/17, which is the wishlist
    * for user 552 and event 17, but no 'viewer' information.  Should the person who clicks the link be
    * able to view the list anonymously?  I guess we could force them to login to facebook if they're not
    * already - or make them create an LBB account.  Anonymous viewing is dangerous because I may be

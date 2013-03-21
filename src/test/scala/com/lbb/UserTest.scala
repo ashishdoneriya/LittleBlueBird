@@ -191,6 +191,42 @@ class UserTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     val f = jsons.foldRight("")((a:JsExp, b:String) => a.toString() + "," + b)
     debug(f)
   }
+  
+  
+  // 2/23/13
+  test("do we need to determine username") {
+    initDb
+    // Need to determine username IF:
+    // We are inserting
+    // AND there is no username already
+    
+    // Note here we are not supplying a username
+    val user = User.create.first("Brent").last("Dunklaux").email("bdunklau@gmail.com")
+    assert(user.needToDetermineUsername===true) // we need to determine username because one wasn't supplied and this user hasn't been saved yet
+    user.save
+    assert(user.needToDetermineUsername===false)// don't need to determine username because this is an existing user.  We assume the username got set during user.save, even though we don't actually check to see if the username exists here.
+    
+    val u2 = User.create.first("Brent").last("XXXX").username("fffffff")
+    assert(u2.needToDetermineUsername===false) // don't need to determine username because one was supplied by the user
+  }
+  
+  
+  // 2/26/13
+  test("determine username based on first name - test #1") {
+    val list = List("Brent", "Brent1", "Brent2", "Brent4")
+    val user = User.create.name("Brent Dunklau")
+    val exp = user.determineUsernameBasedOnFirstName(list)
+    assert(exp==="Brent5")
+  }
+  
+  
+  // 2/26/13
+  test("determine username based on first name - test #2") {
+    val list = Nil
+    val user = User.create.name("Brent Dunklau")
+    val exp = user.determineUsernameBasedOnFirstName(list)
+    assert(exp==="Brent0")
+  }
 
 }
 

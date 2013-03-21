@@ -1,45 +1,175 @@
 
 <div ng-controller="EventsCtrl">
 
-<div class="row"> <!-- header row -->
-  <div class="span3 roundedtop bgbluegradient pad5">
-    <div class="row">
-      <div class="span2 white">Events</div>
-      <div class="span1">
-	    
-        <div class="pull-right">
-          <div class="btn-group">
-		    <a class="btn btn-mini dropdown-toggle font16 bold txtgray" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
-		    <ul class="dropdown-menu">
-		      <!-- See app-CircleModule:run():routeChangeStart that references this page -->
-		      <li><a ng-href="newevent/Christmas">Christmas</a></li>
-		      <li><a ng-href="newevent/Birthday">Birthday</a></li>
-		      <li><a ng-href="newevent/Anniversary">Anniversary</a></li>
-		      <li><a ng-href="newevent/Mothers Day">Mothers Day</a></li>
-		      <li><a ng-href="newevent/Fathers Day">Fathers Day</a></li>
-		      <li><a ng-href="newevent/Valentines Day">Valentines Day</a></li>
-		      <li><a ng-href="newevent/Graduation">Graduation</a></li>
-		      <li><a ng-href="newevent/Baby Shower">Baby Shower</a></li>
-		      <li><a ng-href="newevent/Other">Other</a></li>
-		    </ul>
-		  </div>
+
+
+
+
+
+
+
+
+  <div ui-modal class="fade" ng-model="deleteEventModal">
+	<div class="modal-header bgbluegradient">
+	  <button class="close padleft5 padright5 padtop5" data-dismiss="modal" ng-click="deleteEventModal=false"><i class="icon-remove" data-dismiss="modal"></i></button>
+	  <h3 class="white align-left">Confirm Delete Event</h3>
+	</div>
+	<div class="modal-body txtblack">
+	  <div class="row">
+	    <div class="span5">
+	      Are you sure you want to delete "{{deleteevent.name}}"?  
+	      
+	      <!-- No point in showing who will be affected by the delete if you are the only one that will be affected
+	        And we assume that if there's only one participant, that YOU are that one participant.  -->
+	      <span ng-hide="deleteevent.participants.both.length == 1">
+	        If you delete this event, you will be deleting it for all of these people also.
+	      </span>
 	    </div>
+	  </div>
+	  <div class="row">
+	    <div class="span5 padtop10">
 	    
+	    
+<!-- Same goes here... why bother displaying the list of people that will be affected by the delete if that
+list contains only one person: YOU -->
+<span ng-hide="deleteevent.participants.both.length == 1">
+<div ng-repeat="p in deleteevent.participants.both">
+
+    <!-- And even if there are several people that will be affected by the delete, don't include yourself -->
+    <span ng-hide="user.id == p.id">
+      <div class="row">
+      
+        <!-- this cell only holds the profile pic  -->
+        <div class="span1">
+          <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
+            <div style="margin-top:{{p.profilepicmargintop50}};margin-left:{{p.profilepicmarginleft50}}">
+               <img height="{{p.profilepicadjustedheight50}}" width="{{p.profilepicadjustedwidth50}}" ng-src="{{p.profilepicUrl}}"/>
+            </div>
+          </div>
+        </div>
+        
+        <div class="span3">
+          {{p.fullname}}
+        </div>
+  
       </div>
+    </span>
+            
+</div>
+</span>
+	    
+	        
+	    
+	    
+	    </div>
+	  </div>
+	</div>
+	<div class="modal-footer pad10">
+	  <span class="pull-right">
+	    <button class="btn btn-danger" data-dismiss="modal" ng-click="deletecircle($event)">Delete</button>
+	    <button class="btn" data-dismiss="modal">Cancel</button>
+	  </span>
+	</div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+
+<div class="table w200 margbottom0">
+
+<div class="tablerow w200"> <!-- header row -->
+  <div class="tablecell w200 roundedtop bgbluegradient pad5">
+    <div class="table w200 margbottom0">
+      <div class="tablerow w200">
+        <div class="tablecell w200 white font14 center">
+          <span ng-show="circleeditmode=='true'">
+            <span class="pull-left"><a class="btn btn-mini" ng-click="circleeditmode='false'">Done</a></span>
+          </span>
+          <span ng-hide="circleeditmode=='true'">
+            <span class="pull-left"><a class="btn btn-mini btn-primary" ng-click="circleeditmode='true'">&nbsp;Edit&nbsp;&nbsp;</a></span>
+          </span>
+        
+          Events
+	    
+          <span class="pull-right">
+            <div class="btn-group">
+		      <a class="btn btn-mini btn-primary dropdown-toggle font14 white" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
+		      <ul class="dropdown-menu font12 align-left">
+		        <!-- See app-CircleModule:run():routeChangeStart that references this page -->
+		        <li><a ng-href="newevent/Christmas">Christmas</a></li>
+		        <li><a ng-href="newevent/Birthday">Birthday</a></li>
+		        <li><a ng-href="newevent/Anniversary">Anniversary</a></li>
+		        <li><a ng-href="newevent/Mothers Day">Mothers Day</a></li>
+		        <li><a ng-href="newevent/Fathers Day">Fathers Day</a></li>
+		        <li><a ng-href="newevent/Valentines Day">Valentines Day</a></li>
+		        <li><a ng-href="newevent/Graduation">Graduation</a></li>
+		        <li><a ng-href="newevent/Baby Shower">Baby Shower</a></li>
+		        <li><a ng-href="newevent/Other">Other</a></li>
+		      </ul>
+		    </div>
+	      </span>
+	    
+        </div>
+      </div> <!-- end table w200 margbottom0 -->
     </div>
     
   </div>
 </div> <!-- header row -->
 
 
-
-
 <div ng-repeat="event in user.circles">
-  <div class="row">
-    
+  <div class="tablerow w200">
+   
       <a ng-href="event/{{event.id}}">
-        <div class="{{isLastRow('span3 list pad5 font14', $index, user.circles.length)}}">
-          {{event.name}} <span class="pull-right font12 txtgray">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
+        <div class="{{isLastRow('tablecell w200 list pad5 font14', $index, user.circles.length)}}">
+        
+        
+            <span ng-show="circleeditmode=='true'">
+                  <span ng-show="deletethisevent=='true'">
+                    <img src="img/delete-prompt-vertical.gif" ng-click="$event.preventDefault();$event.stopPropagation();deletethisevent='false'"/>
+                  </span>
+                  <span ng-hide="deletethisevent=='true'">
+                    <img src="img/delete-prompt-horizontal.gif" ng-click="$event.preventDefault();$event.stopPropagation();deletethisevent='true'"/>
+                  </span>
+            </span>
+        
+
+        
+          {{event.name}}
+                    
+          
+          <span ng-show="circleeditmode=='true'">
+            <span ng-show="deletethisevent=='true'" class="pull-right">
+              <button class="btn btn-mini btn-danger" title="delete this event" ng-click="confirmDeleteEvent($event, event);$parent.deleteEventModal=true;">Delete</button>
+            </span>
+            <span ng-hide="deletethisevent=='true'">
+              <span class="pull-right font12 txtgray">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
+            </span>
+          </span>
+                
+          <span ng-hide="circleeditmode=='true'">
+            <span class="pull-right font12 txtgray">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
+          </span>
+                  
+     
+                    
         </div>
       </a>
     
@@ -48,8 +178,8 @@
 
 
 <span ng-show="user.circles.length==0">
-<div class="row">
-  <div class="span3 roundedbottom pad5 bgwhite">
+<div class="tablerow w200">
+  <div class="tablecell w200 roundedbottom pad5 bgwhite">
     <P>You don't belong to any events yet</P>
     <P>Create events for each gift-giving occasion</P>
     <P>Add your friends and family to these events so you can see their wish lists, and they can see yours</P>
@@ -59,4 +189,5 @@
 
 
 
+</div>
 </div>

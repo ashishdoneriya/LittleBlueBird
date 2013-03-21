@@ -59,22 +59,74 @@ angular.module('CircleModule', [])
     // This event is fired all the time, so make sure the url contains 'newevent' to proceed
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){ 
     
-      if ($location.url().indexOf('newevent') == -1) {
-        return;
+      // This is what we do when we are creating a new event.  See events.html
+      if ($location.url().indexOf('newevent') != -1) {
+        console.log("app-CircleModule:run():routeChangeStart:  This is our 'new event' function.  newRoute = .....");
+        console.log(newRoute);
+        $rootScope.typeInfo = EventHelper.getEventType(newRoute);
+        $rootScope.search = '';
+        $rootScope.title = "New "+$rootScope.typeInfo.type+" Event";
+        $rootScope.peoplesearchresults = [];
+        $rootScope.thecircle = {name:'', circleType:$rootScope.typeInfo.type, receiverLimit:$rootScope.typeInfo.limit, participants:{receivers:[], givers:[]}};
+      }
+      else if($location.url().indexOf('editevent') != -1) {
+        $rootScope.title = "Edit Event";
+        $rootScope.thecircle = angular.copy($rootScope.circle);
+        $rootScope.expdate = $rootScope.thecircle.dateStr;
       }
     
-      console.log("app-CircleModule:run():routeChangeStart:  This is our 'new event' function.  newRoute = .....");
-      console.log(newRoute);
-      $rootScope.typeInfo = EventHelper.getEventType(newRoute);
-      $rootScope.search = '';
-      $rootScope.peoplesearchresults = [];
-      $rootScope.newcircle = {name:'', circleType:$rootScope.typeInfo.type, receiverLimit:$rootScope.typeInfo.limit, participants:{receivers:[], givers:[]}};
     })
     
   })
 .run(function($rootScope, $location, Circle, CircleParticipant, Reminder, UserSearch, Gift, Reminder) {
 
   // define $rootScope functions here to make them globally available
+  
+  // 2/15/13
+  // TODO delete reminders
+  $rootScope.deletecircle = function($event) {
+    //$event.preventDefault();
+    //$event.stopPropagation();
+    $location.url('events');
+    Circle.save({circleId:$rootScope.deleteevent.id, datedeleted:new Date().getTime()},
+                function() {
+                  // now find the circle we just deleted from the user's list of circles
+                  for(var i=0; i < $rootScope.user.circles.length; i++) {
+                    if($rootScope.deleteevent.id == $rootScope.user.circles[i].id) {
+                      $rootScope.user.circles.splice(i, 1);
+                    }
+                  }
+                  delete $rootScope.deleteevent
+                } // end of success function
+    ); // end of Circle.save
+                
+  }
+  
+  //  2/15/13
+  $rootScope.confirmDeleteEvent = function($event, event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    $rootScope.deleteevent = angular.copy(event);
+    $rootScope.combineReceiversAndGiversIntoBoth($rootScope.deleteevent);
+  }
+  
+  // called when the user clicks cancel from the newevent/editevent page. 
+  $rootScope.cancelcirclechanges = function() {
+    $rootScope.currentevent();
+  }
+  
+  // If there is a current event/circle in the rootScope, go to that event's page
+  // If there is no current event in the rootScope, then just go to the events page
+  $rootScope.currentevent = function() {
+    if(angular.isDefined($rootScope.circle)) {
+      console.log("rootScope.cancelcirclechanges:  $location.path('currentevent')");
+      $location.path('currentevent');
+    }
+    else {
+      console.log("rootScope.cancelcirclechanges:  $location.path('events')");
+      $location.path('events');
+    }
+  }
     
   $rootScope.canaddreceiver = function(circle) {
     //console.log("$rootScope.canaddreceiver:  circle=....");
@@ -181,35 +233,6 @@ angular.module('CircleModule', [])
   }
   
   
-  // called from event.html
-  // don't have to pass circle in; it's $rootScope.circle
-  $rootScope.updatecirclename = function() {
-    console.log("CircleModule: updatecirclename !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    Circle.save({circleId:$rootScope.circle.id, name:$rootScope.circle.name});
-  }
-  
-  // don't have to pass circle in; it's $rootScope.circle
-  // similar to $scope.savecircle() in app-CircleCtrl
-  $rootScope.updatecircledate = function(expdate) {
-    $rootScope.circle.date = new Date(expdate);
-    Circle.save({circleId:$rootScope.circle.id, expirationdate:$rootScope.circle.date.getTime()},
-      function() {
-        for(var i=0; i < $rootScope.user.circles.length; i++) {
-	      if($rootScope.user.circles[i].id == $rootScope.circle.id) {
-	        $rootScope.user.circles[i].date = new Date(expdate);
-	      }
-	    }
-      } // success function of Circle.save(
-    ); // Circle.save()
-	    
-  }
-  
-  // called from event.html
-  $rootScope.begineditcircledate = function(expdate) {
-    $rootScope.expdate=$rootScope.circle.dateStr
-  }
-  
-  
   // TODO duplicated in ManagePeopleCtrl
   $rootScope.removereceiver = function(index, circle, participant) {
     circle.participants.receivers.splice(index, 1);
@@ -271,48 +294,87 @@ angular.module('CircleModule', [])
   }
  
  
-  // TODO - finished ??????????????????
+  // 2/15/13
   $rootScope.savecircle = function(circle, expdate) {
-    console.log("app-CircleModule: $rootScope.savecircle: expdate = "+expdate);
     circle.expirationdate = new Date(expdate);
+    
     console.log("app-CircleModule: $rootScope.savecircle:  circle.expirationdate.getTime() = "+circle.expirationdate.getTime());
+    console.log("app-CircleModule: trying to save this circle...");
+    console.log(circle);
+    console.log("app-CircleModule: and these participants...");
+    console.log(circle.participants);
+    
+    var inserting = !angular.isDefined(circle.id)
     
     // The saved circle should become the current circle if it isn't already
-    $rootScope.circle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:$rootScope.typeInfo.type, 
-                 participants:circle.participants, creatorId:$rootScope.user.id},
+    $rootScope.circle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:circle.circleType, 
+                 creatorId:$rootScope.user.id},
                  function() {
-                   if(!angular.isDefined(circle.id)) {
+                   if(inserting) {
                      $rootScope.user.circles.push($rootScope.circle);
                      circle.id = $rootScope.circle.id;
+                     // since we are inserting, we have participants that need to be added to the event
+                     for(var i=0; i < circle.participants.receivers.length; i++) {
+                       CircleParticipant.save({circleId:$rootScope.circle.id, inviterId:$rootScope.user.id, userId:circle.participants.receivers[i].id, 
+                                         participationLevel:'Receiver', who:circle.participants.receivers[i].fullname, email:circle.participants.receivers[i].email, circle:circle.name, 
+                                         adder:$rootScope.user.fullname}
+                                         ); // CircleParticipant.save
+                     }
+                     for(var i=0; i < circle.participants.givers.length; i++) {
+                       CircleParticipant.save({circleId:$rootScope.circle.id, inviterId:$rootScope.user.id, userId:circle.participants.givers[i].id, 
+                                         participationLevel:'Giver', who:circle.participants.givers[i].fullname, email:circle.participants.givers[i].email, circle:circle.name, 
+                                         adder:$rootScope.user.fullname}
+                                         ); // CircleParticipant.save
+                     }
+                     $rootScope.circle.participants = circle.participants;
                    } 
+                   else {
+                     // else, we are updating, circle.id IS defined so update the circle in $rootScope.user.circles
+                     for(var i=0; i < $rootScope.user.circles.length; i++) {
+                       if($rootScope.user.circles[i].id == $rootScope.circle.id) {
+                         $rootScope.user.circles.splice(i, 1, $rootScope.circle);
+                       }
+                     }
+                     $rootScope.combineReceiversAndGiversIntoBoth($rootScope.circle);
+                   }  
                  } 
                );
-    console.log("app-CircleModule: $rootScope.savecircle:  end of $scope.savecircle()");
+    console.log("app-CircleModule: $rootScope.savecircle:  end" );
+    
+    $rootScope.currentevent();
   }
   
     
+  // 2/12/13
   // We pass in circle here because this function is used for new circles where there is no circle id yet
   // as well as for existing circles.
   $rootScope.addparticipant = function(index, person, circle, participationLevel) {
     console.log("$rootScope.addparticipant = function(index, person, circle, participationLevel) ------------------------------------");
-    if(!angular.isDefined(circle.participants))
+    if(!angular.isDefined(circle.participants)) {
       circle.participants = {receivers:[], givers:[]};
+      console.log("$rootScope.addparticipant:  circle.participants = {receivers:[], givers:[]}");
+    }
+      
     if(participationLevel == 'Giver') {
       circle.participants.givers.push(person);
       person.isGiver = true; // YUCK!  Only doing this because circle.participants.both exists
+      console.log("$rootScope.addparticipant:  circle.participants.givers.push(person)");
     }
     else if(circle.receiverLimit == -1) { // no limit on receivers
       circle.participants.receivers.push(person);
       person.isReceiver = true; // YUCK!  Only doing this because circle.participants.both exists
+      console.log("$rootScope.addparticipant:  circle.participants.receivers.push(person)");
     }
     else {
       if(circle.participants.receivers.length < circle.receiverLimit) {
         circle.participants.receivers.push(person);
         person.isReceiver = true; // YUCK!  Only doing this because circle.participants.both exists
+        console.log("$rootScope.addparticipant:  circle.participants.receivers.push(person)  because we're under the receiver limit");
       }
       else {
         circle.participants.givers.push(person);
         person.isGiver = true; // YUCK!  Only doing this because circle.participants.both exists
+        console.log("$rootScope.addparticipant:  circle.participants.givers.push(person)  because we're NOT under the receiver limit");
       }
     }
 
@@ -339,6 +401,9 @@ angular.module('CircleModule', [])
                                          who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$rootScope.user.fullname},
                                          function() {circle.reminders = Reminder.query({circleId:circle.id})});
     }
+    
+    // If the circle doesn't exist yet, see $rootScope.savecircle() in this file
+
   }
   
   $rootScope.beginAddingByName = function(participationLevel) {
@@ -390,6 +455,9 @@ angular.module('CircleModule', [])
   $rootScope.determineCurrentCircle = function(newRoute) {
     console.log("$rootScope.determineCurrentCircle -----------------------------------------------");
     
+    if(!newRoute)
+      return;
+    
     if(angular.isDefined(newRoute.params.circleId)) {
         for(var i=0; i < $rootScope.user.circles.length; i++) {
           if($rootScope.user.circles[i].id == newRoute.params.circleId) {
@@ -403,3 +471,26 @@ angular.module('CircleModule', [])
   }
     
 });
+
+// http://stackoverflow.com/questions/12603914/reset-form-to-pristine-state-angularjs-1-0-x
+// see app-EventCtrl.js:  $scope.resetInviteByEmailForm()
+angular.resetForm = function (scope, formName, defaults) {
+    $('form[name=' + formName + '], form[name=' + formName + '] .ng-dirty').removeClass('ng-dirty').addClass('ng-pristine');
+    var form = scope[formName];
+    form.$dirty = false;
+    form.$pristine = true;
+    for(var field in form) {
+      if(angular.isDefined(form[field])){
+        if(form[field].$pristine === false) {
+          form[field].$pristine = true;
+        }
+        if(form[field].$dirty === true) {
+          form[field].$dirty = false;
+        }
+      }
+    }
+    
+    for(var d in defaults) {
+      scope[d] = defaults[d];
+    }
+};

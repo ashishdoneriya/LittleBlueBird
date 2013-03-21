@@ -1,93 +1,75 @@
 
 <!-- See:  http://docs-next.angularjs.org/guide/dev_guide.forms -->
 
-
-    <div class="row">
-      <div class="span4 well well-small">
-
 <form novalidate name="regForm" ng-controller="RegisterCtrl">
 
-        <div class="row"><div class="span4"><h4>Sign up with LittleBlueBird</h4><hr/></div></div>
-    
-
-
-
+          
         <div class="row">
-          <div class="span4 padleft15">
-          
-            <div class="row">
-              <div class="span1">Name</div>
-              <div class="span2 margleft0">
-                <input class="span2" maxlength="140" value="" type="text" name="fullname" ng-model="newuser.fullname" required />
-              </div>
-              <div class="span1 w20 margleft0">
-                <span ng-show="regForm.fullname.$dirty">
-                  <span ng-show="regForm.fullname.$error.required"><img src="img/red_x.png" id="fullnamerequired" title="Name is required"></span>
-                </span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="span1">Email</div>
-              <div class="span2 margleft0">
-                <input class="span2" maxlength="140" value="" name="email" type="email" ng-model="newuser.email" required>
-              </div>
-              <div class="span1 w20 margleft0">
-                <span ng-show="regForm.email.$dirty">
-                  <span ng-show="regForm.email.$error.required"><img src="img/red_x.png" id="emailrequired" title="Email is required"></span>
-                  <span ng-show="regForm.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
-                </span>
-              </div>
-            </div>  
-            <div class="row">
-              <div class="span1">Username</div>
-              <div class="span2 margleft0">
-                <input class="span2" maxlength="140" value="" name="username" type="text" ng-model="newuser.username" ng-change="isUsernameUnique(newuser, regForm)" required />
-              </div>
-              <div class="span1 w20 margleft0">
-                <span ng-show="regForm.username.$dirty">
-                  <span ng-show="regForm.username.$error.required">
-                    <img src="img/red_x.png" id="invalidusername" title="Username is required">
-                  </span>
-                  <span ng-hide="regForm.username.$error.required"> <!-- without this outer ng-hide, we were getting both red x's after entering a taken username then blanking out the field -->
-                    <span ng-show="regForm.username.$error.taken">
-                      <img src="img/red_x.png" id="invalidusername" title="Username is taken">
-                    </span>
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="span1">Password</div>
-              <div class="span2 margleft0">
-                <input class="span2" ng-model="newuser.password" type="password" name="password" value="*******" required />
-              </div>
-              <div class="span1 w20 margleft0">
-                <span ng-show="regForm.password.$dirty">
-                  <span ng-show="regForm.password.$error.required">
-                    <img src="img/red_x.png" id="invalidpass" title="Password is required">
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="span1">Again</div>
-              <div class="span2 margleft0">
-                <input class="span2" ng-model="newuser.passwordAgain" type="password" name="passwordAgain" value="*******" required />
-              </div>
-              <div class="span1 w20 margleft0">
-                <span ng-show="regForm.passwordAgain.$dirty">
-                  <span ng-show="regForm.passwordAgain.$error.required">
-                    <img src="img/red_x.png" id="invalidpassagain" title="Enter password twice">
-                  </span>
-                  <span ng-show="newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required">
-                    <img src="img/red_x.png" id="passwordsdontmatch" title="Passwords don't match">
-                  </span>
-                </span> 
-              </div>
-            </div>
-          
+          <div class="span2 padleft30">
+            <input class="span2 font16" maxlength="140" value="" type="text" name="fullname" ng-model="newuser.fullname" placeholder="Name" title="Name" required />
+          </div>
+          <div class="span1 w20">
+            <span ng-show="regForm.fullname.$dirty">
+              <span ng-show="regForm.fullname.$error.required"><img src="img/red_x.png" id="fullnamerequired" title="Name is required"></span>
+            </span>
           </div>
         </div>
+        <div class="row">
+          <div class="span2 padleft30">
+            <input class="span2 font16" maxlength="140" value="" name="email" type="email" ng-model="newuser.email" placeholder="Email" title="Email" required>
+          </div>
+          <div class="span1 w20">
+            <span ng-show="regForm.email.$dirty">
+              <span ng-show="regForm.email.$error.required"><img src="img/red_x.png" id="emailrequired" title="Email is required"></span>
+              <span ng-show="regForm.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
+            </span>
+          </div>
+        </div>  
+        <div class="row">
+          <div class="span2 padleft30">
+            <input class="span2 font16" maxlength="140" value="" name="username" type="text" ng-model="newuser.username" ng-change="isUsernameUnique(newuser, regForm)" placeholder="Username" title="Username" required />
+          </div>
+          <div class="span1 w20">
+            <span ng-show="regForm.username.$dirty">
+              <span ng-show="regForm.username.$error.required">
+                <img src="img/red_x.png" id="invalidusername" title="Username is required">
+              </span>
+              <span ng-hide="regForm.username.$error.required"> <!-- without this outer ng-hide, we were getting both red x's after entering a taken username then blanking out the field -->
+                <span ng-show="regForm.username.$error.taken">
+                  <img src="img/red_x.png" id="invalidusername" title="Username is taken">
+                </span>
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span2 padleft30">
+            <input class="span2 font16" ng-model="newuser.password" type="password" name="password" value="*******" placeholder="Password" title="Password" required />
+          </div>
+          <div class="span1 w20">
+            <span ng-show="regForm.password.$dirty">
+              <span ng-show="regForm.password.$error.required">
+                <img src="img/red_x.png" id="invalidpass" title="Password is required">
+              </span>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span2 padleft30">
+            <input class="span2 font16" ng-model="newuser.passwordAgain" type="password" name="passwordAgain" value="*******" placeholder="Retype Password" title="Retype Password" required />
+          </div>
+          <div class="span1 w20">
+            <span ng-show="regForm.passwordAgain.$dirty">
+              <span ng-show="regForm.passwordAgain.$error.required">
+                <img src="img/red_x.png" id="invalidpassagain" title="Enter password twice">
+              </span>
+              <span ng-show="newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required">
+                <img src="img/red_x.png" id="passwordsdontmatch" title="Passwords don't match">
+              </span>
+            </span> 
+          </div>
+        </div>
+          
 
 
 
@@ -95,24 +77,18 @@
 
 
         <div class="row">
-          <div class="span3 offset1">    
-          
+          <div class="span1"> 
             <span ng-show="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
-              <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet">Save</a>
+              <a ng-disabled="true" class="btn span1 padleft0 padright0" id="invalidform" title="Not Ready Yet">Sign Up</a>
             </span>    
           
             <span ng-hide="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
-              <a href="#" class="btn btn-primary" ng-click="save(newuser)">Save</a>
+              <a href="#" class="btn btn-primary span1 padleft0 padright0" ng-click="save(newuser)">Sign Up</a>
             </span>
-            
-            <span ng-controller="LoginCtrl">
-              <a class="btn" ng-click="setloginsectiontwo('cancel')">Cancel</a>
-            </span>
-      
+          </div>  
+          <div class="span1">   
+            <a class="btn span1 padleft0 padright0" ng-href="home">Cancel</a>
           </div>
     
         </div>
 </form>
-
-      </div>
-    </div>

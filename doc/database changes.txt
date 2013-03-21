@@ -1,3 +1,9 @@
+2/20/13:  Made person.username unique on the localhost database...
+ALTER TABLE `bdunklau`.`person` 
+ADD UNIQUE INDEX `username_UNIQUE` (`username` ASC) ;
+
+
+
 
 new table:  app_request
 with columns:

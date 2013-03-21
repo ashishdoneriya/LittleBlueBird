@@ -3,7 +3,7 @@
         console.log("FB initing --------------- //connect.facebook.net/en_US/all.js");
         FB.init({
           appId      : '136122483829', // App ID
-          channelUrl : 'http://www.littlebluebird.com/gf/app/channel.html', // Path to your Channel File
+          channelUrl : 'http://www.littlebluebird.com/gf/channel.html', // Path to your Channel File
           status     : true, // check login status
           cookie     : true, // enable cookies to allow the server to access the session
           oauth      : true,

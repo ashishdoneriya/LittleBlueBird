@@ -4,8 +4,24 @@ import net.liftweb.http.JsonResponse
 import net.liftweb.http.js.JE.JsArray
 import java.net.URL
 import javax.swing.ImageIcon
+import net.liftweb.mapper.DB
+import net.liftweb.db.DefaultConnectionIdentifier
 
-object Util {
+object Util extends LbbLogger {
+  
+  
+  
+  // 2/26/13 - run an arbitrary query
+  // Find all the usernames that are like:  s%
+  // See User.determineUsernameBaseOnFirstName().  In this case, s is a first name
+  def determineUsernamesLike(s:String) = {
+    val res = DB.runQuery("select username from person where username like '"+s+"%'", Nil)
+    debug("determineUsernamesLike:  res = "+res)
+    // List of usernames
+    if(res._2.size > 0) res._2.flatten // not sure right now why this was returning usernames like this:  List(Brent1), List(Brent2), List(Brent3) - a bunch of single-element lists, but it does, so just flatten the thing
+    else Nil
+  }
+  
   
   def toStringPretty(list:List[String]) = list match {
     case Nil => ""

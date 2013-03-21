@@ -166,12 +166,71 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
         }
       }
   })
-  .run(function($rootScope, $location, UserSearch) {
-
+  .run(function($rootScope, $location, $cookieStore, User, Logout) {
+    
+    // 2/15/13 - get rid of this and start using emailnewuser instead
     $rootScope.beginnewuser = function() {
       $rootScope.addmethod = 'createaccount';
       $rootScope.newuser = {};
       console.log("app-UserModule:  beginnewuser:  $rootScope.addmethod="+$rootScope.addmethod);
     } 
+    
+    // 2/15/13
+    $rootScope.emailnewuser = function() {
+      $rootScope.addmethod = 'emailnewuser';
+      $rootScope.newuser = {};
+      console.log("app-UserModule:  emailnewuser:  $rootScope.addmethod="+$rootScope.addmethod);
+    } 
+    
+    $rootScope.isUsernameUnique = function(user, form) {
+      console.log("$rootScope.isUsernameUnique() -----------------------------------");
+      if(!angular.isDefined(user.username)) {
+        console.log("$rootScope.isUsernameUnique:  user.username is not defined");
+        return;
+      }
+      checkUsers = User.query({username:user.username}, 
+                                        function() {
+                                          if(checkUsers.length > 0) { form.username.$error.taken = 'true'; }
+                                          else { form.username.$error.taken = 'false'; }
+                                        });
+    } 
+  
+    // 2/15/13
+    $rootScope.userfieldsvalid = function(user) {
+      var ret = angular.isDefined(user) && angular.isDefined(user.fullname) && angular.isDefined(user.email)
+          && angular.isDefined(user.username) && angular.isDefined(user.password) 
+          && angular.isDefined(user.passwordAgain) && user.fullname != '' && user.email != '' && user.username != ''
+          && user.password != '' && user.passwordAgain != '' && user.password == user.passwordAgain;
+      return ret;
+    }
+    
+    
+    // 2/18/13
+    $rootScope.validateEmailInvitation = function(user) {
+      var ret = angular.isDefined(user) && angular.isDefined(user.fullname) && angular.isDefined(user.email)
+          && user.fullname != '' && user.email != '';
+      return ret;
+    }
+    
+  
+    // 2/12/13
+    $rootScope.createonthefly = function(newuser, thecircle) {
+      anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
+                                  function() {
+                                    $rootScope.addparticipant(-1, anewuser, thecircle, $rootScope.participationLevel); 
+                                    $rootScope.addmethod = 'byname'; 
+                                    $rootScope.usersearch = ''; 
+                                    $rootScope.search = '';
+                                  } // end success function
+                                );
+    }
+    
+    // 3/12/13
+    $rootScope.logout = function() {
+      Logout.logout({});   
+      delete $rootScope.user;
+      $cookieStore.remove("user");
+      console.log("app-UserModule: $rootScope.logout() -------------------------------");                                      
+    }
 
   });

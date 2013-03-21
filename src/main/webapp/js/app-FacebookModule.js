@@ -155,12 +155,14 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
     } // end $rootScope.acceptAppRequest()
     
     
+    // 3/12/13 This function will actually log the user out of Facebook - not sure if this really what we want to do.
+    // Other sites don't behave this way, even when you login via fb.
     $rootScope.fblogout = function() {
       $cookieStore.remove("user");
       $cookieStore.remove("showUser");
       if(!angular.isDefined($rootScope.user.facebookId) || $rootScope.user.facebookId==null) {
         console.log("user's facebook id is undefined - returning early - don't try FB.logout()");
-        $location.url('login');
+        $location.url('home');
         return;
       }
       console.log("$rootScope.user.facebookId="+$rootScope.user.facebookId+" - therefore we ARE going to do FB.logout()");
@@ -169,7 +171,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
       FB.logout(function(response){
         console.log("FB.logout:  response...");
         console.log(response);
-        $location.url('login');
+        $location.url('home');
       });
     }
     
@@ -262,7 +264,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
           name:'I\'ve updated my wish list. Check it out on LittleBlueBird.com [FREE for all subscribers]',
           caption:'Give what THEY want - Get what YOU want',
           description:'This is the site my friends and family use to keep track of everyone\'s wish list',
-          link:'http://www.littlebluebird.com/gf/app/index.html#/giftlist/'+showUser.id+'/',
+          link:'http://www.littlebluebird.com/gf/giftlist/'+showUser.id+'/',
           picture:'http://www.littlebluebird.com/giftfairy/img/logo.gif',
           //actions: [{name:'actions:name?', link:'http://www.littlebluebird.com/foo/'}],
           user_message_prompt:'user message prompt?'},

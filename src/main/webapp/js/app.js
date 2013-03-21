@@ -2,34 +2,37 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
   config(function($routeProvider, $locationProvider, $rootScopeProvider, $cookieStoreProvider){
     
     $routeProvider
-      .when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
-      .when('/foo/:fooid', {templates: {layout: 'foo',               menu: 'partials/foo/menu.html', body:'partials/foo/foo.html'}})
-      .when('/bar/:fooid/:barid', {templates: {layout: 'foo',        menu: 'partials/foo/menu.html', body:'partials/foo/bar.html'}})
-      .when('/baz/:fooid/:barid/:bazid', {templates: {layout: 'foo', menu: 'partials/foo/menu.html', body:'partials/foo/baz.html'}})
-      .when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}})
-      .when('/circles', {templates: {layout: 'layout.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/accountinfo', {templates: {layout: 'accountinfo', four: 'partials/myaccount/accountinfo.html', five:'partials/navbar.html'}})
       .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/emailprefs', {templates: {layout: 'layout.html', four: 'partials/myaccount/emailprefs.html', five:'partials/navbar.html'}})
+      .when('/circles', {templates: {layout: 'layout.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/currentevent', {templates: {layout: 'layout.html', four: 'partials/events/event.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/friends', {templates: {layout: 'layout.html', four: 'partials/friends/whatarefriends.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/editevent', {templates: {layout: 'layout.html', four: 'partials/events/newevent.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/email', {templates: {layout: 'layout.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/emailit', {templates: {layout: 'home', one: 'partials/emailMyUsernameAndPassword.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
+      .when('/emailprefs', {templates: {layout: 'layout.html', four: 'partials/myaccount/emailprefs.html', five:'partials/navbar.html'}})
+      .when('/event/:circleId', {templates: {layout: 'layout.html', four: 'partials/events/event.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/foo/events', {templates: {layout: 'foo.html', four: 'partials/events/whatareevents.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/foo/friends', {templates: {layout: 'foo.html', four: 'partials/friends/whatarefriends.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/fbfriends', {templates: {layout: 'layout.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/gettingstarted', {templates: {layout: 'layout.html', four: 'partials/gettingstarted.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/event/:circleId', {templates: {layout: 'layout.html', four: 'partials/events/event.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/events', {templates: {layout: 'layout.html', four: 'partials/events/whatareevents.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
       .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/home', {templates: {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
+      // get rid of /login route
+      .when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       .when('/managepeople/', {templates: {layout: 'layout.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/me', {templates: {layout: 'layout.html', four: 'partials/myaccount/me.html', five:'partials/navbar.html'}})
+      .when('/me', {templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/myaccount/me.html', five:'partials/navbar.html'}})
       .when('/mywishlist', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/newevent/:type', {templates: {layout: 'layout.html', four: 'partials/events/newevent.html', eventlist: 'partials/events/events.html', friendlist: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/newevent/:type', {templates: {layout: 'layout.html', four: 'partials/events/newevent.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/personalinfo', {templates: {layout: 'layout.html', four: 'partials/myaccount/personalinfo.html', five:'partials/navbar.html'}})
+      .when('/register', {templates: {layout: 'home', one: 'partials/register.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       .when('/reminders', {templates: {layout: 'layout.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/email', {templates: {layout: 'layout.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/welcome', {templates: {layout: 'layout.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/state', {templates: {layout: 'foo',               menu: 'partials/foo/menu.html', body:'partials/foo/foo.html'}})
       .when('/test', {templates: {layout: 'layout-nli.html', one: 'partials/test.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
-      .otherwise({redirectTo: '/welcome', templates: {layout: 'layout.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/welcome', {templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}})
+      .otherwise({redirectTo: '/welcome', templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       ;
       
@@ -45,7 +48,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
         
         if (!newRoute || !newRoute.$route) return;
         
-        $rootScope.currentlocation = "/gf/app" + $location.path();
+        $rootScope.currentlocation = "/gf" + $location.path();
         
         if($window.location.search != '') {
           var s = $window.location.search;
@@ -55,8 +58,9 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
     
         // Rule:  
         //      First see if $rootScope.user is defined
-        //		If not, then see if someone is logged in to FB => that is the user we'll assume is using LBB
-        // 			If someone is logged in to FB, we need to see if they're responding to an app request
+        //      (3/12/13) If not, see if there is a "user" cookie in the cookieStore - points to current user id
+        //      (3/12/13) If there is not "user" cookie, then see if someone is logged in to FB => that is the user we'll assume is using LBB
+        // 		If someone is logged in to FB, we need to see if they're responding to an app request
         //		If there is no FB user, then we'll check the $cookieStore
         
         
@@ -67,6 +71,15 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
           $rootScope.layoutController = newRoute.$route.controller;
         } // if(angular.isDefined($rootScope.user))
         
+        // 3/12/13:  next - check for "user" cookie
+        else if(angular.isDefined($cookieStore.get("user"))) {
+          $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){console.log("FOUND user from $cookieStore.get('user') BEFORE we checked Facebook");console.log($rootScope.user);});
+          $rootScope.templates = newRoute.$route.templates;
+          $rootScope.layoutController = newRoute.$route.controller;
+        } // if: $cookieStore.get("user") exists
+        
+        // 3/12/13 Not sure if this will ever get called now that we have the else-if above.  app-LoginCtrl:$scope.login() and app-FacebookModule:$rootScope.initfbuser()
+        // both set "user" cookies.  So I don't think this will ever get called.
         else { // $rootScope.user is undefined
           // Applying the rule above: see if the user is logged in to FB
           var p2 = $rootScope.Facebook.status();
@@ -157,6 +170,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
               // No: no one is logged in to FB, or has not authorized the app
               // So is there a user in the $cookieStore?
               // Yes $cookieStore user: This is an LBB user => allow entry
+              // 3/12/13 TODO fix this.  This is backwards.  We first check for "user" cookie, THEN check for fbuser if no $rootScope.user is found.  Search on "3/12/13" and you'll see.
               if(angular.isDefined($cookieStore.get("user"))) {
                 console.log("routeChangeStart:  Yes $cookieStore user: This is an LBB user => allow entry");
                 $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){console.log("FOUND user from $cookieStore.get('user')...");console.log($rootScope.user);});
@@ -165,7 +179,11 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
               }
               else { // No $cookieStore user: No one is logged in => person has to login or register (WHAT ABOUT VIEW AS GUEST?)
                 console.log("routeChangeStart:  No $cookieStore user: No one is logged in");
-                $rootScope.templates = {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'};
+                
+                // TODO MAJOR Fix this hack - On 3/20/13, it wasn't obvious why I was being sent back to the /login page.  A search of for 'login' and '/login'
+                // didn't turn up this line below, which I have since changed to redirect to the 'home' layout
+                $rootScope.templates = {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'};
+                
                 $rootScope.layoutController = newRoute.$route.controller;
               } // else { // No $cookieStore user: No one is logged in => person has to login or register (WHAT ABOUT VIEW AS GUEST?)
               
@@ -390,18 +408,6 @@ function RegisterCtrl($scope, User, $rootScope, $location, $cookieStore) {
                                   }
                                 );
   }
-  
-  // duplicated in UserCtrl
-  $scope.isUsernameUnique = function(user, form) {
-    if(!angular.isDefined(user.username)) {
-      return;
-    }
-    checkUsers = User.query({username:user.username}, 
-                                        function() {
-                                          if(checkUsers.length > 0) { form.username.$error.taken = 'true'; }
-                                          else { form.username.$error.taken = 'false'; }
-                                        });
-  } 
 
   $rootScope.$on("userchange", function(event) {
   });
@@ -430,19 +436,25 @@ function NavCtrl($scope, $window) {
   }
 }
 
-function GettingStartedCtrl($scope) { 
-  $scope.createevent = false;
-  $scope.addyourself = false;
-  $scope.addpeople = false;
-  $scope.additems = false;
-  $scope.whydoweneedtoknow = false; // see whoareyou.html
-  $scope.whatifidontwantto = false; // see whoareyou.html
-}
-
 function WelcomeCtrl($rootScope, $scope, $location) {
-  console.log("WelcomeCtrl -----------------------------");
   
-  $location.path('/login');
+  $scope.checkemail = false;
+  console.log("WelcomeCtrl: $scope.checkemail = false");
+  
+  $scope.toggleemail = function() {
+    if(!angular.isDefined($scope.checkemail) || !$scope.checkemail) $scope.checkemail = true;
+    else $scope.checkemail = false;
+  }
+  
+  $scope.togglefriends = function() {
+    if(!angular.isDefined($scope.friends) || !$scope.friends) $scope.friends = true;
+    else $scope.friends = false;
+  }
+  
+  $scope.toggleevents = function() {
+    if(!angular.isDefined($scope.events) || !$scope.events) $scope.events = true;
+    else $scope.events = false;
+  }
   
   $rootScope.$on("$routeChangeStart", function(scope, next, current){
     console.log('WelcomeCtrl:  Changing from '+angular.toJson(current)+' to '+angular.toJson(next));

@@ -16,15 +16,6 @@ function FriendCtrl($scope, $rootScope, User, Friend) {
     }
   );
   
-  // duplicated in app-CircleCtrl.js
-  $scope.userfieldsvalid = function(newuser) {
-    var ret = angular.isDefined(newuser) && angular.isDefined(newuser.fullname) && angular.isDefined(newuser.email)
-          && angular.isDefined(newuser.username) && angular.isDefined(newuser.password) 
-          && angular.isDefined(newuser.passwordAgain) && newuser.fullname != '' && newuser.email != '' && newuser.username != ''
-          && newuser.password != '' && newuser.passwordAgain != '' && newuser.password == newuser.passwordAgain;
-    return ret;
-  }
-  
   // duplicated ...almost from app-CircleCtrl.js.  The difference here is no circle
   $scope.createfriendonthefly = function(newuser) {
     console.log("$scope.createfriendonthefly():  CALLED ----------------------------------------");
@@ -34,18 +25,6 @@ function FriendCtrl($scope, $rootScope, User, Friend) {
                                   function() {$rootScope.user.friends.push(anewuser);}
                                 );
   }
-  
-  // TODO duplicated in RegisterCtrl and UserCtrl
-  $scope.isUsernameUnique = function(user, form) {
-    if(!angular.isDefined(user.username)) {
-      return;
-    }
-    checkUsers = User.query({username:user.username}, 
-                                        function() {
-                                          if(checkUsers.length > 0) { form.username.$error.taken = 'true'; }
-                                          else { form.username.$error.taken = 'false'; }
-                                        });
-  } 
   
   // don't let the user friend himself
   $scope.clicklbbuser = function(index, person, people) {

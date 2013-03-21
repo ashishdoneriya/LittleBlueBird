@@ -5,10 +5,60 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import javax.swing.ImageIcon
 import java.net.URL
+import net.liftweb.db.StandardDBVendor
+import net.liftweb.mapper.Schemifier
+import net.liftweb.mapper.DB
+import com.lbb.entity.Circle
+import com.lbb.entity.Gift
+import com.lbb.entity.AuditLog
+import com.lbb.entity.Friend
+import net.liftweb.util.Props
+import com.lbb.entity.Reminder
+import net.liftweb.db.DefaultConnectionIdentifier
+import com.lbb.entity.CircleParticipant
+import com.lbb.entity.Recipient
+import net.liftweb.common.Box
+import com.lbb.entity.User
 
 @RunWith(classOf[JUnitRunner])
 class UtilTest extends FunSuite with AssertionsForJUnit with LbbLogger {
 
+  
+  
+  // TODO create a real db pool
+  def initDb = {
+     
+    // this stuff goes in Boot.scala
+    val vendor =  
+	new StandardDBVendor(Props.get("db.driver") openOr "com.mysql.jdbc.Driver",
+			     Props.get("db.url") openOr 
+			     "jdbc:mysql://localhost:3307/bdunklau", //"jdbc:h2:~/test", //"jdbc:mysql://localhost:3306/littlebluebird",
+			     Box(Props.get("db.user") openOr "test"), Box(Props.get("db.pass") openOr "test"))
+
+    DB.defineConnectionManager(DefaultConnectionIdentifier, vendor)
+     
+    Schemifier.schemify(true, Schemifier.infoF _, User)
+    Schemifier.schemify(true, Schemifier.infoF _, Circle)
+    Schemifier.schemify(true, Schemifier.infoF _, CircleParticipant)
+    Schemifier.schemify(true, Schemifier.infoF _, Gift)
+    Schemifier.schemify(true, Schemifier.infoF _, Recipient)
+    Schemifier.schemify(true, Schemifier.infoF _, Reminder)
+    Schemifier.schemify(true, Schemifier.infoF _, AuditLog)
+    Schemifier.schemify(true, Schemifier.infoF _, Friend)
+        
+  }
+  
+  
+  test("determine usernames like Brent") {
+    initDb
+    
+    val exp = List("Brent") // depends on what's in the db at the time
+    val actual = Util.determineUsernamesLike("Brent")
+    assert(actual===exp)
+    assert("Brent"===actual.head) 
+  }
+  
+  
   // testing the 'no profile pic' image
   test("adjusted dimensions 1") {
     val profilepicUrl = new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg")

@@ -1,31 +1,55 @@
 
-<div ng-controller="MyAccountCtrl">
+<div ng-controller="EmailPrefsCtrl">
 
+
+<div class="row">
+  <div class="span5 box pad10 bgwhite margtop10">
+  
     <div class="row">
-      <div class="span7 roundedtop bgbluegradient white pad10">
-        <span class="font28">Email Preferences</span>
+      <a ng-href="{{currentlocation}}" ng-click="toggleemailprefs()">
+      <div class="span5 pad0">
+        <span class="font16">Email Preferences</span>
+        
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            
+            <!-- http://jsfiddle.net/maccman/E9cnL/ -->
+            <span class="font16 bold"><span ng-class="cssEmailPrefsSaved">Save Successful</span></span>
+        
+        
+        <span class="pull-right">
+          <span ng-hide="emailprefs">
+            <i class="icon-chevron-down"/>
+          </span>
+          <span ng-show="emailprefs">
+            <i class="icon-chevron-up"/>
+          </span>
+        </span>
       </div>
-    </div>
-
-    <div class="row">
-      <div class="span7 roundedbottom pad10 bgwhite">
-
-<P><input type="checkbox" ng-checked="user.notifyonaddtoevent=='true'" ng-model="notifyonaddtoevent"/> Notify me when someone adds me to an event</P>
-<P><input type="checkbox" ng-checked="user.notifyondeletegift=='true'" ng-model="notifyondeletegift"/> Notify me when someone deletes a gift I have bought</P>
-<P><input type="checkbox" ng-checked="user.notifyoneditgift=='true'" ng-model="notifyoneditgift"/> Notify me when someone changes the description of a gift I have bought</P>
-<P><input type="checkbox" ng-checked="user.notifyonreturngift=='true'" ng-model="notifyonreturngift"/> Notify me when someone returns a gift, making it available again</P>
-
-        <div class="row">
-          <div class="span1 offset1">
-            <a class="btn btn-primary" href="me" ng-click="updateemailprefs()">Update</a>
-          </div>
-          <div class="span1">
-            <a href="me" class="btn span1">Cancel</a>
-          </div>
-        </div>
-
-      </div>
+      </a>
     </div>
     
+    <span ng-show="emailprefs">
+    <div class="row">
+      <div class="span5 padtop10">
+		<P><input type="checkbox" ng-checked="usercopy.notifyonaddtoevent=='true'" ng-model="usercopy.notifyonaddtoevent"/> Notify me when someone adds me to an event</P>
+		<P><input type="checkbox" ng-checked="usercopy.notifyondeletegift=='true'" ng-model="usercopy.notifyondeletegift"/> Notify me when someone deletes a gift I have bought</P>
+		<P><input type="checkbox" ng-checked="usercopy.notifyoneditgift=='true'" ng-model="usercopy.notifyoneditgift"/> Notify me when someone changes the description of a gift I have bought</P>
+		<P><input type="checkbox" ng-checked="usercopy.notifyonreturngift=='true'" ng-model="usercopy.notifyonreturngift"/> Notify me when someone returns a gift, making it available again</P>
+      </div>
+    </div>
+		    
+    <div class="row">
+      <div class="span5">
+        <span class="pull-right">
+            <button class="btn btn-primary span1" ng-click="updateemailprefs()">Save</button>
+	        <button ng-click="resetuser()" class="btn span1 pull-right">Reset</button>
+        </span>
+      </div>
+    </div>
+    </span> <!-- ng-show="emailprefs" -->
     
+  </div>
+</div>
+
+   
 </div>

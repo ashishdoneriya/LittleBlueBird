@@ -1,3 +1,9 @@
+3/1/13  PROBLEM:  You want a new url, say www.littlebluebird.com/gf/home
+You add a route at the top of app.js but you get "The Requested URL /gf/home was not found on this server"
+Why?  The reason: You haven't defined a rewriting rule in urlrewrite.xml
+
+
+3/1/13 - Haven't seen this problem in a month or more.
 PROBLEM:  Facebook login dialog doesn't go away - doesn't call the "success" function
 When this happens, LBB does not get any info from fb about who logged.  This problem seriously hoses
 up everything downstream in LBB.

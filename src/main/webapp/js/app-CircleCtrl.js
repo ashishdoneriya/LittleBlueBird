@@ -105,15 +105,6 @@ function EditCircleCtrl($rootScope) {
 
 function MyCircleCtrl($rootScope, $scope, Circle, $location) {
   
-  // TODO delete reminders
-  $scope.deletecircle = function(index) {
-    Circle.save({circleId:$rootScope.circle.id, datedeleted:new Date().getTime()},
-                function() {$rootScope.user.circles.splice(index, 1); 
-                            if($rootScope.user.circles.length > 0) {$rootScope.circle = $rootScope.user.circles[0];}
-                            else {delete $rootScope.circle;}
-                            });
-                
-  }
   
   $scope.addremovepeople = function(circle) {
     $rootScope.circle = circle;
@@ -240,26 +231,11 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
     $rootScope.circle.reminders = angular.copy($rootScope.circle.newreminders);
   }
   
-  // TODO duplicated in app-FriendCtrl.js
-  $scope.userfieldsvalid = function(newuser) {
-    var ret = angular.isDefined(newuser) && angular.isDefined(newuser.fullname) && angular.isDefined(newuser.email)
-          && angular.isDefined(newuser.username) && angular.isDefined(newuser.password) 
-          && angular.isDefined(newuser.passwordAgain) && newuser.fullname != '' && newuser.email != '' && newuser.username != ''
-          && newuser.password != '' && newuser.passwordAgain != '' && newuser.password == newuser.passwordAgain;
-    return ret;
-  }
-  
   $scope.cancelnewuser = function() {
     $scope.addmethod = 'byname';
     $scope.usersearch = ''; 
     $scope.search = '';
     $scope.newuser = {};
-  }
-  
-  $scope.createonthefly = function(newuser, thecircle) {
-    anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
-                                  function() {$scope.addparticipant2(anewuser, thecircle); $scope.addmethod = 'byname'; $scope.usersearch = ''; $scope.search = '';}
-                                );
   }
   
   // add all the participants in the 'fromcircle' to the 'tocircle'
@@ -276,28 +252,6 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
       else
         tocircle.participants.givers.push(fromcircle.participants.givers[i]);
     }
-  }
-    
-  $scope.cancelnewcircle = function() {
-    $rootScope.circle = {participants:[]};
-    $scope.expdate = undefined;
-  }
-  
- 
-  $scope.savecircle = function(circle, expdate) {
-    console.log("expdate = "+expdate);
-    circle.expirationdate = new Date(expdate);
-    console.log("circle.expirationdate.getTime() = "+circle.expirationdate.getTime());
-    var savedcircle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:Circle.circleType, 
-                 participants:circle.participants, creatorId:circle.creatorId},
-                 function() {
-                   if(!angular.isDefined(circle.id))
-                     $rootScope.user.circles.push(savedcircle); 
-                   //User.currentUser=$rootScope.user; 
-                   //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting
-                 } 
-               );
-    console.log("end of $scope.savecircle()");
   }
   
 }

@@ -1,49 +1,42 @@
 <div ng-controller="NewEventCtrl">
-  <form novalidate name="circleForm" class="margbottom0">
+<form novalidate name="circleForm" class="margbottom0">
+<div class="table">
+
   
-  <div class="row">
-    <div class="span6 rounded font16 white bgbluegradient pad5">
-      
-      <div class="row">
-        <div class="span4 padtop5">New {{typeInfo.type}} Event</div>
-        <div class="span2">
-          
+  <div class="tablerow w500">
+    <div class="tablecell w500 rounded font16 white bgbluegradient pad5">
+      {{title}}
+      <span class="pull-right">
           <div ng-show="circleForm.name.$error.required || circleForm.expdate.$error.required">
             <div class="btn-group pull-right">
-              <a ng-disabled="true" class="btn btn-primary btn-small" id="invalidform">Save</a>
-              <a ng-href="events" class="btn btn-small" ng-click="cancelnewcircle();addmethod='';search='';">Cancel</a>
+              <a ng-disabled="true" class="btn btn-primary btn-mini" id="invalidform">Save</a>
+              <a ng-href="" class="btn btn-mini" ng-click="cancelcirclechanges();addmethod='';search='';">Cancel</a>
             </div>
           </div>    
           
           <div ng-hide="circleForm.name.$error.required || circleForm.expdate.$error.required">
             <div class="btn-group pull-right">
-              <a ng-href="{{currentlocation}}" class="btn btn-primary btn-small" ng-click="savecircle(newcircle, expdate);showRegister=false;search='';">Save</a>
-              <a ng-href="events" class="btn btn-small" ng-click="cancelnewcircle();addmethod='';search='';">Cancel</a>
+              <a ng-href="" class="btn btn-primary btn-mini" ng-click="savecircle(thecircle, expdate);showRegister=false;search='';">Save</a>
+              <a ng-href="" class="btn btn-mini" ng-click="cancelcirclechanges();addmethod='';search='';">Cancel</a>
             </div>
-          </div>
-          
-          
-        </div>
-      </div>
-      
+          </div>   
+      </span>
+    </div>
+  </div>
+  
+  <div class="tablerow w500">
+    <div class="tablecell w500 padtop10">
+      <input class="w500 largefield" maxlength="140" value="" type="text" name="name" ng-model="thecircle.name" ng-required="true" placeholder="Event Name" title="Event Name" />
+	  <input class="w150 largefield" date-picker="expdate" name="expdate" ng-model="expdate" type="text" placeholder="Event Date" title="Event Date" ng-required="true"></input>
+	  <input maxlength="140" value="" type="hidden" name="name" ng-model="thecircle.id" /> 
     </div>
   </div>
   
   
-  <div class="row margtop20 margbottom20">
-	    <div class="span3">
-	      <input class="span3 largefield" maxlength="140" value="" type="text" name="name" ng-model="newcircle.name" ng-required="true" placeholder="Event Name" title="Event Name" />
-	      
-	    </div>
-	    <div class="span3">
-          <input class="input-medium largefield" date-picker="expdate" name="expdate" ng-model="expdate" type="text" placeholder="Event Date" title="Event Date" ng-required="true"></input>
-	      <input maxlength="140" value="" type="hidden" name="name" ng-model="newcircle.id" />
-	    </div>
-  </div>
-  
   
   <!----------------------------------------------------------------------------
-  THIS NEXT ROW HAS A LOT OF STUFF IN IT: 2 COLUMNS.  THE FIRST COLUMN DISPLAYS 
+  THIS NEXT ROW HAS A LOT OF STUFF IN IT: AN EMBEDDED TABLE WITH 1 ROW AND
+  2 COLUMNS.  THE FIRST COLUMN DISPLAYS 
   THE LIST OF GIVERS AND RECEIVERS, EACH IN THEIR OWN SECTION.  THE SECOND COLUMN
   IS ONLY DISPLAYED WHEN THE USER IS ADDING PEOPLE TO AN EVENT.  THIS SECOND COLUMN
   IS WHERE THE SEARCH BOX AND SEARCH RESULT WILL APPEAR IF THE USER IS SEARCHING
@@ -51,262 +44,302 @@
   ADDING PEOPLE FROM OTHER EVENTS.  IT'S ALSO WHERE WE DISPLAY A REGISTRATION FORM
   IF THE USER IS CREATING ACCOUNTS ON THE FLY AND THEN ADDING THEM TO THE EVENT.
     ---------------------------------------------------------------------------->
-  <div class="row">
-  
-    <!-- ------------------------------------------------- -->
-	<!-- BEGIN: Column showing Participants/Honorees       -->
-	<!--         and then Givers                           -->
-	<!-- ------------------------------------------------- -->
-	<div class="span3">
-	
-		  <!-- ------------------------------------ -->
-		  <!-- BEGIN: Participants/Honorees section -->
-		  <!-- ------------------------------------ -->
-          <div class="row"> <!-- header row -->
-	        <div class="span3 roundedtop bgbluegradient pad5 white">
-	          <span ng-show="newcircle.receiverLimit == -1">Participants</span>
-	          <span ng-show="newcircle.receiverLimit == 1">Honoree</span>
-	          <span ng-show="newcircle.receiverLimit > 1">Honorees</span>
+  <div class="tablerow w500">
+    <div class="tablecell500">
+      <div class="table">
+        <div class="tablerow">
+        
+	      <!-- ------------------------------------------------- -->
+		  <!-- BEGIN: Column showing Participants/Honorees       -->
+		  <!--         and then Givers                           -->
+		  <!-- ------------------------------------------------- -->
+          <div class="tablecell">
+          
+          
+		    <!-- ------------------------------------ -->
+		    <!-- BEGIN: Participants/Honorees section -->
+		    <!-- ------------------------------------ -->
+            <div class="table">
+            
+              <div class="tablerow"> <!-- header row -->
+	            <div class="tablecell roundedtop bgbluegradient pad5 white">
+  	              <span ng-show="thecircle.receiverLimit == -1">Participants</span>
+	              <span ng-show="thecircle.receiverLimit == 1">Honoree</span>
+	              <span ng-show="thecircle.receiverLimit > 1">Honorees</span>
 	          
-	          <span ng-show="canaddreceiver(newcircle)">
-                <div class="btn-group pull-right">
-	              <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown">+</a>
-			      <ul class="dropdown-menu">
-			        <li><a ng-href="{{currentlocation}}" ng-click="addmyselfasreceiver(newcircle)">Add myself</a></li>
-			        <li><a ng-href="{{currentlocation}}" ng-click="beginAddingByName('Receiver');">Add by name</a></li>
-			        <span ng-hide="user.circles.length == 0"><li><a ng-href="{{currentlocation}}" ng-click="beginAddingFromAnotherEvent('Receiver');">Add from another event</a></li></span>
-			      </ul>	
-	            </div>
-	          </span>
-	          
-	          <span ng-hide="canaddreceiver(newcircle)">
-                <div class="btn-group pull-right">
-	              <a class="btn btn-mini font14 bold" ng-disabled="true">+</a>
-	            </div>
-	          </span>
-	        </div>
-          </div> <!-- header row -->
-	      
-          <span ng-repeat="participant in newcircle.participants.receivers">
-          <div class="row">
-	        <div class="{{isLastRow('span3 list pad5', $index, newcircle.participants.receivers.length)}}">
-	          <a ng-href="{{currentlocation}}" class="align-bottom" ng-click="removereceiver($index, newcircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
-	        </div>
-          </div>
-          </span>
-	          
-	   
-          <span ng-show="newcircle.participants.receivers == 0">
-          <div class="row">
-	        <div class="span3 roundedbottom pad5 bgwhite">
-		     <span ng-show="newcircle.receiverLimit == -1">Add Participants to this event, including yourself.  That's how you see everyone's wish list.</span>
-			 <span ng-show="newcircle.receiverLimit == 1">Add the Honoree.  That's how you see his/her wish list.</span>
-			 <span ng-show="newcircle.receiverLimit > 1">Add the Honorees to this event.  That's how you see their wish lists.</span>
-	        </div>
-          </div>
-          </span>
-		  <!-- ---------------------------------- -->
-		  <!-- END: Participants/Honorees section -->
-		  <!-- ---------------------------------- -->
-		  
-		  
-	      <!-- ------------------------------------------------------- -->
-	      <!-- BEGIN: Guests section (for those events that have them) -->
-	      <!-- ------------------------------------------------------- -->
-	      <span ng-show="newcircle.receiverLimit != -1">
-	        <div class="row margtop10">
-	          <div class="span3 roundedtop bgbluegradient pad5 white">Guests
-                <div class="btn-group pull-right">
-	              <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
-			      <ul class="dropdown-menu">
-			        <li><a ng-href="{{currentlocation}}" ng-click="addmyselfasgiver(newcircle)">Add myself</a></li>
-			        <li><a ng-href="{{currentlocation}}" ng-click="beginAddingByName('Giver');">Add by name</a></li>
-			        <span ng-hide="user.circles.length == 0"><li><a ng-href="{{currentlocation}}" ng-click="beginAddingFromAnotherEvent('Giver');">Add from another event</a></li></span>
-			      </ul>	
-	            </div>
-	          </div>
-	        </div>
-	      
-	        <span ng-repeat="participant in newcircle.participants.givers">
-	          <div class="row">
-	            <div class="{{isLastRow('span3 list pad5', $index, newcircle.participants.givers.length)}}">
-	              <a ng-href="{{currentlocation}}" class="align-bottom" ng-click="removegiver($index, newcircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
-	            </div>
-	          </div>
-		    </span>
-	   
-	   
-	        <span ng-show="newcircle.participants.givers == 0">
-	          <div class="row">
-	            <div class="span3 roundedbottom pad5 bgwhite">
-			        Add Guests to this event so they can view the Honoree(s) wish list.  Don't forget yourself if you are also a Guest.
-	            </div>
-	          </div>
-	        </span>
-	      </span> <!-- ng-show="newcircle.receiverLimit != -1" -->
-	      <!-- ----------------------------------------------------- -->
-	      <!-- END: Guests section (for those events that have them) -->
-	      <!-- ----------------------------------------------------- -->
-		  
-    </div>
-    <!-- ------------------------------------------------- -->
-	<!-- END: Column showing Participants/Honorees         -->
-	<!--         and then Givers                           -->
-	<!-- ------------------------------------------------- -->
-	
-	
-	
-    <!-- ------------------------------------------------- -->
-	<!-- BEGIN: Column where we add people to the event    -->
-	<!-- ------------------------------------------------- -->
-	<div class="span3">
-	
-	      <div ng-show="addmethod=='byname'">
-	        <div class="row">
-              <div class="span3"><input search-users type="text" class="span3 search-query" ng-model="search" placeholder="Search by Name"></div>
-            </div>
-		          
-			<span ng-show="search != '' && usersearch=='loaded'">
-	        <div class="row margtop10">
-	          <div class="span3 roundedtop bgbluegradient white pad5">Found...</div>
-	        </div>
-	      
-	        <span ng-show="noonefound">
-	        <div class="row">
-	          <div class="span3 roundedbottom pad5">
-	            No one found matching the search criteria
-	            <p><a ng-href="{{currentlocation}}" ng-click="beginnewuser();">Create Account for this Person?</a></p>
-	          </div>
-	        </div>
-	        </span>
-
-		          
-		    <div ng-repeat="person in peoplesearchresults | filter:search">
-		    <span ng-hide="person.hide">
-			<div class="row" ng-click="addparticipant($index, person, newcircle, participationLevel)">
-			  <div class="{{isLastRow('span3 list pad5', $index, peoplesearchresults.length)}}">
-				<div class="row">
-				  <div class="span1">
-	
-	                <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
-	                  <div style="margin-top:{{person.profilepicmargintop50}};margin-left:{{person.profilepicmarginleft50}}">
-	                    <img height="{{person.profilepicadjustedheight50}}" width="{{person.profilepicadjustedwidth50}}" ng-src="{{person.profilepicUrl}}"/>
-	                  </div>
+	              <span ng-show="canaddreceiver(thecircle)">
+                    <div class="btn-group pull-right">
+	                  <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown">+</a>
+			          <ul class="dropdown-menu">
+			            <li><a ng-href="{{currentlocation}}" ng-click="addmyselfasreceiver(thecircle)">Add myself</a></li>
+			            <li><a ng-href="{{currentlocation}}" ng-click="beginAddingByName('Receiver');">Add by name/email</a></li>
+			            <span ng-hide="user.circles.length == 0"><li><a ng-href="{{currentlocation}}" ng-click="beginAddingFromAnotherEvent('Receiver');">Add from another event</a></li></span>
+			          </ul>	
 	                </div>
+	              </span>
+	          
+	              <span ng-hide="canaddreceiver(thecircle)">
+                    <div class="btn-group pull-right">
+	                  <button class="btn btn-mini font14 bold" ng-disabled="true">+</button>
+	                </div>
+	              </span>
+	            </div>
+              </div> <!-- header row -->
+	      
+              <span ng-repeat="participant in thecircle.participants.receivers">
+              <div class="tablerow">
+	            <div class="{{isLastRow('tablecell w250 list pad5', $index, thecircle.participants.receivers.length)}}">
+	              <a ng-href="{{currentlocation}}" class="align-bottom" ng-click="removereceiver($index, thecircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
+	            </div>
+              </div>
+              </span>
+	          
+	   
+              <span ng-show="thecircle.participants.receivers == 0">
+              <div class="tablerow">
+	            <div class="tablecell roundedbottom pad5 bgwhite">
+		          <span ng-show="thecircle.receiverLimit == -1">Add Participants to this event, including yourself.  That's how you see everyone's wish list.</span>
+			      <span ng-show="thecircle.receiverLimit == 1">Add the Honoree.  That's how you see his/her wish list.</span>
+			      <span ng-show="thecircle.receiverLimit > 1">Add the Honorees to this event.  That's how you see their wish lists.</span>
+	            </div>
+              </div>
+              </span>
+            
+            </div>
+		    <!-- ------------------------------------ -->
+		    <!-- END: Participants/Honorees section   -->
+		    <!-- ------------------------------------ -->
+		    
+	        <!-- ------------------------------------------------------- -->
+	        <!-- BEGIN: Guests section (for those events that have them) -->
+	        <!-- ------------------------------------------------------- -->
+	        <span ng-show="thecircle.receiverLimit != -1">
+	        <div class="table">
+	          <div class="tablerow">
+	            <div class="tablecell w250 roundedtop bgbluegradient pad5 white">Guests
+                  <div class="btn-group pull-right">
+	                <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
+			        <ul class="dropdown-menu">
+			          <li><a ng-href="{{currentlocation}}" ng-click="addmyselfasgiver(thecircle)">Add myself</a></li>
+			          <li><a ng-href="{{currentlocation}}" ng-click="beginAddingByName('Giver');">Add by name/email</a></li>
+			          <span ng-hide="user.circles.length == 0"><li><a ng-href="{{currentlocation}}" ng-click="beginAddingFromAnotherEvent('Giver');">Add from another event</a></li></span>
+                    </ul>	
+	              </div>
+	            </div>
+	          </div>
+	      
+	          <span ng-repeat="participant in thecircle.participants.givers">
+	            <div class="tablerow w250">
+	              <div class="{{isLastRow('tablecell w250 list pad5', $index, thecircle.participants.givers.length)}}">
+	                <a ng-href="{{currentlocation}}" class="align-bottom" ng-click="removegiver($index, thecircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
+	              </div>
+	            </div>
+		      </span>
+	   
+	   
+	          <span ng-show="thecircle.participants.givers == 0">
+	            <div class="tablerow w250">
+	              <div class="tablecell w250 roundedbottom pad5 bgwhite">
+			          Add Guests to this event so they can view the Honoree(s) wish list.  Don't forget yourself if you are also a Guest.
+	              </div>
+	            </div>
+	          </span>
+	        </div>
+	        </span> <!-- ng-show="thecircle.receiverLimit != -1" -->
+	        <!-- ----------------------------------------------------- -->
+	        <!-- END: Guests section (for those events that have them) -->
+	        <!-- ----------------------------------------------------- -->
+          
+          
+          </div>
+          <!-- ------------------------------------------------- -->
+	      <!-- END: Column showing Participants/Honorees         -->
+	      <!--         and then Givers                           -->
+	      <!-- ------------------------------------------------- -->
+        
+        
+        
+          <!-- ------------------------------------------------- -->
+	      <!-- BEGIN: Column where we add people to the event    -->
+          <!-- ------------------------------------------------- -->
+          <div class="tablecell w245 padleft10">
+
+	        <div ng-show="addmethod=='byname'">
+	          <div class="tablerow w245">
+                <div class="tablecell w245"><input search-users type="text" class="search-query" ng-model="search" placeholder="Search" title="Search by name/email"></div>
+              </div>
+              
+			  <span ng-show="search != '' && usersearch=='loaded'">
+	          <P>&nbsp;</P>
+	          <div class="tablerow">
+	            <div class="tablecell w245 roundedtop bgbluegradient white pad5">Found...</div>
+	          </div> 
+	      
+	          <span ng-show="noonefound">
+	          <div class="tablerow w245">
+	            <div class="tablecell w245 roundedbottom pad5 bgwhite">
+	              <P>No one found matching "{{search}}"</P>
+	              <p><a ng-href="{{currentlocation}}" ng-click="emailnewuser();">Invite by Email <i class="icon-chevron-right"></i></a></p>
+	            </div>
+	          </div>
+	          </span>
+	          
+		      <div ng-repeat="person in peoplesearchresults | filter:search">
+		      <span ng-hide="person.hide">
+			  <div class="tablerow w245" ng-click="addparticipant($index, person, thecircle, participationLevel)">
+			    <div class="{{isLastRow('tablecell w245 list pad5', $index, peoplesearchresults.length)}}">
+				  <div class="tablerow w245">
+				    <div class="tablecell w50">
 	
-				  </div>
-				  <div class="span2 marg0 padtop5 font14">{{person.fullname}}</div>
+	                  <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
+	                    <div style="margin-top:{{person.profilepicmargintop50}};margin-left:{{person.profilepicmarginleft50}}">
+	                      <img height="{{person.profilepicadjustedheight50}}" width="{{person.profilepicadjustedwidth50}}" ng-src="{{person.profilepicUrl}}"/>
+	                    </div>
+	                  </div>
+	
+				    </div>
+				    <div class="tablecell w200 pad5 font14">{{person.fullname}}</div>
+		          </div>
 		        </div>
 		      </div>
-		    </div>
-	        </span>  <!-- span ng-hide="person.hide" -->
-	        </div>
-		    </span>  <!-- span ng-show="usersearch=='loaded'" -->
-	              
-	      </div> <!-- end of div: addmethod='byname' -->
-	      
-	      
-	      
-	      
-	      <div ng-show="addmethod=='createaccount'">
-	      
-	              
-	      </div> <!-- end of div: addmethod='createaccount' -->
-	      
-	      
-	      
-	      
-	      <div ng-show="addmethod=='fromanotherevent'">
-		    <div class="row">
-			  <div class="span3 roundedtop bgbluegradient pad5 white">Add from another Event</div>
-			</div>
+	          </span>  <!-- span ng-hide="person.hide" -->
+	          </div>
+		   
+		      </span>  <!-- span ng-show="search != '' && usersearch=='loaded' -->
+			  
+	        </div> <!-- end of div: addmethod='byname' -->
+	 
+	 
+	 
+	        <div ng-show="addmethod=='emailnewuser'">
+	          <div class="table w245" ng-form="emailnewuserform">
+		        <div class="tablerow w245 roundedtop">
+			      <div class="tablecell w245 roundedtop bgbluegradient pad5 white">Invite by Email</div>
+			    </div>
+		        <div class="tablerow w245">
+  			      <div class="tablecell w245 bgwhite sideborders_009dcb padleft5 padtop5">
+			        <input class="w200" maxlength="140" value="" type="text" name="fullname" placeholder="Name" title="Name" ng-model="newuser.fullname"  ng-required="true" />
+                    <span ng-show="emailnewuserform.fullname.$dirty">
+                      <span ng-show="emailnewuserform.fullname.$error.required"><img src="img/red_x.png" id="fullnamerequired" title="Name is required"></span>
+                    </span>
+			      </div>
+			    </div>
+		        <div class="tablerow w245">
+			      <div class="tablecell w245 bgwhite sideborders_009dcb padleft5">
+                    <input class="w200" maxlength="140" value="" type="email" name="email" placeholder="Email" title="Email" ng-model="newuser.email" ng-required="true">
+                    <span ng-show="emailnewuserform.email.$dirty">
+                      <span ng-show="emailnewuserform.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
+                      <span ng-show="emailnewuserform.email.$error.required"><img src="img/red_x.png" id="emailinvalid" title="Email is required"></span>
+                    </span>
+			      </div>
+			    </div>
+			    
+		        <div class="tablerow w245">
+			      <div class="tablecell w245 bgwhite sideborders_009dcb padleft5">
+			        <a ng-href="" ng-click="howtoinvitechild='true'">My child doesn't have email <i class="icon-chevron-right"></i></a>
+			        <span ng-show="howtoinvitechild=='true'">
+			          <P>Just enter <i>your</i> email address instead.  You will get an email from us saying you have created an account for your child  
+			          <a ng-href="" ng-click="howtoinvitechild='false'">hide</a>
+			          </P>
+			        </span>
+			      </div>
+			    </div>
+			    
+		        <div class="tablerow w245">
+		          <div class="tablecell w245 listfooter pad5 roundedbottom">
+		            <span class="pull-right">
+                      <div ng-hide="validateEmailInvitation(newuser)" >
+		                <a ng-disabled="true" class="btn btn-primary btn-mini" title="Not ready to save yet">Save</a>
+		                &nbsp;
+		                <a ng-href="{{currentlocation}}" class="btn btn-mini" ng-click="resetInviteByEmailForm();back('byname')">Cancel</a>
+		              </div>
+                      <div ng-show="validateEmailInvitation(newuser)" >
+		                <a ng-href="{{currentlocation}}" class="btn btn-primary btn-mini" ng-click="createonthefly(newuser, thecircle);resetInviteByEmailForm()">Save</a>
+		                &nbsp;
+		                <a ng-href="{{currentlocation}}" class="btn btn-mini" ng-click="resetInviteByEmailForm();back('byname')">Cancel</a>
+		              </div>
+		            </span>
+		          </div>
+			    </div>
+	          </div>
+	        </div>   <!-- div ng-show="addmethod=='emailnewuser'" -->
+	 
+	 
+	        
+	        <div ng-show="addmethod=='fromanotherevent'">
+		      <div class="tablerow w245">
+			    <div class="tablecell w245 roundedtop bgbluegradient pad5 white">Add from another Event</div>
+			  </div>
 			      
-			<div ng-repeat="c in circlecopies">
-			<div class="row">
-              <div class="{{isLastRow('span3 list pad5', $index, circlecopies.length)}}">
-			    <a ng-href="{{currentlocation}}" ng-click="selectEventToAddFrom(c);" style="text-decoration:none;">
-	              {{c.name}}<span class="pull-right"><i class="icon-chevron-right"></i></span>
-	            </a>
+			  <div ng-repeat="c in circlecopies">
+			  <div class="tablerow w245">
+                <div class="{{isLastRow('tablecell w245 list pad5', $index, circlecopies.length)}}">
+			      <a ng-href="{{currentlocation}}" ng-click="selectEventToAddFrom(c);" style="text-decoration:none;">
+	                {{c.name}}<span class="pull-right"><i class="icon-chevron-right"></i></span>
+	              </a>
+			    </div>
 			  </div>
-			</div>
-			</div>
-	      </div> <!-- end of div: addmethod='fromanotherevent' -->
-	      
-	      
-	      
-	      <div ng-show="addmethod=='fromspecificevent'">
-	        <!-- When you're on 'fromanotherevent', and you click an event, the chosen event is displayed here -->
-	      
-			<div class="row">
-			  <div class="span3 roundedtop bgbluegradient pad5 white">
-			    Add from {{sourceEvent.name}}
-		        <a ng-href="{{currentlocation}}" class="btn btn-primary btn-mini pull-right" ng-click="selectAllParticipants(sourceEvent.participants.both);">Select All</a>
 			  </div>
-			</div>
+	        </div> <!-- end of div: addmethod='fromanotherevent' -->
+
+
+
+
+	        <div ng-show="addmethod=='fromspecificevent'">
+	          <!-- When you're on 'fromanotherevent', and you click an event, the chosen event is displayed here -->
+	      
+			  <div class="tablerow w245">
+			    <div class="tablecell w245 roundedtop bgbluegradient pad5 white">
+			      Add from {{sourceEvent.name}}
+		          <a ng-href="{{currentlocation}}" class="btn btn-primary btn-mini pull-right" ng-click="selectAllParticipants(sourceEvent.participants.both);">Select All</a>
+			    </div>
+			  </div>
 			
-			<div ng-repeat="person in sourceEvent.participants.both">
-		    <div class="row" ng-click="clicklbbuser($index, person, sourceEvent.participants.both)">
-		      <div class="{{selectedOrNotStyle('span3 list pad5', $index, peoplesearchresults.length, person)}}">
-		        <img height=50 width=50 ng-src="{{person.profilepicUrl}}" />
-		        {{person.first}} {{person.last}}
+			  <div ng-repeat="person in sourceEvent.participants.both">
+		      <div class="tablerow w245" ng-click="clicklbbuser($index, person, sourceEvent.participants.both)">
+		        <div class="{{selectedOrNotStyle('tablecell w245 list pad5', $index, peoplesearchresults.length, person)}}">
+		          <img height=50 width=50 ng-src="{{person.profilepicUrl}}" />
+		          {{person.first}} {{person.last}}
+		        </div>
 		      </div>
-		    </div>
-		    </div>
+		      </div>
 		    
-		    <div class="row">
-		      <div class="span3 listfooter pad5">
-		        <span class="pull-right">
-		        <a ng-href="{{currentlocation}}" class="btn btn-primary btn-mini" ng-click="addSelectedPeople(newcircle);">Done</a>
-		        &nbsp;
-		        <a ng-href="{{currentlocation}}" class="btn btn-mini" ng-click="back();">Cancel</a>
-		        </span>
+		      <div class="tablerow w245">
+		        <div class="tablecell w245 listfooter pad5">
+		          <span class="pull-right">
+		            <a ng-href="{{currentlocation}}" class="btn btn-primary btn-mini" ng-click="addSelectedPeople(thecircle);">Done</a>
+		            &nbsp;
+		            <a ng-href="{{currentlocation}}" class="btn btn-mini" ng-click="back('fromanotherevent');">Cancel</a>
+		          </span>
+		        </div>
 		      </div>
-		    </div>
 	      
-	      </div> <!-- end of div: addmethod='fromspecificevent' -->
-	      
+	        </div> <!-- end of div: addmethod='fromspecificevent' -->
+
+
+          </div>
+          <!-- ------------------------------------------------- -->
+	      <!-- END: Column where we add people to the event      -->
+          <!-- ------------------------------------------------- -->
+        
+        </div>
+      </div> 
     </div>
-    <!-- ------------------------------------------------- -->
-	<!-- END: Column where we add people to the event      -->
-	<!-- ------------------------------------------------- -->
-    
   </div>
   <!--------------------------------------------------------------------------
   THIS IS THE END OF THE ROW THAT HAS A LOT OF STUFF IN IT
   ---------------------------------------------------------------------------->
   
   
-  <!------------------------------------------------------------------------->
-  <!-- BEGIN: SAVE/CANCEL BUTTON ROW                                       -->
-  <!------------------------------------------------------------------------->
-  <div class="row">
-    <div class="span6">
-              <div ng-show="circleForm.name.$error.required || circleForm.expdate.$error.required">
-                <a ng-disabled="true" class="btn" id="invalidform">Save</a>
-                <a ng-click="cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a>
-              </div>    
-          
-              <div ng-hide="circleForm.name.$error.required || circleForm.expdate.$error.required">
-                <a class="btn btn-primary" ng-click="savecircle(newcircle, expdate);showRegister=false;search='';">Save</a>
-                <a ng-click="cancelnewcircle();addmethod='';search='';" class="btn">Cancel</a> 
-              </div>
-    </div>     
-  </div>     
-  <!------------------------------------------------------------------------->
-  <!-- END: SAVE/CANCEL BUTTON ROW                                         -->
-  <!-------------------------------------------------------------------------> 
-	      
-	      
-	      
-	      
-	      
 	      
   
-  <!-- DON'T FORGET: When you save the new event, add current user as $rootScope.newcircle.creatorId
+  <!-- DON'T FORGET: When you save the new event, add current user as $rootScope.thecircle.creatorId
     Why? Because when you refresh the browser, $rootScope.user is undefined in the routeChangeStart event of app-CircleModule 
    -->
   
-  </form> 
   
   
+  
+</div>
+</form> 
 </div>

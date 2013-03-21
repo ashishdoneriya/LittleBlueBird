@@ -13,32 +13,11 @@ function ProfilePicCtrl($rootScope, $cookieStore, User) {
 function CreateAccountCtrl($scope, $rootScope, CircleParticipant, User) {
 
   
-  // TODO duplicated in RegisterCtrl
-  $scope.isUsernameUnique = function(user, form) {
-    if(!angular.isDefined(user.username)) {
-      return;
-    }
-    checkUsers = User.query({username:user.username}, 
-                                        function() {
-                                          if(checkUsers.length > 0) { form.username.$error.taken = 'true'; }
-                                          else { form.username.$error.taken = 'false'; }
-                                        });
-  } 
-  
   $scope.cancelnewuser = function() {
     $scope.addmethod = 'byname';
     $scope.usersearch = ''; 
     $scope.search = '';
     $scope.newuser = {};
-  }
-  
-  // TODO duplicated in app-FriendCtrl.js
-  $scope.userfieldsvalid = function(newuser) {
-    var ret = angular.isDefined(newuser) && angular.isDefined(newuser.fullname) && angular.isDefined(newuser.email)
-          && angular.isDefined(newuser.username) && angular.isDefined(newuser.password) 
-          && angular.isDefined(newuser.passwordAgain) && newuser.fullname != '' && newuser.email != '' && newuser.username != ''
-          && newuser.password != '' && newuser.passwordAgain != '' && newuser.password == newuser.passwordAgain;
-    return ret;
   }
     
   $scope.beginnewgiver = function() {
@@ -49,12 +28,6 @@ function CreateAccountCtrl($scope, $rootScope, CircleParticipant, User) {
   $scope.beginnewreceiver = function() {
     $scope.addreceivermethod = 'createaccount';
     $scope.newuser = {};
-  }
-  
-  $scope.createonthefly = function(newuser, participationlevel) {
-    anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
-                                  function() {$scope.addparticipant3(anewuser, participationlevel); $scope.addgivermethod = ''; $scope.addreceivermethod = ''; $scope.usersearch = ''; $scope.search = '';}
-                                );
   }
   
   
@@ -145,11 +118,6 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
     //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting
   }
   
-  $scope.loginpage = function() {
-    console.log("going to login page ??????????????");
-    $location.url('/login');
-  }
-  
   $scope.save = function(user) {
     $rootScope.user = User.save({fullname:user.fullname, first:user.first, last:user.last, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirth}, 
                                   function() {
@@ -177,16 +145,4 @@ function UserCtrl($route, $rootScope, $location, $cookieStore, $scope, User, Use
   if(angular.isDefined($route.current.params.showUserId) && !angular.isDefined($rootScope.showUser)) {
     $rootScope.showUser = User.find({userId:$route.current.params.showUserId}, function() {}, function() {alert("Could not find user "+$route.current.params.showUserId);})
   }
-  
-  // TODO duplicated in RegisterCtrl
-  $scope.isUsernameUnique = function(user, form) {
-    if(!angular.isDefined(user.username)) {
-      return;
-    }
-    checkUsers = User.query({username:user.username}, 
-                                        function() {
-                                          if(checkUsers.length > 0) { form.username.$error.taken = 'true'; }
-                                          else { form.username.$error.taken = 'false'; }
-                                        });
-  } 
 }

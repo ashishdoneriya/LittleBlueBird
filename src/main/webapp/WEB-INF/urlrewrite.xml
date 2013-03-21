@@ -11,27 +11,121 @@
 <urlrewrite>
 
    <rule match-type="wildcard">
-     <from>*/*/login</from>
+     <from>*/accountinfo</from>
      <to>index.html</to>
    </rule>
 
    <rule match-type="wildcard">
-     <from>*/*/events</from>
+     <from>*/emailit</from>
+     <to>index.html</to>
+   </rule>
+
+
+   <rule match-type="wildcard">
+     <from>*/event/*</from>
+     <to>/index.html</to>
+   </rule>
+
+   <rule match-type="wildcard">
+     <from>*/events</from>
      <to>index.html</to>
    </rule>
 
    <rule match-type="wildcard">
-     <from>*/*/friends</from>
+     <from>/foo/events</from>
+     <to>/index.html</to>
+   </rule>
+
+   <rule match-type="wildcard">
+     <from>/foo/friends</from>
+     <to>/index.html</to>
+   </rule>
+
+   <rule match-type="wildcard">
+     <from>*/friends</from>
      <to>index.html</to>
    </rule>
 
    <rule match-type="wildcard">
-     <from>*/*/me</from>
+     <from>*/home</from>
      <to>index.html</to>
    </rule>
 
    <rule match-type="wildcard">
-     <from>*/*/newevent/Anniversary</from>
+     <from>*/login</from>
+     <to>index.html</to>
+   </rule>
+
+   <rule match-type="wildcard">
+     <from>*/me</from>
+     <to>index.html</to>
+   </rule>
+
+
+
+
+
+
+   <rule match-type="wildcard">
+     <from>*/mywishlist</from>
+     <to>/index.html</to>
+   </rule>
+   
+
+   <rule match-type="wildcard">
+     <from>*/newevent/Christmas</from>
+     <to>/index.html</to>
+   </rule>
+
+   <rule match-type="wildcard">
+     <from>*/newevent/Birthday</from>
+     <to>/index.html</to>
+   </rule>
+
+   <rule match-type="wildcard">
+     <from>*/newevent/Anniversary</from>
+     <to>/index.html</to>
+   </rule>
+
+   <rule match-type="wildcard">
+     <from>*/newevent/Mothers Day</from>
+     <to>/index.html</to>
+   </rule>
+
+   <rule match-type="wildcard">
+     <from>*/newevent/Fathers Day</from>
+     <to>/index.html</to>
+   </rule>
+
+   <rule match-type="wildcard">
+     <from>*/newevent/Valentines Day</from>
+     <to>/index.html</to>
+   </rule>
+
+   <rule match-type="wildcard">
+     <from>*/newevent/Graduation</from>
+     <to>/index.html</to>
+   </rule>
+
+   <rule match-type="wildcard">
+     <from>*/newevent/Baby Shower</from>
+     <to>/index.html</to>
+   </rule>
+
+   <rule match-type="wildcard">
+     <from>*/newevent/Other</from>
+     <to>/index.html</to>
+   </rule>
+
+
+   <rule match-type="wildcard">
+     <from>*/register</from>
+     <to>index.html</to>
+   </rule>
+
+
+   <rule match-type="wildcard">
+     <from>*/welcome</from>
      <to>index.html</to>
    </rule>
 

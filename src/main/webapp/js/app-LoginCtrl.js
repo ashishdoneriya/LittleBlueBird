@@ -11,12 +11,6 @@ function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Em
     $rootScope.loginhelp = showhide;
   }
   
-  
-  $scope.setloginoption = function(something) { 
-    console.log("$rootScope.setloginoption -----------------------"); 
-    $rootScope.loginoption = something; 
-  }
-  
   $scope.setloginsectiontwo = function(somename) { $rootScope.loginsectiontwo = somename; }
   
  
@@ -34,25 +28,15 @@ function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Em
     $rootScope.user = User.find({username:$scope.username, password:$scope.password}, 
                                function() {$scope.loginfail=false; 
                                            if($rootScope.user.dateOfBirth == 0) { $rootScope.user.dateOfBirth = ''; }
-                                           //User.currentUser = $rootScope.user;
                                            $rootScope.showUser = $rootScope.user;  
-                                           // uncomment for facebook integration
-                                           //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting                                         
-                                           //$rootScope.$emit("mywishlist");  // commented out on 11/30/12 - experimenting
-                                           console.log("scope.login:  go to 'gettingstarted'");
-                                           $location.url('gettingstarted'); 
+                                           console.log("scope.login:  set 'user' cookie");
+                                           $cookieStore.put("user", $rootScope.user.id);
+                                           $cookieStore.put("showUser", $rootScope.showUser.id);
+                                           console.log("scope.login:  go to 'welcome'");
+                                           $location.url('welcome'); 
                                           }, 
                                function() {$scope.loginfail=true;}  );
                                
-  }
-  
-  $scope.logout = function() {
-    Logout.logout({});   
-    delete $rootScope.user;
-    $cookieStore.remove("user");
-    console.log("logging out");                                      
-    //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting
-    //alert("logout");
   }
   
   $scope.emailIt = function(email) {

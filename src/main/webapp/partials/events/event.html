@@ -1,79 +1,85 @@
 
 <div ng-controller="EventCtrl">
-
-<div class="row"> <!-- header row -->
-  <div class="span7 roundedtop bgbluegradient pad10">
-    <div class="row">
-      <div class="span4 white">    
-        
-        <span ng-show="editcirclename=='true'">
-          <form novalidate class="form-inline marg0">
-            <input type="text" class="span3" name="name" ng-model="circle.name"><a class="btn btn-small" ng-click="editcirclename='';updatecirclename()">OK</a><a class="btn btn-small" ng-click="editcirclename=''">Cancel</a>
-          </form>
-        </span>
-        <span ng-hide="editcirclename=='true'">
-          <span class="font16">{{circle.name}}</span>
-        </span>
-        
-      </div>
-      
-      <div class="span2 white">
-          
-          <span ng-show="editcircledate=='true'">
-            <form novalidate class="form-inline pull-right marg0">
-              <input class="input-small" date-picker="expdate" name="expdate" ng-model="expdate" type="text" ng-required="true"></input>
-              <a class="btn btn-small" ng-click="updatecircledate(expdate);editcircledate=''">OK</a><a class="btn btn-small" ng-click="editcircledate=''">Cancel</a>  &nbsp;
-            </form>
-          </span>
-          <span ng-hide="editcircledate=='true'" class="pull-right">
-            {{circle.date | date:'MMM d, yyyy'}} &nbsp;
-          </span>          
-          
-      </div>
-      
-      <div class="span1">
-
-        <span class="pull-right">
-		  <div ng-include src="'partials/events/btn_editevent.html'"></div>
-		  
-          <div class="btn-group">
-		    <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" title="Edit Event">X</a> <!-- see dropdownToggle.js -->
-		    <ul class="dropdown-menu">
-		      <li><a ng-click="editcirclename='true'">Edit Name</a></li>
-		      <li><a ng-click="editcircledate='true';begineditcircledate(expdate);">Edit Date</a></li>
-		      <li class="divider"></li>
-		      <li><a ng-click="">Add People</a></li>
-		      <li><a ng-click="">Remove People</a></li>
-		    </ul>
+<div class="table w500">
+  <div class="tablerow">
+    <div class="tablecell w500 roundedtop bgbluegradient white">
+    
+      <div class="table w500 margbottom0">
+        <div class="tablerow">
+          <div class="tablecell pad5 pull-left font24">
+            {{circle.name}}
           </div>
-        </span>
+          <div class="tablecell pad5 pull-right">
+            {{circle.date | date:'MMM d, yyyy'}}
+		    <a ng-href="editevent" class="btn btn-mini" title="Edit Event"><i class="icon-edit font14"></i></a>
+          </div>
+        </div>
       </div>
+    
+        
     </div>
   </div>
-</div> <!-- header row -->
 
 
 
 <!-- see app-EventCtrl.js, routeChangeSuccess - that's where we combine givers and receivers -->
 <div ng-repeat="p in circle.participants.both">
-  <div class="row">  <!-- participant row -->
+
+  <span ng-show="p.isReceiver">
+  <a ng-href="giftlist/{{p.id}}/{{circle.id}}" title="see {{p.fullname}}'s wish list">
+  <div class="tablerow">  <!-- participant row -->
+    <div class="{{isLastRow('tablecell w480 list pad10 font16', $index, circle.participants.both.length)}}">
+      <div class="table w480 marg0">
       
-    <span ng-show="p.isReceiver">
-      <a ng-href="giftlist/{{p.id}}/{{circle.id}}">
-        <div class="{{isLastRow('span7 list pad10 font16', $index, circle.participants.both.length)}}">
-          {{p.fullname}} <span class="pull-right font12 txtblack"><span ng-show="circle.receiverLimit != -1">Honoree </span> <i class="icon-chevron-right"></i></span>
+        <div class="tablerow">
+          <!-- this cell only holds the profile pic  -->
+          <div class="tablecell w60">
+            <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
+              <div style="margin-top:{{p.profilepicmargintop50}};margin-left:{{p.profilepicmarginleft50}}">
+                <img height="{{p.profilepicadjustedheight50}}" width="{{p.profilepicadjustedwidth50}}" ng-src="{{p.profilepicUrl}}"/>
+              </div>
+            </div>
+          </div>
+        
+          <div class="tablecell w425">
+            {{p.fullname}} <span class="pull-right font12 txtblack"><span ng-show="circle.receiverLimit != -1">Honoree </span> <i class="icon-chevron-right"></i></span>
+          </div>
         </div>
-      </a>
-    </span>
-    
-    <span ng-show="p.isGiver">
-      <div class="{{isLastRow('span7 list pad10 font16', $index, circle.participants.both.length)}}">
-        {{p.fullname}} <span class="pull-right font12 txtblack">Guest <i class="icon-chevron-right"></i></span>
+  
       </div>
-    </span>
-    
-  </div>  <!-- participant row -->
+    </div>
+  </div>
+  </a>
+  </span>    
+      
+      
+  <span ng-show="p.isGiver">
+  <div class="tablerow">
+    <div class="{{isLastRow('tablecell w480 list pad10 font16', $index, circle.participants.both.length)}}">
+      <div class="table w480 marg0">
+      
+        <div class="tablerow">
+          <!-- this cell only holds the profile pic  -->
+          <div class="tablecell w60">
+            <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
+              <div style="margin-top:{{p.profilepicmargintop50}};margin-left:{{p.profilepicmarginleft50}}">
+                <img height="{{p.profilepicadjustedheight50}}" width="{{p.profilepicadjustedwidth50}}" ng-src="{{p.profilepicUrl}}"/>
+              </div>
+            </div>
+          </div>
+        
+          <div class="tablecell w425">
+            {{p.fullname}} <span class="pull-right font12 txtblack">Guest</span>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+  </span> 
+      
 </div>
 
 
+</div>
 </div>

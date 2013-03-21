@@ -6,18 +6,18 @@ BUT THAT DIDN'T WORK - THE MODAL WOULD OPEN ONCE THEN NEVER AGAIN.  SO WE'RE STU
 
   <div ui-modal class="fade" ng-model="addLbbFriendModal">
 	<div class="modal-header bgbluegradient">
-	  <button class="close padtop5" data-dismiss="modal"><i class="icon-remove" data-dismiss="modal"></i></button>
-	  <h3 class="white">Add LittleBlueBird Friends</h3>
+	  <button class="close padleft5 padright5 padtop5" data-dismiss="modal"><i class="icon-remove" data-dismiss="modal"></i></button>
+	  <h3 class="white align-left">Add by Name/Email</h3>
 	</div>
 	<div class="modal-body txtblack">
 
       <div class="row">
-		<div class="span3 padbottom5"><input search-users type="text" class="input-large search-query" ng-model="search" placeholder="Search by Name"></div>
+		<div class="span3 padbottom5"><input search-users type="text" class="input-large search-query" ng-model="search" placeholder="Search" title="Search by name or email"></div>
 	  </div>
 		          
 	  <span ng-show="usersearch=='loaded'">
         <div class="row"> <!-- header row -->
-          <div class="span3 roundedtop bgbluegradient white pad5">
+          <div class="span3 roundedtop bgbluegradient white pad5 font14">
             LittleBlueBird Users...
           </div>
         </div> <!-- header row -->
@@ -194,10 +194,9 @@ BUT THAT DIDN'T WORK - THE MODAL WOULD OPEN ONCE THEN NEVER AGAIN.  SO WE'RE STU
   
 
           <div class="btn-group">
-		    <a class="btn btn-mini dropdown-toggle font16 bold txtgray" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
-		    <ul class="dropdown-menu">
-		      <li><a ng-click="fbinviteasfriend()">Add Facebook Friends</a></li>
-		      <li><a ng-click="addLbbFriendModal=true">Add LittleBlueBird Friends</a></li>
-		      <li><a ng-click="addNewUserModal=true;createafriend()">Create A Friend</a></li>
+		    <a class="btn btn-mini btn-primary dropdown-toggle font14 white" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
+		    <ul class="dropdown-menu font12 align-left">
+		      <li><a ng-click="addLbbFriendModal=true">Add by Name</a></li>
+		      <li><a ng-click="fbinviteasfriend()">Import Facebook Friends</a></li>
 		    </ul>
 		  </div> 

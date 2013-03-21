@@ -41,9 +41,9 @@ class Boot extends LbbLogger {
     debug("check mail.smtp.host = "+(Props.get("mail.smtp.host") openOr "not found"))
     debug("check mail.smtp.port = "+(Props.get("mail.smtp.port") openOr "not found"))
     debug("check mail.user = "+(Props.get("mail.user") openOr "not found"))
-    debug("check mail.password = "+(Props.get("mail.password") openOr "not found"))
+    //debug("check mail.password = "+(Props.get("mail.password") openOr "not found"))
     debug("check db.user = "+(Props.get("db.user") openOr "not found"))
-    debug("check db.pass = "+(Props.get("db.pass") openOr "not found"))
+    //debug("check db.pass = "+(Props.get("db.pass") openOr "not found"))
     
     // TODO need real db pool
     if (!DB.jndiJdbcConnAvailable_?) {
@@ -66,7 +66,13 @@ class Boot extends LbbLogger {
     
     // to make the container serve a collection of files...
     LiftRules.liftRequest.append{
-        case Req("app" :: _, _, _) => false
+        case Req("css" :: _, _, _) => false
+        case Req("demo" :: _, _, _) => false
+        case Req("font" :: _, _, _) => false
+        case Req("img" :: _, _, _) => false
+        case Req("js" :: _, _, _) => false
+        case Req("partials" :: _, _, _) => false
+        case Req("templates" :: _, _, _) => false
      } 
     
   

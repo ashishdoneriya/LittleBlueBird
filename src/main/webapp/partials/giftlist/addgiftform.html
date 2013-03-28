@@ -54,18 +54,18 @@
 	</div> <!-- modal-body -->
 	
 	<div class="modal-footer">	
-              <div class="row margleft_35">
-                    <div class="span1">
-                      <a class="btn" ng-click="gift.adding=false">Cancel</a>
-                    </div>
-                    <div class="span4">
+              <div class="row margleft_35 pull-right">
+                    <div class="span2">
                       <div ng-show="addGiftForm.$invalid">
-                        <a ng-disabled="true" class="btn" id="invalidform">Add Item</a>
+                        <button ng-disabled="true" class="btn btn-primary" id="invalidform">Add Item</button>
                       </div>    
           
                       <div ng-hide="addGiftForm.$invalid">
-                        <a class="btn btn-primary" ng-click="addgift(newgift);gift.adding=false;">Add Item</a>
+                        <button class="btn btn-primary" ng-click="addgift(newgift);$parent.addGiftFormModalShown = false">Add Item</button>
                       </div>
+                    </div>
+                    <div class="span1">
+                      <button class="btn" ng-click="gift.adding=false">Cancel</button>
                     </div>
               </div>
 	

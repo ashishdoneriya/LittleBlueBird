@@ -88,6 +88,8 @@ body { height:100%; }
 
 .bold { font-weight:bold; }
 
+.border {border:1px solid black;}
+
 .bottom_004c73 {
   border-bottom: 1px solid #004c73;
 }
@@ -124,6 +126,7 @@ body { height:100%; }
 }
 
 .font10 { font-size:10px; }
+.font11 { font-size:11px; }
 .font12 { font-size:12px; }
 .font14 { font-size:14px; }
 .font16 { font-size:16px; }
@@ -140,10 +143,6 @@ body { height:100%; }
   padding: 10px 0px 10px 0px;
 }
 
-.giftdescription {
-  font-weight:bold;
-  font-size:14px;
-}
 
 .gradient1 {
   background-color: #ffffff;
@@ -186,6 +185,8 @@ body { height:100%; }
 .h60 { height:60px; }
 .h200 { height:200px; }
 .h225 { height:225px; }
+
+.hand {cursor:pointer;}
 
 .height95pc { height:95%; }
 
@@ -375,7 +376,9 @@ html { height:100%; }
 
 .margtop30 { margin-top:30px; }
 
-.margtop45 { margin-top:50px; }
+.margtop50 { margin-top:50px; }
+
+.margtop100 { margin-top:100px; }
 
 .minheight100 {min-height:100px;}
 
@@ -393,13 +396,14 @@ html { height:100%; }
 
 .pad10 { padding:10px; }
 
+.pad30 { padding:30px; }
+
 .pad50 { padding:50px; }
 
 .padbottom0 {padding-bottom:0;}
-
 .padbottom2 {padding-bottom:2px;}
-
 .padbottom5 {padding-bottom:5px;}
+.padbottom20 {padding-bottom:20px;}
 .padbottom50 {padding-bottom:50px;}
 
 .padleft0 { padding-left:0px; }
@@ -417,6 +421,7 @@ html { height:100%; }
 .padright5 { padding-right:5px; }
 .padright10 { padding-right:10px; }
 .padright15 { padding-right:15px; }
+.padright20 { padding-right:20px; }
 .padright30 { padding-right:30px; }
 
 .padtop0 {
@@ -600,6 +605,7 @@ html { height:100%; }
 .w308 { width:308px; }
 .w350 { width:350px; }
 .w400 { width:400px; }
+.w415 { width:415px; }
 .w425 { width:425px; }
 .w450 { width:450px; }
 .w455 { width:455px; }

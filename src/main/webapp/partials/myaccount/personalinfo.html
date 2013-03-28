@@ -135,7 +135,7 @@
     <!-- This is for Facebook users - shows their personal info as labels, not inputs -->
     <span ng-hide="usercopy.facebookId == null">
     <div class="row">
-      <div class="span5">This personal information is stored in Facebook</div>
+      <div class="span5">Your personal information is stored on Facebook</div>
     </div>
     <div class="row">
       <div class="span3">
@@ -148,15 +148,14 @@
 	      <div class="span2">{{usercopy.email}}</div>
 	    </div>
 	    <div class="row">
-	      <div class="span1">Username:</div>
-	      <div class="span2">{{usercopy.username}}</div>
-	    </div>
-	    <div class="row">
 	      <div class="span1">Birthday:</div>
 	      <div class="span2">{{usercopy.dateOfBirthStr}}</div>
 	    </div>
+	    <div class="row">
+	      <div class="span3 pad30"><a class="btn btn-primary" ng-href="http://www.facebook.com" target="fb">Facebook</a></div>
+	    </div>
       </div>
-      <div class="span3">
+      <div class="span2">
           <div style="width:150px; height:150px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
             <div style="margin-top:{{usercopy.profilepicmargintop}};margin-left:{{usercopy.profilepicmarginleft}}">
                 <img height="{{usercopy.profilepicadjustedheight}}" width="{{usercopy.profilepicadjustedwidth}}" ng-src="{{usercopy.profilepicUrl}}"/>

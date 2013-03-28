@@ -76,6 +76,15 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
           $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){console.log("FOUND user from $cookieStore.get('user') BEFORE we checked Facebook");console.log($rootScope.user);});
           $rootScope.templates = newRoute.$route.templates;
           $rootScope.layoutController = newRoute.$route.controller;
+          
+          if(!angular.isDefined($rootScope.showUser) && angular.isDefined($cookieStore.get("showUser"))) {
+            $rootScope.showUser = User.find({userId:$cookieStore.get("showUser")});
+          }
+          else if(!angular.isDefined($rootScope.showUser) && !angular.isDefined($cookieStore.get("showUser"))) {
+            $rootScope.showUser = angular.copy($rootScope.user);
+            $cookieStore.put("showUser", $rootScope.showUser.id);
+          }
+          
         } // if: $cookieStore.get("user") exists
         
         // 3/12/13 Not sure if this will ever get called now that we have the else-if above.  app-LoginCtrl:$scope.login() and app-FacebookModule:$rootScope.initfbuser()

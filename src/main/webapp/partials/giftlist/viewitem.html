@@ -1,51 +1,81 @@
 
-<div class="span7 list pad10" ng-controller="GiftCtrl">
-  <div class="row">     
-    <div class="spantiny padtop5">
-        
-      <ul gift-actions class="nav marg0">
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret pad0"></span></a>
-	      <ul class="dropdown-menu">
-		    <span ng-show="gift.canedit"><li><a href="editgift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="editgift(gift)"><i class="icon-pencil"></i> Edit</a></li></span> 
-            <span ng-show="gift.candelete"><li><a href="deletegift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="deletegift($index, gift)"><i class="icon-remove"></i> Delete</a></li></span>
-		    <span ng-hide="gift.canedit"><li><a ng-click="alertcannotedit()"><i class="icon-pencil"></i> Edit</a></li></span> 
-		    <span ng-hide="gift.candelete"><li><a ng-click="alertcannotdelete()"><i class="icon-remove"></i> Delete</a></li></span>
-		  </ul>
-        </li>
-      </ul>
-  
-    </div>
-    
-    <span ng-hide="circle.isExpired || gifts.mylist">
-      <div class="span1">
-        <span ng-show="gift.canbuy">
-          <a href="buy/{{circle.id}}/{{showUser.id}}/{{gift.id}}" class="btn btn-success btn-mini" title="Reserve tells others you are buying this" ng-click="startbuying(gift)">Reserve</a>
-        </span>
-        <span ng-show="gift.canreturn">
-          <a class="btn btn-mini padleft15 padright15" ng-click="returngift($index, gift)">Undo</a>
-        </span>
-        <span ng-show="!gift.canbuy && !gift.canreturn && gift.canseestatus && gift.isbought">
-          <a class="btn btn-mini" ng-disabled="true" title="Bought by {{gift.sender_name}}">bought</a>
-        </span>
-        <span ng-show="!gift.canseestatus">
-          &nbsp;
-        </span>
+<span ng-controller="GiftCtrl" class="marg0">
+
+
+<div class="table w480 marg0">
+  <div class="tablerow w480">
+    <div class="tablecell w480 padtop0">
+      <div class="table w480 marg0">
+			  <div class="tablerow w480">
+			    <div class="tablecell w415"><span class="pull-right font11 txtgray">{{gift.dateCreated | date:'MMM d, yyyy'}}</span></div>
+			  </div>
       </div>
-    </span>
-                  
-               
-      <div class="span4 giftdescription">
-        <a ng-href="{{gift.affiliateUrl}}" 
-           target="item" 
-           ui-jq="popover" 
-           ui-options="popoverOptions($index, gift)">
-          {{gift.description}}
-        </a>
-      </div>   
-      
-      <div class="span1"><span ng-show="showshare=='true'"><a class="uibutton confirm" ng-click="fbsharelist(showUser, circle)">Share</a></span></div>             
-             
+    </div>
   </div>
   
+  <div class="tablerow w480">
+    <div class="tablecell w480 padbottom20">
+      <div class="table w480 marg0">
+			  <div class="tablerow w480">
+			
+			    <span ng-hide="circle.isExpired || gifts.mylist">
+			    <div class="tablecell w50">
+			        <span ng-show="gift.canbuy">
+			          <a href="buy/{{circle.id}}/{{showUser.id}}/{{gift.id}}" class="btn btn-success btn-mini" title="Reserve tells others you are buying this" ng-click="startbuying(gift)">Reserve</a>
+			        </span>
+			        <span ng-show="gift.canreturn">
+			          <a class="btn btn-mini padleft15 padright15" ng-click="returngift($index, gift)">Undo</a>
+			        </span>
+			        <span ng-show="!gift.canbuy && !gift.canreturn && gift.canseestatus && gift.isbought">
+			          <a class="btn btn-mini" ng-disabled="true" title="Bought by {{gift.sender_name}}">bought</a>
+			        </span>
+			        <span ng-show="!gift.canseestatus">
+			          &nbsp;
+			        </span>
+			    </div>
+			    </span>
+			
+			
+			    <div class="tablecell w415">
+			      <span class="font14">
+			        <span ng-show="gift.issurprise" ui-jq="popover" ui-options="surprisePopover($index, gift)"><img src="img/shhh.gif" /></span>
+			        <span ng-show="gift.affiliateUrl != ''">
+			          <a ng-href="{{gift.affiliateUrl}}" 
+			             target="item">
+			            {{gift.description}}
+			          </a>
+			        </span>
+			        
+			        <span ng-show="gift.affiliateUrl == ''">
+			            {{gift.description}}  <!-- TODO: use the amazon quick linker widget when no link is provided -->
+			        </span>
+			        
+			      </span> 
+			
+			
+			      <span ng-show="showshare=='true'"><a class="uibutton confirm" ng-click="fbsharelist(showUser, circle)">Share</a></span> 
+			      
+
+			      <span ng-show="$parent.showbuttons">
+			        <span class="pull-right">
+					    <span ng-show="gift.canedit"><a class="btn btn-mini" href="editgift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="editgift(gift)"><i class="icon-pencil"></i> Edit</a></span> 
+			            <span ng-show="gift.candelete"><a class="btn btn-mini" href="deletegift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="deletegift($index, gift)"><i class="icon-remove"></i> Delete</a></span>
+					    <span ng-hide="gift.canedit"><button class="btn btn-mini disabled" title="You can't edit this item because you didn't add it"><i class="icon-pencil"></i> Edit</button></span> 
+					    <span ng-hide="gift.candelete"><button class="btn btn-mini disabled" title="You can't delete this item because you didn't add it"><i class="icon-remove"></i> Delete</button></span>
+			            &nbsp;
+			        </span>
+			      </span>
+			      
+			      
+			    </div>  
+			  
+			  </div>
+      </div>
+    </div>
+  </div>
+  
+
 </div>
+
+
+</span>

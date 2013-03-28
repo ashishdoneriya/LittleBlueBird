@@ -1,10 +1,7 @@
 function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $rootScope, facebookConnect, $cookieStore) {
   
   
-  if(angular.isDefined(Circle.currentCircle)) {
-    $rootScope.circle = Circle.currentCircle; 
-  }
-  else if(angular.isDefined($route.current.params.circleId)) {
+  if(angular.isDefined($route.current.params.circleId)) {
     // circleId parm will have a & on the end that needs to be stripped off when coming to someone's 
     // wish list FROM FACEBOOK.  I set $window.location.search to '' in app.js:run()
     // THIS CODE IS DUPLICATED IN app-GiftCtrl:Gift2Ctrl
@@ -12,7 +9,7 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
     console.log("GiftListCtrl:  BEFORE circleId="+circleId);
     if(circleId.substring(circleId.length - 1) == '&') circleId = circleId.substring(0, circleId.length-1);
     console.log("GiftListCtrl:  AFTER circleId="+circleId);
-    $rootScope.circle = Circle.query({circleId:circleId}, function() {Circle.currentCircle = $rootScope.circle;console.log("GiftListCtrl: $rootScope.circle....");console.log($rootScope.circle);}, function() {alert("Could not find Event "+circleId);});
+    $rootScope.circle = Circle.query({circleId:circleId}, function() {console.log("GiftListCtrl: $rootScope.circle....");console.log($rootScope.circle);}, function() {alert("Could not find Event "+circleId);});
   }
   else {
     delete $rootScope.circle;
@@ -41,7 +38,7 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
                             function() {alert("Hmmm... Had a problem getting this person's list\n  Try again  (error code 301)");});
                             
   }
-  else if($location.url()=='/mywishlist' && $cookieStore.get("user")!=null) {
+  else if(($location.url()=='/mywishlist' || $location.url()=='/me') && $cookieStore.get("user")!=null) {
     
     $rootScope.gifts = Gift.query({viewerId:$cookieStore.get("user")}, 
                             function() { 
@@ -158,27 +155,12 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
 
 function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, Gift, User) { 
 
-  $scope.popoverOptions = function(idx, gift) {
-    var recipients = [];
-    for(var i=0; i < gift.recipients.length; i++) {
-      recipients.push(gift.recipients[i].first);
-    }
-    
-    var date = new Date(gift.dateCreated);
-    var datestr = date.toString('MMM d, yyyy');
-    var surprise = gift.issurprise ? '<tr><td><B>DON\'T SAY ANYTHING!</B><P><B>'+gift.addedByName+' added this as a surprise</B></P><P>&nbsp;</P></td></tr>' : '';
-    var availability = gift.sender_name!='' ? '<tr><td><P>&nbsp;</P><P><B>Not Available</B></P>This gift has already been bought by: '+gift.sender_name+'</P></td></tr>' : '<tr><td><P>&nbsp;</P><P><B>This item is Available</B></P><P>Reserve this item by clicking "Reserve"</P></td></tr>';
-    var status = gift.canseestatus ? availability : '';
-    var buyonline = gift.affiliateUrl=='' ? '<tr><td><P>&nbsp;</P><P><B>No Link Provided</B></P><P>'+gift.addedByName+' did not provide a link for this item</P></td></tr>' : '<tr><td><P>&nbsp;</P><P><B>Buy Online!</B></P><P>Click the item to buy it online</P></td></tr>'
-     
-    var cnt = '<table border="0" width="100%"><tr><td align="right">Added: '+datestr+'</td></tr>'
-             + surprise
-             + '<tr><td>'+gift.description+'</td></tr>'
-             + status
-             + buyonline
+
+  $scope.surprisePopover = function(idx, gift) {
+    var cnt = '<table border="0" width="100%">'
+             + '<tr><td>Don\'t tell '+$rootScope.showUser.first+' about this item<P>'+gift.addedByName+' added it as a surprise</P></td></tr>'
              +'</table>';
-    var plcmt = idx < 2 ? 'bottom' : 'right';
-    return {title:'Gift for '+recipients.join(','), content:cnt, placement:plcmt}
+    return {title:'Shhh !', content:cnt, placement:'right'}
   }
   
   $rootScope.$on("circlechange", function(event) {
@@ -186,11 +168,6 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
     //console.log("GiftCtrl:  notified of 'circlechange'...  $rootScope.gifts=...");
     //console.log($rootScope.gifts);
   });
-  
-  $scope.alertcannotedit = function() {alert('Cannot edit this item because you didn\'t add it');}
-  
-  $scope.alertcannotdelete = function() {alert('Cannot delete this item because you didn\'t add it');}
-  
   
   
   $scope.startbuying = function(gift) {

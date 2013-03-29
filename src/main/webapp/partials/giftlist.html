@@ -15,20 +15,33 @@ hyperlinks, which is what we want if we want to post items to FB.
 
 <div ng-controller="GiftListCtrl">
 
-<div class="table pad0">
-  <div class="tablerow"> <!-- header row -->
-    <div class="roundedtop bgbluegradient white padright5 padtop5 padleft5">
+<div class="table pad0 margbottom0">
+  <div class="tablerow margbottom0"> <!-- header row -->
+    <div class="roundedtop bgbluegradient white pad5">
     
-      <span class="font16"><span ng-show="user.id == showUser.id">My</span><span ng-hide="user.id == showUser.id">{{showUser.fullname}}'s</span> Wish List</span>
-      <div class="pull-right">
-        <a class="uibutton confirm" title="Share this list on Facebook" ng-click="fbsharelist(showUser)">Share on Facebook</a>
-        &nbsp;
-	    <a ng-href="{{currentlocation}}" class="btn btn-mini btn-success font18 pull-right" title="Add an item to this wish list" ng-click="addGiftFormModalShown = !addGiftFormModalShown;gift.adding=true;initNewGift();">+</a>
-	  </div>
-	  
-	  <div ng-include src="'partials/giftlist/addgiftform.html'"></div>
-    
-      <div ng-include src="'partials/circleinfo.html'"></div>
+      <div class="table pad0 margbottom0">
+        <div class="tablerow margbottom0">
+          
+          <div class="tablecell padbottom5 w425 align-middle">
+				      <span class="font16"><span ng-show="user.id == showUser.id">My</span><span ng-hide="user.id == showUser.id">{{showUser.fullname}}'s</span> Wish List</span>
+          </div>
+          <div class="tablecell align-top pad0 w40">
+				      <a ng-href="{{currentlocation}}" title="Share this list on Facebook" ng-click="fbsharelist(showUser)">
+				        <img src="img/facebook.png" />
+				      </a>
+          </div>
+          <div class="tablecell padtop2 padright5">
+					  <span ng-include src="'partials/giftlist/addgiftform.html'"></span>
+          </div>
+      
+        </div>
+        
+        <div class="tablerow margbottom0">
+          <div class="tablecell">
+				      <div ng-include src="'partials/circleinfo.html'"></div>
+          </div>
+        </div>
+      </div>
       
     </div>
   </div>   <!-- header row -->

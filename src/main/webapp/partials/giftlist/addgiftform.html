@@ -1,8 +1,8 @@
 
-<form novalidate name="addGiftForm">
-  <div id="addGiftFormModal" class="modal hide fade" ng-model="addGiftFormModalShown">
+<form novalidate name="addGiftForm" class="margbottom0">
+  <div ui-modal class="fade" ng-model="addGiftFormModalShown">
 	<div class="modal-header bgbluegradient white">
-	  <button class="close padtop5" data-dismiss="modal" ng-click="$parent.addGiftFormModalShown = false"><i class="icon-remove"></i></button>
+	  <button class="close padtop5" data-dismiss="modal" ng-click="addGiftFormModalShown = false"><i class="icon-remove"></i></button>
 	  <h3>Add Item</h3>
 	</div>
 	
@@ -61,11 +61,11 @@
                       </div>    
           
                       <div ng-hide="addGiftForm.$invalid">
-                        <button class="btn btn-primary" ng-click="addgift(newgift);$parent.addGiftFormModalShown = false">Add Item</button>
+                        <button class="btn btn-primary" ng-click="addgift(newgift);addGiftFormModalShown = false">Add Item</button>
                       </div>
                     </div>
                     <div class="span1">
-                      <button class="btn" ng-click="gift.adding=false">Cancel</button>
+                      <button class="btn" ng-click="addGiftFormModalShown = false;gift.adding=false">Cancel</button>
                     </div>
               </div>
 	
@@ -73,3 +73,6 @@
 	
   </div>
 </form>
+
+
+<a ng-href="{{currentlocation}}" class="btn btn-primary pull-right font18" title="Add an item to this wish list" ng-click="addGiftFormModalShown = !addGiftFormModalShown;gift.adding=true;initNewGift();">+</a>

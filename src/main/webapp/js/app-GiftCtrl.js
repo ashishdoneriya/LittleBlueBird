@@ -17,8 +17,11 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
   
   
   // to recreate the giftlist if the user hits refresh or if the user comes to this page via a link FB or wherever
+  // 4/10/13: See also event.html - we list everyone in the event and their names are links.  When the user comes here from event.html, we have to construct the 'showUser' from a showUser id
   if(angular.isDefined($route.current.params.showUserId)) {
     var queryparams = {recipientId:$route.current.params.showUserId, viewerId:$cookieStore.get("user")};
+
+    $rootScope.showUser = User.find({userId:$route.current.params.showUserId}, function() {$cookieStore.put("showUser", $rootScope.showUser.id)});
 
     if(angular.isDefined($route.current.params.circleId)) {
       queryparams.circleId = $rootScope.circle.id;
@@ -32,7 +35,7 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
                               Circle.gifts = $rootScope.gifts; 
                               console.log("$rootScope.gifts.length = "+$rootScope.gifts.length);
                               console.log($rootScope.gifts);
-                              //if($rootScope.user.id == participant.id) { Circle.gifts.mylist=true; } else { Circle.gifts.mylist=false; } 
+                              $rootScope.gifts.mylist = $rootScope.user.id == $route.current.params.showUserId; 
                               //$rootScope.$emit("circlechange");   // commented out on 11/30/12 - experimenting
                             }, 
                             function() {alert("Hmmm... Had a problem getting this person's list\n  Try again  (error code 301)");});
@@ -103,9 +106,13 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
       }
     }
     
-    var savedgift = Gift.save({giftId:gift.id, updater:$rootScope.user.fullname, circleId:$rootScope.circle.id, description:gift.description, url:gift.url, 
+    var parms = {giftId:gift.id, updater:$rootScope.user.fullname, description:gift.description, url:gift.url, 
                addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id, 
-               senderId:gift.sender, senderName:gift.sender_name},
+               senderId:gift.sender, senderName:gift.sender_name};
+               
+    if(angular.isDefined($rootScope.circle)) parms.circleId = $rootScope.circle.id
+    
+    var savedgift = Gift.save(parms,
                function() {
                  if(remove) $rootScope.gifts.splice(index, 1);
                  else $rootScope.gifts.splice(index, 1, savedgift);
@@ -135,14 +142,7 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
                  $scope.newgift.recipients = [];
                });
                
-  }
-  
-       
-  $scope.canceleditgift = function(gift) {
-    gift.editing=false;
-    $scope.gift.description = $scope.giftorig.description;
-    $scope.gift.url = $scope.giftorig.url;
-  }     
+  }  
   
   $rootScope.$on("circlechange", function(event) {
     console.log("GiftListCtrl: circlechange event received --------------------------------");
@@ -153,7 +153,7 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
   
 }
 
-function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, Gift, User) { 
+function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, Gift, User, GiftEditor) { 
 
 
   $scope.surprisePopover = function(idx, gift) {
@@ -194,8 +194,7 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
     
   
   $scope.editgift = function(gift) {
-    gift.possiblerecipients = angular.copy($rootScope.circle.participants.receivers)
-      
+    gift.possiblerecipients = angular.isDefined($rootScope.circle) ? angular.copy($rootScope.circle.participants.receivers) : [angular.copy($rootScope.showUser)];
     for(var j=0; j < gift.recipients.length; j++) {
       for(var i=0; i < gift.possiblerecipients.length; i++) {
         if(gift.recipients[j].id == gift.possiblerecipients[i].id)
@@ -204,8 +203,19 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
     }
     gift.editing = true;
     $scope.gift = gift;
-    $scope.giftorig = angular.copy(gift);
+    GiftEditor.origGift(gift);
   }
+  
+       
+  $scope.canceleditgift = function(gift) {
+    console.log("$scope.$parent = ");
+    console.log($scope.$parent);
+    gift.editing=false;
+    var origGift = GiftEditor.reset();
+    $scope.gift.description = origGift.description;
+    $scope.gift.url = origGift.url;
+  }   
+  
   
   $scope.deletegift = function(index, gift) {
     $rootScope.gifts.splice(index, 1);

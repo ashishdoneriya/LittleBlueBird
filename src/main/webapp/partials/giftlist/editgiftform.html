@@ -1,67 +1,7 @@
+<span ng-show="gift.possiblerecipients.length == 1">
+  <div ng-include src="'partials/giftlist/editgiftform_withoutrecipients.html'"></div>
+</span>
 
-                <div class="span7">
-
-
-<form novalidate name="giftForm">
-          <div class="row marg0">
-            <div class="span7">
-              <div class="row margleft_35">
-                <div class="span4">
-	              <div class="row">
-	                <div class="span1">Item</div>
-	              </div>
-	              <div class="row">
-	                <div class="span4">
-                      <input type="hidden" name="giftId" ng-model="gift.id" />
-                      <input type="hidden" name="senderId" ng-model="gift.sender" />
-                      <input type="hidden" name="senderName" ng-model="gift.sender_name" />
-                      <input type="hidden" name="addedBy" ng-model="gift.addedBy" />
-                      <input type="hidden" name="circle" ng-model="gift.circle" />
-                      
-	                  <textarea class="span4" rows="5" ng-model="gift.description" cols="80" required></textarea>
-	                </div>
-	              </div>
-	              <div class="row">
-	                <div class="span4">URL (incl http://)</div>
-	              </div>
-	              <div class="row">
-	                <div class="span4"><input class="span4" type="URL" name="url" ng-model="gift.url" /></div>
-	              </div>
-                </div>
-                <div class="span3">
-                  <div class="row margleft_35">
-                    <div class="span3">
-                      This item is for<br/>(check all that apply)
-                    </div>
-                  </div>
-                  <div class="row margleft_35">
-                    <div class="span3">
-                      <div ng-repeat="receiver in gift.possiblerecipients">
-                        <input type="checkbox" ng-model="receiver.checked"> {{receiver.fullname}}
-                      </div>
-                    </div>
-                  </div>
-                                    
-                  
-                </div>
-              </div>
-              <div class="row margleft_35">
-                    <div class="span1">
-                      <button class="btn" ng-click="canceleditgift(gift)">Cancel</button>
-                    </div>
-                    <div class="span4">
-                      <div ng-show="giftForm.$invalid">
-                        <a ng-disabled="true" class="btn" id="invalidform">Save</a>
-                      </div>    
-          
-                      <div ng-hide="giftForm.$invalid">
-                        <a class="btn btn-primary" ng-click="gift.editing=false;updategift($index, gift);">Save</a>
-                      </div>
-                    </div>
-              </div>
-            </div>
-          </div>
-</form>
-
-
-                </div>
+<span ng-hide="gift.possiblerecipients.length == 1">
+  <div ng-include src="'partials/giftlist/editgiftform_withrecipients.html'"></div>
+</span>

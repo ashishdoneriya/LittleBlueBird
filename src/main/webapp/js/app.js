@@ -6,9 +6,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/circles', {templates: {layout: 'layout.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/currentevent', {templates: {layout: 'layout.html', four: 'partials/events/event.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/deletegift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/editevent', {templates: {layout: 'layout.html', four: 'partials/events/newevent.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
-      .when('/editgift/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/email', {templates: {layout: 'layout.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/emailit', {templates: {layout: 'home', one: 'partials/emailMyUsernameAndPassword.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       .when('/emailprefs', {templates: {layout: 'layout.html', four: 'partials/myaccount/emailprefs.html', five:'partials/navbar.html'}})
@@ -16,8 +14,8 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/foo/events', {templates: {layout: 'foo.html', four: 'partials/events/whatareevents.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/foo/friends', {templates: {layout: 'foo.html', four: 'partials/friends/whatarefriends.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/fbfriends', {templates: {layout: 'layout.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
-      .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
+      .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/home', {templates: {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       // get rid of /login route
       .when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
@@ -292,7 +290,20 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
     };
     
   });
-
+  
+  
+// purpose: to reset a gift's description and url if the user decides to cancel the edit
+app.factory('GiftEditor', function() {
+  var og = {};
+  var editor = {};
+  editor.reset = function() {
+    return og;
+  };
+  editor.origGift = function(gift) {
+    og = angular.copy(gift);
+  }
+  return editor
+});
 
 app.factory('Facebook', 
   function($rootScope, $q) {

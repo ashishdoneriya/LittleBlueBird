@@ -2,14 +2,23 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
   
   
   if(angular.isDefined($route.current.params.circleId)) {
-    // circleId parm will have a & on the end that needs to be stripped off when coming to someone's 
-    // wish list FROM FACEBOOK.  I set $window.location.search to '' in app.js:run()
-    // THIS CODE IS DUPLICATED IN app-GiftCtrl:Gift2Ctrl
-    var circleId = $route.current.params.circleId;
-    console.log("GiftListCtrl:  BEFORE circleId="+circleId);
-    if(circleId.substring(circleId.length - 1) == '&') circleId = circleId.substring(0, circleId.length-1);
-    console.log("GiftListCtrl:  AFTER circleId="+circleId);
-    $rootScope.circle = Circle.query({circleId:circleId}, function() {console.log("GiftListCtrl: $rootScope.circle....");console.log($rootScope.circle);}, function() {alert("Could not find Event "+circleId);});
+    // 4/10/13: See if $rootScope.circle exists and if its id is the same as $route.current.params.circleId
+    if(angular.isDefined($rootScope.circle) && $rootScope.circle.id == $route.current.params.circleId) {
+      console.log("GiftListCtrl: no need to re-query for $rootScope.circle...");
+      console.log($rootScope.circle);
+    }
+    else {
+      console.log("GiftListCtrl: $rootScope.circle.id != $route.current.params.circleId, so query for the circle using $route.current.params.circleId="+$route.current.params.circleId);
+      // circleId parm will have a & on the end that needs to be stripped off when coming to someone's 
+      // wish list FROM FACEBOOK.  I set $window.location.search to '' in app.js:run()
+      // THIS CODE IS DUPLICATED IN app-GiftCtrl:Gift2Ctrl
+      var circleId = $route.current.params.circleId;
+      console.log("GiftListCtrl:  BEFORE circleId="+circleId);
+      if(circleId.substring(circleId.length - 1) == '&') circleId = circleId.substring(0, circleId.length-1);
+      console.log("GiftListCtrl:  AFTER circleId="+circleId);
+      $rootScope.circle = Circle.query({circleId:circleId}, function() {console.log("GiftListCtrl: $rootScope.circle....");console.log($rootScope.circle);}, function() {alert("Could not find Event "+circleId);});
+    }
+    
   }
   else {
     delete $rootScope.circle;
@@ -19,9 +28,14 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
   // to recreate the giftlist if the user hits refresh or if the user comes to this page via a link FB or wherever
   // 4/10/13: See also event.html - we list everyone in the event and their names are links.  When the user comes here from event.html, we have to construct the 'showUser' from a showUser id
   if(angular.isDefined($route.current.params.showUserId)) {
+  
     var queryparams = {recipientId:$route.current.params.showUserId, viewerId:$cookieStore.get("user")};
 
+
+    // 4/10/13: See also event.html - we list everyone in the event and their names are links.  
+    // When the user comes here from event.html, we have to construct the 'showUser' from a showUser id
     $rootScope.showUser = User.find({userId:$route.current.params.showUserId}, function() {$cookieStore.put("showUser", $rootScope.showUser.id)});
+
 
     if(angular.isDefined($route.current.params.circleId)) {
       queryparams.circleId = $rootScope.circle.id;
@@ -35,6 +49,7 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
                               Circle.gifts = $rootScope.gifts; 
                               console.log("$rootScope.gifts.length = "+$rootScope.gifts.length);
                               console.log($rootScope.gifts);
+                              $rootScope.gifts.ready = true;
                               $rootScope.gifts.mylist = $rootScope.user.id == $route.current.params.showUserId; 
                               //$rootScope.$emit("circlechange");   // commented out on 11/30/12 - experimenting
                             }, 
@@ -49,6 +64,7 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
                               Circle.gifts.mylist=true;
                               delete $rootScope.circle;
                               console.log($rootScope.circle);
+                              $rootScope.gifts.ready = true;
                               $rootScope.showUser = $rootScope.user;
                               //$rootScope.$emit("circlechange");   // commented out on 11/30/12 - experimenting
                               //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting
@@ -186,14 +202,17 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
   
   
   $scope.returngift = function(index, gift) {
+    gift.returning = true; // 4/10/13: replaces the Undo button with a spinner 
     var circleId = angular.isDefined($rootScope.circle) ? $rootScope.circle.id : -1;
     var savedgift = Gift.save({giftId:gift.id, updater:$rootScope.user.fullname, circleId:circleId, recipients:gift.recipients, viewerId:$rootScope.user.id, 
                                recipientId:$rootScope.showUser.id, senderId:-1, senderName:''},
-               function() { $rootScope.gifts.splice(index, 1, savedgift); });
+               function() { $rootScope.gifts.splice(index, 1, savedgift); gift.returning = false; });
   }
     
   
   $scope.editgift = function(gift) {
+    console.log("$scope.editgift():  rootScope.circle...");
+    console.log($rootScope.circle);
     gift.possiblerecipients = angular.isDefined($rootScope.circle) ? angular.copy($rootScope.circle.participants.receivers) : [angular.copy($rootScope.showUser)];
     for(var j=0; j < gift.recipients.length; j++) {
       for(var i=0; i < gift.possiblerecipients.length; i++) {

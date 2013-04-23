@@ -3,7 +3,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
     
     $routeProvider
       .when('/accountinfo', {templates: {layout: 'accountinfo', four: 'partials/myaccount/accountinfo.html', five:'partials/navbar.html'}})
-      .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/circles', {templates: {layout: 'layout.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/currentevent', {templates: {layout: 'layout.html', four: 'partials/events/event.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/editevent', {templates: {layout: 'layout.html', four: 'partials/events/newevent.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})

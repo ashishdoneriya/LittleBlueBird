@@ -62,12 +62,16 @@ hyperlinks, which is what we want if we want to post items to FB.
   
   <span ng-show="gifts.ready && gifts.length==0 && !isExpired()">
   <div class="tablerow">
-        <div class="list pad10 lastrow">
-            <P><h4 class="font16">This list is empty</h4></P>
-            <span ng-show="user.id != showUser.id">
-              <P class="font16">Did you know you can add items to this list even though it's not <I>your</I> list?</P>
-              <P class="font16">And anything you add will be hidden from {{showUser.fullname}}. LittleBlueBird won't spoil the surprise!</P>
-              <P class="font16">Everyone else will be able to see it though</P>
+        <div class="list pad10 w480 lastrow">
+            <span ng-show="user.id == showUser.id">
+              <P><h4 class="font16">Your list is empty</h4></P>
+              <P class="font14">Add something so people don't think you're lame</P>
+            </span>
+            <span ng-hide="user.id == showUser.id">
+              <P><h4 class="font16">This list is empty</h4></P>
+              <P class="font14">Did you know you can add items to this list even though it's not <I>your</I> list?</P>
+              <P class="font14">And anything you add will be hidden from {{showUser.fullname}}. LittleBlueBird won't spoil the surprise!</P>
+              <P class="font14">Everyone else will be able to see it though</P>
             </span>
         </div>
   </div>

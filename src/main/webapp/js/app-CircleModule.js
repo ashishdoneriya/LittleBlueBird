@@ -424,10 +424,13 @@ angular.module('CircleModule', [])
   // of givers and another collection of receivers and I can only tell where the last row 
   // of each group is.
   $rootScope.combineReceiversAndGiversIntoBoth = function(circle) {
-    circle.participants = CircleParticipant.query({circleId:circle.id}, 
+    var ppp = CircleParticipant.query({circleId:circle.id}, 
             function() {
+                circle.participants = ppp;
                 console.log("$rootScope.combineReceiversAndGiversIntoBoth:  circle.participants.....");
                 console.log(circle.participants);
+                console.log("$rootScope.combineReceiversAndGiversIntoBoth:  circle.participants.receivers.....");
+                console.log(circle.participants.receivers);
                 
                 // THIS IS KINDA DUMB...
 		        // the only reason that I'm combining the givers and receivers here is so that I can 
@@ -458,12 +461,14 @@ angular.module('CircleModule', [])
     if(!newRoute)
       return;
     
+    console.log("xxxxxxxxxxxxxxxxxxxxxx");
     if(angular.isDefined(newRoute.params.circleId)) {
         for(var i=0; i < $rootScope.user.circles.length; i++) {
           if($rootScope.user.circles[i].id == newRoute.params.circleId) {
             $rootScope.circle = $rootScope.user.circles[i];
-            
             $rootScope.combineReceiversAndGiversIntoBoth($rootScope.circle)
+		    console.log("rootScope.circle = ....");
+		    console.log($rootScope.circle);
             
           } // if($rootScope.user.circles[i].id == newRoute.params.circleId)
         } // for(var i=0; i < $rootScope.user.circles.length; i++)

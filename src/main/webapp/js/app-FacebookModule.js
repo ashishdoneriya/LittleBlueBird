@@ -326,6 +326,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                                                  //$rootScope.$broadcast("userchange");   
                                                                                         
                                                  //$rootScope.$emit("mywishlist");  // commented out on 11/30/12 - experimenting
+                                                 console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
                                                  $location.url('welcome');
                                                }
                                              );
@@ -350,6 +351,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                                          $rootScope.showUser = angular.copy(uagain);
 									     //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting                                       
 									     //$rootScope.$emit("mywishlist"); // commented out on 11/30/12 - experimenting
+                                         console.log("444444444444444444444444444444444444444");
 									     $location.url('mywishlist');});
                                        }
                         else if($rootScope.users.length > 1) {

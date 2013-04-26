@@ -280,6 +280,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       $rootScope.peoplesearchresults = UserSearch.query({search:sss}, 
                       function() {
                         $rootScope.usersearch = 'loaded'; 
+                        //delete $rootScope.addmethod; // don't delete this. newevent.html needs this.  what is friends doing that we want to delete this?
                         $rootScope.noonefound = $rootScope.peoplesearchresults.length==0 ? true : false; 
                         console.log($rootScope.peoplesearchresults);
                       }, 

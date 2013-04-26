@@ -16,19 +16,21 @@ BUT THAT DIDN'T WORK - THE MODAL WOULD OPEN ONCE THEN NEVER AGAIN.  SO WE'RE STU
 	  </div>
 		          
 	  <span ng-show="usersearch=='loaded'">
-        <div class="row"> <!-- header row -->
-          <div class="span3 roundedtop bgbluegradient white pad5 font14">
-            LittleBlueBird Users...
-          </div>
-        </div> <!-- header row -->
+	    <span ng-hide="addmethod=='createaccount'">
+	  
+          <div class="row"> <!-- header row -->
+            <div class="span3 roundedtop bgbluegradient white pad5 font14">
+              Registered Users
+            </div>
+          </div> <!-- header row -->
 		          
-	    <span ng-show="noonefound">
-		  <div class="row">
-			<div class="span3 list pad5 lastrow">No one found <p><a ng-click="beginnewuser();">Create account for this person?</a></p></div>
-	      </div>
-		</span>
+	      <span ng-show="noonefound">
+		    <div class="row">
+		      <div class="span3 list pad5 lastrow">No one found <p><a ng-click="beginnewuser();">Create account for this person?</a></p></div>
+	        </div>
+		  </span>
 				          
-	    <div ng-repeat="person in peoplesearchresults | filter:search">
+	      <div ng-repeat="person in peoplesearchresults | filter:search">
 			  <div class="row" ng-click="clicklbbuser($index, person, peoplesearchresults)">
 				<div class="{{selectedOrNotStyle('span3 list pad5', $index, peoplesearchresults.length, person)}}">
 				  <div class="row">
@@ -46,7 +48,110 @@ BUT THAT DIDN'T WORK - THE MODAL WOULD OPEN ONCE THEN NEVER AGAIN.  SO WE'RE STU
 				  </div>
 	            </div>
 	          </div>
-        </div>
+          </div>
+	    </span> <!-- span ng-hide="addmethod=='createaccount'" -->
+	    
+	    
+	    
+	    
+	    <span ng-show="addmethod=='createaccount'">
+	    
+	    
+	    
+	    
+          <div class="row"> <!-- header row -->
+            <div class="span3 roundedtop bgbluegradient white pad5 font14">
+              Create Account
+            </div>
+          </div> <!-- header row -->
+		          
+				          
+		  <div class="row">
+            <form novalidate name="regForm" class="marg0">
+				<div class="span3 roundedbottom pad5 align-left">
+				  <div class="row">
+				    <div class="span3">
+				        <input class="span190" maxlength="140" value="" type="text" name="fullname" ng-model="newuser.fullname" placeholder="Name" title="Name" required />
+		                <span ng-show="regForm.fullname.$dirty">
+		                  <span ng-show="regForm.fullname.$error.required"><img src="img/red_x.png" id="fullnamerequired" title="Name is required"></span>
+		                </span>
+				    </div>
+				  </div>
+				  <div class="row">
+				    <div class="span3">
+				        <input class="input-medium" maxlength="140" value="" name="email" type="email" ng-model="newuser.email" placeholder="Email" title="Email" required>
+		                <span ng-show="regForm.email.$dirty">
+		                  <span ng-show="regForm.email.$error.required"><img src="img/red_x.png" id="emailrequired" title="Email is required"></span>
+		                  <span ng-show="regForm.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
+		                </span>
+				    </div>
+				  </div>
+				  <div class="row">
+				    <div class="span3">
+				        <input class="input-medium" maxlength="140" value="" name="username" type="text" ng-model="newuser.username" ng-change="isUsernameUnique(newuser, regForm)" placeholder="Username" title="Username" required />
+		                <span ng-show="regForm.username.$dirty">
+		                  <span ng-show="regForm.username.$error.required">
+		                    <img src="img/red_x.png" id="invalidusername" title="Username is required">
+		                  </span>
+		                  <span ng-hide="regForm.username.$error.required"> <!-- without this outer ng-hide, we were getting both red x's after entering a taken username then blanking out the field -->
+		                    <span ng-show="regForm.username.$error.taken">
+		                      <img src="img/red_x.png" id="invalidusername" title="Username is taken">
+		                    </span>
+		                  </span>
+		                </span>
+				    </div>
+				  </div>
+				  <div class="row">
+				    <div class="span3">
+				        <input class="input-medium" ng-model="newuser.password" type="password" name="password" value="*******" placeholder="Password" title="Password" required />
+		                <span ng-show="regForm.password.$dirty">
+		                  <span ng-show="regForm.password.$error.required">
+		                    <img src="img/red_x.png" id="invalidpass" title="Password is required">
+		                  </span>
+		                </span>
+				    </div>
+				  </div>
+				  <div class="row">
+				    <div class="span3">
+				        <input class="input-medium" ng-model="newuser.passwordAgain" type="password" name="passwordAgain" value="*******" placeholder="Retype Password" title="Retype Password" required />
+		                <span ng-show="regForm.passwordAgain.$dirty">
+		                  <span ng-show="regForm.passwordAgain.$error.required">
+		                    <img src="img/red_x.png" id="invalidpassagain" title="Enter password twice">
+		                  </span>
+		                  <span ng-show="newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required">
+		                    <img src="img/red_x.png" id="passwordsdontmatch" title="Passwords don't match">
+		                  </span>
+		                </span> 
+				    </div>
+				  </div>
+				  <div class="row">
+				    <div class="span3">
+			            
+			            <a class="btn pull-right" ng-click="$parent.addmethod=''">Cancel</a>
+
+			            <span ng-class="padleft5" ng-show="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
+			              <a ng-disabled="true" class="btn pull-right" id="invalidform" title="Not Ready Yet">SaveY</a>
+			            </span>  
+
+			            <span ng-class="padleft5" ng-hide="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
+			              <a class="btn btn-primary pull-right" ng-click="savenewfriend(newuser)">Save</a>
+			            </span>
+            
+				    </div>
+				  </div>
+	            </div>
+            </form>
+          </div>
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    </span> <!-- span ng-show="addmethod=='createaccount'" -->
 				          
 	  </span> <!-- "usersearch=='loaded'" -->
 		          
@@ -71,126 +176,6 @@ BUT THAT DIDN'T WORK - THE MODAL WOULD OPEN ONCE THEN NEVER AGAIN.  SO WE'RE STU
   
   
   
-  
-  <form novalidate name="regForm" class="marg0">
-  <div ui-modal class="fade" ng-model="addNewUserModal">
-	<div class="modal-header bgbluegradient">
-	  <button class="close padtop5" data-dismiss="modal" ng-click="addNewUserModal = false"><i class="icon-remove"></i></button>
-	  <h3 class="white">Create A Friend</h3>
-	</div>
-	<div class="modal-body txtblack">
-	  <!------------------------------------->
-	  <!-- BEGIN: main row in the modal body
-	  The modal body contains one main row and 2 cells.  The cell on the left contains the form to create the new person/friend.
-	  The cell on the right tells the user what this form is for. -->
-	  <!------------------------------------->
-	  <div style="display:table;width:525px;">
-	  <div style="display:table-row;width:525px;">
-	    <!-- BEGIN: cell containing new user form -->
-	    <div style="display:table-cell;width:300px;">
-	      <div style="display:table;width:300px;">
-	        <div style="display:table-row;width:300px;">
-              <div style="display:table-cell;width:75px;">Name</div>
-              <div style="display:table-cell;width:175px;">
-                <input class="input-medium" maxlength="140" value="" type="text" name="fullname" ng-model="newuser.fullname" required />
-              </div>
-              <div style="display:table-cell;width:50px;">
-                <span ng-show="regForm.fullname.$dirty">
-                  <span ng-show="regForm.fullname.$error.required"><img src="img/red_x.png" id="fullnamerequired" title="Name is required"></span>
-                </span>
-              </div>
-            </div>
-	        <div style="display:table-row;width:300px;">
-              <div style="display:table-cell;width:75px;">Email</div>
-              <div style="display:table-cell;width:175px;">
-                <input class="input-medium" maxlength="140" value="" name="email" type="email" ng-model="newuser.email" required>
-              </div>
-              <div style="display:table-cell;width:50px;">
-                <span ng-show="regForm.email.$dirty">
-                  <span ng-show="regForm.email.$error.required"><img src="img/red_x.png" id="emailrequired" title="Email is required"></span>
-                  <span ng-show="regForm.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
-                </span>
-              </div>
-            </div>  
-	        <div style="display:table-row;width:300px;">
-              <div style="display:table-cell;width:75px;">Username</div>
-              <div style="display:table-cell;width:175px;">
-                <input class="input-medium" maxlength="140" value="" name="username" type="text" ng-model="newuser.username" ng-change="isUsernameUnique(newuser, regForm)" required />
-              </div>
-              <div style="display:table-cell;width:50px;">
-                <span ng-show="regForm.username.$dirty">
-                  <span ng-show="regForm.username.$error.required">
-                    <img src="img/red_x.png" id="invalidusername" title="Username is required">
-                  </span>
-                  <span ng-hide="regForm.username.$error.required"> <!-- without this outer ng-hide, we were getting both red x's after entering a taken username then blanking out the field -->
-                    <span ng-show="regForm.username.$error.taken">
-                      <img src="img/red_x.png" id="invalidusername" title="Username is taken">
-                    </span>
-                  </span>
-                </span>
-              </div>
-            </div>
-	        <div style="display:table-row;width:300px;">
-              <div style="display:table-cell;width:75px;">Password</div>
-              <div style="display:table-cell;width:175px;">
-                <input class="input-medium" ng-model="newuser.password" type="password" name="password" value="*******" required />
-              </div>
-              <div style="display:table-cell;width:50px;">
-                <span ng-show="regForm.password.$dirty">
-                  <span ng-show="regForm.password.$error.required">
-                    <img src="img/red_x.png" id="invalidpass" title="Password is required">
-                  </span>
-                </span>
-              </div>
-            </div>
-	        <div style="display:table-row;width:300px;">
-              <div style="display:table-cell;width:75px;">Again</div>
-              <div style="display:table-cell;width:175px;">
-                <input class="input-medium" ng-model="newuser.passwordAgain" type="password" name="passwordAgain" value="*******" required />
-              </div>
-              <div style="display:table-cell;width:50px;">
-                <span ng-show="regForm.passwordAgain.$dirty">
-                  <span ng-show="regForm.passwordAgain.$error.required">
-                    <img src="img/red_x.png" id="invalidpassagain" title="Enter password twice">
-                  </span>
-                  <span ng-show="newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required">
-                    <img src="img/red_x.png" id="passwordsdontmatch" title="Passwords don't match">
-                  </span>
-                </span> 
-              </div>
-            </div>
-          </div>
-	    </div>
-	    <!---------------------------------------->
-	    <!-- END: cell containing new user form -->
-	    <!---------------------------------------->
-	    
-	    <div style="display:table-cell;width:225px;vertical-align:top">
-	      Use this form to create accounts for...
-	      <ul>
-	        <li>friends and family that aren't on Facebook</li>
-	        <li>friends and family that don't have email (register with <i>your</i> email instead)</li>
-	      </ul>
-	    </div>
-	  </div> <!-- end: display:table-row -->
-	  </div> 
-	  <!------------------------------------->
-	  <!-- END: main row in the modal body -->
-	  <!------------------------------------->
-	</div>
-	<div class="modal-footer">
-            <span ng-show="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
-              <a ng-disabled="true" class="btn" id="invalidform" title="Not Ready Yet">Save</a>
-            </span>    
-          
-            <span ng-hide="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
-              <a class="btn btn-primary" ng-click="addNewUserModal=false;savenewfriend(newuser)">SaveX</a>
-            </span>
-            
-            <a class="btn" ng-click="addNewUserModal=false;">Cancel</a>
-	</div>
-  </div>
-  </form>
   
 
           <div class="btn-group">

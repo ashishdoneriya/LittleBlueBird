@@ -441,14 +441,11 @@ html { height:100%; }
 }
 
 .span5px {width: 5px;}
-
 .span50 {width: 50px;}
-
 .span100 {width: 100px;}
-
 .span150 {width: 150px;}
-
 .span160 {width: 160px;}
+.span190 {width: 190px;}
 
 .spantiny {
   width: 15px;

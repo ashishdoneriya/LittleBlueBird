@@ -3,8 +3,8 @@
 <div class="table">
 
   
-  <div class="tablerow w500">
-    <div class="tablecell w500 rounded font16 white bgbluegradient pad5">
+  <div class="tablerow w480">
+    <div class="tablecell w480 rounded font16 white bgbluegradient pad5">
       {{title}}
       <span class="pull-right">
           <div ng-show="circleForm.name.$error.required || circleForm.expdate.$error.required">
@@ -24,9 +24,9 @@
     </div>
   </div>
   
-  <div class="tablerow w500">
-    <div class="tablecell w500 padtop10">
-      <input class="w500 largefield" maxlength="140" value="" type="text" name="name" ng-model="thecircle.name" ng-required="true" placeholder="Event Name" title="Event Name" />
+  <div class="tablerow w480">
+    <div class="tablecell w480 padtop10">
+      <input class="w480 largefield" maxlength="140" value="" type="text" name="name" ng-model="thecircle.name" ng-required="true" placeholder="Event Name" title="Event Name" />
 	  <input class="w150 largefield" date-picker="expdate" name="expdate" ng-model="expdate" type="text" placeholder="Event Date" title="Event Date" ng-required="true"></input>
 	  <input maxlength="140" value="" type="hidden" name="name" ng-model="thecircle.id" /> 
     </div>
@@ -44,7 +44,7 @@
   ADDING PEOPLE FROM OTHER EVENTS.  IT'S ALSO WHERE WE DISPLAY A REGISTRATION FORM
   IF THE USER IS CREATING ACCOUNTS ON THE FLY AND THEN ADDING THEM TO THE EVENT.
     ---------------------------------------------------------------------------->
-  <div class="tablerow w500">
+  <div class="tablerow w480">
     <div class="tablecell500">
       <div class="table">
         <div class="tablerow">
@@ -236,10 +236,10 @@
 			    
 		        <div class="tablerow w245">
 			      <div class="tablecell w245 bgwhite sideborders_009dcb padleft5">
-			        <a ng-href="" ng-click="howtoinvitechild='true'">My child doesn't have email <i class="icon-chevron-right"></i></a>
+			        <a ng-href="{{currentlocation}}" ng-click="howtoinvitechild='true'">My child doesn't have email <i class="icon-chevron-right"></i></a>
 			        <span ng-show="howtoinvitechild=='true'">
 			          <P>Just enter <i>your</i> email address instead.  You will get an email from us saying you have created an account for your child  
-			          <a ng-href="" ng-click="howtoinvitechild='false'">hide</a>
+			          <a ng-href="{{currentlocation}}" ng-click="howtoinvitechild='false'">hide</a>
 			          </P>
 			        </span>
 			      </div>
@@ -249,7 +249,7 @@
 		          <div class="tablecell w245 listfooter pad5 roundedbottom">
 		            <span class="pull-right">
                       <div ng-hide="validateEmailInvitation(newuser)" >
-		                <a ng-disabled="true" class="btn btn-primary btn-mini" title="Not ready to save yet">Save</a>
+		                <a ng-href="{{currentlocation}}" ng-disabled="true" class="btn btn-primary btn-mini" title="Not ready to save yet">Save</a>
 		                &nbsp;
 		                <a ng-href="{{currentlocation}}" class="btn btn-mini" ng-click="resetInviteByEmailForm();back('byname')">Cancel</a>
 		              </div>

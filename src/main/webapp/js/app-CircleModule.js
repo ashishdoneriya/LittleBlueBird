@@ -480,6 +480,8 @@ angular.module('CircleModule', [])
 // http://stackoverflow.com/questions/12603914/reset-form-to-pristine-state-angularjs-1-0-x
 // see app-EventCtrl.js:  $scope.resetInviteByEmailForm()
 angular.resetForm = function (scope, formName, defaults) {
+    console.log("anguler.resetForm() ----------------------------- check scope...");
+    console.log(scope);
     $('form[name=' + formName + '], form[name=' + formName + '] .ng-dirty').removeClass('ng-dirty').addClass('ng-pristine');
     var form = scope[formName];
     form.$dirty = false;

@@ -167,6 +167,13 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       }
   })
   .run(function($rootScope, $location, $cookieStore, User, Logout) {
+  
+    // 5/8/13 - moved this from app-EventCtrl to here trying to make it accessible from app-EventCtrl and app-FriendCtrl
+    $rootScope.resetInviteByEmailForm = function(form){
+      form.$setPristine();
+      $rootScope.newuser = {fullname: '', email: ''};
+      //angular.resetForm($scope, 'emailnewuserform', {newuser:{fullname: '', email: ''}}); 
+    };
     
     // 2/15/13 - get rid of this and start using emailnewuser instead
     $rootScope.beginnewuser = function() {
@@ -213,11 +220,14 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
     }
     
   
-    // 2/12/13
+    // 2/12/13, 5/8/13: add the new user to the current user's list of friends
     $rootScope.createonthefly = function(newuser, thecircle) {
       anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
                                   function() {
-                                    $rootScope.addparticipant(-1, anewuser, thecircle, $rootScope.participationLevel); 
+                                    if(thecircle) {
+                                      $rootScope.addparticipant(-1, anewuser, thecircle, $rootScope.participationLevel); 
+                                    }
+                                    $rootScope.user.friends.push(anewuser);
                                     $rootScope.addmethod = 'byname'; 
                                     $rootScope.usersearch = ''; 
                                     $rootScope.search = '';

@@ -9,150 +9,15 @@ BUT THAT DIDN'T WORK - THE MODAL WOULD OPEN ONCE THEN NEVER AGAIN.  SO WE'RE STU
 	  <button class="close padleft5 padright5 padtop5" data-dismiss="modal"><i class="icon-remove" data-dismiss="modal"></i></button>
 	  <h3 class="white align-left">Add by Name/Email</h3>
 	</div>
-	<div class="modal-body txtblack">
+	<div class="modal-body txtblack align-left">
 
-      <div class="row">
-		<div class="span3 padbottom5"><input search-users type="text" class="input-large search-query" ng-model="search" placeholder="Search" title="Search by name or email"></div>
-	  </div>
+	  <div ng-include src="'partials/friends/search.html'"></div>
 		          
-	  <span ng-show="usersearch=='loaded'">
-	    <span ng-hide="addmethod=='createaccount'">
+	  <div ng-show="addmethod=='emailnewuser'">
+	    <div ng-include src="'partials/friends/invite.html'"></div>
+	  </div>   <!-- div ng-show="addmethod=='emailnewuser'" -->
 	  
-          <div class="row"> <!-- header row -->
-            <div class="span3 roundedtop bgbluegradient white pad5 font14">
-              Registered Users
-            </div>
-          </div> <!-- header row -->
-		          
-	      <span ng-show="noonefound">
-		    <div class="row">
-		      <div class="span3 list pad5 lastrow">No one found <p><a ng-click="beginnewuser();">Create account for this person?</a></p></div>
-	        </div>
-		  </span>
-				          
-	      <div ng-repeat="person in peoplesearchresults | filter:search">
-			  <div class="row" ng-click="clicklbbuser($index, person, peoplesearchresults)">
-				<div class="{{selectedOrNotStyle('span3 list pad5', $index, peoplesearchresults.length, person)}}">
-				  <div class="row">
-				    <div class="span1">
-
-                      <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
-                        <div style="margin-top:{{person.profilepicmargintop50}};margin-left:{{person.profilepicmarginleft50}}">
-                           <img height="{{person.profilepicadjustedheight50}}" width="{{person.profilepicadjustedwidth50}}" ng-src="{{person.profilepicUrl}}"/>
-                        </div>
-                      </div>
-
-				    </div>
-				    <div class="span2 marg0 padtop5 font14">{{person.fullname}}</div>
-				  
-				  </div>
-	            </div>
-	          </div>
-          </div>
-	    </span> <!-- span ng-hide="addmethod=='createaccount'" -->
-	    
-	    
-	    
-	    
-	    <span ng-show="addmethod=='createaccount'">
-	    
-	    
-	    
-	    
-          <div class="row"> <!-- header row -->
-            <div class="span3 roundedtop bgbluegradient white pad5 font14">
-              Create Account
-            </div>
-          </div> <!-- header row -->
-		          
-				          
-		  <div class="row">
-            <form novalidate name="regForm" class="marg0">
-				<div class="span3 roundedbottom pad5 align-left">
-				  <div class="row">
-				    <div class="span3">
-				        <input class="span190" maxlength="140" value="" type="text" name="fullname" ng-model="newuser.fullname" placeholder="Name" title="Name" required />
-		                <span ng-show="regForm.fullname.$dirty">
-		                  <span ng-show="regForm.fullname.$error.required"><img src="img/red_x.png" id="fullnamerequired" title="Name is required"></span>
-		                </span>
-				    </div>
-				  </div>
-				  <div class="row">
-				    <div class="span3">
-				        <input class="input-medium" maxlength="140" value="" name="email" type="email" ng-model="newuser.email" placeholder="Email" title="Email" required>
-		                <span ng-show="regForm.email.$dirty">
-		                  <span ng-show="regForm.email.$error.required"><img src="img/red_x.png" id="emailrequired" title="Email is required"></span>
-		                  <span ng-show="regForm.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
-		                </span>
-				    </div>
-				  </div>
-				  <div class="row">
-				    <div class="span3">
-				        <input class="input-medium" maxlength="140" value="" name="username" type="text" ng-model="newuser.username" ng-change="isUsernameUnique(newuser, regForm)" placeholder="Username" title="Username" required />
-		                <span ng-show="regForm.username.$dirty">
-		                  <span ng-show="regForm.username.$error.required">
-		                    <img src="img/red_x.png" id="invalidusername" title="Username is required">
-		                  </span>
-		                  <span ng-hide="regForm.username.$error.required"> <!-- without this outer ng-hide, we were getting both red x's after entering a taken username then blanking out the field -->
-		                    <span ng-show="regForm.username.$error.taken">
-		                      <img src="img/red_x.png" id="invalidusername" title="Username is taken">
-		                    </span>
-		                  </span>
-		                </span>
-				    </div>
-				  </div>
-				  <div class="row">
-				    <div class="span3">
-				        <input class="input-medium" ng-model="newuser.password" type="password" name="password" value="*******" placeholder="Password" title="Password" required />
-		                <span ng-show="regForm.password.$dirty">
-		                  <span ng-show="regForm.password.$error.required">
-		                    <img src="img/red_x.png" id="invalidpass" title="Password is required">
-		                  </span>
-		                </span>
-				    </div>
-				  </div>
-				  <div class="row">
-				    <div class="span3">
-				        <input class="input-medium" ng-model="newuser.passwordAgain" type="password" name="passwordAgain" value="*******" placeholder="Retype Password" title="Retype Password" required />
-		                <span ng-show="regForm.passwordAgain.$dirty">
-		                  <span ng-show="regForm.passwordAgain.$error.required">
-		                    <img src="img/red_x.png" id="invalidpassagain" title="Enter password twice">
-		                  </span>
-		                  <span ng-show="newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required">
-		                    <img src="img/red_x.png" id="passwordsdontmatch" title="Passwords don't match">
-		                  </span>
-		                </span> 
-				    </div>
-				  </div>
-				  <div class="row">
-				    <div class="span3">
-			            
-			            <a class="btn pull-right" ng-click="$parent.addmethod=''">Cancel</a>
-
-			            <span ng-class="padleft5" ng-show="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
-			              <a ng-disabled="true" class="btn pull-right" id="invalidform" title="Not Ready Yet">SaveY</a>
-			            </span>  
-
-			            <span ng-class="padleft5" ng-hide="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
-			              <a class="btn btn-primary pull-right" ng-click="savenewfriend(newuser)">Save</a>
-			            </span>
-            
-				    </div>
-				  </div>
-	            </div>
-            </form>
-          </div>
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    </span> <!-- span ng-show="addmethod=='createaccount'" -->
-				          
+	  <span ng-show="usersearch=='loaded'"> <!-- 4/28/13 - not sure if we need this anymore -->
 	  </span> <!-- "usersearch=='loaded'" -->
 		          
 		          
@@ -181,7 +46,7 @@ BUT THAT DIDN'T WORK - THE MODAL WOULD OPEN ONCE THEN NEVER AGAIN.  SO WE'RE STU
           <div class="btn-group">
 		    <a class="btn btn-mini btn-primary dropdown-toggle font14 white" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
 		    <ul class="dropdown-menu font12 align-left">
-		      <li><a ng-click="addLbbFriendModal=true">Add by Name</a></li>
-		      <li><a ng-click="fbinviteasfriend()">Import Facebook Friends</a></li>
+		      <li><a ng-href="{{currentlocation}}" ng-click="addLbbFriendModal=true">Add by Name</a></li>
+		      <li><a ng-href="{{currentlocation}}" ng-click="fbinviteasfriend()">Import Facebook Friends</a></li>
 		    </ul>
 		  </div> 

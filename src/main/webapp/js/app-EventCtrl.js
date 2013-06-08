@@ -5,10 +5,6 @@ function NewEventCtrl($rootScope, $scope) {
     $rootScope.addmethod = addmethod;
   }
   
-  $scope.resetInviteByEmailForm = function(){
-    angular.resetForm($scope, 'emailnewuserform', {newuser:{fullname: '', email: ''}}); 
-  };
-  
   $scope.clicklbbuser = function(index, person, people) {
     if(angular.isDefined(person.selected)) {
       delete person.selected;

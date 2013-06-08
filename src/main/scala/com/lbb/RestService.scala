@@ -257,6 +257,8 @@ object RestService extends RestHelper with LbbLogger {
    *  
    */
   def handleFacebookUser(facebookId:String, email:String, name:String) = { 
+    println("handleFacebookUser() ---------------------------")
+    
     // see if we're handling an app request or not
     S.param("fbreqids") match {
       case Full(fbreqids) => {
@@ -322,6 +324,7 @@ object RestService extends RestHelper with LbbLogger {
       
     } // (emailrecords, facebookrecords, hasboth)
 
+    debug("handleFacebookUser(): end ---------------------------");
     Util.toJsonResponse(returnusers)
     
   }

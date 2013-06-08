@@ -1,5 +1,13 @@
+// 2013-05-31: Site doesn't run in IE when the js debugger is off because (I think) console.log is undefined
+// This fixes that I hope.  See http://www.sitepoint.com/forums/showthread.php?575320-how-not-to-let-console-log%28%29-to-cause-error-on-IE-or-other-browsers
+var debugging = true;//false; // true sends console.log() stuff to the console. false means that stuff won't appear in the console
+if (typeof console == "undefined") var console = { log: function() {} };
+else if (!debugging || typeof console.log == "undefined") console.log = function() {};
+
+
 var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', 'FacebookModule']).
   config(function($routeProvider, $locationProvider, $rootScopeProvider, $cookieStoreProvider){
+    
     
     $routeProvider
       .when('/accountinfo', {templates: {layout: 'accountinfo', four: 'partials/myaccount/accountinfo.html', five:'partials/navbar.html'}})
@@ -30,11 +38,13 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/test', {templates: {layout: 'layout-nli.html', one: 'partials/test.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       .when('/welcome', {templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}})
+      .when('/', {templates: {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       .otherwise({redirectTo: '/welcome', templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       ;
       
-    $locationProvider.html5Mode(true);
+      
+      $locationProvider.html5Mode(true);
   
   })
   .run(function($rootScope, Facebook) {
@@ -44,7 +54,35 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){
         console.log("FINAL ROUTECHANGESTART FUNCTION ----------------------------");    
         
-        if (!newRoute || !newRoute.$route) return;
+        console.log("routeChangeStart:  newRoute...............");
+        console.log(newRoute);
+        
+        console.log($window.navigator);
+        console.log("$window.navigator.appName = ...");
+        console.log($window.navigator.appName);
+        console.log("$window.navigator.appVersion = ...");
+        console.log($window.navigator.appVersion);
+        console.log("$window.navigator.userAgent = "+$window.navigator.userAgent);
+        console.log("$window.navigator.userAgent = ...");
+        console.log($window.navigator.userAgent);
+        console.log("$window.location = ...");
+        console.log($window.location);
+        
+        // 2013-05-29: IE9 does serve up the home page, but FB login is messed up - not sure why
+        // 2013-06-03 SCREW IT FOR NOW - NO IE
+        if($window.navigator.userAgent.indexOf('MSIE') != -1) {
+          var sss = $window.navigator.userAgent.substring($window.navigator.userAgent.indexOf('MSIE'));
+          var ttt = sss.indexOf(';');
+          var version = parseFloat(sss.substring('MSIE '.length, ttt)); // 2013-06-03 This is the version but we don't care right now - no IE
+          if(true) {
+            $rootScope.templates = {layout: 'internetexplorer', one: 'partials/internetexplorer.html'};
+            $rootScope.layoutController = newRoute.controller;
+            return;
+          }
+        }
+              
+        //if (!newRoute || !newRoute) return;
+        if(!newRoute) return;
         
         $rootScope.currentlocation = "/gf" + $location.path();
         
@@ -65,15 +103,15 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
         // Applying the rule above: First see if $rootScope.user is defined
         if(angular.isDefined($rootScope.user)) {
           console.log("routeChangeStart:  $rootScope.user defined");
-          $rootScope.templates = newRoute.$route.templates;
-          $rootScope.layoutController = newRoute.$route.controller;
+          $rootScope.templates = newRoute.templates;
+          $rootScope.layoutController = newRoute.controller;
         } // if(angular.isDefined($rootScope.user))
         
-        // 3/12/13:  next - check for "user" cookie
+        // 2013-03-12:  next - check for "user" cookie
         else if(angular.isDefined($cookieStore.get("user"))) {
           $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){console.log("FOUND user from $cookieStore.get('user') BEFORE we checked Facebook");console.log($rootScope.user);});
-          $rootScope.templates = newRoute.$route.templates;
-          $rootScope.layoutController = newRoute.$route.controller;
+          $rootScope.templates = newRoute.templates;
+          $rootScope.layoutController = newRoute.controller;
           
           if(!angular.isDefined($rootScope.showUser) && angular.isDefined($cookieStore.get("showUser"))) {
             $rootScope.showUser = User.find({userId:$cookieStore.get("showUser")});
@@ -85,7 +123,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
           
         } // if: $cookieStore.get("user") exists
         
-        // 3/12/13 Not sure if this will ever get called now that we have the else-if above.  app-LoginCtrl:$scope.login() and app-FacebookModule:$rootScope.initfbuser()
+        // 2013-03-12 Not sure if this will ever get called now that we have the else-if above.  app-LoginCtrl:$scope.login() and app-FacebookModule:$rootScope.initfbuser()
         // both set "user" cookies.  So I don't think this will ever get called.
         else { // $rootScope.user is undefined
           // Applying the rule above: see if the user is logged in to FB
@@ -134,7 +172,8 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
                   var fbuserparms = {facebookId:meresponse.id, email:meresponse.email, name:meresponse.name};
                   if(fbreqids_csv != []) fbuserparms.fbreqids = fbreqids_csv;
                   
-                  console.log("routeChangeStart:  $rootScope.Facebook.getMe() ------------------");
+                  console.log("routeChangeStart:  $rootScope.Facebook.getMe():  FacebookUser...");
+                  console.log(FacebookUser);
                   
                   $rootScope.fbuser = angular.copy(meresponse);
                   
@@ -145,8 +184,8 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
                       if($rootScope.users.length == 1) {
                         $rootScope.user = angular.copy($rootScope.users[0]);
                         $rootScope.showUser = angular.copy($rootScope.users[0]);
-                        $rootScope.templates = newRoute.$route.templates;
-                        $rootScope.layoutController = newRoute.$route.controller;
+                        $rootScope.templates = newRoute.templates;
+                        $rootScope.layoutController = newRoute.controller;
                       } // if($rootScope.users.length == 1)
                       else if($rootScope.users.length > 1) {
                         // who are you? you have an email that is shared with multiple people
@@ -156,7 +195,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
                         console.log("WATCH FOR /whoareyou:  $rootScope.users = FacebookUser.save(): $rootScope.user = ..."); 
                         console.log($rootScope.user);
                         $rootScope.templates = {layout: 'layout-whoareyou.html', one: 'partials/login.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'};
-                        $rootScope.layoutController = newRoute.$route.controller;
+                        $rootScope.layoutController = newRoute.controller;
                       } // else if($rootScope.users.length > 1)
                       
                       // We don't handle the length==0 case because RestService.handleFacebookUser always returns a list with at least one user in it.
@@ -181,17 +220,17 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
               if(angular.isDefined($cookieStore.get("user"))) {
                 console.log("routeChangeStart:  Yes $cookieStore user: This is an LBB user => allow entry");
                 $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){console.log("FOUND user from $cookieStore.get('user')...");console.log($rootScope.user);});
-                $rootScope.templates = newRoute.$route.templates;
-                $rootScope.layoutController = newRoute.$route.controller;
+                $rootScope.templates = newRoute.templates;
+                $rootScope.layoutController = newRoute.controller;
               }
               else { // No $cookieStore user: No one is logged in => person has to login or register (WHAT ABOUT VIEW AS GUEST?)
                 console.log("routeChangeStart:  No $cookieStore user: No one is logged in");
                 
-                // TODO MAJOR Fix this hack - On 3/20/13, it wasn't obvious why I was being sent back to the /login page.  A search of for 'login' and '/login'
+                // TODO MAJOR Fix this hack - On 2013-03-20, it wasn't obvious why I was being sent back to the /login page.  A search of for 'login' and '/login'
                 // didn't turn up this line below, which I have since changed to redirect to the 'home' layout
                 $rootScope.templates = {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'};
                 
-                $rootScope.layoutController = newRoute.$route.controller;
+                $rootScope.layoutController = newRoute.controller;
               } // else { // No $cookieStore user: No one is logged in => person has to login or register (WHAT ABOUT VIEW AS GUEST?)
               
             } // function(fbresponse) { // called if user is not logged in or has not authorized the app

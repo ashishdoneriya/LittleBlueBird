@@ -1,3 +1,26 @@
+5/15/13:  IE9 and HMTL5 Mode - ain't gonna work
+See http://emilsblog.lerch.org/2013/05/angularjs-html5-routing-and-ie9.html
+See http://johan.driessen.se/posts/Manipulating-history-with-the-HTML5-History-API-and-AngularJS
+See https://groups.google.com/forum/#!msg/angular/XujWvUl0nXg/reWDe7ib_74J
+See http://emilsblog.lerch.org/2013/05/angularjs-html5-routing-and-ie9.html
+
+
+5/8/13:  Moving to the most current version of angular - 1.1.4.  This version is marked as unstable.
+Looks like newRoute.$route has been changed to newRoute.$$route in app.js - no idea why
+UPDATE 5/10/13:  Here's why -> https://github.com/angular/angular.js/commit/6f71e809141bf89501e55c378921d6e7ec9512bc
+Files with either routeChangeStart or routeChangeSuccess handlers:
+app.js, app-CircleModule, app-EventCtrl, app-FriendCtrl
+app.js has routeChangeStart and newRoute is only used in this handler.  It doesn't passed to any other function.
+app-CircleModule has routeChangeStart and newRoute DOES get passed to EventHelper.getEventType(newRoute)
+app-CircleModule also has $rootScope.determineCurrentCircle where newRoute is passed in to this function
+app-EventCtrl has EventCtrl and EventsCtrl that both do the same thing: they listen for routeChangeSuccess events
+      and pass newRoute to $rootScope.determineCurrentCircle()
+app-FriendCtrl - not using newRoute - everything commented out
+ 
+ 
+
+
+
 2/8/13:  jQueryUI datepicker...
 See this bug ticket:  http://bugs.jqueryui.com/ticket/8403
 I had to modify jquery-ui-1.10.0.custom.js, line 8507.  Had to remove the # symbol in href="#".  With that # in there, you would click a date and

@@ -9785,7 +9785,7 @@ function currencyFilter($locale) {
  *
  * @param {number|string} number Number to format.
  * @param {(number|string)=} [fractionSize=2] Number of decimal places to round the number to.
- * @returns {string} Number rounded to decimalPlaces and places a “,” after each third digit.
+ * @returns {string} Number rounded to decimalPlaces and places a , after each third digit.
  *
  * @example
    <doc:example>
@@ -14187,7 +14187,7 @@ var scriptDirective = ['$templateCache', function($templateCache) {
  * Optionally `ngOptions` attribute can be used to dynamically generate a list of `<option>`
  * elements for a `<select>` element using an array or an object obtained by evaluating the
  * `ngOptions` expression.
- *˝˝
+ * 
  * When an item in the select menu is select, the value of array element or object property
  * represented by the selected option will be bound to the model identified by the `ngModel`
  * directive of the parent select element.

@@ -64,6 +64,7 @@ class Boot extends LbbLogger {
     // to make the container serve a collection of files...
     LiftRules.passNotFoundToChain = true
     
+    // 2013-05-29:  trying to make Lift serve up index.html when you type in http://www.littlebluebird.com/gf/
     // to make the container serve a collection of files...
     LiftRules.liftRequest.append{
         case Req("css" :: _, _, _) => false
@@ -73,6 +74,8 @@ class Boot extends LbbLogger {
         case Req("js" :: _, _, _) => false
         case Req("partials" :: _, _, _) => false
         case Req("templates" :: _, _, _) => false
+        case Req("rest" :: _, _, _) => true
+        case Req(_, _, _) => false
      } 
     
   

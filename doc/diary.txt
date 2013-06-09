@@ -1,0 +1,43 @@
+2013-06-09  PROFILE IMAGE NOT SQUARE
+In me.html, realized the default/no-profile-pic image wasn't being squared-off like in accountinfo.html
+and personalinfo.html.  me.html wasn't using user attributes returned from the server, specifically 
+profilepicmarginleft.  See User.suplementalJs - this method is called by the Lift framework whenever you call
+User.asJs
+THE FIX: I just copied what I was doing in accountinfo.html
+
+
+2013-06-07  PROFILE IMAGES - WHY AREN'T THEY CROPPED/SQUARED?
+Just created a brand new user.  Noticed that when I went to the /me page, the image wasn't cropped/squared
+like I expected. WTF - spent a lot of time getting this to work and I notice now it doesn't. Why?
+
+
+2013-06-07  LOGGING TUCKEY.ORG OUTPUT
+I didn't like seeing all the [info] output from tuckey - just realized that the logging level was already set in
+the web.xml file.  See the <filter> tag for UrlRewriteFilter
+
+
+2013-06-03 SCREW IT FOR NOW - NO IE
+I tested the app in IE10 and even though the FB login worked, I didn't get very far before
+stuff stopped working.  The first thing I found was the add-a-friend feature didn't work
+Click the + sign and then "Add by Name" - should pop up a cool Twitter Bootstrap modal/lightbox
+But nope - all you get is the fullscreen shadow behind the lightbox - but no lightbox.
+SO SCREW IT FOR NOW - NO IE
+
+
+2013-06-02 Problems with IE
+IE9 doesn't like the FB login dialog.  When you login to FB, the dialog just sticks around, blank.
+IE10 doesn't have that problem.  F12 will bring up the javascript debugger for IE (and FF and Chrome).
+In IE, there is a button at the top of the debugger called Browser Mode that lets you run IE in any
+of these versions: 7,8,9,10
+
+
+2013-06-01 IE doesn't serve up the app unless the F12 debugger is running
+Either console or console.log() is undefined when the F12 debugger isn't running.
+The fix is described below
+See http://www.sitepoint.com/forums/showthread.php?575320-how-not-to-let-console-log%28%29-to-cause-error-on-IE-or-other-browsers
+The fix is located right at the top of app.js
+
+
+2013-05-31 Don't serve up the app to IE users
+app.js contains the following in the routeChangeStart event handler:
+if($window.navigator.userAgent.indexOf('MSIE') != -1)

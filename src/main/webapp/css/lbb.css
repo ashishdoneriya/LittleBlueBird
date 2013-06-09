@@ -326,7 +326,7 @@ html { height:100%; }
 .margright_5 {  margin-right:-5px; }
 .margright50 {  margin-right:50px; }
 
-.margtop_100 { margin-top:-100px; }
+.margtop_55 { margin-top:-55px; }
 .margtop_40 { margin-top:-40px; }
 .margtop_25 { margin-top:-25px; }
 .margtop_20 { margin-top:-20px; }
@@ -418,7 +418,7 @@ html { height:100%; }
   border-left: 1px solid #009dcb;
 }
 
-.scroll {overflow-y:scroll}
+.scroll {overflow-y:auto;}
 
 .searchresults {
   position:fixed;

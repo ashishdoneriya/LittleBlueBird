@@ -29,6 +29,9 @@ class MailerTest extends FunSuite with AssertionsForJUnit with LbbLogger {
   
   def configMailer() {
     var isAuth = Props.get("mail.smtp.auth", "false").toBoolean
+    
+    debug("Props.get(\"mail.user\") = "+Props.get("mail.user"))
+    debug("Props.get(\"mail.password\") = "+Props.get("mail.password"))
 
 	Mailer.customProperties = Props.get("mail.smtp.host", "localhost") match {
 	  case "smtp.gmail.com" =>

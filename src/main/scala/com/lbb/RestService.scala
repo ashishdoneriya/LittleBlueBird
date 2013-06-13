@@ -503,6 +503,10 @@ object RestService extends RestHelper with LbbLogger {
     JsonResponse("")
   }
   
+  // 2013-06-12  Need to update this so that it can recognize whether the user being inserted 
+  // is via fb login or lbb login.  If logging in via lbb, then we send them an email with their
+  // user/pass.  If they are logging in via fb, then we call Emailer.notifyWelcomeFacebookUser which
+  // contains a different message (w/out the user/pass)
   def insertUser = {
     val user = User.create
     val jval = for(req <- S.request; jvalue <- req.json; if(jvalue.isInstanceOf[JObject])) yield {
@@ -533,9 +537,8 @@ object RestService extends RestHelper with LbbLogger {
     for(parent <- user.parent) {user.addfriend(parent)}
     
     debug("creatorName = "+S.param("creatorName"))
-    for(creator <- S.param("creatorName")) yield {
-      Emailer.notifyAccountCreatedForYou(user, creator)
-    }
+    
+    Emailer.notifyAccountCreated(user, S.param("creatorName").openOr("undefined"))
     
     S.param("login") match {
       case Full("true") => user.login

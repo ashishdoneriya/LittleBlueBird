@@ -146,7 +146,7 @@ object Emailer extends LbbLogger {
   }
   
   def notifyWelcome(user:User) = {
-    notifyAccountCreatedForYou(user, "undefined")
+    notifyAccountCreated(user, "undefined")
   }
   
   /**
@@ -166,16 +166,27 @@ object Emailer extends LbbLogger {
     Emailer.send(e)
   }
   
-  def notifyAccountCreatedForYou(user:User, creator:String) = {
-    val line1 = creator match {
-      case s:String if(!s.equals("undefined")) => creator+" created an account for you on LittleBlueBird.com"
-      case _ => "Welcome to LittleBlueBird!"
+  // 2013-06-12  Update the functionality of this method: Make it smart enough to send one of 3 emails:
+  // An email saying you created an account for yourself; an email saying someone created an account for you;
+  // and an email saying you have logged in using your fb credentials (no user/pass included in this email)
+  def notifyAccountCreated(user:User, creator:String) = {
+    
+    // 2013-06-12  there will either be a creator or a facebook id, but not both
+    (user.facebookId, creator) match {
+      case (fbid, _) if(!fbid.isEmpty()) => notifyWelcomeFacebookUser(user)
+      case (_, cr) => {
+        val line1 = cr match {
+          case s if(!s.equals("undefined")) => creator+" created an account for you on LittleBlueBird.com"
+          case _ => "Welcome to LittleBlueBird!"
+        }
+        val subj = line1
+        val msg = createAccountCreatedForYouEmail(line1, user.first.is, user.last.is, user.username.is, user.password.is)
+        debug("createAccountCreatedForYouEmail...  "+msg)
+        val e = Email(user.email.is, "info@littlebluebird.com", "LittleBlueBird.com", subj, msg, Nil, Nil)
+        Emailer.send(e)
+      }
     }
-    val subj = line1
-    val msg = createAccountCreatedForYouEmail(line1, user.first.is, user.last.is, user.username.is, user.password.is)
-    debug("createAccountCreatedForYouEmail...  "+msg)
-    val e = Email(user.email.is, "info@littlebluebird.com", "LittleBlueBird.com", subj, msg, Nil, Nil)
-    Emailer.send(e)
+    
   }
   
   def creatEventComingUpEmail(person:User, circle:Circle) = createEmail(<div>

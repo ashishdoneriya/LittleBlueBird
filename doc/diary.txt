@@ -1,3 +1,10 @@
+2013-06-10  MailerTest: HOW DOES 'PROPS' GET LOADED
+The MailerTest is failing and I don't know how 'Props' gets loaded
+I can tell it's coming from src/main/resources/props/default.props (as opposed to the one in 'test')
+THE FIX: Changed user/pass from brentdunklau@sbcglobal.net/Pi....   to bdunklau@yahoo.com/e...
+MailerTest now sends email again
+
+
 2013-06-09  PROFILE IMAGE NOT SQUARE
 In me.html, realized the default/no-profile-pic image wasn't being squared-off like in accountinfo.html
 and personalinfo.html.  me.html wasn't using user attributes returned from the server, specifically 

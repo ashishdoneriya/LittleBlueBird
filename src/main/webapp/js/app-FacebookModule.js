@@ -265,7 +265,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
           caption:'Give what THEY want - Get what YOU want',
           description:'This is the site my friends and family use to keep track of everyone\'s wish list',
           link:'http://www.littlebluebird.com/gf/giftlist/'+showUser.id+'/',
-          picture:'http://www.littlebluebird.com/giftfairy/img/logo.gif',
+          picture:'http://www.littlebluebird.com/gf/img/logo-whitebackground.gif',
           //actions: [{name:'actions:name?', link:'http://www.littlebluebird.com/foo/'}],
           user_message_prompt:'user message prompt?'},
         function(response) {

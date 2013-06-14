@@ -1,8 +1,29 @@
+2013-06-13  
+Fix the logo in the emails so that they appear when viewing yahoo emails from localhost.
+The problem: I think I am serving up the logo from the production site (eatj.com)
+That's correct, see Emailer.createEmail.  That method refers to this image url:
+http://www.littlebluebird.com/giftfairy/img/logo.gif
+There was another instance of this url in app-FacebookModule.js.  We were serving up this image when
+doing app requests and shares and stuff through fb.
+The url is now:
+http://www.littlebluebird.com/gf/img/logo-whitebackground.gif
+because we already had a logo.gif (created against a blue background) that we use in navbar.html
+UPDATED MailerTest - added a test that tests the Emailer class to make sure it works but really
+to make sure the email that goes out displays the logo-whitebackground.gif image
+
+
+
+2013-06-12  
+Bug fix - docs/bugs closed/Bug 1 - Incorrect welcome email to Facebook users.docx
+
+
+
 2013-06-10  MailerTest: HOW DOES 'PROPS' GET LOADED
 The MailerTest is failing and I don't know how 'Props' gets loaded
 I can tell it's coming from src/main/resources/props/default.props (as opposed to the one in 'test')
 THE FIX: Changed user/pass from brentdunklau@sbcglobal.net/Pi....   to bdunklau@yahoo.com/e...
 MailerTest now sends email again
+
 
 
 2013-06-09  PROFILE IMAGE NOT SQUARE

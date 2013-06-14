@@ -14,6 +14,8 @@ import net.liftweb.util.Mailer.To
 import net.liftweb.util.Mailer
 import net.liftweb.util.Props
 import com.lbb.util.LbbLogger
+import com.lbb.util.Emailer
+import com.lbb.util.Email
 
 @RunWith(classOf[JUnitRunner])
 class MailerTest extends FunSuite with AssertionsForJUnit with LbbLogger {
@@ -23,7 +25,18 @@ class MailerTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     sendEMail("bdunklau@yahoo.com", "bdunklau@yahoo.com", "bdunklau@yahoo.com", "email from Lift", "this email came from LittleBlueBird:MailerTest")
     // gotta give the mailer time to send the email
     debug("sleeping")
-    Thread.sleep(10000)
+    Thread.sleep(10000) // without this sleep, the process ends before the email gets sent
+    debug("done")
+  }
+
+  // 2013-06-13  make sure the Emailer class works.  Check the email to make sure the LBB logo is there
+  test("Emailer") {
+    Emailer.config
+    val msg = Emailer.createAccountCreatedEmail("test from MailerTest", "firstname", "lastname", "fakeuser", "fakepass")
+    val e = Email("bdunklau@yahoo.com", "info@littlebluebird.com", "LittleBlueBird.com", "MailerTest", msg, Nil, Nil)
+    Emailer.send(e)
+    debug("sleeping")
+    Thread.sleep(10000) // without this sleep, the process ends before the email gets sent
     debug("done")
   }
   

@@ -32,6 +32,9 @@ object Emailer extends LbbLogger {
   
   def config {
     var isAuth = Props.get("mail.smtp.auth", "false").toBoolean
+    
+    debug("Props.get(\"mail.user\") = "+Props.get("mail.user"));
+    debug("Props.get(\"mail.password\") = "+Props.get("mail.password"));
 	
 	if (isAuth) {
 	  (Props.get("mail.user"), Props.get("mail.password")) match {
@@ -89,7 +92,7 @@ object Emailer extends LbbLogger {
             <td width="80%" valign="top">
               {body}
             </td>
-            <td width="20%" valign="top"><a href="http://www.littlebluebird.com" target="lbb"><img src="http://www.littlebluebird.com/giftfairy/img/logo.gif"/><p>LittleBlueBird.com</p></a></td>
+            <td width="20%" valign="top"><a href="http://www.littlebluebird.com" target="lbb"><img src="http://www.littlebluebird.com/gf/img/logo-whitebackground.gif"/><p>LittleBlueBird.com</p></a></td>
           </tr>
         </table>
       </body>
@@ -136,7 +139,10 @@ object Emailer extends LbbLogger {
     }
   }
   
-  def createAccountCreatedForYouEmail(line1:String, first:String, last:String, username:String, password:String) = {    
+  
+  // 2013-06-13  method name change from:  createAccountCreatedForYouEmail  to: createAccountCreatedEmail
+  // because this method is also for when you create your own account.
+  def createAccountCreatedEmail(line1:String, first:String, last:String, username:String, password:String) = {    
     val body = <div>{first} {last},
               <P>{line1}</P>
               <P>Your username is: {username}</P>
@@ -169,6 +175,7 @@ object Emailer extends LbbLogger {
   // 2013-06-12  Update the functionality of this method: Make it smart enough to send one of 3 emails:
   // An email saying you created an account for yourself; an email saying someone created an account for you;
   // and an email saying you have logged in using your fb credentials (no user/pass included in this email)
+  // See docs/bugs closed/Bug 1 - Incorrect welcome email to Facebook users.docx
   def notifyAccountCreated(user:User, creator:String) = {
     
     // 2013-06-12  there will either be a creator or a facebook id, but not both
@@ -180,8 +187,8 @@ object Emailer extends LbbLogger {
           case _ => "Welcome to LittleBlueBird!"
         }
         val subj = line1
-        val msg = createAccountCreatedForYouEmail(line1, user.first.is, user.last.is, user.username.is, user.password.is)
-        debug("createAccountCreatedForYouEmail...  "+msg)
+        val msg = createAccountCreatedEmail(line1, user.first.is, user.last.is, user.username.is, user.password.is)
+        debug("createAccountCreatedEmail...  "+msg)
         val e = Email(user.email.is, "info@littlebluebird.com", "LittleBlueBird.com", subj, msg, Nil, Nil)
         Emailer.send(e)
       }

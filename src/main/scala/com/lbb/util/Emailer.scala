@@ -32,9 +32,6 @@ object Emailer extends LbbLogger {
   
   def config {
     var isAuth = Props.get("mail.smtp.auth", "false").toBoolean
-    
-    debug("Props.get(\"mail.user\") = "+Props.get("mail.user"));
-    debug("Props.get(\"mail.password\") = "+Props.get("mail.password"));
 	
 	if (isAuth) {
 	  (Props.get("mail.user"), Props.get("mail.password")) match {

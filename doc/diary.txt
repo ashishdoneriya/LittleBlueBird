@@ -1,3 +1,27 @@
+2013-06-14  ANDROID APP DEVELOPMENT
+https://www.youtube.com/watch?v=xtsyrKdPZVw
+https://www.youtube.com/watch?v=0sS-ylTxi40
+
+
+2013-06-14  FACEBOOK APPS PAGE: 
+https://www.facebook.com/settings?tab=applications
+This is where you go to turn off the LBB permissions in fb, so that the next time
+you login to lbb via fb, fb asks the preliminary questions: do you want to share
+your public profile, email, etc.
+
+
+
+2013-06-13  Where is 'facebookConnect' defined ?
+It's defined on the first line of app-FacebookModule.js:
+	angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [function() {...
+There's also an FB object - where is that defined ?
+Looks like it's created by fb when the sdk is loaded - see facebook.js and facebook1.js
+facebookConnect object actually uses the FB object
+WOULD BE GOOD IF THE HOME PAGE KNEW IF THE USER WAS LOGGED IN TO FACEBOOK ALREADY.
+Kind of lame to click the fb login button and see that dialog pop up for a split second 
+before going away
+
+
 2013-06-13  
 Fix the logo in the emails so that they appear when viewing yahoo emails from localhost.
 The problem: I think I am serving up the logo from the production site (eatj.com)

@@ -14,7 +14,7 @@ env in Compile := Some(file(".") / "jetty-env.xml" asFile)
 libraryDependencies ++= Seq(
   "org.eclipse.jetty" % "jetty-webapp" % "7.4.1.v20110513" % "container",
   "org.eclipse.jetty" % "jetty-plus" % "7.4.1.v20110513" % "container",
-  "org.tuckey" % "urlrewritefilter" % "4.0.3" % "container",
+  "org.tuckey" % "urlrewritefilter" % "4.0.3" % "compile->default",
   "net.liftweb" %% "lift-widgets" % "2.4" % "compile->default",
   "net.liftweb" %% "lift-facebook" % "2.4" % "compile->default"
 )

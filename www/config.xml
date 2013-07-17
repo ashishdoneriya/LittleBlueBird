@@ -5,10 +5,10 @@
         versionCode = "10"
         version     = "0.1.1">
  
-    <name>FBPlugin 6</name>
+    <name>LittleBlueBird</name>
  
     <description>
-        phonegap facebook plugin
+        LittleBlueBird is your online wish list for every occasion
     </description>
  
     <author href="http://www.littlebluebird.com" email="bdunklau@yahoo.com">
@@ -19,7 +19,7 @@
     
     <gap:plugin name="com.phonegap.plugins.facebookconnect">
        <param name="APP_ID" value="136122483829" />
-       <param name="APP_NAME" value="Brent1" />
+       <param name="APP_NAME" value="LittleBlueBird" />
     </gap:plugin>
  
     

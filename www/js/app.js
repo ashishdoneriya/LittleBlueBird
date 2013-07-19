@@ -5,7 +5,7 @@ if (typeof console == "undefined") var console = { log: function() {} };
 else if (!debugging || typeof console.log == "undefined") console.log = function() {};
 
 
-var app = angular.module('project', []).
+var app = angular.module('project', ['UserModule']).
   config(function($routeProvider, $locationProvider, $rootScopeProvider, $cookieStoreProvider){
     
     
@@ -16,7 +16,6 @@ var app = angular.module('project', []).
       .when('/welcome', {templates: {layout: 'layout1', one: 'partials/welcome.html'}})
       .when('/', {templates: {layout: 'layout1', one: 'partials/home.html'}})
       .otherwise({redirectTo: '/woops', templates: {layout: 'layout1', one: 'partials/woops.html'}})
-      //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       ;
       
       

@@ -1,10 +1,12 @@
-2/20/13:  Made person.username unique on the localhost database...
+2013-02-13:  Made person.username unique on the localhost database...
+2013-07-17:  confirmed this change was also made on eatj.com
 ALTER TABLE `bdunklau`.`person` 
 ADD UNIQUE INDEX `username_UNIQUE` (`username` ASC) ;
 
 
 
 
+2013-07-17:  made this change on eatj.com
 new table:  app_request
 with columns:
 	id - autoincr, 
@@ -16,11 +18,6 @@ with columns:
 	accept_date - the date the person accepts the app request
 	
 	Everything not null.  Don't make inviter_id/facebook_id unique; allow for one person to send multiple requests to another person
-
-
-new column:  person.fb_request_id - NOT SURE ABOUT THIS COLUMN.  We may want an entirely separate table for app requests.  We were trying to use person.parent_id
-to tie inviter and invitee but that could be problematic if two people try to invite the same person.  An app_request table could tie the current user to the
-invited person (who doesn't have a person.id yet)
 
 
 new column:  person.notifyonaddtoevent - Mapper correctly marks these as not null, but doesn't get the default value right.  Have to manually set to 'true' (varchar)
@@ -37,6 +34,7 @@ Created on eatj.com on 11/21/12: ALTER TABLE `person` ADD `notifyonreturngift` V
 
 
 new table:  friends  Created on eatj.com on 9/7/12
+
 
 # Done on eatj.com on 9/7/12 - this was done when the table was created
 # Lift/Mapper doesn't create unique constraint on user_id/friend_id - have to do that yourself through mysql

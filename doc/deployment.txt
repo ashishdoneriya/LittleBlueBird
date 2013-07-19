@@ -1,13 +1,44 @@
-8/22/12 ----------------------------------------------------------------------------------------
+2013-07-17  DEPLOYED SUCCESSFULLY TO EATJ.COM - SOME PROBLEMS (go to bottom)
+Following the instructions of 8/22/12
+Modified the web.xml file
+DID NOT modify default.props - not sure if brentdunklau@sbcglobal.net is still valid
+Packaged up the app
+  --> Created C:\Users\bdunklau\LittleBlueBird\target\scala-2.9.1\littlebluebird_2.9.1-1.0.war
+Renamed the file as gf.war
+Created a backup file named gf-2013-07-17.war
+Edited the C:\Windows\System32\drivers\etc\hosts file - commented out the line that maps lbb.com to localhost
+Opened "database changes.txt"
+  --> found out the app_request table was not in eatj.com yet
+  --> had to open my local database: Start->My SQL Workbench: 'bdunklau' database
+  --> right-click app_request->Copy to Clipboard->Create Statement
+  --> ran through the list of all the other database changes.  If the change didn't indicate that it was made on eatj.com, I checked it and made the change if it needed to be made.  Then, either way, I noted that the change was either made or confirmed that it was already made and I dated it 2013-07-17
+Start deployment to eatj.com:
+http://www.littlebluebird.com/manager/html
+In the 'Deploy' section, go to the 'WAR file to deploy' subsection
+Browse to C:\Users\bdunklau\LittleBlueBird\target\scala-2.9.1 and pick gf.war
+Click Deploy (takes just over 4 mins)
+Set the web.xml file back to the way it was for localhost/tomcat
+
+LESSON LEARNED:  the tuckey jar file wasn't included in the war file to tomcat.  I think it's because of this line in build.sbt:  "org.tuckey" % "urlrewritefilter" % "4.0.3" % "container"
+I changed that line to this:  "org.tuckey" % "urlrewritefilter" % "4.0.3" % "compile->default"
+And now the urlrewritefilter-4.0.3.jar is included in the WEB-INF/lib folder.
+
+SOME PROBLEMS:  Got "301" error when trying to view someone's list.  Comes from app-GiftCtrl.js
+You don't have this problem on localhost - database inconsistency?
+
+
+
+
+2012-08-22 ----------------------------------------------------------------------------------------
 MODIFY WEB.XML
 See src/main/webapp/web-inf/web.xml:  There's a tag that says FOR JETTY ONLY - REMOVE WHEN DEPLOYING TO TOMCAT
-Delete this tag
+Delete this tag - DON'T COMMENT IT OUT - DELETE IT!
 
 MODIFY DEFAULT.PROPS
 change mail.user from bdunklau@yahoo.com to brentdunklau@sbcglobal.net
 change mail.password from e27....  to Pi....
 
-cd lit[tab]
+cd C:\Users\bdunklau\LittleBlueBird
 sbt
 package
 
@@ -19,6 +50,7 @@ Should produce this:
 Rename littlebluebird_2.9.1-1.0.war as gf-yyyy-MM-dd.war for backup purposes
 Rename littlebluebird_2.9.1-1.0.war as gf.war for deployment purposes
 
+Set the web.xml file back to the way it was for localhost/tomcat
 
 
 DEPLOYING TO LOCALHOST TOMCAT:
@@ -30,6 +62,8 @@ Tomcat serves the webapp from: C:\Program Files\Apache Software Foundation\Tomca
 
 
 DEPLOYING TO EATJ.COM TOMCAT
+Go to C:\Windows\System32\drivers\etc\hosts and see if www.littlebluebird.com is mapped to 127.0.0.1/localhost
+If it is, you have to edit that file first
 www.littlebluebird.com/manager/html  (admin/Pi...  also  manager/Pi...)
 SEARCH FOR 'giftfairy' EVERYWHERE IN THE CODE
 

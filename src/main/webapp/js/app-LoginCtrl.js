@@ -39,6 +39,7 @@ function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Em
                                
   }
   
+  // 2013-07-19 duplicated in the mobile version ForgotCtrl
   $scope.emailIt = function(email) {
     Email.send({type:'passwordrecovery', to:email, from:'info@littlebluebird.com', subject:'Password Recovery', message:'Your password is...'}, function() {alert("Your password has been sent to: "+email);}, function() {alert("Email not found: "+email+"\n\nContact us at info@littlebluebird.com for help");});
   }

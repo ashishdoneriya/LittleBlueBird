@@ -1,3 +1,5 @@
+import java.io.File
+
 name := "LittleBlueBird"
 
 version := "1.0"

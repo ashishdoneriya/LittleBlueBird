@@ -17,6 +17,8 @@
     
     <preference name="phonegap-version" value="2.9.0" />
     
+    <icon src="img/LittleBlueBird-icon.png"/>
+    
     <gap:plugin name="com.phonegap.plugins.facebookconnect">
        <param name="APP_ID" value="136122483829" />
        <param name="APP_NAME" value="LittleBlueBird" />

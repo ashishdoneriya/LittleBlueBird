@@ -1,0 +1,97 @@
+<project default="copy">
+
+    <target name="copy">
+    	<property name="angularVersion" value="1.1.1"/>
+    	
+    	<delete file="www/css/less-1.3.0.min.js"/>
+        <copy file="src/main/webapp/css/less-1.3.0.min.js" tofile="www/css/less-1.3.0.min.js"/>
+
+    	<delete file="www/js/angular.js"/>
+        <copy file="src/main/webapp/js/angular-${angularVersion}/angular.js" tofile="www/js/angular.js"/>
+
+    	<delete file="www/js/angular-resource.js"/>
+        <copy file="src/main/webapp/js/angular-${angularVersion}/angular-resource.js" tofile="www/js/angular-resource.js"/>
+
+    	<delete file="www/js/angular-cookies.js"/>
+        <copy file="src/main/webapp/js/angular-${angularVersion}/angular-cookies.js" tofile="www/js/angular-cookies.js"/>
+
+    	<delete file="www/js/angular-bootstrap-with-scripts.js"/>
+        <copy file="src/main/webapp/js/angular-bootstrap-with-scripts.js" tofile="www/js/angular-bootstrap-with-scripts.js"/>
+
+    	<delete file="www/js/angular-ui.js"/>
+        <copy file="src/main/webapp/js/angular-ui.js" tofile="www/js/angular-ui.js"/>
+
+    	<delete file="www/js/bootstrap.js"/>
+        <copy file="src/main/webapp/js/bootstrap.js" tofile="www/js/bootstrap.js"/>
+
+    	<delete file="www/js/bootstrap-dropdown.js"/>
+        <copy file="src/main/webapp/js/bootstrap-dropdown.js" tofile="www/js/bootstrap-dropdown.js"/>
+
+    	<delete file="www/js/bootstrap-tooltip.js"/>
+        <copy file="src/main/webapp/js/bootstrap-tooltip.js" tofile="www/js/bootstrap-tooltip.js"/>
+
+    	<delete file="www/js/bootstrap-popover.js"/>
+        <copy file="src/main/webapp/js/bootstrap-popover.js" tofile="www/js/bootstrap-popover.js"/>
+
+    	<delete file="www/js/bootstrap-modal.js"/>
+        <copy file="src/main/webapp/js/bootstrap-modal.js" tofile="www/js/bootstrap-modal.js"/>
+
+    	<delete file="www/js/date.js"/>
+        <copy file="src/main/webapp/js/date.js" tofile="www/js/date.js"/>
+
+    	<delete file="www/js/dropdownToggle.js"/>
+        <copy file="src/main/webapp/js/dropdownToggle.js" tofile="www/js/dropdownToggle.js"/>
+
+    	<delete file="www/js/facebook.js"/>
+        <copy file="src/main/webapp/js/facebook.js" tofile="www/js/facebook.js"/>
+
+    	<delete file="www/js/app-LoginCtrl.js"/>
+        <copy file="src/main/webapp/js/app-LoginCtrl.js" tofile="www/js/app-LoginCtrl.js"/>
+
+    	<delete file="www/js/app-UserCtrl.js"/>
+        <copy file="src/main/webapp/js/app-UserCtrl.js" tofile="www/js/app-UserCtrl.js"/>
+
+    	<delete file="www/js/app-MyAccountCtrl.js"/>
+        <copy file="src/main/webapp/js/app-MyAccountCtrl.js" tofile="www/js/app-MyAccountCtrl.js"/>
+
+    	<delete file="www/js/app-GiftCtrl.js"/>
+        <copy file="src/main/webapp/js/app-GiftCtrl.js" tofile="www/js/app-GiftCtrl.js"/>
+
+    	<delete file="www/js/app-CircleCtrl.js"/>
+        <copy file="src/main/webapp/js/app-CircleCtrl.js" tofile="www/js/app-CircleCtrl.js"/>
+
+    	<delete file="www/js/app-EventCtrl.js"/>
+        <copy file="src/main/webapp/js/app-EventCtrl.js" tofile="www/js/app-EventCtrl.js"/>
+
+    	<delete file="www/js/app-ReminderCtrl.js"/>
+        <copy file="src/main/webapp/js/app-ReminderCtrl.js" tofile="www/js/app-ReminderCtrl.js"/>
+
+    	<delete file="www/js/app-FriendCtrl.js"/>
+        <copy file="src/main/webapp/js/app-FriendCtrl.js" tofile="www/js/app-FriendCtrl.js"/>
+
+    	<delete file="www/js/app-UserModule.js"/>
+        <copy file="src/main/webapp/js/app-UserModule.js" tofile="www/js/app-UserModule.js"/>
+
+    	<delete file="www/js/app-CircleModule.js"/>
+        <copy file="src/main/webapp/js/app-CircleModule.js" tofile="www/js/app-CircleModule.js"/>
+
+    	<!-- delete file="www/js/app.js"/>
+        <copy file="src/main/webapp/js/app.js" tofile="www/js/app.js"/ -->
+
+    	<delete file="www/css/angular-ui.css"/>
+        <copy file="src/main/webapp/css/angular-ui.css" tofile="www/css/angular-ui.css"/>
+
+    	<delete file="www/css/bootstrap.css"/>
+        <copy file="src/main/webapp/css/bootstrap.css" tofile="www/css/bootstrap.css"/>
+
+    	<delete file="www/css/lbb.css"/>
+        <copy file="src/main/webapp/css/lbb.css" tofile="www/css/lbb.css"/>
+
+    	<delete file="www/css/fb-buttons.css"/>
+        <copy file="src/main/webapp/css/fb-buttons.css" tofile="www/css/fb-buttons.css"/>
+    	
+    	
+    </target>
+
+
+</project>

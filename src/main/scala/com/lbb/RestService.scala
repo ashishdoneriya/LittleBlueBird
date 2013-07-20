@@ -398,10 +398,11 @@ object RestService extends RestHelper with LbbLogger {
   }
   
   def email = {
+    println("email: begin")
     S.param("type") match {
       case Full(s) if(s.equals("passwordrecovery")) => sendPasswordRecoveryEmail
       case Full(s) if(s.equals("welcome")) => sendWelcomeEmail
-      case _ => { debug("email:  BadResponse()"); BadResponse() }
+      case _ => { warn("email:  BadResponse()"); BadResponse() }
     }
   }
   
@@ -435,6 +436,7 @@ object RestService extends RestHelper with LbbLogger {
   
   private def sendPasswordRecoveryEmail = {
     try {
+      println("sendPasswordRecoveryEmail: begin");
       val message = Emailer.createRecoverPasswordMessage
     
       val email = Email(S.param("to").getOrElse("info@littlebluebird.com"),
@@ -448,7 +450,7 @@ object RestService extends RestHelper with LbbLogger {
       NoContentResponse()
     }
     catch {
-      case e:RuntimeException => BadResponse()
+      case e:RuntimeException => { println("sendPasswordRecoveryEmail: RuntimeException: "+e); BadResponse() }
     }
   }
   

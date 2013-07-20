@@ -35,3 +35,7 @@ function LbbController($scope, Email, $rootScope, User, $location) {
                                
   }
 }
+
+
+// think you need this for minified js files
+LbbController.$inject = [$scope, Email, $rootScope, User, $location];

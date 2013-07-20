@@ -7,6 +7,8 @@ else if (!debugging || typeof console.log == "undefined") console.log = function
 
 function LbbController($scope, Email, $rootScope, User, $location) {
 
+  $scope.email = 'bdunklau@yahoo.com';
+
   // 2013-07-19 copied from app-LoginCtrl.js
   $scope.emailIt = function(email) {
     Email.send({type:'passwordrecovery', to:email, from:'info@littlebluebird.com', subject:'Password Recovery', message:'Your password is...'}, 

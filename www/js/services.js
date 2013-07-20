@@ -7,7 +7,7 @@ else if (!debugging || typeof console.log == "undefined") console.log = function
   
 angular.module('UserModule', ['ngResource']).
   factory('User', function($resource) {
-      var User = $resource('/gf/rest/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', 
+      var User = $resource('http://www.littlebluebird.com/gf/rest/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', 
                                                  password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login', 
                                                  creatorId:'@creatorId', creatorName:'@creatorName', facebookId:'@facebookId', friends:'@friends', lbbfriends:'@lbbfriends',
                                                  notifyonaddtoevent:'@notifyonaddtoevent', notifyondeletegift:'@notifyondeletegift', 
@@ -21,7 +21,7 @@ angular.module('UserModule', ['ngResource']).
       return User;
   }).
   factory('Email', function($resource) {
-      var Email = $resource('/gf/rest/email', {to:'@to', from:'@from', subject:'@subject', message:'@message', type:'@type', user:'@user'}, 
+      var Email = $resource('http://www.littlebluebird.com/gf/rest/email', {to:'@to', from:'@from', subject:'@subject', message:'@message', type:'@type', user:'@user'}, 
                     {
                       send: {method:'POST'}
                     });

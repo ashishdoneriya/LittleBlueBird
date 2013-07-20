@@ -24,7 +24,7 @@
        <param name="APP_NAME" value="LittleBlueBird" />
     </gap:plugin>
  
-    <access origin="*" /> <!-- allows the app to access any external url -->
+    <access origin="http://www.littlebluebird.com" browserOnly="true" /> <!-- allows the app to access www.littlebluebird.com -->
     
     <feature name="http://api.phonegap.com/1.0/camera"/>
     <feature name="http://api.phonegap.com/1.0/contacts"/>

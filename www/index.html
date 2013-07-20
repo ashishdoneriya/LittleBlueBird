@@ -99,7 +99,8 @@
 		<h1>LittleBlueBird</h1>
 	</div><!-- /header -->
 
-	<div data-role="content">	
+	<div data-role="content">
+	  <input type="text" name="foo"></input>	
 		<form novalidate>
 		    <div data-role="fieldcontain">
 		        <label for="email" class="ui-hidden-accessible">Email:</label>
@@ -131,20 +132,16 @@
 		    <div data-role="fieldcontain">
 		        <label for="name" class="ui-hidden-accessible">Name:</label>
     		    <input id="name" name="name" type="text" ng-model="name" placeholder="Name" />
-    		</div>
-		    <div data-role="fieldcontain">
+
 		        <label for="email" class="ui-hidden-accessible">Email:</label>
     		    <input id="email" name="email" type="text" ng-model="email" placeholder="Email" />
-    		</div>
-		    <div data-role="fieldcontain">
+
 		        <label for="user" class="ui-hidden-accessible">Username:</label>
     		    <input id="user" name="user" type="text" ng-model="user" placeholder="Username" />
-    		</div>
-		    <div data-role="fieldcontain">
+
 		        <label for="pass" class="ui-hidden-accessible">Password:</label>
     		    <input id="pass" name="pass" type="text" ng-model="pass" placeholder="Password" />
-    		</div>
-		    <div data-role="fieldcontain">
+
 		        <label for="passagain" class="ui-hidden-accessible">Password (again):</label>
     		    <input id="passagain" name="passagain" type="text" ng-model="passagain" placeholder="Password (again)" />
     		</div>

@@ -22,6 +22,7 @@
        <param name="APP_NAME" value="LittleBlueBird" />
     </gap:plugin>
     
+    <plugin name="SplashScreen" value="CDVSplashScreen" />
     
     <!--
       Enable individual API permissions here.

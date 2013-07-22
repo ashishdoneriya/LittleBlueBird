@@ -22,7 +22,11 @@
        <param name="APP_NAME" value="LittleBlueBird" />
     </gap:plugin>
     
-    
+    <!--
+      Enable individual API permissions here.
+      The "device" permission is required for the 'deviceready' event.
+    -->
+    <feature name="http://api.phonegap.com/1.0/device" />
     <feature name="http://api.phonegap.com/1.0/camera"/>
     <feature name="http://api.phonegap.com/1.0/contacts"/>
     <feature name="http://api.phonegap.com/1.0/file"/>
@@ -56,14 +60,17 @@
     
     <gap:splash src="splash.png" />
     
-    <!-- next block came from http://phonegap.com/blog/build/new-apple-app-store-submittal-rules/  -->
-    <gap:splash src="splash/ios/Default.png" width="320" height="480" />
-    <gap:splash src="splash/ios/Default_at_2x.png" width="640" height="960" />
-    <gap:splash src="splash/ios/Default_iphone5.png" width="640" height="1136" />
-    <gap:splash src="splash/ios/Default-Landscape.png" width="1024" height="768" />
-    <gap:splash src="splash/ios/Default-Portrait.png" width="768" height="1024" />
-    <gap:splash src="splash/ios/Default-Landscape_at_2x.png" width="2048" height="1496" />
-    <gap:splash src="splash/ios/Default-Portrait_at_2x.png" width="1536" height="2008" />
+    <!-- Define app splash screen for each platform. -->
+    <gap:splash src="res/screen/android/screen-ldpi-portrait.png" gap:platform="android" gap:density="ldpi" />
+    <gap:splash src="res/screen/android/screen-mdpi-portrait.png" gap:platform="android" gap:density="mdpi" />
+    <gap:splash src="res/screen/android/screen-hdpi-portrait.png" gap:platform="android" gap:density="hdpi" />
+    <gap:splash src="res/screen/android/screen-xhdpi-portrait.png" gap:platform="android" gap:density="xhdpi" />
+    <gap:splash src="res/screen/blackberry/screen-225.png" gap:platform="blackberry" />
+    <gap:splash src="res/screen/ios/screen-iphone-portrait.png" gap:platform="ios" width="320" height="480" />
+    <gap:splash src="res/screen/ios/screen-iphone-portrait-2x.png" gap:platform="ios" width="640" height="960" />
+    <gap:splash src="res/screen/ios/screen-ipad-portrait.png" gap:platform="ios" width="768" height="1024" />
+    <gap:splash src="res/screen/ios/screen-ipad-landscape.png" gap:platform="ios" width="1024" height="768" />
+    <gap:splash src="res/screen/windows-phone/screen-portrait.jpg" gap:platform="winphone" />
     
     <access origin="*" /> <!-- a wildcard access tag allows access to all external resource. -->
  

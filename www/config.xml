@@ -22,6 +22,8 @@
        <param name="APP_NAME" value="LittleBlueBird" />
     </gap:plugin>
     
+    <gap:plugin name="SplashScreen" value="CDVSplashScreen" />
+    
     <!--
       Enable individual API permissions here.
       The "device" permission is required for the 'deviceready' event.
@@ -59,7 +61,7 @@
     <icon src="icons/ios/retina_ipad.png" gap:platform="ios" width="144" height="144" />
     
     <!-- Define app splash screen for each platform. -->
-    <splash src="splash.png" />
+    <gap:splash src="splash.png" />
     <gap:splash src="res/screen/android/screen-ldpi-portrait.png" gap:platform="android" gap:density="ldpi" />
     <gap:splash src="res/screen/android/screen-mdpi-portrait.png" gap:platform="android" gap:density="mdpi" />
     <gap:splash src="res/screen/android/screen-hdpi-portrait.png" gap:platform="android" gap:density="hdpi" />

@@ -24,6 +24,12 @@
        <param name="APP_NAME" value="LittleBlueBird" />
     </gap:plugin>
     
+    <!-- android -->
+    <gap:plugin name="SplashScreen" value="org.apache.cordova.SplashScreen"/>
+    
+    <!-- ios -->
+    <gap:plugin name="SplashScreen" value="CDVSplashScreen" />
+    
     
     <!-- next 2 blocks came from http://phonegap.com/blog/build/new-apple-app-store-submittal-rules/  -->
     <gap:splash src="splash/ios/Default.png" width="320" height="480" />

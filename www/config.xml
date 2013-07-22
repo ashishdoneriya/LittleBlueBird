@@ -23,6 +23,11 @@
        <param name="APP_ID" value="136122483829" />
        <param name="APP_NAME" value="LittleBlueBird" />
     </gap:plugin>
+    
+    
+    <!-- iOS only -->
+    <plugin name="SplashScreen" value="CDVSplashScreen" />
+    
  
     <access origin="http://www.littlebluebird.com" browserOnly="true" /> <!-- allows the app to access www.littlebluebird.com -->
     

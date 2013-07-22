@@ -26,7 +26,7 @@
     
     
     <!-- iOS only -->
-    <plugin name="SplashScreen" value="CDVSplashScreen" />
+    <gap:splash src="splash/iphone.png" gap:platform="ios" width="320" height="480" />
     
  
     <access origin="http://www.littlebluebird.com" browserOnly="true" /> <!-- allows the app to access www.littlebluebird.com -->

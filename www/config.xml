@@ -58,8 +58,6 @@
     <icon src="icons/ios/retina.png" gap:platform="ios" width="114" height="114" />
     <icon src="icons/ios/retina_ipad.png" gap:platform="ios" width="144" height="144" />
     
-    <gap:splash src="splash.png" />
-    
     <!-- Define app splash screen for each platform. -->
     <gap:splash src="res/screen/android/screen-ldpi-portrait.png" gap:platform="android" gap:density="ldpi" />
     <gap:splash src="res/screen/android/screen-mdpi-portrait.png" gap:platform="android" gap:density="mdpi" />

@@ -16,6 +16,7 @@
     </author>
     
     <preference name="phonegap-version" value="2.9.0" />
+    <preference name="auto-hide-splash-screen" value="false" />
     
     <icon src="img/LittleBlueBird-icon.png"/>
     
@@ -25,8 +26,7 @@
     </gap:plugin>
     
     
-    <!-- iOS only -->
-    <plugin name="SplashScreen" value="CDVSplashScreen" />
+    <gap:splash src="splash.png" />
     
  
     <access origin="http://www.littlebluebird.com" browserOnly="true" /> <!-- allows the app to access www.littlebluebird.com -->

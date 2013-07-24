@@ -40,7 +40,7 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', function($scope, E
   }
   
   $scope.testuser = function() {
-    $scope.user = User.find({userId:1}, function() {console.log('good')}, function() {console.log('bad')});
+    $scope.user = User.find({userId:1});
   }
   
 }];

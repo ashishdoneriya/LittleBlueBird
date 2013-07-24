@@ -46,7 +46,11 @@
     //
     function onDeviceReady() {
       setTimeout(function() {
-        //navigator.splashscreen.show();
+        navigator.splashscreen.show();
+      }, 100);
+      
+      setTimeout(function() {
+        navigator.splashscreen.hide();
       }, 2000);
     }
 
@@ -87,18 +91,19 @@
 
 	<div data-role="content">
 		<form novalidate>
-		    <div data-role="fieldcontain">
+		  <fieldset data-role="fieldcontain">
+		    <p>
 		        <label for="username" class="ui-hidden-accessible">Username:</label>
     		    <input id="username" name="email" type="text" ng-model="email" placeholder="Username" />
-    		</div>
-		    <div data-role="fieldcontain">
+    		</p>
+		    <p>
 		        <label for="password" class="ui-hidden-accessible">Password:</label>
     		    <input id="password" name="password" type="password" ng-model="password" placeholder="Password" />
-    		</div>
-		    <div data-role="fieldcontain">
+    		</p>
+		    <p>
 		        <a ng-click="lbblogin()" data-role="button" data-theme="b">Login</a>
-    		</div>
-    		
+    		</p>
+    	  </fieldset>	
 		</form>		
 	</div><!-- /content -->
 
@@ -220,7 +225,7 @@
 	</div><!-- /header -->
 
 	<div data-role="content">
-	  <P>{{user}}</P>
+	  <P>{{user.fullname}}</P>
 	</div><!-- /content -->
 
 	<div data-role="footer" data-theme="b" data-position="fixed">

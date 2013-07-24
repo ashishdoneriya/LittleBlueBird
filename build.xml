@@ -1,6 +1,12 @@
 <project default="copy">
 
-    <target name="copy">
+    <target name="copy" description="copy the www folder to src/main/webapps">
+      <copy todir="src/main/webapps">
+        <fileset dir="www"/>
+      </copy>
+    </target>
+
+    <target name="copy not sure if we need this anymore 2013-07-23">
     	<property name="angularVersion" value="1.1.1"/>
     	
     	<delete file="www/css/less-1.3.0.min.js"/>

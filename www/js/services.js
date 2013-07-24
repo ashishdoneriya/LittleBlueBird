@@ -6,6 +6,9 @@ else if (!debugging || typeof console.log == "undefined") console.log = function
 
   
 angular.module('project', ['ngResource']).
+  config(function($locationProvider){ 
+    $locationProvider.hashPrefix('#').html5Mode(false);
+  }).
   factory('User', function($resource) {
       var User = $resource('http://www.littlebluebird.com/gf/rest/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', 
                                                  password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login', 

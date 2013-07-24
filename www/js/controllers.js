@@ -5,13 +5,17 @@ if (typeof console == "undefined") var console = { log: function() {} };
 else if (!debugging || typeof console.log == "undefined") console.log = function() {};
 
 
-function LbbController($scope, Email, $rootScope, User, $location) {
+// 2013-07-23  $location is causing problems with jquery mobile: the browser back button stops working.  I think all links/routing stopped working.
+//function LbbController($scope, Email, $rootScope, User, $location) {
+
+// 2013-07-23  weird syntax needed for minification
+var LbbController = ['$scope', 'Email', '$rootScope', 'User', function($scope, Email, $rootScope, User) {
 
   $scope.email = 'bdunklau@yahoo.com';
 
   // 2013-07-19 copied from app-LoginCtrl.js
   $scope.emailIt = function(email) {
-    alert(Email);
+    console.log(Email);
     Email.send({type:'passwordrecovery', to:email, from:'info@littlebluebird.com', subject:'Password Recovery', message:'Your password is...'}, 
       function() {alert("User/Pass has been sent.  Check your email.");}, 
       function() {alert("Email not found: "+email+"\n\nContact us at info@littlebluebird.com for help");});
@@ -29,13 +33,15 @@ function LbbController($scope, Email, $rootScope, User, $location) {
                                function() {$scope.loginfail=false; 
                                            if($rootScope.user.dateOfBirth == 0) { $rootScope.user.dateOfBirth = ''; }
                                            $rootScope.showUser = $rootScope.user;  
-                                           $location.url('welcome'); 
+                                           //$location.url('welcome'); 
                                           }, 
                                function() {alert('Wrong user/pass');}  );
                                
   }
-}
+  
+  $scope.testuser = function() {
+    $scope.user = User.find({userId:1}, function() {console.log('good')}, function() {console.log('bad')});
+  }
+  
+}];
 
-
-// think you need this for minified js files
-LbbController.$inject = [$scope, Email, $rootScope, User, $location];

@@ -1,11 +1,14 @@
 <project default="copy">
 
-    <target name="copy" description="copy the www folder to src/main/webapps">
-      <copy todir="src/main/webapps">
+	
+    <target name="copy" description="copy the www folder to src/main/webapp/www">
+      <delete dir="src/main/webapp/www"/>
+      <copy todir="src/main/webapp/www">
         <fileset dir="www"/>
       </copy>
     </target>
 
+	
     <target name="copy not sure if we need this anymore 2013-07-23">
     	<property name="angularVersion" value="1.1.1"/>
     	

@@ -12,6 +12,9 @@ else if (!debugging || typeof console.log == "undefined") console.log = function
 var LbbController = ['$scope', 'Email', '$rootScope', 'User', function($scope, Email, $rootScope, User) {
 
   $scope.email = 'bdunklau@yahoo.com';
+  $scope.username = 'bdunklau@yahoo.com';
+  $scope.password = 'bdunklau@yahoo.com';
+  
 
   // 2013-07-19 copied from app-LoginCtrl.js
   $scope.emailIt = function(email) {
@@ -24,7 +27,7 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', function($scope, E
 
   // 2013-07-19 copied from app-LoginCtrl.js, but there the method is just called login
   $scope.lbblogin = function() {
-    //alert("login:  "+$scope.username+" / "+$scope.password);
+    console.log("login:  "+$scope.username+" / "+$scope.password);
     if(!angular.isDefined($scope.username) || !angular.isDefined($scope.password)) {
       return;
     }
@@ -39,8 +42,16 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', function($scope, E
                                
   }
   
-  $scope.testuser = function() {
-    $scope.user = User.find({userId:1});
+  
+  // 2013-07-23  copied/adapted from scope.login() in app-LoginCtrl.js
+  $scope.login = function() {      
+    $rootScope.user = User.find({username:$scope.username, password:$scope.password}, 
+                               function() {
+                                 if($rootScope.user.dateOfBirth == 0) { $rootScope.user.dateOfBirth = ''; }
+                                 $rootScope.showUser = $rootScope.user;  
+                               }, 
+                               function() {}  );
+                               
   }
   
 }];

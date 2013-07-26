@@ -1,0 +1,20 @@
+Plug your phone into your laptop
+Launch iTunes
+Launch Chrome
+https://build.phonegap.com/people/sign_in
+Sign in with Github
+Click the LittleBlueBird app
+iOS builds: use the "Ad Hoc Key" for testing on your phone
+Unlock the key using the Pi.... password
+Click "Update Code" button to get the latest from github
+Not sure if "Update Code" always triggers a build or not
+You can rebuild just the iOS version or any of the other 6 versions
+When the build is complete, click the blue/green "ipa" button to download the app to your laptop
+Should get a prompt from itunes to replace the current version of the app with the new
+Choose to replace
+Sync the phone with itunes to get the new version
+*** Sometimes you don't always get the new version.  You have to remove the app from your phone and then re-install it
+
+Another way to get the app on your phone that might be even easier:
+Scan the QR code on the app's page on phonegap:  https://build.phonegap.com/apps/480876/builds
+It will ask if you want to install the app on your phone.  I think it does a remove first.

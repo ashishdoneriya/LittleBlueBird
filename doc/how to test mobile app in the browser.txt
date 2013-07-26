@@ -1,0 +1,31 @@
+You can test the mobile app in a browser since the app is just html/javascript/css
+
+At this time (7/25/13), you can't test the facebook part in the browser
+
+LittleBlueBird/www stuff needs to get copied over to LittleBlueBird/src/main/webapp/www
+
+LittleBlueBird/build.xml contains a 'copy' target that will copy this stuff over
+
+Run the build.xml copy target from eclipse
+
+Jack with hosts file: Laptop needs to associate www.littlebluebird.com with 127.0.0.1
+Go to c:\windows\system32\drivers\etc
+Open the hosts file
+Should see this line: 127.0.0.1[tab]www.littlebluebird.com
+Add it if you don't see it
+
+cmd
+
+netstat -a -o -n
+
+taskkill /F /PID ...
+
+and then scroll up to the top of the list.  That's usually where the 0.0.0.0:80 process is.  Enter that pid and hit [ENTER] to kill the currently running process
+
+Then,
+cd lit[tab]  (should now be at c:\users\bdunklau\littlebluebird
+sbt
+container:start (up arrow might get you this)
+
+Now the app is running on a jetty web server
+The mobile version is:  http://www.littlebluebird.com/gf/www/

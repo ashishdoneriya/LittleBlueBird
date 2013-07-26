@@ -9,7 +9,7 @@ else if (!debugging || typeof console.log == "undefined") console.log = function
 //function LbbController($scope, Email, $rootScope, User, $location) {
 
 // 2013-07-23  weird syntax needed for minification
-var LbbController = ['$scope', 'Email', '$rootScope', 'User', function($scope, Email, $rootScope, User) {
+var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', function($scope, Email, $rootScope, User, Gift) {
 
   $scope.email = 'bdunklau@yahoo.com';
   $scope.username = 'bdunklau@yahoo.com';
@@ -54,5 +54,22 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', function($scope, E
                                
   }
   
+  
+  // 2013-07-23  copied/adapted from $rootScope.friendwishlist in app.js
+  $scope.friendwishlist = function(friend) {
+      $rootScope.showUser = friend;
+      $rootScope.gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, 
+                            function() { 
+                              $rootScope.gifts.mylist=false;
+                              $rootScope.gifts.ready="true";
+                              delete $rootScope.circle;
+                              $("#listview1").hide();
+                              setTimeout(function(){
+                                $("#listview1").listview("refresh");
+                                $("#listview1").show();
+                              },0);
+                            }, 
+                            function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
+  }
+  
 }];
-

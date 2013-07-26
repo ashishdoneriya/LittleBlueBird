@@ -5,7 +5,7 @@ if (typeof console == "undefined") var console = { log: function() {} };
 else if (!debugging || typeof console.log == "undefined") console.log = function() {};
 
   
-angular.module('project', ['ngResource']).
+var app = angular.module('project', ['ngResource']).
   config(function($locationProvider){ 
     $locationProvider.hashPrefix('#').html5Mode(false);
   }).
@@ -30,6 +30,32 @@ angular.module('project', ['ngResource']).
                     });
 
       return Email;
+  }).
+  factory('Gift', function($resource) {
+      var Gift = $resource('http://www.littlebluebird.com/gf/rest/gifts/:giftId/:updater', {giftId:'@giftId', updater:'@updater', viewerId:'@viewerId', recipientId:'@recipientId', recipients:'@recipients', circleId:'@circleId', description:'@description', url:'@url', addedBy:'@addedBy', status:'@status', senderId:'@senderId', senderName:'@senderName', reallyWants:'@reallyWants', deleted:'@deleted', urlAff:'@urlAff', affiliateId:'@affiliateId', receivedate:'@receivedate'}, 
+                    {
+                      query: {method:'GET', isArray:true}, 
+                      delete: {method:'DELETE'},
+                      save: {method:'POST'},
+                    });
+
+      return Gift;
   });
   
+  
+app.directive('jqueryMobileTpl', function () {
+    return {
+        link: function (scope, elm, attr) {
+            //elm.trigger('create');
+        }
+    };
+});
+app.directive('repeatDone', function () {
+    return function (scope, element, attrs) {
+        // When the last element is rendered
+        if (scope.$last) { 
+            element.parent().parent().trigger('create');
+        }
+    }
+});
   

@@ -151,6 +151,8 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
     if($rootScope.circle != undefined)
       saveparms.circleId = $rootScope.circle.id;
     
+    console.log(saveparms);
+    
     var savedgift = Gift.save(saveparms,
                function() {
                  if(add) {$rootScope.gifts.reverse();$rootScope.gifts.push(savedgift);$rootScope.gifts.reverse();}

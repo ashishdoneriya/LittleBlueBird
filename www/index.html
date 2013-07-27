@@ -5,17 +5,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css"/>
-    <!-- script src="http://code.jquery.com/jquery-1.8.2.min.js"></script -->
-    
-    <!-- script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script -->
-    
-    <script src="js/angular.min.js"></script>
-    <script src="js/angular-resource.min.js"></script>
-    <script src="js/angular-jqm.js"></script>
-    
+    <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+    <script src="js/angular.js"></script>
+    <script src="js/angular-resource.js"></script>
   
     <script src="js/services.js"></script>
     <script src="js/controllers.js"></script>
@@ -101,7 +95,7 @@
     		    <input id="password" name="password" type="password" ng-model="password" placeholder="Password" />
     		</p>
 		    <p>
-		        <a href="#welcome" ng-click="lbblogin()" data-role="button" data-theme="b">Login</a>
+		        <a href="#welcome" ng-click="lbblogin($event)" data-role="button" data-theme="b">Login</a>
     		</p>
     	  </fieldset>	
 		</form>		
@@ -185,11 +179,16 @@
 	</div><!-- /header -->
 
 	<div data-role="content">
+	
+	  <span ng-show="logingood">
 	  <ul data-role="listview" data-inset="true" class="ui-icon-alt">
-	    <li><a href="#mywishlist" data-transition="slide">My Wish List</a></li>
+	    <li><a href="#wishlist" ng-click="mywishlist()" data-transition="slide">My Wish List</a></li>
 	    <li><a href="#events" data-transition="slide">Events</a></li>
 	    <li><a href="#friends" data-transition="slide">Friends</a></li>
 	  </ul>
+	  </span>
+	
+	
 	</div><!-- /content -->
 
 	<div data-role="footer" data-theme="b" data-position="fixed">
@@ -238,34 +237,23 @@
 
 
 
-<div id="mywishlist" data-role="page" data-add-back-btn="true">
-
-	<div data-role="header" data-theme="b">
-		<h1>My Wish List</h1>
-	</div><!-- /header -->
-
-	<div data-role="content">
-	
-	</div><!-- /content -->
-
-	<div data-role="footer" data-theme="b" data-position="fixed">
-	  <h4>LittleBlueBird</h4>
-	</div><!-- /footer -->
-</div><!-- /page -->
-
-
 
 <div id="wishlist" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
+		<a href="#" data-rel="back" data-icon="arrow-l">Back</a>
 		<h1>Wish List</h1>
+		<a href="#additem" ng-click="initNewGift()" data-transition="slideup" data-icon="plus">Add</a>
 	</div><!-- /header -->
 
 	<div data-role="content">
+	  
+	  <span ng-show="showUser==user">My Wish List</span>
+	  <span ng-hide="showUser==user">{{showUser.fullname}}'s Wish List</span>
 	
       <div jquery-mobile-tpl>
-        <ul id="listview1" data-role="listview" data-inset="true" data-theme="c" repeat-done="" ng-cloak>
-          <li data-ng-repeat="gift in gifts"><a href="#" rel="external">eeeee{{gift.description}}</a></li>
+        <ul id="wishlistview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
+          <li data-ng-repeat="gift in gifts"><a href="#">{{gift.description}}</a></li>
         </ul>
       </div>
 	  
@@ -286,12 +274,14 @@
 
 	<div data-role="content">
 	  
-	    <ul data-role="listview" data-inset="true" class="ui-icon-alt">
+        <!-- you don't need the div tag with jquery-mobile-tpl in this case because 'friends' is determined at login time so the array exists by the time you get here
+        You only need the jquery-mobile-tpl directive when you are creating an object array at the same time you are navigating to the page where the array is displayed
+         2013-07-26 -->
+	    
+	    <ul id="friendview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
 	      <li ng-repeat="friend in user.friends">
 	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
-	          <img ng-src="{{friend.profilepicUrl}}"/>
-	          <P>{{friend.fullname}}</P>
-	          <P>{{friend.profilepicUrl}}</P>
+	          {{friend.fullname}}
 	        </a>
 	      </li>
 	    </ul>
@@ -305,10 +295,45 @@
 
 
 
+<div id="additem" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Add Item</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  
+	  <span ng-show="showUser==user">Add to My Wish List</span>
+	  <span ng-hide="showUser==user">Add to {{showUser.fullname}}'s Wish List</span>
+	  
+	  <form>
+		  <fieldset data-role="fieldcontain">
+		    <p>
+		        <label for="description" class="ui-hidden-accessible">Description:</label>
+    		    <textarea id="description" cols="40" rows="8" name="description" type="text" ng-model="newgift.description" placeholder="Description"></textarea>
+    		</p>
+		    <p>
+		        <label for="url" class="ui-hidden-accessible">URL:</label>
+    		    <input id="url" name="url" type="text" ng-model="newgift.url" placeholder="URL" />
+    		</p>
+		    <p>
+		        <a href="#wishlist" ng-click="addgift(newgift)" data-role="button" data-theme="b">Add Item</a>
+    		</p>
+    	  </fieldset>	
+	  </form>
+	</div><!-- /content -->
+
+	<div data-role="footer" data-theme="b" data-position="fixed">
+	  <h4>LittleBlueBird</h4>
+	</div><!-- /footer -->
+</div><!-- /page -->
+
+
+
 <div id="copythis" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>LittleBlueBird</h1>
+		<h1></h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
@@ -316,7 +341,7 @@
 	</div><!-- /content -->
 
 	<div data-role="footer" data-theme="b" data-position="fixed">
-	  <h4></h4>
+	  <h4>LittleBlueBird</h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
 

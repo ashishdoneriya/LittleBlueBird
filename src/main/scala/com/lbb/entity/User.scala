@@ -3,22 +3,18 @@ package com.lbb.entity
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
-
 import scala.math.BigInt.int2bigInt
 import scala.math.BigInt.long2bigInt
 import scala.xml.NodeSeq
 import scala.xml.Text
-
 import org.joda.time.DateMidnight
 import org.joda.time.Years
-
 import com.lbb.gui.MappedDateExtended
 import com.lbb.gui.MappedEmailExtended
 import com.lbb.gui.MappedTextareaExtended
 import com.lbb.util.LbbLogger
 import com.lbb.util.Util
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
-
 import javax.swing.ImageIcon
 import net.liftweb.common.Box.box2Iterable
 import net.liftweb.common.Box
@@ -55,6 +51,7 @@ import net.liftweb.mapper.MappedLongIndex
 import net.liftweb.mapper.MappedString
 import net.liftweb.mapper.OprEnum
 import net.liftweb.util.FieldError
+import com.lbb.util.NOOPDateChangeListener
 
 
 /**
@@ -122,7 +119,7 @@ ALTER TABLE `person`
  * Lesson:  Don't have to implement validate here - use the inherited validate which will call validate on all the fields
  */
 // TODO store user preferences
-class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
+class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany with NOOPDateChangeListener {
   def getSingleton = User
   
   def primaryKeyField = id
@@ -245,7 +242,7 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany {
   }
   
   // https://github.com/lift/framework/blob/master/persistence/mapper/src/main/scala/net/liftweb/mapper/MappedDate.scala
-  object dateOfBirth extends MappedDateExtended(this) {
+  object dateOfBirth extends MappedDateExtended(this, this) {
 
     override def displayName = "Date of Birth"
     override def dbColumnName = "dob"

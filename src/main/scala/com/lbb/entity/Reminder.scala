@@ -196,11 +196,16 @@ object Reminder extends Reminder with LongKeyedMetaMapper[Reminder] {
   def createReminders(c:Circle) = {
     val priors = daysprior(c)
     
-    val dates = for(p <- priors) yield {
+    val datespossiblyinthepast = for(p <- priors) yield {
       val jodatime = new DateTime(c.date.is.getTime())
-      calc(jodatime, p)
+      val returnd = calc(jodatime, p)
+      debug("dates possibly in the past: "+returnd)
+      returnd
     }
     
+    val dates = datespossiblyinthepast.filter(d => d.getMillis() > new DateTime().getMillis)
+    
+    dates.foreach(d => debug("only future dates: "+d))
     
     val receivers = c.receiverLimit match {
       case 1 => Nil // if there's only one receiver, that person doesn't need any reminders

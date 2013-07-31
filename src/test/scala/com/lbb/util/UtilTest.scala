@@ -19,6 +19,9 @@ import com.lbb.entity.CircleParticipant
 import com.lbb.entity.Recipient
 import net.liftweb.common.Box
 import com.lbb.entity.User
+import java.util.Date
+import java.util.GregorianCalendar
+import org.joda.time.DateTime
 
 @RunWith(classOf[JUnitRunner])
 class UtilTest extends FunSuite with AssertionsForJUnit with LbbLogger {
@@ -111,6 +114,28 @@ class UtilTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     val marginleft = Util.calculateMarginLeft(75, profilepicUrl)
     assert("0px"===margintop)
     assert("-22px"===marginleft)
+  }
+  
+  
+  // take any date and move it to 11:59pm on that same day
+  test("ahead 23 hrs") {
+    val expyear = 2013; val expmonth = 1; val expday = 30; val exphr = 23; val expmin = 59; val expsec = 59;
+    val dt = new DateTime(expyear, expmonth, expday, 0, 0, 0, 0)
+    val d = new Date(dt.getMillis)
+    val newd = Util.ahead23hrs(d)
+    val newdt = new DateTime(newd.getTime)
+    val actyear = newdt.getYear
+    val actmonth = newdt.getMonthOfYear
+    val actday = newdt.getDayOfMonth
+    val acthr = newdt.getHourOfDay
+    val actmin = newdt.getMinuteOfHour
+    val actsec = newdt.getSecondOfMinute
+    assert(actyear===expyear)
+    assert(actmonth===expmonth)
+    assert(actday===expday)
+    assert(acthr===exphr)
+    assert(actmin===expmin)
+    assert(actsec===expsec)
   }
   
   test("List stuff") {

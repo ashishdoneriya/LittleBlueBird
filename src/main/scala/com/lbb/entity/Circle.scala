@@ -27,6 +27,7 @@ import net.liftweb.util.FieldError
 import net.liftweb.json.JsonAST
 import com.lbb.util.LbbLogger
 import com.lbb.gui.MappedDateObservable
+import com.lbb.util.Util
 
 /**
  * READY TO DEPLOY
@@ -104,7 +105,7 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLog
 //  }
   
   // Keep track of the date the circle was deleted, not just the boolean value
-  object date_deleted extends MappedDateObservable(this, this) {
+  object date_deleted extends MappedDateExtended(this, this) {
     override def dbColumnName = "date_deleted"
   
     override def apply(d:Date) = {
@@ -117,7 +118,7 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLog
   }
   
   // legacy db field - not going anything with this field at this time 5/21/12
-  object cutoff_date extends MappedDateExtended(this) {
+  object cutoff_date extends MappedDateObservable(this, this) {
     override def dbColumnName = "cutoff_date"
   }
   
@@ -128,35 +129,39 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLog
     override def displayName = "Event Date"
     override def dbColumnName = "expiration_date"
       
-    var err:List[FieldError] = Nil
+//    var err:List[FieldError] = Nil
     
-    final val dateFormat = new SimpleDateFormat("MM/dd/yyyy")
+//    final val dateFormat = new SimpleDateFormat("MM/dd/yyyy")
     
-    override def asHtml = is match {
-      case null => Text("")
-      case _ => Text(dateFormat.format(is))
-    }
+//    override def asHtml = is match {
+//      case null => Text("")
+//      case _ => Text(dateFormat.format(is))
+//    }
     
-    override def format(d:Date) = d match {
-      case null => ""
-      case _ => dateFormat.format(d)
-    }
+//    override def format(d:Date) = d match {
+//      case null => ""
+//      case _ => dateFormat.format(d)
+//    }
     
-    val Pat = """(\d){1,2}/(\d){1,2}/(\d){4}""".r
+//    val Pat = """(\d){1,2}/(\d){1,2}/(\d){4}""".r
     
-    override def parse(s:String) = s match {
-      case Pat(m, d, y) => err = Nil; debug("parse: case Pat(m, d, y): errors..."); err.foreach(debug(_)); Full(dateFormat.parse(s))
-      case "" => err = FieldError(this, Text(displayName+" is required")) :: Nil; debug("parse: case \"\": errors..."); err.foreach(debug(_)); this.set(null); Empty
-      case _ => err = FieldError(this, Text(displayName+" must be MM/dd/yyyy format")) :: Nil; debug("parse: case _ :  errors..."); err.foreach(debug(_)); this.set(null); Empty
-    }
+//    override def parse(s:String) = s match {
+//      case Pat(m, d, y) => err = Nil; debug("parse: case Pat(m, d, y): errors..."); err.foreach(debug(_)); Full(dateFormat.parse(s))
+//      case "" => err = FieldError(this, Text(displayName+" is required")) :: Nil; debug("parse: case \"\": errors..."); err.foreach(debug(_)); this.set(null); Empty
+//      case _ => err = FieldError(this, Text(displayName+" must be MM/dd/yyyy format")) :: Nil; debug("parse: case _ :  errors..."); err.foreach(debug(_)); this.set(null); Empty
+//    }
     
-    override def validate:List[FieldError] = err
+//    override def validate:List[FieldError] = err
   
     override def apply(d:Date) = {
+      // This date is probably a midnight date, which is not what we want.  We want to move the date forward 23 hrs and 59 minutes.
+      // If someone looks at an event on the day of, we don't want to tell them the event has past.
+      val bumpedUpDate = Util.ahead23hrs(d)
+      
       debug("apply: d = "+d+"  evtlistener="+evtlistener)
       
       evtlistener.dateUnset
-      val obj = super.apply(d)
+      val obj = super.apply(bumpedUpDate)
       evtlistener.dateSet(obj)
       obj
     }

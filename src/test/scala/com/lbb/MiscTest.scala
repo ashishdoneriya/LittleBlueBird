@@ -4,7 +4,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.Date
 import scala.util.Random
-import org.joda.time.DateMidnight
+//import org.joda.time.DateMidnight
 import org.joda.time.DateTime
 import org.joda.time.Minutes
 import org.joda.time.Seconds

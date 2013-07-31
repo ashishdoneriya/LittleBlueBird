@@ -6,9 +6,19 @@ import java.net.URL
 import javax.swing.ImageIcon
 import net.liftweb.mapper.DB
 import net.liftweb.db.DefaultConnectionIdentifier
+import java.util.Date
+import org.joda.time.DateTime
 
 object Util extends LbbLogger {
   
+  
+  // 2013-07-31
+  def ahead23hrs(d:Date) = {
+    val orig = new DateTime(d.getTime())
+    orig.dayOfMonth()
+    val newd = new DateTime(orig.getYear(), orig.getMonthOfYear(), orig.getDayOfMonth(), 23, 59, 59, 0)
+    new Date(newd.getMillis())
+  }
   
   
   // 2/26/13 - run an arbitrary query

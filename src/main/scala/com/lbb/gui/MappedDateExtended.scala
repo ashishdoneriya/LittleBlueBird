@@ -8,7 +8,7 @@ import net.liftweb.common.Full
 import scala.xml.NodeSeq
 import com.lbb.util.DateChangeListener
 
-class MappedDateExtended[T <: Mapper[T]](towner: T) extends MappedDate[T](towner) {
+class MappedDateExtended[T <: Mapper[T]](towner: T, ls:DateChangeListener) extends MappedDate[T](towner) {
 
 //  override def _toForm: Box[NodeSeq] =
 //    S.fmapFunc({s: List[String] => this.setFromAny(s)}){funcName =>
@@ -17,6 +17,8 @@ class MappedDateExtended[T <: Mapper[T]](towner: T) extends MappedDate[T](towner
 //                     value={is match {case null => "" case s => format(s)}}
 //                     placeholder={displayName}/>))
 //  }
+  
+  val evtlistener = ls
   
   override def toLong = {
     super.toLong * 1000L

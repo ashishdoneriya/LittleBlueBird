@@ -21,7 +21,7 @@
   </logger>
  
   <logger name="com.lbb.entity.Reminder">
-    <level value="error" />
+    <level value="debug" />
   </logger>
  
   <root level="debug">

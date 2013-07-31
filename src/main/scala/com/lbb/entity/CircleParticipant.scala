@@ -13,6 +13,7 @@ import net.liftweb.mapper.IHaveValidatedThisSQL
 import com.lbb.util.LbbLogger
 import net.liftweb.mapper.By
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
+import com.lbb.util.NOOPDateChangeListener
 
 /**
  * READY TO DEPLOY
@@ -52,7 +53,7 @@ ALTER TABLE `circle_participants`
  */
 
 
-class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK with LbbLogger {
+class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK with LbbLogger with NOOPDateChangeListener {
   def getSingleton = CircleParticipant
     
   // TODO make sure circle/person is unique
@@ -83,12 +84,12 @@ class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK wit
   def isReceiver = "Receiver".equalsIgnoreCase(participationLevel.is)
   
   
-  object date_invited extends MappedDateExtended(this) {
+  object date_invited extends MappedDateExtended(this, this) {
     override def dbColumnName = "date_invited"
     override def is = new Date()
   }
   
-  object date_decided extends MappedDateExtended(this) {
+  object date_decided extends MappedDateExtended(this, this) {
     override def dbColumnName = "date_decided"
   }
   

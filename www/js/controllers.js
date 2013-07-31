@@ -107,9 +107,18 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', function($
   
   // the only reason this function is here is to kick jquery to reapply the listview style to the friend list
   $scope.events = function() {
+                              jQuery("#eventview").hide();
                               setTimeout(function(){
                                 jQuery("#eventview").listview("refresh");
+                                jQuery("#eventview").show();
                               },0);
+  }
+  
+  $scope.eventfilter = 'current';
+  $scope.eventDateFilter = function(circle) {
+    if($scope.eventfilter=='all') return true;
+    else if($scope.eventfilter=='current') return circle.date > new Date().getTime();
+    else if($scope.eventfilter=='past') return circle.date < new Date().getTime();
   }
   
   

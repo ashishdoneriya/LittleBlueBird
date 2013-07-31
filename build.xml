@@ -2,7 +2,28 @@
 
 	
 	<!-- combine all these files to create one big index.html file -->
-	<target name="create-index">
+	<target name="create-fragments">
+		  <concat destfile="fragments/wishlist.html"
+		          force="yes">
+		     <fileset file="fragments/wishlist-nofooter.html" />
+		     <fileset file="fragments/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/friends.html"
+		          force="yes">
+		     <fileset file="fragments/friends-nofooter.html" />
+		     <fileset file="fragments/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/events.html"
+		          force="yes">
+		     <fileset file="fragments/events-nofooter.html" />
+		     <fileset file="fragments/footer.html" />
+		  </concat>
+	</target>
+	
+	
+	<target name="create-index" depends="create-fragments">
 	  <concat destfile="www/index.html"
 	          force="yes">
 	     <fileset file="fragments/top.html" />

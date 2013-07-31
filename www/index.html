@@ -222,9 +222,18 @@
 	  </ul>
 	</div><!-- /content -->
 
-	<div data-role="footer" data-theme="b" data-position="fixed">
-	  <h4>LittleBlueBird</h4>
-	</div><!-- /footer -->
+
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+      <h4>LittleBlueBird</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
 </div><!-- /page -->
 <div id="wishlist" data-role="page">
 
@@ -247,9 +256,18 @@
 	  
 	</div><!-- /content -->
 
-	<div data-role="footer" data-theme="b" data-position="fixed">
-	  <h4>LittleBlueBird</h4>
-	</div><!-- /footer -->
+
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+      <h4>LittleBlueBird</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
 </div><!-- /page -->
 
 <div id="friends" data-role="page" data-add-back-btn="true">
@@ -280,9 +298,19 @@
 	  
 	</div><!-- /content -->
 
-	<div data-role="footer" data-theme="b" data-position="fixed">
-	  <h4>LittleBlueBird</h4>
-	</div><!-- /footer -->
+
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+      <h4>LittleBlueBird</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
 </div><!-- /page -->
 
 <div id="edititem" data-role="page" data-add-back-btn="true">
@@ -360,9 +388,9 @@
       <h4>LittleBlueBird</h4>
       <div data-role="navbar">
         <ul>
-            <li><a href="#edititem" data-icon="plus"></a></li>
-            <li><a href="#home" data-icon="home"></a></li>
-            <li><a href="#friends" data-icon="search"></a></li>
+            <li><a href="#wishlist">Wish List</a></li>
+            <li><a href="#friends">Friends</a></li>
+            <li><a href="#events">Events</a></li>
         </ul>
       </div><!-- /navbar -->
     </div><!-- /footer -->

@@ -1,0 +1,24 @@
+
+
+<div id="friends" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Friends</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  	  
+      <div jquery-mobile-tpl>
+	    <ul id="friendview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
+	      <li ng-repeat="friend in user.friends">
+	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
+	          {{friend.fullname}}
+	        </a>
+	      </li>
+	    </ul>
+	  </div>
+	  
+	</div><!-- /content -->
+
+
+	

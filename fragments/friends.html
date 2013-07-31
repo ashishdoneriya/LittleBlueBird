@@ -12,6 +12,10 @@
         You only need the jquery-mobile-tpl directive when you are creating an object array at the same time you are navigating to the page where the array is displayed
          2013-07-26 -->
 	    
+	  <ul data-role="listview" data-inset="true" class="ui-icon-alt">
+	      <li ng-repeat="friend in user.friends"><a href="#">{{friend.fullname}}</a></li>
+	  </ul>
+	  
       <div jquery-mobile-tpl>
 	    <ul id="friendview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
 	      <li ng-repeat="friend in user.friends">

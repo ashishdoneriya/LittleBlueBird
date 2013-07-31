@@ -228,7 +228,7 @@
       <h4>LittleBlueBird</h4>
       <div data-role="navbar">
         <ul>
-            <li><a href="#wishlist" ng-click="setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#wishlist" ng-click="showUser=user;setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
             <li><a href="#friends" ng-click="setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
             <li><a href="#events" ng-click="setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
         </ul>
@@ -262,7 +262,7 @@
       <h4>LittleBlueBird</h4>
       <div data-role="navbar">
         <ul>
-            <li><a href="#wishlist" ng-click="setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#wishlist" ng-click="showUser=user;setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
             <li><a href="#friends" ng-click="setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
             <li><a href="#events" ng-click="setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
         </ul>
@@ -277,15 +277,7 @@
 	</div><!-- /header -->
 
 	<div data-role="content">
-	  
-        <!-- you don't need the div tag with jquery-mobile-tpl in this case because 'friends' is determined at login time so the array exists by the time you get here
-        You only need the jquery-mobile-tpl directive when you are creating an object array at the same time you are navigating to the page where the array is displayed
-         2013-07-26 -->
-	    
-	  <ul data-role="listview" data-inset="true" class="ui-icon-alt">
-	      <li ng-repeat="friend in user.friends"><a href="#">{{friend.fullname}}</a></li>
-	  </ul>
-	  
+	  	  
       <div jquery-mobile-tpl>
 	    <ul id="friendview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
 	      <li ng-repeat="friend in user.friends">
@@ -305,7 +297,7 @@
       <h4>LittleBlueBird</h4>
       <div data-role="navbar">
         <ul>
-            <li><a href="#wishlist" ng-click="setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#wishlist" ng-click="showUser=user;setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
             <li><a href="#friends" ng-click="setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
             <li><a href="#events" ng-click="setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
         </ul>

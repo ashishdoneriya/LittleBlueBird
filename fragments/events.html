@@ -7,9 +7,19 @@
 	</div><!-- /header -->
 
 	<div data-role="content">
-	  <ul data-role="listview" data-inset="true" class="ui-icon-alt">
-	      <li ng-repeat="c in user.circles"><a href="#">{{c.name}}</a></li>
-	  </ul>
+	  
+      <div jquery-mobile-tpl>
+	    <ul id="eventview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
+	      <li ng-repeat="c in user.circles">
+	        <a href="#" data-transition="slide">
+	          {{c.name}}
+	          <p>{{circle.date | date:'MMM d, yyyy'}}</p>
+	        </a>
+	      </li>
+	    </ul>
+	  </div>
+	  
+	  
 	</div><!-- /content -->
 
 
@@ -18,9 +28,9 @@
       <h4>LittleBlueBird</h4>
       <div data-role="navbar">
         <ul>
-            <li><a href="#wishlist" ng-click="showUser=user;setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
-            <li><a href="#friends" ng-click="setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
-            <li><a href="#events" ng-click="setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
         </ul>
       </div><!-- /navbar -->
     </div><!-- /footer -->

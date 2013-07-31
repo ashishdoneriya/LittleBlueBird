@@ -7,8 +7,18 @@
 	</div><!-- /header -->
 
 	<div data-role="content">
-	  <ul data-role="listview" data-inset="true" class="ui-icon-alt">
-	      <li ng-repeat="c in user.circles"><a href="#">{{c.name}}</a></li>
-	  </ul>
+	  
+      <div jquery-mobile-tpl>
+	    <ul id="eventview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
+	      <li ng-repeat="c in user.circles">
+	        <a href="#" data-transition="slide">
+	          {{c.name}}
+	          <p>{{circle.date | date:'MMM d, yyyy'}}</p>
+	        </a>
+	      </li>
+	    </ul>
+	  </div>
+	  
+	  
 	</div><!-- /content -->
 

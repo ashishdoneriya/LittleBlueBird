@@ -97,6 +97,22 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', function($
   }
   
   
+  // the only reason this function is here is to kick jquery to reapply the listview style to the friend list
+  $scope.friends = function() {
+                              setTimeout(function(){
+                                jQuery("#friendview").listview("refresh");
+                              },0);
+  }
+  
+  
+  // the only reason this function is here is to kick jquery to reapply the listview style to the friend list
+  $scope.events = function() {
+                              setTimeout(function(){
+                                jQuery("#eventview").listview("refresh");
+                              },0);
+  }
+  
+  
   
   // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.initNewGift() function
   $scope.initNewGift = function() {

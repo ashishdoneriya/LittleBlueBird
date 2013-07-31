@@ -26,9 +26,9 @@
       <h4>LittleBlueBird</h4>
       <div data-role="navbar">
         <ul>
-            <li><a href="#wishlist" ng-click="showUser=user;setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
-            <li><a href="#friends" ng-click="setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
-            <li><a href="#events" ng-click="setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
         </ul>
       </div><!-- /navbar -->
     </div><!-- /footer -->

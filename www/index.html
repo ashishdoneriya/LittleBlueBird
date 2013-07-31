@@ -14,8 +14,6 @@
     <script src="js/services.js"></script>
     <script src="js/controllers.js"></script>
     
-    <script src="js/app.js"></script>  
-    
   <meta charset="utf-8">
   <meta property="og:title" content="LittleBlueBird" />
   <meta property="og:type" content="website" />
@@ -57,12 +55,9 @@
 
 
 <div id="home" data-role="page">
-
-	<div data-role="header" data-theme="b">
-		<h1>LittleBlueBird</h1>
-	</div><!-- /header -->
-
-	<div data-role="content">	
+    <div data-role="header" data-theme="b"><h1>LittleBlueBird</h1></div>
+	
+	<div data-role="content">
 		<p><a ng-click="fblogin()" data-role="button" data-theme="b">Login via Facebook</a> </p>	
 		<p><a href="#lbblogin" data-role="button" data-theme="b">Login via LittleBlueBird</a> </p>	
 		<p><a href="#register" data-role="button" data-theme="b">Register</a> </p>	
@@ -70,13 +65,10 @@
 	</div><!-- /content -->
 
 	<div data-role="footer" data-theme="b" data-position="fixed">
-	  <h4></h4>
+	  <h4>Home</h4>
 	</div><!-- /footer -->
-</div><!-- /page -->
 
-
-
-
+</div>
 <div id="lbblogin" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
@@ -105,10 +97,6 @@
 	  <h4></h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
-
-
-
-
 <div id="forgot" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
@@ -131,10 +119,6 @@
 	  <h4></h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
-
-
-
-
 <div id="register" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
@@ -168,10 +152,6 @@
 	  <h4></h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
-
-
-
-
 <div id="welcome" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
@@ -195,10 +175,6 @@
 	  <h4>LittleBlueBird</h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
-
-
-
-
 <div id="woops" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
@@ -214,9 +190,6 @@
 	  <h4></h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
-
-
-
 
 <div id="events" data-role="page" data-add-back-btn="true">
 
@@ -234,16 +207,12 @@
 	  <h4>LittleBlueBird</h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
-
-
-
-
-<div id="wishlist" data-role="page" data-add-back-btn="true">
+<div id="wishlist" data-role="page">
 
 	<div data-role="header" data-theme="b">
-		<a href="#" data-rel="back" data-icon="arrow-l">Back</a>
+		<a href="#welcome" data-rel="back" data-icon="arrow-l" data-transition="slide">Back</a>
 		<h1>Wish List</h1>
-		<a href="#additem" ng-click="initNewGift()" data-transition="slideup" data-icon="plus">Add</a>
+		<a href="#edititem" ng-click="initNewGift()" data-transition="slideup" data-icon="plus">Add</a>
 	</div><!-- /header -->
 
 	<div data-role="content">
@@ -253,7 +222,7 @@
 	
       <div jquery-mobile-tpl>
         <ul id="wishlistview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
-          <li data-ng-repeat="gift in gifts"><a href="#">{{gift.description}}</a></li>
+          <li data-ng-repeat="gift in gifts"><a href="#gift" ng-click="setcurrentgift($index, gift)" data-transition="slide">{{gift.description}}</a></li>
         </ul>
       </div>
 	  
@@ -263,8 +232,6 @@
 	  <h4>LittleBlueBird</h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
-
-
 
 <div id="friends" data-role="page" data-add-back-btn="true">
 
@@ -278,6 +245,7 @@
         You only need the jquery-mobile-tpl directive when you are creating an object array at the same time you are navigating to the page where the array is displayed
          2013-07-26 -->
 	    
+      <div jquery-mobile-tpl>
 	    <ul id="friendview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
 	      <li ng-repeat="friend in user.friends">
 	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
@@ -285,6 +253,7 @@
 	        </a>
 	      </li>
 	    </ul>
+	  </div>
 	  
 	</div><!-- /content -->
 
@@ -293,32 +262,41 @@
 	</div><!-- /footer -->
 </div><!-- /page -->
 
-
-
-<div id="additem" data-role="page" data-add-back-btn="true">
+<div id="edititem" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>Add Item</h1>
+		<h1>Gift</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
 	  
-	  <span ng-show="showUser==user">Add to My Wish List</span>
-	  <span ng-hide="showUser==user">Add to {{showUser.fullname}}'s Wish List</span>
-	  
 	  <form>
 		  <fieldset data-role="fieldcontain">
+            <input type="hidden" name="giftId" ng-model="currentgift.id" />
 		    <p>
 		        <label for="description" class="ui-hidden-accessible">Description:</label>
-    		    <textarea id="description" cols="40" rows="8" name="description" type="text" ng-model="newgift.description" placeholder="Description"></textarea>
-    		</p>
+    		    <textarea id="description" cols="40" rows="8" name="description" type="text" ng-model="currentgift.description" placeholder="Description"></textarea>
+		    </p>
 		    <p>
 		        <label for="url" class="ui-hidden-accessible">URL:</label>
-    		    <input id="url" name="url" type="text" ng-model="newgift.url" placeholder="URL" />
-    		</p>
+    		    <input id="url" name="url" type="text" ng-model="currentgift.url" placeholder="URL" />
+		    </p>
 		    <p>
-		        <a href="#wishlist" ng-click="addgift(newgift)" data-role="button" data-theme="b">Add Item</a>
-    		</p>
+		        Recipients:
+		    </p>
+		    
+		    <p>
+		      <ul data-role="listview">
+                <li ng-repeat="r in gift.recipients">{{r.fullname}}</li>
+              </ul>
+		    </p>
+      
+		    <div class="ui-grid-b">
+              <div class="ui-block-a"><button href="#wishlist">Cancel</button></div>
+		      <div class="ui-block-b"><button href="#wishlist" ng-click="savegift(currentgift)" data-theme="b">Add Recipient</button></div>
+		      <div class="ui-block-c"><button href="#wishlist" ng-click="savegift(currentgift)" data-theme="b">Save</button></div>
+    		</div>
+    	
     	  </fieldset>	
 	  </form>
 	</div><!-- /content -->
@@ -327,27 +305,47 @@
 	  <h4>LittleBlueBird</h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
-
-
-
-<div id="copythis" data-role="page" data-add-back-btn="true">
+<div id="gift" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1></h1>
+		<h1>Gift</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
+	 <P><b>Gift: </b>{{currentgift.description}}</P>
+	 
+	 <P><b>Recipient(s): </b><span ng-repeat="r in currentgift.recipients">{{r.fullname}}</span></P>
+	 
+	 
+	 <div ng-show="circle!=null">
+	   <P><b>Event: </b> {{circle.name}} {{circle.date | date:'EEE MMM d, yyyy'}}</P>
+	 </div>
+	
+	<P>
+	  <span ng-show="currentgift.canedit">
+	    <a href="#edititem" data-theme="b" data-role="button">Edit</a>
+	  </span>
+	  <span ng-show="currentgift.candelete">
+	    <a href="#wishlist" ng-click="deletegift(currentgift)" data-theme="c" data-role="button">Delete</a>
+	  </span>
+	</P>
 	
 	</div><!-- /content -->
 
+	
 	<div data-role="footer" data-theme="b" data-position="fixed">
-	  <h4>LittleBlueBird</h4>
-	</div><!-- /footer -->
+      <h4>LittleBlueBird</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#edititem" data-icon="plus"></a></li>
+            <li><a href="#home" data-icon="home"></a></li>
+            <li><a href="#friends" data-icon="search"></a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+	
+	
 </div><!-- /page -->
 
-
-	
 </body>
 </html>
-
-

@@ -63,30 +63,31 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', function($
   
   
   
-  <!-- 2013-07-26  copied/adapted from app-GiftCtrl's $scope.initNewGift() function -->
+  // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.initNewGift() function
   $scope.initNewGift = function() {
+    delete $scope.currentgift;
     if(angular.isDefined($rootScope.circle)) {
-      $scope.newgift = {addedBy:$rootScope.user, circle:$rootScope.circle};
-      $scope.newgift.recipients = angular.copy($rootScope.circle.participants.receivers);
+      $scope.currentgift = {addedBy:$rootScope.user, circle:$rootScope.circle};
+      $scope.currentgift.recipients = angular.copy($rootScope.circle.participants.receivers);
     }
     else {
-      $scope.newgift = {addedBy:$rootScope.user};
-      $scope.newgift.recipients = [$rootScope.showUser];
+      $scope.currentgift = {addedBy:$rootScope.user};
+      $scope.currentgift.recipients = [$rootScope.showUser];
     }
     
-    for(var i=0; i < $scope.newgift.recipients.length; i++) {
-      if($scope.newgift.recipients[i].id == $rootScope.showUser.id)
-        $scope.newgift.recipients[i].checked = true;
+    for(var i=0; i < $scope.currentgift.recipients.length; i++) {
+      if($scope.currentgift.recipients[i].id == $rootScope.showUser.id)
+        $scope.currentgift.recipients[i].checked = true;
     }
     
     // you need to specify who the gift is for if there is a circle and if there is more than one receiver in the circle
-    $scope.needToSpecifyWhoTheGiftIsFor = angular.isDefined($scope.newgift) && angular.isDefined($scope.newgift.circle) 
-           && angular.isDefined($scope.newgift.recipients) && $scope.newgift.recipients.length > 1;
+    $scope.needToSpecifyWhoTheGiftIsFor = angular.isDefined($scope.currentgift) && angular.isDefined($scope.currentgift.circle) 
+           && angular.isDefined($scope.currentgift.recipients) && $scope.currentgift.recipients.length > 1;
   }
   
   
-  <!-- 2013-07-26  copied/adapted from app-GiftCtrl's $scope.addgift() function -->
-  $scope.addgift = function(gift) {
+  // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.addgift() function
+  $scope.savegift = function(gift) {
     // the 'showUser' doesn't have to be a recipient - only add if it is
     var add = false;
     
@@ -107,15 +108,38 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', function($
     var savedgift = Gift.save(saveparms,
                function() {
                  if(add) {$rootScope.gifts.reverse();$rootScope.gifts.push(savedgift);$rootScope.gifts.reverse();}
-                 $scope.newgift = {};
-                 $scope.newgift.recipients = [];
+                 $scope.currentgift = {};
+                 $scope.currentgift.recipients = [];
                  setTimeout(function(){
                    jQuery("#wishlistview").listview("refresh");
                    jQuery("#wishlistview").show();
                  },0);
                });
                
-  }  
+  }    
+  
+  
+  
+  // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.deletegift() function
+  $scope.deletegift = function(gift) {
+    $rootScope.gifts.splice($scope.index, 1);
+    Gift.delete({giftId:gift.id, updater:$rootScope.user.fullname}, 
+                  function() {
+                     setTimeout(function(){
+                      jQuery("#wishlistview").listview("refresh");
+                      jQuery("#wishlistview").show();
+                    },0);
+                  } // end success function
+               );
+  }
+  
+  
+  // simple setter as we go from the wishlist page to the gift (details) page
+  $scope.setcurrentgift = function(index, gift) {
+    $scope.index = index; // so that if we delete the gift we know where it is in the list 'gifts'
+    $scope.currentgift = gift;
+    console.log('currentgift:', gift);
+  }
   
   
   

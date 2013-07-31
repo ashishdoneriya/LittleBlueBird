@@ -1,0 +1,30 @@
+
+
+<div id="friends" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Friends</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  
+        <!-- you don't need the div tag with jquery-mobile-tpl in this case because 'friends' is determined at login time so the array exists by the time you get here
+        You only need the jquery-mobile-tpl directive when you are creating an object array at the same time you are navigating to the page where the array is displayed
+         2013-07-26 -->
+	    
+      <div jquery-mobile-tpl>
+	    <ul id="friendview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
+	      <li ng-repeat="friend in user.friends">
+	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
+	          {{friend.fullname}}
+	        </a>
+	      </li>
+	    </ul>
+	  </div>
+	  
+	</div><!-- /content -->
+
+	<div data-role="footer" data-theme="b" data-position="fixed">
+	  <h4>LittleBlueBird</h4>
+	</div><!-- /footer -->
+</div><!-- /page -->

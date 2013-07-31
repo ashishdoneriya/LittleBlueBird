@@ -1,7 +1,28 @@
 <project default="copy">
 
 	
-    <target name="copy" description="copy the www folder to src/main/webapp/www">
+	<!-- combine all these files to create one big index.html file -->
+	<target name="create-index">
+	  <concat destfile="www/index.html"
+	          force="yes">
+	     <fileset file="fragments/top.html" />
+	     <fileset file="fragments/home.html" />
+	     <fileset file="fragments/lbblogin.html" />
+	     <fileset file="fragments/forgot.html" />
+	     <fileset file="fragments/register.html" />
+	     <fileset file="fragments/welcome.html" />
+	     <fileset file="fragments/woops.html" />
+	     <fileset file="fragments/events.html" />
+	     <fileset file="fragments/wishlist.html" />
+	     <fileset file="fragments/friends.html" />
+	     <fileset file="fragments/edititem.html" />
+	     <fileset file="fragments/gift.html" />
+	     <fileset file="fragments/bottom.html" />
+	  </concat>
+	</target>
+	
+	
+    <target name="copy" depends="create-index" description="copy the www folder to src/main/webapp/www">
       <delete dir="src/main/webapp/www"/>
       <copy todir="src/main/webapp/www">
         <fileset dir="www"/>

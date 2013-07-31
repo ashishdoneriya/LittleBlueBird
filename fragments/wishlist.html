@@ -1,0 +1,26 @@
+
+<div id="wishlist" data-role="page">
+
+	<div data-role="header" data-theme="b">
+		<a href="#welcome" data-rel="back" data-icon="arrow-l" data-transition="slide">Back</a>
+		<h1>Wish List</h1>
+		<a href="#edititem" ng-click="initNewGift()" data-transition="slideup" data-icon="plus">Add</a>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  
+	  <span ng-show="showUser==user">My Wish List</span>
+	  <span ng-hide="showUser==user">{{showUser.fullname}}'s Wish List</span>
+	
+      <div jquery-mobile-tpl>
+        <ul id="wishlistview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
+          <li data-ng-repeat="gift in gifts"><a href="#gift" ng-click="setcurrentgift($index, gift)" data-transition="slide">{{gift.description}}</a></li>
+        </ul>
+      </div>
+	  
+	</div><!-- /content -->
+
+	<div data-role="footer" data-theme="b" data-position="fixed">
+	  <h4>LittleBlueBird</h4>
+	</div><!-- /footer -->
+</div><!-- /page -->

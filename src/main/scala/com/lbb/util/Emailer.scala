@@ -177,7 +177,7 @@ object Emailer extends LbbLogger {
     
     // 2013-06-12  there will either be a creator or a facebook id, but not both
     (user.facebookId, creator) match {
-      case (fbid, _) if(!fbid.isEmpty()) => notifyWelcomeFacebookUser(user)
+      case (fbid, _) if(fbid!=null && fbid.is!=null && !fbid.isEmpty()) => notifyWelcomeFacebookUser(user)
       case (_, cr) => {
         val line1 = cr match {
           case s if(!s.equals("undefined")) => creator+" created an account for you on LittleBlueBird.com"

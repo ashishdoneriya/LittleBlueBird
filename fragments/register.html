@@ -2,33 +2,52 @@
 <div id="register" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>LittleBlueBird</h1>
+		<h1>Register</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
-		<form novalidate>
+		<form novalidate name="regForm">
 		    <fieldset data-role="fieldcontain">
+		      <P>
 		        <label for="name" class="ui-hidden-accessible">Name:</label>
-    		    <input id="name" name="name" type="text" ng-model="name" placeholder="Name" />
-
+    		    <input id="name" name="fullname" type="text" ng-model="newuser.fullname" placeholder="Name" required/>
+    		  </P>
+		      <P>
 		        <label for="email" class="ui-hidden-accessible">Email:</label>
-    		    <input id="email" name="email" type="text" ng-model="email" placeholder="Email" />
-
-		        <label for="user" class="ui-hidden-accessible">Username:</label>
-    		    <input id="user" name="user" type="text" ng-model="user" placeholder="Username" />
-
-		        <label for="pass" class="ui-hidden-accessible">Password:</label>
-    		    <input id="pass" name="pass" type="password" ng-model="pass" placeholder="Password" />
-
+    		    <input id="email" name="email" type="email" ng-model="newuser.email" placeholder="Email" required/>
+    		  </P>
+		      <P>
+		        <label for="username" class="ui-hidden-accessible">Username:</label>
+    		    <input id="username" name="username" type="text" ng-model="newuser.username" placeholder="Username" ng-change="isUsernameUnique(newuser, regForm)"  required/>
+    		  </P>
+		      <P>
+		        <label for="password" class="ui-hidden-accessible">Password:</label>
+    		    <input id="password" name="password" type="password" ng-model="newuser.password" placeholder="Password" required/>
+    		  </P>
+		      <P>
 		        <label for="passagain" class="ui-hidden-accessible">Password (again):</label>
-    		    <input id="passagain" name="passagain" type="password" ng-model="passagain" placeholder="Password (again)" />
-
-		        <a ng-click="register(name,email,user,pass, passagain)" data-role="button" data-theme="b">Register</a>
+    		    <input id="passagain" name="passagain" type="password" ng-model="passagain" placeholder="Password (again)" required/>
+    		  </P>
+		      <P>
+		        <span ng-hide="regForm.$invalid || (passagain != newuser.password && !regForm.passagain.$error.required)">
+		          <a ng-href="#welcome" ng-click="register(newuser)" data-role="button" data-theme="b">Register</a>
+		        </span>
+		        <span ng-show="regForm.$invalid || (passagain != newuser.password && !regForm.passagain.$error.required)">
+		          <button disabled="" ng-click="register(newuser)" data-role="button" data-theme="b">Register</button>
+		        </span>
+    		  </P>
     		</fieldset>
+		
+            <span ng-show="regForm.username.$dirty">
+              <span ng-show="regForm.username.$error.taken">
+                <P style="color:#cc0000;">Usernames must be unique.  '{{newuser.username}}' has already been taken.</P>
+              </span>
+            </span>
 		</form>	
+		
 	</div><!-- /content -->
 
 	<div data-role="footer" data-theme="b" data-position="fixed">
-	  <h4></h4>
+	  <h4>LittleBlueBird</h4>
 	</div><!-- /footer -->
 </div><!-- /page -->

@@ -15,6 +15,41 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', function($
   $scope.username = 'bdunklau@yahoo.com';
   $scope.password = 'bdunklau@yahoo.com';
   
+  
+  // 2013-07-31
+  $scope.initNewUser = function() {
+    $scope.newuser = {fullname:'Scott Tiger', username:'scott', password:'scott', email:'bdunklau@yahoo.com'};
+    $scope.passagain = 'scott';
+  }
+  
+  
+  // copied/adapted from $rootScope.isUsernameUnique in app-UserModule.js  2013-07-31 
+  $scope.isUsernameUnique = function(user, form) {
+      if(!angular.isDefined(user.username)) {
+        return;
+      }
+      checkUsers = User.query({username:user.username}, 
+                                        function() {
+                                          if(checkUsers.length > 0) { form.username.$error.taken = 'true'; }
+                                          else { form.username.$error.taken = 'false'; }
+                                        });
+  } 
+  
+  
+  // copied/adapted from $scope.save in app-UserCtrl.js  2013-07-31
+  $scope.register = function(newuser) {
+    $rootScope.user = User.save({login:true, fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth}, 
+                                  function() { 
+                                    $rootScope.showUser = $rootScope.user;
+                                    $scope.logingood = true; // don't forget this or else welcome page isn't going to show you anything
+                                    $scope.initNewUser();
+                                  },
+                                  function() { 
+                                    $scope.initNewUser();
+                                  }
+                                );
+  }
+  
 
   // 2013-07-19 copied from app-LoginCtrl.js
   $scope.emailIt = function(email) {

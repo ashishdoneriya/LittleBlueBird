@@ -16,6 +16,12 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password'
   $scope.password = 'bdunklau';
   
   
+  $scope.logout = function() {
+    if(typeof FB == 'undefined') return;
+    FB.logout(function(response) {});
+  }
+  
+  
   // copied/adapted from index-Simple.html in the infinite-beach-9173 project  2013-08-01
   // See also $rootScope.registerWithFacebook in app-FacebookModule.js
   $scope.fblogin = function() {

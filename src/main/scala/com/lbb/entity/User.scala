@@ -52,6 +52,7 @@ import net.liftweb.mapper.MappedString
 import net.liftweb.mapper.OprEnum
 import net.liftweb.util.FieldError
 import com.lbb.util.NOOPDateChangeListener
+import net.liftweb.mapper.UniqueIndex
 
 
 /**
@@ -738,6 +739,9 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany with NOO
 object User extends User with LongKeyedMetaMapper[User] {
   
   override def dbTableName = "person" // define the DB table name
+  
+  // 2013-08-01  http://stackoverflow.com/questions/8047176/how-to-create-composite-key-for-a-model-in-lifts-mapper
+  override def dbIndexes = UniqueIndex(username) :: UniqueIndex(facebookId) :: super.dbIndexes
   
   // define the order fields will appear in forms and output
   override def fieldOrder = List(id, first, last, email,

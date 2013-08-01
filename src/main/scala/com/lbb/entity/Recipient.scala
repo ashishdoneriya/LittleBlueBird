@@ -5,6 +5,7 @@ import net.liftweb.mapper.LongKeyedMetaMapper
 import net.liftweb.mapper.MappedLongForeignKey
 import scala.xml.Text
 import net.liftweb.mapper.By
+import net.liftweb.mapper.UniqueIndex
 
 /**
  * READY TO DEPLOY
@@ -76,6 +77,11 @@ class Recipient extends LongKeyedMapper[Recipient] with IdPK {
 
 object Recipient extends Recipient with LongKeyedMetaMapper[Recipient] {
   override def dbTableName = "recipient"
+    
+  
+  // 2013-08-01  http://stackoverflow.com/questions/8047176/how-to-create-composite-key-for-a-model-in-lifts-mapper
+  override def dbIndexes = UniqueIndex(person, gift) :: super.dbIndexes
+  
   
   def merge(keep:User, delete:User) = {
     findAll(By(Recipient.person, delete.id.is)).foreach(r => {r.person(keep.id.is);r.save})

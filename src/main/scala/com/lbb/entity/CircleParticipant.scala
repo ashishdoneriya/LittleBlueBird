@@ -14,6 +14,7 @@ import com.lbb.util.LbbLogger
 import net.liftweb.mapper.By
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
 import com.lbb.util.NOOPDateChangeListener
+import net.liftweb.mapper.UniqueIndex
 
 /**
  * READY TO DEPLOY
@@ -167,6 +168,11 @@ object CircleParticipant extends CircleParticipant with LongKeyedMetaMapper[Circ
   
   // define the order fields will appear in forms and output
   override def fieldOrder = List(person, circle)
+  
+  
+  // 2013-08-01  http://stackoverflow.com/questions/8047176/how-to-create-composite-key-for-a-model-in-lifts-mapper
+  override def dbIndexes = UniqueIndex(person, circle) :: super.dbIndexes
+  
   
   def merge(keep:User, delete:User) = {
     // delete is a member of what circles

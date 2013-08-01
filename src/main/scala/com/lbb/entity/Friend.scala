@@ -7,6 +7,8 @@ import com.lbb.util.LbbLogger
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
 import net.liftweb.mapper.ByList
 import net.liftweb.mapper.By
+import net.liftweb.mapper.Index
+import net.liftweb.mapper.UniqueIndex
 
 class Friend extends LongKeyedMapper[Friend] with IdPK with LbbLogger {
   def getSingleton = Friend
@@ -47,6 +49,9 @@ class Friend extends LongKeyedMapper[Friend] with IdPK with LbbLogger {
 
 object Friend extends Friend with LongKeyedMetaMapper[Friend] {
   override def dbTableName = "friends" // define the DB table name
+  
+  // 2013-08-01  http://stackoverflow.com/questions/8047176/how-to-create-composite-key-for-a-model-in-lifts-mapper
+  override def dbIndexes = UniqueIndex(user, friend) :: super.dbIndexes
     
   def join(user:User, friend:User) = {
     this.create.user(user).friend(friend).save

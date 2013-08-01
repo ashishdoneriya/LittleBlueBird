@@ -725,7 +725,6 @@ object RestService extends RestHelper with LbbLogger {
   def checkPass(id:Long, currentpass:String) = {
     (User.findByKey(id)) match {
       case (Full(user)) if(user.password.equals(currentpass)) => debug("RestService.checkPass: good"); NoContentResponse();
-      case (Full(user)) => debug("RestService.checkPass: user.password="+user.password); debug("RestService.checkPass: currentpass="+currentpass); BadResponse();
       case _ => debug("RestService.checkPass: BadResponse()"); BadResponse()
     }
   }

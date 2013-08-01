@@ -16,6 +16,78 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password'
   $scope.password = 'bdunklau';
   
   
+  // copied/adapted from index-Simple.html in the infinite-beach-9173 project  2013-08-01
+  $scope.fblogin = function() {
+    FB.login(
+      function(response) {
+        if (response.authResponse) {
+          FB.api('/me', function(fbuser) {
+            // fbuser should contain at least: id, email, first_name, last_name
+            $rootScope.users = User.query({email:fbuser.email}
+                    function() {
+                    
+                      if($rootScope.users.length == 0) { 
+                        // create account for this person
+                        
+                         $rootScope.user = User.save({login:true, fullname:fbuser.first_name+' '+fbuser.last_name, first:fbuser.first_name, last:fbuser.last_name, username:fbuser.email, email:fbuser.email, password:fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+fbuser.id+'/picture?type=large', facebookId:fbuser.id}, 
+                             function() { $rootScope.showUser = angular.copy($rootScope.user); 
+                                          $scope.logingood = true; // don't forget this or else welcome page isn't going to show you anything
+                                        },
+                             function() { $scope.logingood = false;
+                                        }
+                         );
+                        
+                      } // if($rootScope.users.length == 0) 
+                      else if($rootScope.users.length == 1) { 
+                        // exactly one person already found - good - we like this case
+                        
+                        $rootScope.users[0].facebookId = fbuser.id;
+                          $scope.logingood = true; // don't forget this or else welcome page isn't going to show you anything
+                          $rootScope.user = angular.copy($rootScope.users[0]);
+                          $rootScope.showUser = angular.copy($rootScope.users[0]);
+                          var placeholderPic = "http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg";
+                          var pic = $rootScope.users[0].profilepicUrl != placeholderPic ? $rootScope.users[0].profilepicUrl : "http://graph.facebook.com/"+fbuser.id+"/picture?type=large";
+                          var uagain = User.save({userId:$rootScope.user.id, facebookId:fbuser.id, profilepic:pic}, 
+                                       function() {
+                                         $rootScope.user = angular.copy(uagain); 
+                                         $rootScope.showUser = angular.copy(uagain);
+                                       }
+                        
+                      } // if($rootScope.users.length == 1) 
+                      else { 
+                        // gotta figure out who this person is because several were found with this email
+                        
+                        // loop through all the users first and see if one already has a fb id set
+                        var ambiguous = true;
+                        for(var i=0; i < $rootScope.users.length; i++) {
+                          if($rootScope.users[i].facebookId == fbuser.id) {
+                            ambiguous = false;
+                            $rootScope.user = angular.copy($rootScope.users[i]);
+                            $rootScope.showUser = angular.copy($rootScope.users[i]);
+                            $scope.logingood = true; // don't forget this or else welcome page isn't going to show you anything
+                          }
+                        }
+                        
+                        if(ambiguous) {
+                          $scope.logingood = false;
+                          alert('Cannot login because several people share this email address.  \nWe can't tell who you are.  \nContact us at info@littlebluebird.com and we');
+                        }
+                          
+                      } // else $rootScope.users.length > 1 
+                    }, // success
+                    function() {}  // fail
+            ); // User.query()
+          });
+        } 
+        else {
+          alert('woops!  could not log you in');
+        }
+      }, 
+      { scope: "email" }
+    );
+  }
+  
+  
   // 2013-07-31
   $scope.initNewUser = function() {
     $scope.newuser = {fullname:'Scott Tiger', username:'scott', password:'scott', email:'bdunklau@yahoo.com'};
@@ -71,7 +143,6 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password'
                                function() {$scope.logingood=true; 
                                            if($rootScope.user.dateOfBirth == 0) { $rootScope.user.dateOfBirth = ''; }
                                            $rootScope.showUser = $rootScope.user;  
-                                           //$location.url('welcome'); 
                                           }, 
                                function() {$scope.logingood=false; alert('Wrong user/pass');}  );
                                

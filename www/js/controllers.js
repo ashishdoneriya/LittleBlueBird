@@ -17,6 +17,7 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password'
   
   
   // copied/adapted from index-Simple.html in the infinite-beach-9173 project  2013-08-01
+  // See also $rootScope.registerWithFacebook in app-FacebookModule.js
   $scope.fblogin = function() {
     FB.login(
       function(response) {

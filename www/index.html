@@ -58,7 +58,7 @@
     <div data-role="header" data-theme="b"><h1>LittleBlueBird</h1></div>
 	
 	<div data-role="content">
-		<p><a ng-click="fblogin()" data-role="button" data-theme="b">Login via Facebook</a> </p>	
+		<p><a href="#welcome" ng-click="fblogin()" data-role="button" data-theme="b">Login via Facebook</a> </p>	
 		<p><a href="#lbblogin" data-role="button" data-theme="b">Login via LittleBlueBird</a> </p>	
 		<p><a href="#register" data-role="button" data-theme="b" ng-click="initNewUser()">Register</a> </p>	
 		<p><a href="#forgot" data-role="button" data-theme="b">Forgot User/Pass?</a> </p>	
@@ -260,6 +260,7 @@
       <P><a href="#personalinfo" data-role="button" data-theme="a" data-mini="true">Personal Info</a></P>
       <P>Notifications</P>
       <P><a href="#passwordreset" data-role="button" data-theme="a" data-mini="true">Password Reset</a></P>
+      <P><a href="#home" ng-click="logout()" data-role="button" data-theme="a" data-mini="true">Password Reset</a></P>
     </div><!-- /panel -->
 
 
@@ -303,6 +304,7 @@
       <P><a href="#personalinfo" data-role="button" data-theme="a" data-mini="true">Personal Info</a></P>
       <P>Notifications</P>
       <P><a href="#passwordreset" data-role="button" data-theme="a" data-mini="true">Password Reset</a></P>
+      <P><a href="#home" ng-click="logout()" data-role="button" data-theme="a" data-mini="true">Password Reset</a></P>
     </div><!-- /panel -->
 
 
@@ -347,6 +349,7 @@
       <P><a href="#personalinfo" data-role="button" data-theme="a" data-mini="true">Personal Info</a></P>
       <P>Notifications</P>
       <P><a href="#passwordreset" data-role="button" data-theme="a" data-mini="true">Password Reset</a></P>
+      <P><a href="#home" ng-click="logout()" data-role="button" data-theme="a" data-mini="true">Password Reset</a></P>
     </div><!-- /panel -->
 
 
@@ -514,6 +517,7 @@
       <P><a href="#personalinfo" data-role="button" data-theme="a" data-mini="true">Personal Info</a></P>
       <P>Notifications</P>
       <P><a href="#passwordreset" data-role="button" data-theme="a" data-mini="true">Password Reset</a></P>
+      <P><a href="#home" ng-click="logout()" data-role="button" data-theme="a" data-mini="true">Password Reset</a></P>
     </div><!-- /panel -->
 
 
@@ -552,10 +556,10 @@
     		  </P>
 		      <P>
 		        <span ng-hide="resetForm.$invalid || (newpassword != newpasswordagain) || resetForm.currentpassword.$invalid">
-		          <a ng-href="#" ng-click="resetPass(currentpassword, newpassword)" data-role="button" data-theme="b">Register</a>
+		          <a ng-href="#" ng-click="resetPass(currentpassword, newpassword)" data-role="button" data-theme="b">Change Password</a>
 		        </span>
 		        <span ng-show="resetForm.$invalid || (newpassword != newpasswordagain) || resetForm.currentpassword.$invalid">
-		          <button disabled="" data-role="button" data-theme="b">Register</button>
+		          <button disabled="" data-role="button" data-theme="b">Change Password</button>
 		        </span>
     		  </P>
     		</fieldset>
@@ -584,10 +588,24 @@
       <P><a href="#personalinfo" data-role="button" data-theme="a" data-mini="true">Personal Info</a></P>
       <P>Notifications</P>
       <P><a href="#passwordreset" data-role="button" data-theme="a" data-mini="true">Password Reset</a></P>
+      <P><a href="#home" ng-click="logout()" data-role="button" data-theme="a" data-mini="true">Password Reset</a></P>
     </div><!-- /panel -->
 
 
 </div><!-- http://www.littlebluebird.com/gf/www/#passwordreset/page -->
+    <script>
+        document.addEventListener('deviceready', function() {
+                try {
+                    alert('Start your engines!');
+                    FB.init({ appId: '136122483829', nativeInterface: CDV.FB, useCachedDialogs: false });
+                    // document.getElementById('data').innerHTML = "";
+                } 
+                catch (e) {
+                    alert(e);
+                }
+            }, 
+            false);
+    </script>
 
 </body>
 </html>

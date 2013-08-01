@@ -23,6 +23,15 @@ var app = angular.module('project', ['ngResource']).
 
       return User;
   }).
+  factory('Password', function($resource) {
+      var Password = $resource('http://www.littlebluebird.com/gf/rest/password/:userId/:currentpass/:newpass', {userId:'@userId', currentpass:'@currentpass', newpass:'@newpass'}, 
+                    {
+                      check: {method:'GET', isArray:false},
+                      reset: {method:'POST'}
+                    });
+
+      return Password;
+  }).
   factory('Email', function($resource) {
       var Email = $resource('http://www.littlebluebird.com/gf/rest/email', {to:'@to', from:'@from', subject:'@subject', message:'@message', type:'@type', user:'@user'}, 
                     {

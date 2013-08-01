@@ -20,6 +20,18 @@
 		     <fileset file="fragments/events-nofooter.html" />
 		     <fileset file="fragments/footer.html" />
 		  </concat>
+
+		  <concat destfile="fragments/personalinfo.html"
+		          force="yes">
+		     <fileset file="fragments/personalinfo-nofooter.html" />
+		     <fileset file="fragments/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/passwordreset.html"
+		          force="yes">
+		     <fileset file="fragments/passwordreset-nofooter.html" />
+		     <fileset file="fragments/footer.html" />
+		  </concat>
 	</target>
 	
 	
@@ -38,6 +50,8 @@
 	     <fileset file="fragments/friends.html" />
 	     <fileset file="fragments/edititem.html" />
 	     <fileset file="fragments/gift.html" />
+	     <fileset file="fragments/personalinfo.html" />
+	     <fileset file="fragments/passwordreset.html" />
 	     <fileset file="fragments/bottom.html" />
 	  </concat>
 	</target>

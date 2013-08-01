@@ -23,7 +23,7 @@
 
 	
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
-      <h4>LittleBlueBird</h4>
+      <a href="#mypanel" data-icon="bars"></a><h4>LittleBlueBird</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -32,4 +32,13 @@
         </ul>
       </div><!-- /navbar -->
     </div><!-- /footer -->
-</div><!-- /page -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+      <h4>My Account</h4>
+      <P><a href="#personalinfo" data-role="button" data-theme="a" data-mini="true">Personal Info</a></P>
+      <P>Notifications</P>
+      <P><a href="#passwordreset" data-role="button" data-theme="a" data-mini="true">Password Reset</a></P>
+    </div><!-- /panel -->
+
+
+</div><!-- http://www.littlebluebird.com/gf/www/#passwordreset/page -->

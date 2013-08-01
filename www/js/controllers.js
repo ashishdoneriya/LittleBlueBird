@@ -9,11 +9,11 @@ else if (!debugging || typeof console.log == "undefined") console.log = function
 //function LbbController($scope, Email, $rootScope, User, $location) {
 
 // 2013-07-23  weird syntax needed for minification
-var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', function($scope, Email, $rootScope, User, Gift) {
+var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password', function($scope, Email, $rootScope, User, Gift, Password) {
 
   $scope.email = 'bdunklau@yahoo.com';
-  $scope.username = 'bdunklau@yahoo.com';
-  $scope.password = 'bdunklau@yahoo.com';
+  $scope.username = 'bdunklau';
+  $scope.password = 'bdunklau';
   
   
   // 2013-07-31
@@ -75,6 +75,42 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', function($
                                           }, 
                                function() {$scope.logingood=false; alert('Wrong user/pass');}  );
                                
+  }
+  
+  
+  // 2013-07-31
+  $scope.saveuser = function(user) {
+      User.save({userId:user.id, fullname:user.fullname, username:user.username, email:user.email, bio:user.bio, dateOfBirth:user.dateOfBirthStr, profilepic:user.profilepic}, 
+                                  function() {
+                                    if(user.dateOfBirth == 0) { user.dateOfBirth = ''; } 
+                                  },
+                                  function() {alert("Uh oh - had a problem updating your profile");}
+                                );
+  }
+  
+  
+  // 2013-07-31
+  $scope.resetPass = function(currentpass, newpass) {
+      Password.reset({userId: $rootScope.user.id, currentpass: currentpass, newpass: newpass},
+                      function() {alert('Your password changed successfully');},
+                      function() {alert('Uh oh - Problem on our end. Could not change your password.');});
+  }
+  
+  
+  // 2013-08-01  don't enable the submit button if the current password isn't even correct
+  $scope.validatePassword = function(form, currentpassword) {
+      checkUsers = Password.check({userId:$rootScope.user.id, currentpass: currentpassword}, 
+                                        function() {
+                                          if(checkUsers.length == 0) { form.currentpassword.$invalid = 'true'; }
+                                          else { form.currentpassword.$invalid = 'false'; }
+                                          console.log('form: ', form);
+                                          console.log('form.currentpassword: ', form.currentpassword);
+                                        },
+                                        function() {
+                                          form.currentpassword.$invalid = 'true';
+                                          console.log('form: ', form);
+                                          console.log('form.currentpassword: ', form.currentpassword);
+                                        });
   }
     
   

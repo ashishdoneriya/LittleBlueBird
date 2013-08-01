@@ -42,6 +42,7 @@ import com.lbb.entity.AppRequest
 import org.joda.time.DateTime
 import net.liftweb.json.JsonAST
 import net.liftweb.common.Box
+import net.liftweb.http.NoContentResponse
 
 object RestService extends RestHelper with LbbLogger {
   
@@ -101,6 +102,8 @@ object RestService extends RestHelper with LbbLogger {
     case JsonPost("rest" :: "gifts" :: _ :: Nil, (json, req)) => debug("RestService.serve:  CCCCCCC"); debug(json); insertGift
     case JsonPost("rest" :: "users" :: AsLong(userId) :: _, (json, req)) => debug("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
     case JsonPost("rest" :: "users" :: Nil, (json, req)) => debug("RestService.serve:  4444444444444444"); debug(json); insertUser
+    case JsonPost("rest" :: "password" :: AsLong(userId) :: currentpass :: newpass :: _, (json, req)) => resetPass(userId, currentpass, newpass) // 2013-08-01 mobile only at this time
+    case Get("rest" :: "password" :: AsLong(userId) :: currentpass :: Nil, _) => checkPass(userId, currentpass) // 2013-08-01 mobile only at this time
   }
   
   serve {
@@ -644,6 +647,19 @@ object RestService extends RestHelper with LbbLogger {
     case _ => BadResponse()
   }
   
+  // 2013-08-01 mobile only at this time
+  def resetPass(id:Long, currentpass:String, newpass:String) = (User.findByKey(id)) match {
+    case (Full(user)) if(user.password.equals(currentpass)) => {
+      user.password(newpass);
+      user.save match {
+        case true => NoContentResponse()
+        case _ => BadResponse()
+      }
+    }
+    case _ => BadResponse();
+  }
+  
+  
   def updateUser(id:Long) = (User.findByKey(id), S.request) match {
     case (Full(user), Full(req)) => {
       req.json match {
@@ -701,6 +717,16 @@ object RestService extends RestHelper with LbbLogger {
       case (Full(user), Full("true")) => debug("RestService.findUser: calling user.login"); user.login
       case (Full(user), _) => JsonResponse(user.asJs)
       case _ => debug("RestService.findUser: BadResponse()"); BadResponse()
+    }
+  }
+  
+  // 2013-08-01  modeled after findUser(id) - making sure the currentpass matches the actual pass.
+  // We don't want to enable the submit button the password reset form if the user hasn't even entered the current password yet
+  def checkPass(id:Long, currentpass:String) = {
+    (User.findByKey(id)) match {
+      case (Full(user)) if(user.password.equals(currentpass)) => debug("RestService.checkPass: good"); NoContentResponse();
+      case (Full(user)) => debug("RestService.checkPass: user.password="+user.password); debug("RestService.checkPass: currentpass="+currentpass); BadResponse();
+      case _ => debug("RestService.checkPass: BadResponse()"); BadResponse()
     }
   }
   

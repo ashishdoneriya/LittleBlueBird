@@ -1,0 +1,62 @@
+
+
+<div id="personalinfo" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Personal Info</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  	  
+      <span ng-show="user.facebookId!=null">
+        <P><b>Name: </b>{{user.fullname}}</P>
+        <P><b>Email: </b>{{user.email}}</P>
+        <P><b>Username: </b>{{user.username}}</P>
+      
+        <P>You logged in using your Facebook account, so if you want to change any of this personal info, that's where you need to go.</P>
+        <P><a href="http://www.facebook.com" data-role="button">Go to Facebook</a></P>
+	  </span>
+	  
+      <span ng-hide="user.facebookId!=null">
+      
+		<form novalidate name="personalinfoForm">
+		    <fieldset data-role="fieldcontain">
+		      <P>
+		        <label for="userId" class="ui-hidden-accessible">ID:</label>
+    		    <input id="userId" name="userId" type="hidden" ng-model="user.id" placeholder="ID" />
+    		  </P>
+		      <P>
+		        <label for="name" class="ui-hidden-accessible">Name:</label>
+    		    <input id="name" name="fullname" type="text" ng-model="user.fullname" placeholder="Name" required/>
+    		  </P>
+		      <P>
+		        <label for="email" class="ui-hidden-accessible">Email:</label>
+    		    <input id="email" name="email" type="email" ng-model="user.email" placeholder="Email" required/>
+    		  </P>
+		      <P>
+		        <label for="username" class="ui-hidden-accessible">Username:</label>
+    		    <input id="username" name="username" type="text" ng-model="user.username" placeholder="Username" ng-change="isUsernameUnique(user, personalinfoForm)"  required/>
+    		  </P>
+		      <P>
+		        <span ng-hide="personalinfoForm.$invalid">
+		          <a ng-href="#welcome" ng-click="saveuser(user)" data-role="button" data-theme="b">Register</a>
+		        </span>
+		        <span ng-show="personalinfoForm.$invalid">
+		          <button disabled="" data-role="button" data-theme="b">Register</button>
+		        </span>
+    		  </P>
+    		</fieldset>
+		
+            <span ng-show="personalinfoForm.username.$dirty">
+              <span ng-show="personalinfoForm.username.$error.taken">
+                <P style="color:#cc0000;">Usernames must be unique.  '{{user.username}}' has already been taken.</P>
+              </span>
+            </span>
+		</form>	
+		
+	  </span>
+	  
+	</div><!-- /content -->
+
+
+	

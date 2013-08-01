@@ -24,7 +24,7 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password'
         if (response.authResponse) {
           FB.api('/me', function(fbuser) {
             // fbuser should contain at least: id, email, first_name, last_name
-            $rootScope.users = User.query({email:fbuser.email}
+            $rootScope.users = User.query({email:fbuser.email},
                     function() {
                     
                       if($rootScope.users.length == 0) { 
@@ -53,6 +53,7 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password'
                                          $rootScope.user = angular.copy(uagain); 
                                          $rootScope.showUser = angular.copy(uagain);
                                        }
+                                     );
                         
                       } // if($rootScope.users.length == 1) 
                       else { 
@@ -71,7 +72,7 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password'
                         
                         if(ambiguous) {
                           $scope.logingood = false;
-                          alert('Cannot login because several people share this email address.  \nWe can't tell who you are.  \nContact us at info@littlebluebird.com and we');
+                          alert('Cannot login because several people share this email address.  \nWe can\'t tell who you are.  \nContact us at info@littlebluebird.com');
                         }
                           
                       } // else $rootScope.users.length > 1 

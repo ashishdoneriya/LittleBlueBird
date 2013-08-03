@@ -62,7 +62,9 @@
 	
 	
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
-      <a href="#mypanel" data-icon="bars"></a><h4>LittleBlueBird</h4>
+	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -73,12 +75,14 @@
     </div><!-- /footer -->
     
     <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
-      <h4>My Account</h4>
-      <P><a href="#personalinfo" data-role="button" data-theme="a" data-mini="true">Personal Info</a></P>
-      <P>Notifications</P>
-      <P><a href="#passwordreset" data-role="button" data-theme="a" data-mini="true">Password Reset</a></P>
-      <P><a href="#home" ng-click="logout()" data-role="button" data-theme="a" data-mini="true">Logout</a></P>
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <!-- li>Notifications</li -->
+	        <li data-icon="false"><a href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
     </div><!-- /panel -->
 
 
-</div><!-- http://www.littlebluebird.com/gf/www/#passwordreset/page -->
+</div>

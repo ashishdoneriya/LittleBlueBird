@@ -1,0 +1,20 @@
+
+<div id="welcome" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>{{user.fullname}}</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	
+	  <span ng-show="logingood">
+	  <ul data-role="listview" data-inset="true" class="ui-icon-alt">
+	    <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" data-transition="slide">My Wish List</a></li>
+	    <li><a href="#events" ng-click="events();setfootermenu('events')" data-transition="slide">Events</a></li>
+	    <li><a href="#friends" ng-click="friends();setfootermenu('friends')" data-transition="slide">Friends</a></li>
+	  </ul>
+	  </span>
+	
+	
+	</div><!-- /content -->
+	

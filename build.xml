@@ -32,6 +32,13 @@
 		     <fileset file="fragments/passwordreset-nofooter.html" />
 		     <fileset file="fragments/footer.html" />
 		  </concat>
+
+		  <concat destfile="fragments/welcome.html"
+		          force="yes">
+		     <fileset file="fragments/welcome-nofooter.html" />
+		     <fileset file="fragments/footer.html" />
+		  </concat>
+
 	</target>
 	
 	

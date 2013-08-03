@@ -1,6 +1,9 @@
 package com.lbb
+
 import java.text.SimpleDateFormat
 import java.util.Date
+
+import com.lbb.entity.AppRequest
 import com.lbb.entity.AuditLog
 import com.lbb.entity.Circle
 import com.lbb.entity.CircleParticipant
@@ -14,35 +17,33 @@ import com.lbb.util.Emailer
 import com.lbb.util.LbbLogger
 import com.lbb.util.SearchHelper
 import com.lbb.util.Util
+
+import net.liftweb.common.Box
 import net.liftweb.common.Box.box2Option
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
-import net.liftweb.http.js.JE.JsArray
-import net.liftweb.http.js.JsExp.strToJsExp
-import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.BadResponse
 import net.liftweb.http.JsonResponse
 import net.liftweb.http.NoContentResponse
+import net.liftweb.http.NoContentResponse
 import net.liftweb.http.S
+import net.liftweb.http.js.JE.JsArray
+import net.liftweb.http.js.JsExp.strToJsExp
+import net.liftweb.http.rest.RestHelper
+import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonAST.JArray
 import net.liftweb.json.JsonAST.JField
 import net.liftweb.json.JsonAST.JObject
 import net.liftweb.json.JsonAST.JValue
-import net.liftweb.mapper.MappedField.mapToType
-import net.liftweb.mapper.MappedForeignKey.getObj
 import net.liftweb.mapper.By
 import net.liftweb.mapper.ByList
 import net.liftweb.mapper.Cmp
-import net.liftweb.mapper.IHaveValidatedThisSQL
 import net.liftweb.mapper.Ignore
+import net.liftweb.mapper.MappedField.mapToType
+import net.liftweb.mapper.MappedForeignKey.getObj
 import net.liftweb.mapper.OprEnum
 import net.liftweb.util.BasicTypesHelpers.AsLong
 import net.liftweb.util.BasicTypesHelpers.asLong
-import com.lbb.entity.AppRequest
-import org.joda.time.DateTime
-import net.liftweb.json.JsonAST
-import net.liftweb.common.Box
-import net.liftweb.http.NoContentResponse
 
 object RestService extends RestHelper with LbbLogger {
   
@@ -81,6 +82,7 @@ object RestService extends RestHelper with LbbLogger {
     // circles...
     case Get("rest" :: "circles" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  88888888"); findCircle(circleId)
     case Get("rest" :: "circleparticipants" :: AsLong(circleId) :: _, _) => debug("RestService.serve:  77777777777"); findCircleParticipants(circleId)
+    case Get("rest" :: "fb" :: facebookId :: email :: first :: last :: Nil, _) => findOrCreateUser(facebookId, email, first, last)
   }
   
   serve {
@@ -726,6 +728,39 @@ object RestService extends RestHelper with LbbLogger {
     (User.findByKey(id)) match {
       case (Full(user)) if(user.password.equals(currentpass)) => debug("RestService.checkPass: good"); NoContentResponse();
       case _ => debug("RestService.checkPass: BadResponse()"); BadResponse()
+    }
+  }
+  
+  // 2013-08-02  When loggin in via fb, we have to figure out if there is already a record in the db
+  // First we query by facebook id.  If we find a record, we don't have to do anything else but return it
+  // If we don't find any person record with the facebook id, we have to query by email next.
+  // In this case, we could get 0..n records.  The n case is the only one that's tricky because it means
+  // we can't tell who the person is and we have to ask that person to tell us.
+  def findOrCreateUser(facebookId:String, email:String, first:String, last:String) = {
+        
+    val facebookrecords = User.findAll(By(User.facebookId, facebookId)) // can only be 0 or 1
+    facebookrecords.size match {
+      case 1 => Util.toJsonResponse(facebookrecords)
+      case 0 => {
+        // no one yet has this facebook id, so we have to check the db for 'email'...
+        val usersWithEmail = User.findAll(By(User.email, email))
+        usersWithEmail.size match {
+          case 1 => {/* one person with this email found - good - set the facebook id of this person */
+            usersWithEmail.head.facebookId(facebookId);
+            if(usersWithEmail.head.save) Util.toJsonResponse(usersWithEmail)
+            else BadResponse()
+          }
+          case 0 => {/* no one found with the email either, so this is a new account.  Create it and return it */
+             val name = first + " " + last
+             val newuser = User.create(name, facebookId).email(email)            
+             if(newuser.save) Util.toJsonResponse(List(newuser))
+             else BadResponse()
+          }
+          case _ => {/* multiple people share this email, have to present them all to the user and ask him who he is */
+            Util.toJsonResponse(usersWithEmail)
+          }
+        }
+      }
     }
   }
   

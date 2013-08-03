@@ -9,11 +9,66 @@ else if (!debugging || typeof console.log == "undefined") console.log = function
 //function LbbController($scope, Email, $rootScope, User, $location) {
 
 // 2013-07-23  weird syntax needed for minification
-var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password', function($scope, Email, $rootScope, User, Gift, Password) {
+var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password', 'FacebookUser', 'MergeUsers',
+function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUsers) {
 
+  $scope.footermenu = '';
+  $scope.eventfilter = 'current';
   $scope.email = 'bdunklau@yahoo.com';
   $scope.username = 'bdunklau';
   $scope.password = 'bdunklau';
+  
+  
+  // copied/adapted from $scope.mergeaccount in app-UserCtrl.js 2013-08-03
+  $scope.mergeaccount = function(user) {
+    $rootScope.user = MergeUsers.save({userId:user.id, facebookId:$rootScope.fbuser.id, email:$rootScope.fbuser.email}, 
+        function() {
+          $rootScope.showUser = angular.copy($rootScope.user);
+          delete $rootScope.users;
+          $scope.logingood = true;
+        },
+        function() {
+          // not doing anything here?
+          $scope.logingood = true;
+        });
+  }  
+  
+  
+  // 2013-08-03 created to test fb login from browser
+  $scope.test = function() {
+    var fbuser = {email:'bdunklau@yahoo.com', id:'569956369', first_name:'Brent', last_name:'Dunklau'};
+    tryToFindUserFromFBLogin(fbuser);
+    $rootScope.fbuser = fbuser;
+    jQuery("#whoareyouview").hide();
+    setTimeout(function(){
+      jQuery("#whoareyouview").listview("refresh");
+      jQuery("#whoareyouview").show();
+    },1000);
+  }
+  
+  
+  tryToFindUserFromFBLogin = function(fbuser) {
+     
+     console.log("tryToFindUserFromFBLogin");
+            // This will return 1..n people, but not 0.  If on the server, we don't find anyone having either the fb id or the email, then
+            // we CREATE the account and return it.  If only one person is returned, that person will have his fb id set already.
+            // If > 1 people are returned, we have to tell the user that multiple people were found having the given email address and the
+            // user has to choose which person he is.
+            $rootScope.users = FacebookUser.findOrCreate({email:fbuser.email, facebookId:fbuser.id, first:fbuser.first_name, last:fbuser.last_name},
+                function() {
+                    if($rootScope.users.length == 1) {
+                        $rootScope.user = angular.copy($rootScope.users[0]);
+                        $rootScope.showUser = angular.copy($rootScope.users[0]);
+                        $scope.logingood = true; // don't forget this or else welcome page isn't going to show you anything
+                    }
+                }, // success
+                function() {
+                    alert('Woops! Facebook login is not working right now.  Contact us at info@littlebluebird.com if this problem persists.')
+                    delete $rootScope.users;
+                    delete $rootScope.user;
+                } // fail
+            ); // FacebookUser.findOrCreate
+  }
   
   
   $scope.logout = function() {
@@ -29,62 +84,8 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password'
       function(response) {
         if (response.authResponse) {
           FB.api('/me', function(fbuser) {
-            // fbuser should contain at least: id, email, first_name, last_name
-            $rootScope.users = User.query({email:fbuser.email},
-                    function() {
-                    
-                      if($rootScope.users.length == 0) { 
-                        // create account for this person
-                        
-                         $rootScope.user = User.save({login:true, fullname:fbuser.first_name+' '+fbuser.last_name, first:fbuser.first_name, last:fbuser.last_name, username:fbuser.email, email:fbuser.email, password:fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+fbuser.id+'/picture?type=large', facebookId:fbuser.id}, 
-                             function() { $rootScope.showUser = angular.copy($rootScope.user); 
-                                          $scope.logingood = true; // don't forget this or else welcome page isn't going to show you anything
-                                        },
-                             function() { $scope.logingood = false;
-                                        }
-                         );
-                        
-                      } // if($rootScope.users.length == 0) 
-                      else if($rootScope.users.length == 1) { 
-                        // exactly one person already found - good - we like this case
-                        
-                        $rootScope.users[0].facebookId = fbuser.id;
-                          $scope.logingood = true; // don't forget this or else welcome page isn't going to show you anything
-                          $rootScope.user = angular.copy($rootScope.users[0]);
-                          $rootScope.showUser = angular.copy($rootScope.users[0]);
-                          var placeholderPic = "http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg";
-                          var pic = $rootScope.users[0].profilepicUrl != placeholderPic ? $rootScope.users[0].profilepicUrl : "http://graph.facebook.com/"+fbuser.id+"/picture?type=large";
-                          var uagain = User.save({userId:$rootScope.user.id, facebookId:fbuser.id, profilepic:pic}, 
-                                       function() {
-                                         $rootScope.user = angular.copy(uagain); 
-                                         $rootScope.showUser = angular.copy(uagain);
-                                       }
-                                     );
-                        
-                      } // if($rootScope.users.length == 1) 
-                      else { 
-                        // gotta figure out who this person is because several were found with this email
-                        
-                        // loop through all the users first and see if one already has a fb id set
-                        var ambiguous = true;
-                        for(var i=0; i < $rootScope.users.length; i++) {
-                          if($rootScope.users[i].facebookId == fbuser.id) {
-                            ambiguous = false;
-                            $rootScope.user = angular.copy($rootScope.users[i]);
-                            $rootScope.showUser = angular.copy($rootScope.users[i]);
-                            $scope.logingood = true; // don't forget this or else welcome page isn't going to show you anything
-                          }
-                        }
-                        
-                        if(ambiguous) {
-                          $scope.logingood = false;
-                          alert('Cannot login because several people share this email address.  \nWe can\'t tell who you are.  \nContact us at info@littlebluebird.com');
-                        }
-                          
-                      } // else $rootScope.users.length > 1 
-                    }, // success
-                    function() {}  // fail
-            ); // User.query()
+            tryToFindUserFromFBLogin(fbuser);
+            $rootScope.fbuser = fbuser;
           });
         } 
         else {
@@ -229,7 +230,6 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password'
                               },0);
   }
   
-  $scope.eventfilter = 'current';
   $scope.eventDateFilter = function(circle) {
     if($scope.eventfilter=='all') return true;
     else if($scope.eventfilter=='current') return circle.date > new Date().getTime();
@@ -334,9 +334,6 @@ var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password'
                             function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
   }
   
-  
-  
-  $scope.footermenu = '';
   
   $scope.setfootermenu = function(selected) {
     $scope.footermenu = selected;

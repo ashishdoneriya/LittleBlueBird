@@ -23,6 +23,21 @@ var app = angular.module('project', ['ngResource']).
 
       return User;
   }).
+  factory('FacebookUser', function($resource) {
+      var FacebookUser = $resource('http://www.littlebluebird.com/gf/rest/fb/:facebookId/:email/:first/:last', {facebookId:'@facebookId', email:'@email', first:'@first', last:'#last'}, 
+                    {
+                      findOrCreate: {method:'GET', isArray:true}
+                    });
+
+      return FacebookUser;
+  }).
+  factory('MergeUsers', function($resource){
+      var MergeUsers = $resource('/gf/rest/mergeusers/:userId/:facebookId/:email', {userId:'@userId', facebookId:'@facebookId', email:'@email'}, 
+                       {
+                         save: {method:'POST', isArray:false}
+                       });
+      return MergeUsers;
+  }).
   factory('Password', function($resource) {
       var Password = $resource('http://www.littlebluebird.com/gf/rest/password/:userId/:currentpass/:newpass', {userId:'@userId', currentpass:'@currentpass', newpass:'@newpass'}, 
                     {

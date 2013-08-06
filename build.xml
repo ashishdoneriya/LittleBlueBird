@@ -2,99 +2,99 @@
 
 	
 	<!-- combine all these files to create one big index.html file -->
-	<target name="create-fragments">
-		  <concat destfile="fragments/wishlist.html"
+	<target name="create-fragments/html">
+		  <concat destfile="fragments/html/wishlist.html"
 		          force="yes">
-		     <fileset file="fragments/wishlist-nofooter.html" />
-		     <fileset file="fragments/footer.html" />
+		     <fileset file="fragments/html/wishlist-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
-		  <concat destfile="fragments/friends.html"
+		  <concat destfile="fragments/html/friends.html"
 		          force="yes">
-		     <fileset file="fragments/friends-nofooter.html" />
-		     <fileset file="fragments/footer.html" />
+		     <fileset file="fragments/html/friends-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
-		  <concat destfile="fragments/events.html"
+		  <concat destfile="fragments/html/events.html"
 		          force="yes">
-		     <fileset file="fragments/events-nofooter.html" />
-		     <fileset file="fragments/footer.html" />
+		     <fileset file="fragments/html/events-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
-		  <concat destfile="fragments/personalinfo.html"
+		  <concat destfile="fragments/html/personalinfo.html"
 		          force="yes">
-		     <fileset file="fragments/personalinfo-nofooter.html" />
-		     <fileset file="fragments/footer.html" />
+		     <fileset file="fragments/html/personalinfo-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
-		  <concat destfile="fragments/passwordreset.html"
+		  <concat destfile="fragments/html/passwordreset.html"
 		          force="yes">
-		     <fileset file="fragments/passwordreset-nofooter.html" />
-		     <fileset file="fragments/footer.html" />
+		     <fileset file="fragments/html/passwordreset-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
-		  <concat destfile="fragments/welcome.html"
+		  <concat destfile="fragments/html/welcome.html"
 		          force="yes">
-		     <fileset file="fragments/welcome-nofooter.html" />
-		     <fileset file="fragments/footer.html" />
+		     <fileset file="fragments/html/welcome-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
-		  <concat destfile="fragments/contactus.html"
+		  <concat destfile="fragments/html/contactus.html"
 		          force="yes">
-		     <fileset file="fragments/contactus-nofooter.html" />
-		     <fileset file="fragments/footer.html" />
+		     <fileset file="fragments/html/contactus-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
-		  <concat destfile="fragments/addevent.html"
+		  <concat destfile="fragments/html/addevent.html"
 		          force="yes">
-		     <fileset file="fragments/addevent-nofooter.html" />
-		     <fileset file="fragments/footer.html" />
+		     <fileset file="fragments/html/addevent-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
-		  <concat destfile="fragments/setnameanddate.html"
+		  <concat destfile="fragments/html/setnameanddate.html"
 		          force="yes">
-		     <fileset file="fragments/setnameanddate-nofooter.html" />
-		     <fileset file="fragments/footer.html" />
+		     <fileset file="fragments/html/setnameanddate-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
-		  <concat destfile="fragments/editparticipants.html"
+		  <concat destfile="fragments/html/editparticipants.html"
 		          force="yes">
-		     <fileset file="fragments/editparticipants-nofooter.html" />
-		     <fileset file="fragments/footer.html" />
+		     <fileset file="fragments/html/editparticipants-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
-		  <concat destfile="fragments/participants.html"
+		  <concat destfile="fragments/html/participants.html"
 		          force="yes">
-		     <fileset file="fragments/participants-nofooter.html" />
-		     <fileset file="fragments/footer.html" />
+		     <fileset file="fragments/html/participants-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
 	</target>
 	
 	
-	<target name="create-index" depends="create-fragments">
+	<target name="create-index" depends="create-fragments/html">
 	  <concat destfile="www/index.html"
 	          force="yes">
-	     <fileset file="fragments/top.html" />
-	     <fileset file="fragments/home.html" />
-	     <fileset file="fragments/lbblogin.html" />
-	     <fileset file="fragments/forgot.html" />
-	     <fileset file="fragments/register.html" />
-	     <fileset file="fragments/welcome.html" />
-	     <fileset file="fragments/woops.html" />
-	     <fileset file="fragments/events.html" />
-	     <fileset file="fragments/wishlist.html" />
-	     <fileset file="fragments/friends.html" />
-	     <fileset file="fragments/edititem.html" />
-	     <fileset file="fragments/gift.html" />
-	     <fileset file="fragments/personalinfo.html" />
-	     <fileset file="fragments/passwordreset.html" />
-	     <fileset file="fragments/contactus.html" />
-	     <fileset file="fragments/addevent.html" />
-	     <fileset file="fragments/setnameanddate.html" />
-	     <fileset file="fragments/editparticipants.html" />
-	     <fileset file="fragments/participants.html" />
-	     <fileset file="fragments/bottom.html" />
+	     <fileset file="fragments/html/top.html" />
+	     <fileset file="fragments/html/home.html" />
+	     <fileset file="fragments/html/lbblogin.html" />
+	     <fileset file="fragments/html/forgot.html" />
+	     <fileset file="fragments/html/register.html" />
+	     <fileset file="fragments/html/welcome.html" />
+	     <fileset file="fragments/html/woops.html" />
+	     <fileset file="fragments/html/events.html" />
+	     <fileset file="fragments/html/wishlist.html" />
+	     <fileset file="fragments/html/friends.html" />
+	     <fileset file="fragments/html/edititem.html" />
+	     <fileset file="fragments/html/gift.html" />
+	     <fileset file="fragments/html/personalinfo.html" />
+	     <fileset file="fragments/html/passwordreset.html" />
+	     <fileset file="fragments/html/contactus.html" />
+	     <fileset file="fragments/html/addevent.html" />
+	     <fileset file="fragments/html/setnameanddate.html" />
+	     <fileset file="fragments/html/editparticipants.html" />
+	     <fileset file="fragments/html/participants.html" />
+	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
 	</target>
 	

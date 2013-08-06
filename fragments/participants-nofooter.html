@@ -1,0 +1,52 @@
+
+
+<div id="participants" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Participants</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  
+	  <B>{{thecircle.name}}</B>
+	  <P>{{thecircle.date | date: 'MMM d, yyyy'}}</P>
+	  
+	
+      <!-- ------------------------------------ -->
+      <!-- BEGIN: Participants/Honorees section -->
+      <!-- ------------------------------------ -->
+	
+	  <!-- copied/adapted from newevent.html in web version 2013-08-05 -->
+      <span ng-show="thecircle.receiverLimit == -1">Participants</span>
+      <span ng-show="thecircle.receiverLimit == 1">Honoree</span>
+      <span ng-show="thecircle.receiverLimit > 1">Honorees</span>
+      
+      
+      <div jquery-mobile-tpl>
+	    <ul id="receiverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
+	      <li ng-repeat="participant in thecircle.participants.receivers">
+	          {{participant.fullname}}
+	      </li>
+	    </ul>
+	  </div>
+      
+      
+      <!-- ------------------------------------ -->
+      <!-- END: Participants/Honorees section   -->
+      <!-- ------------------------------------ -->
+      
+      
+      <!-- ------------------------------------------------------- -->
+      <!-- BEGIN: Guests section (for those events that have them) -->
+      <!-- ------------------------------------------------------- -->
+      
+      <!-- ------------------------------------------------------- -->
+      <!-- END: Guests section (for those events that have them)   -->
+      <!-- ------------------------------------------------------- -->
+      
+	  	  
+	  
+	</div><!-- /content -->
+
+
+	

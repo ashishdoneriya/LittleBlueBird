@@ -1,0 +1,129 @@
+
+
+<div id="editparticipants" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Participants</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  
+	  <B>Add Participants</B>
+	  <P>Add participants to this event</P>
+	  
+	  	  
+	  <span ng-hide="user.friends.length==0">
+      <div jquery-mobile-tpl>
+	    <ul id="pfview" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search friends..." data-inset="true" repeat-done="" ng-cloak>
+	      <li ng-repeat="friend in user.friends">
+	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
+	          {{friend.fullname}}
+	        </a>
+	      </li>
+	    </ul>
+	  </div>
+	  </span>
+	  
+	  
+	  <span ng-hide="user.friends.length==0">
+	    <B>Invite by Email</B>
+	    <P>Didn't find who you were looking for? Invite them by email</P>
+	  </span>
+	  
+	  <form novalidate name="inviteForm">
+	    <ul data-role="listview" data-inset="true">
+          <li>
+		    <label for="invitename" class="ui-hidden-accessible">Name:</label>
+            <input id="invitename" name="invitename" type="text" ng-model="invitename" placeholder="Name" required/>
+	      </li>
+	  
+          <li>
+		    <label for="inviteemail" class="ui-hidden-accessible">Email:</label>
+            <input id="inviteemail" name="inviteemail" type="email" ng-model="inviteemail" placeholder="Email" required/>
+	      </li>
+	      
+    	<span ng-show="thecircle.receiverLimit != -1">
+          <li>
+		    <label for="flip-giver" data-inline="true"></label>
+            <select name="flip-giver" id="flip-giver" data-role="slider" data-inline="true" style="float:right">
+		            <option value="no">No</option>
+		            <option value="yes">Yes</option>
+		    </select>
+	      </li>
+          <li>
+		        <label for="flip-receiver" data-inline="true"></label>
+		        <select name="flip-receiver" id="flip-receiver" data-role="slider" data-inline="true" class="ui-btn-right">
+		            <option value="no">No</option>
+		            <option value="yes">Yes</option>
+		        </select>
+	      </li>
+    	</span>
+	          	
+    	
+	    <P>
+	        <span ng-hide="inviteForm.$invalid">
+	          <a ng-href="#participants" ng-click="invite(invitename, inviteemail, thecircle)" data-role="button" data-theme="b">Invite</a>
+	        </span>
+	        <span ng-show="inviteForm.$invalid">
+	          <button disabled="" data-role="button" data-theme="b">Invite</button>
+	        </span>
+		</P>
+	  </form>
+	  
+	
+      <!-- ------------------------------------ -->
+      <!-- BEGIN: Participants/Honorees section -->
+      <!-- ------------------------------------ -->
+	
+	  <!-- copied/adapted from newevent.html in web version 2013-08-05 -->
+      
+      
+      <!-- ------------------------------------ -->
+      <!-- END: Participants/Honorees section   -->
+      <!-- ------------------------------------ -->
+      
+      
+      <!-- ------------------------------------------------------- -->
+      <!-- BEGIN: Guests section (for those events that have them) -->
+      <!-- ------------------------------------------------------- -->
+      
+      <!-- ------------------------------------------------------- -->
+      <!-- END: Guests section (for those events that have them)   -->
+      <!-- ------------------------------------------------------- -->
+      
+	  	  
+	  
+	</div><!-- /content -->
+
+
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <!-- li>Notifications</li -->
+	        <li data-icon="false"><a href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>

@@ -39,6 +39,36 @@
 		     <fileset file="fragments/footer.html" />
 		  </concat>
 
+		  <concat destfile="fragments/contactus.html"
+		          force="yes">
+		     <fileset file="fragments/contactus-nofooter.html" />
+		     <fileset file="fragments/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/addevent.html"
+		          force="yes">
+		     <fileset file="fragments/addevent-nofooter.html" />
+		     <fileset file="fragments/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/setnameanddate.html"
+		          force="yes">
+		     <fileset file="fragments/setnameanddate-nofooter.html" />
+		     <fileset file="fragments/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/editparticipants.html"
+		          force="yes">
+		     <fileset file="fragments/editparticipants-nofooter.html" />
+		     <fileset file="fragments/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/participants.html"
+		          force="yes">
+		     <fileset file="fragments/participants-nofooter.html" />
+		     <fileset file="fragments/footer.html" />
+		  </concat>
+
 	</target>
 	
 	
@@ -59,6 +89,11 @@
 	     <fileset file="fragments/gift.html" />
 	     <fileset file="fragments/personalinfo.html" />
 	     <fileset file="fragments/passwordreset.html" />
+	     <fileset file="fragments/contactus.html" />
+	     <fileset file="fragments/addevent.html" />
+	     <fileset file="fragments/setnameanddate.html" />
+	     <fileset file="fragments/editparticipants.html" />
+	     <fileset file="fragments/participants.html" />
 	     <fileset file="fragments/bottom.html" />
 	  </concat>
 	</target>

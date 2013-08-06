@@ -9,8 +9,8 @@
 		<form novalidate name="regForm">
 		    <fieldset data-role="fieldcontain">
 		      <P>
-		        <label for="name" class="ui-hidden-accessible">Name:</label>
-    		    <input id="name" name="fullname" type="text" ng-model="newuser.fullname" placeholder="Name" required/>
+		        <label for="fullname" class="ui-hidden-accessible">Name:</label>
+    		    <input id="fullname" name="fullname" type="text" ng-model="newuser.fullname" placeholder="Name" required/>
     		  </P>
 		      <P>
 		        <label for="email" class="ui-hidden-accessible">Email:</label>
@@ -36,13 +36,16 @@
 		          <button disabled="" ng-click="register(newuser)" data-role="button" data-theme="b">Register</button>
 		        </span>
     		  </P>
+		      <P>
+		          <a ng-href="#" ng-click="test(regForm)" data-role="button" data-theme="b">test</a>
+    		  </P>
+              <span ng-show="regForm.username.$dirty">
+                <span ng-show="regForm.username.$error.taken">
+                  <P style="color:#cc0000;">Usernames must be unique.  '{{newuser.username}}' has already been taken.</P>
+                </span>
+              </span>
     		</fieldset>
 		
-            <span ng-show="regForm.username.$dirty">
-              <span ng-show="regForm.username.$error.taken">
-                <P style="color:#cc0000;">Usernames must be unique.  '{{newuser.username}}' has already been taken.</P>
-              </span>
-            </span>
 		</form>	
 		
 	</div><!-- /content -->

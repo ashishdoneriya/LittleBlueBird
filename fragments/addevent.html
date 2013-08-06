@@ -1,28 +1,29 @@
 
-
-<div id="friends" data-role="page" data-add-back-btn="true">
+<div id="addevent" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>Friends</h1>
-		<a href="#addfriend" data-transition="slideup" data-icon="plus" class="ui-btn-right">Add</a>
+		<h1>Add Event</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
-	  	  
-      <div jquery-mobile-tpl>
-	    <ul id="friendview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
-	      <li ng-repeat="friend in user.friends">
-	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
-	          {{friend.fullname}}
-	        </a>
-	      </li>
-	    </ul>
-	  </div>
+	  
+	  Choose Event Type
+	
+      <ul data-role="listview" data-inset="true" class="ui-icon-alt">
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Christmas</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Birthday</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Anniversary</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Mothers Day</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Fathers Day</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Valentines Day</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Graduation</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Baby Shower</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Other</a></li>
+      </ul>
 	  
 	</div><!-- /content -->
 
 
-	
 	
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	

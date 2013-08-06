@@ -34,16 +34,8 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }  
   
   
-  // 2013-08-03 created to test fb login from browser
-  $scope.test = function() {
-    var fbuser = {email:'bdunklau@yahoo.com', id:'569956369', first_name:'Brent', last_name:'Dunklau'};
-    tryToFindUserFromFBLogin(fbuser);
-    $rootScope.fbuser = fbuser;
-    jQuery("#whoareyouview").hide();
-    setTimeout(function(){
-      jQuery("#whoareyouview").listview("refresh");
-      jQuery("#whoareyouview").show();
-    },1000);
+  // 2013-08-03 created to test whatever you want temporarily
+  $scope.test = function(form) {
   }
   
   
@@ -99,8 +91,21 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   
   // 2013-07-31
   $scope.initNewUser = function() {
-    $scope.newuser = {fullname:'Scott Tiger', username:'scott', password:'scott', email:'bdunklau@yahoo.com'};
-    $scope.passagain = 'scott';
+    //$scope.newuser = {fullname:'Scott Tiger', username:'scott', password:'scott', email:'bdunklau@yahoo.com'};
+    //$scope.passagain = 'scott';
+  }
+  
+  
+  // copied/adapted from $rootScope.createonthefly() in app-UserModule.js 2013-08-05
+  $scope.invite = function(invitename, inviteemail, thecircle) {
+      anewuser = User.save({fullname:invitename, email:inviteemail, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
+                                  function() {
+                                    if(thecircle) {
+                                      //$rootScope.addparticipant(-1, anewuser, thecircle, $rootScope.participationLevel); 
+                                    }
+                                    $rootScope.user.friends.push(anewuser);
+                                  } // end success function
+                                );
   }
   
   
@@ -228,6 +233,22 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                                 jQuery("#eventview").listview("refresh");
                                 jQuery("#eventview").show();
                               },0);
+  }
+  
+  // 2013-08-04 see http://docs.mobiscroll.com/datetime
+  // see also http://docs.mobiscroll.com/26/mobiscroll-core
+  $scope.initNewEvent = function() {
+    $scope.thecircle = {};
+    //The Javascript: initializing the scroller
+	jQuery(function(){
+	    jQuery("#datepicker").mobiscroll().date({dateOrder:'MM d yyyy', maxDate:new Date(new Date().getFullYear()+3,12,31)});
+	});
+  }
+  
+  $scope.setdate = function(form, dp) {
+    console.log('datepicker.mobiscroll(getvalue): ', jQuery("#datepicker").mobiscroll('getValue'));
+    console.log('new Date(): ', new Date(jQuery("#datepicker").mobiscroll('getDate')));
+    console.log('datepicker.mobiscroll(getTime): ', jQuery("#datepicker").mobiscroll('getTime'));
   }
   
   $scope.eventDateFilter = function(circle) {

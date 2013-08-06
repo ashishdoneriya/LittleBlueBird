@@ -144,7 +144,7 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany with NOO
         val uname = determineUsernameBasedOnFirstName(unames)
         debug("determined username to be: "+uname);
         this.username(uname)
-        this.password(this.email.is) // we don't want the username and password to be the same - that's pretty easy to hack
+        this.password(Util.hashPass(uname)) // we don't want the username and password to be the same - that's pretty easy to hack
       }
       
       val saved = super.save

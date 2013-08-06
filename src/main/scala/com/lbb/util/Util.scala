@@ -8,6 +8,8 @@ import net.liftweb.mapper.DB
 import net.liftweb.db.DefaultConnectionIdentifier
 import java.util.Date
 import org.joda.time.DateTime
+import java.security.MessageDigest
+import java.math.BigInteger
 
 object Util extends LbbLogger {
   
@@ -18,6 +20,15 @@ object Util extends LbbLogger {
     orig.dayOfMonth()
     val newd = new DateTime(orig.getYear(), orig.getMonthOfYear(), orig.getDayOfMonth(), 23, 59, 59, 0)
     new Date(newd.getMillis())
+  }
+  
+  
+  def hashPass(s:String) = {
+    val h = MessageDigest.getInstance("MD5").digest(s.getBytes);
+    val bi = new BigInteger(1, h);
+    val hashed = String.format("%0" + (h.length << 1) + "X", bi);
+    if(hashed.length()>6) hashed.substring(0,6)
+    else hashed
   }
   
   

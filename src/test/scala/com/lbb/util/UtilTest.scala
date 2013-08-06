@@ -62,6 +62,14 @@ class UtilTest extends FunSuite with AssertionsForJUnit with LbbLogger {
   }
   
   
+  // 2013-08-06
+  test("hash pass") {
+    val exp = "202CB9";
+    val act = Util.hashPass("123")
+    assert(exp===act)
+  }
+  
+  
   // testing the 'no profile pic' image
   test("adjusted dimensions 1") {
     val profilepicUrl = new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg")

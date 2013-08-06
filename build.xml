@@ -2,7 +2,7 @@
 
 	
 	<!-- combine all these files to create one big index.html file -->
-	<target name="create-fragments/html">
+	<target name="create-fragments">
 		  <concat destfile="fragments/html/wishlist.html"
 		          force="yes">
 		     <fileset file="fragments/html/wishlist-nofooter.html" />
@@ -72,7 +72,7 @@
 	</target>
 	
 	
-	<target name="create-index" depends="create-fragments/html">
+	<target name="create-index" depends="create-fragments">
 	  <concat destfile="www/index.html"
 	          force="yes">
 	     <fileset file="fragments/html/top.html" />
@@ -99,7 +99,19 @@
 	</target>
 	
 	
-    <target name="copy" depends="create-index" description="copy the www folder to src/main/webapp/www">
+	<target name="create-controllers-js" depends="create-fragments">
+	  <concat destfile="www/js/controllers.js"
+	          force="yes">
+	     <fileset file="fragments/js/top.js" />
+	     <fileset file="fragments/js/user.js" />
+	     <fileset file="fragments/js/event.js" />
+		 <fileset file="fragments/js/test.js" />
+	     <fileset file="fragments/js/bottom.js" />
+	  </concat>
+	</target>
+	
+	
+    <target name="copy" depends="create-index, create-controllers-js" description="copy the www folder to src/main/webapp/www">
       <delete dir="src/main/webapp/www"/>
       <copy todir="src/main/webapp/www">
         <fileset dir="www"/>

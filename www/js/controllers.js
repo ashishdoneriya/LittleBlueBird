@@ -18,6 +18,58 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   $scope.username = 'bdunklau';
   $scope.password = 'bdunklau';
   
+  
+  $scope.logout = function() {
+    if(typeof FB == 'undefined') return;
+    FB.logout(function(response) {});
+  }
+  
+  
+  // copied/adapted from index-Simple.html in the infinite-beach-9173 project  2013-08-01
+  // See also $rootScope.registerWithFacebook in app-FacebookModule.js
+  $scope.fblogin = function() {
+    FB.login(
+      function(response) {
+        if (response.authResponse) {
+          FB.api('/me', function(fbuser) {
+            tryToFindUserFromFBLogin(fbuser);
+            $rootScope.fbuser = fbuser;
+          });
+        } 
+        else {
+          alert('woops!  could not log you in');
+        }
+      }, 
+      { scope: "email" }
+    );
+  }
+  
+
+  // 2013-07-19 copied from app-LoginCtrl.js
+  $scope.emailIt = function(email) {
+    console.log(Email);
+    Email.send({type:'passwordrecovery', to:email, from:'info@littlebluebird.com', subject:'Password Recovery', message:'Your password is...'}, 
+      function() {alert("User/Pass has been sent.  Check your email.");}, 
+      function() {alert("Email not found: "+email+"\n\nContact us at info@littlebluebird.com for help");});
+  }
+
+
+  // 2013-07-19 copied from app-LoginCtrl.js, but there the method is just called login
+  $scope.lbblogin = function(evt) {
+    console.log("login:  "+$scope.username+" / "+$scope.password);
+    if(!angular.isDefined($scope.username) || !angular.isDefined($scope.password)) {
+      return;
+    }
+      
+    $rootScope.user = User.find({username:$scope.username, password:$scope.password}, 
+                               function() {$scope.logingood=true; 
+                                           if($rootScope.user.dateOfBirth == 0) { $rootScope.user.dateOfBirth = ''; }
+                                           $rootScope.showUser = $rootScope.user;  
+                                          }, 
+                               function() {$scope.logingood=false; alert('Wrong user/pass');}  );
+                               
+  }
+  
   // copied/adapted from $scope.mergeaccount in app-UserCtrl.js 2013-08-03
   $scope.mergeaccount = function(user) {
     $rootScope.user = MergeUsers.save({userId:user.id, facebookId:$rootScope.fbuser.id, email:$rootScope.fbuser.email}, 
@@ -57,49 +109,10 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
-  $scope.logout = function() {
-    if(typeof FB == 'undefined') return;
-    FB.logout(function(response) {});
-  }
-  
-  
-  // copied/adapted from index-Simple.html in the infinite-beach-9173 project  2013-08-01
-  // See also $rootScope.registerWithFacebook in app-FacebookModule.js
-  $scope.fblogin = function() {
-    FB.login(
-      function(response) {
-        if (response.authResponse) {
-          FB.api('/me', function(fbuser) {
-            tryToFindUserFromFBLogin(fbuser);
-            $rootScope.fbuser = fbuser;
-          });
-        } 
-        else {
-          alert('woops!  could not log you in');
-        }
-      }, 
-      { scope: "email" }
-    );
-  }
-  
-  
   // 2013-07-31
   $scope.initNewUser = function() {
     //$scope.newuser = {fullname:'Scott Tiger', username:'scott', password:'scott', email:'bdunklau@yahoo.com'};
     //$scope.passagain = 'scott';
-  }
-  
-  
-  // copied/adapted from $rootScope.createonthefly() in app-UserModule.js 2013-08-05
-  $scope.invite = function(invitename, inviteemail, thecircle) {
-      anewuser = User.save({fullname:invitename, email:inviteemail, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
-                                  function() {
-                                    if(thecircle) {
-                                      //$rootScope.addparticipant(-1, anewuser, thecircle, $rootScope.participationLevel); 
-                                    }
-                                    $rootScope.user.friends.push(anewuser);
-                                  } // end success function
-                                );
   }
   
   
@@ -128,32 +141,6 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                                     $scope.initNewUser();
                                   }
                                 );
-  }
-  
-
-  // 2013-07-19 copied from app-LoginCtrl.js
-  $scope.emailIt = function(email) {
-    console.log(Email);
-    Email.send({type:'passwordrecovery', to:email, from:'info@littlebluebird.com', subject:'Password Recovery', message:'Your password is...'}, 
-      function() {alert("User/Pass has been sent.  Check your email.");}, 
-      function() {alert("Email not found: "+email+"\n\nContact us at info@littlebluebird.com for help");});
-  }
-
-
-  // 2013-07-19 copied from app-LoginCtrl.js, but there the method is just called login
-  $scope.lbblogin = function(evt) {
-    console.log("login:  "+$scope.username+" / "+$scope.password);
-    if(!angular.isDefined($scope.username) || !angular.isDefined($scope.password)) {
-      return;
-    }
-      
-    $rootScope.user = User.find({username:$scope.username, password:$scope.password}, 
-                               function() {$scope.logingood=true; 
-                                           if($rootScope.user.dateOfBirth == 0) { $rootScope.user.dateOfBirth = ''; }
-                                           $rootScope.showUser = $rootScope.user;  
-                                          }, 
-                               function() {$scope.logingood=false; alert('Wrong user/pass');}  );
-                               
   }
   
   
@@ -191,6 +178,8 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                                           console.log('form.currentpassword: ', form.currentpassword);
                                         });
   }
+  
+  
     
   
   
@@ -220,6 +209,19 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
+  // copied/adapted from $rootScope.createonthefly() in app-UserModule.js 2013-08-05
+  $scope.invite = function(invitename, inviteemail, thecircle) {
+      anewuser = User.save({fullname:invitename, email:inviteemail, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
+                                  function() {
+                                    if(thecircle) {
+                                      //$rootScope.addparticipant(-1, anewuser, thecircle, $rootScope.participationLevel); 
+                                    }
+                                    $rootScope.user.friends.push(anewuser);
+                                  } // end success function
+                                );
+  }
+  
+  
   // the only reason this function is here is to kick jquery to reapply the listview style to the friend list
   $scope.events = function() {
                               jQuery("#eventview").hide();
@@ -228,6 +230,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                                 jQuery("#eventview").show();
                               },0);
   }
+  
   
   // 2013-08-04 see http://docs.mobiscroll.com/datetime
   // see also http://docs.mobiscroll.com/26/mobiscroll-core
@@ -250,7 +253,6 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     else if($scope.eventfilter=='current') return circle.date > new Date().getTime();
     else if($scope.eventfilter=='past') return circle.date < new Date().getTime();
   }
-  
   
   
   // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.initNewGift() function
@@ -357,7 +359,6 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   $scope.footermenustyle = function(menuitem) {
     return $scope.footermenu == menuitem ? 'ui-btn-active ui-state-persist' : '';
   }
-  
   
   
   // 2013-08-03 created to test whatever you want temporarily

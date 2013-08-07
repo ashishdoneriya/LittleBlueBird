@@ -103,8 +103,12 @@
 	  <concat destfile="www/js/controllers.js"
 	          force="yes">
 	     <fileset file="fragments/js/top.js" />
+	     <fileset file="fragments/js/login.js" />
 	     <fileset file="fragments/js/user.js" />
+	     <fileset file="fragments/js/friend.js" />
 	     <fileset file="fragments/js/event.js" />
+	     <fileset file="fragments/js/gift.js" />
+		 <fileset file="fragments/js/nav.js" />
 		 <fileset file="fragments/js/test.js" />
 	     <fileset file="fragments/js/bottom.js" />
 	  </concat>

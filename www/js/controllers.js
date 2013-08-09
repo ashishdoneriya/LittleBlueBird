@@ -337,8 +337,9 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     
     var inserting = !angular.isDefined(circle.id)
     
-    // The saved circle should become the current circle if it isn't already
-    $scope.circle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:circle.circleType, 
+    try {
+      // The saved circle should become the current circle if it isn't already
+      $scope.circle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:circle.circleType, 
                  creatorId:$rootScope.user.id},
                  function() {
                    alert("inserting = "+inserting);
@@ -378,7 +379,9 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                  },
                  function() {alert('Uh Oh - had a problem saving this event.\nIf this problem persists, contact us at info@littlebluebird.com');} 
                );
-    
+               
+    }
+    catch(err) {alert(err.message);}
   }
 
 

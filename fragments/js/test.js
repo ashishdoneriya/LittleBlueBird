@@ -13,6 +13,7 @@
     console.log('save this circle: ', circle);
     
     $scope.circle = circle;
+    $scope.circleservice = Circle;
     
   }
   

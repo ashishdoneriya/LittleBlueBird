@@ -565,6 +565,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     console.log('save this circle: ', circle);
     
     $scope.circle = circle;
+    $scope.circleservice = Circle;
     
   }
   

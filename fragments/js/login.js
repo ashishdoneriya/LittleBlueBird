@@ -37,8 +37,8 @@
 
 
   // 2013-07-19 copied from app-LoginCtrl.js, but there the method is just called login
-  $scope.lbblogin = function() {
-    console.log("login:  "+$scope.username+" / "+$scope.password);
+  $scope.lbblogin = function(event) {
+    console.log("event: ", event);
     if(!angular.isDefined($scope.username) || !angular.isDefined($scope.password)) {
       return;
     }
@@ -50,5 +50,4 @@
                                            console.log($rootScope.user); 
                                           }, 
                                function() {$scope.logingood=false; alert('Wrong user/pass');}  );
-                               
   }

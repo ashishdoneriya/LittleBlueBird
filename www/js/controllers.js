@@ -375,7 +375,8 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                      }
                      //$rootScope.combineReceiversAndGiversIntoBoth($scope.circle);
                    }  
-                 } 
+                 },
+                 function() {alert('Uh Oh - had a problem saving this event.\nIf this problem persists, contact us at info@littlebluebird.com');} 
                );
     
   }

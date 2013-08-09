@@ -14,7 +14,7 @@
     
     $scope.circle = circle;
     $scope.circleservice = Circle;
-    
+    alert(Circle);
   }
   
   

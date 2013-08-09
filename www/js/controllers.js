@@ -566,7 +566,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     
     $scope.circle = circle;
     $scope.circleservice = Circle;
-    
+    alert(Circle);
   }
   
   

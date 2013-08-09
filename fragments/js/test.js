@@ -2,7 +2,18 @@
   
   
   // 2013-08-03 created to test whatever you want temporarily
-  $scope.test = function() {
+
+  // taken from app-CircleModule.js: $rootScope.savecircle = function(circle, expdate)  2013-08-08
+  $scope.test = function(circle) {
+    circle.expirationdate = new Date(jQuery("#datepicker").mobiscroll('getDate'));
+    
+    if(!angular.isDefined(circle.participants))
+      circle.participants = {receivers:[], givers:[]};
+    
+    console.log('save this circle: ', circle);
+    
+    $scope.circle = circle;
+    
   }
   
   

@@ -61,6 +61,16 @@ var app = angular.module('project', ['ngResource']).
 
       return CircleParticipant;
   }).
+  factory('Reminder', function($resource) {
+      var Reminder = $resource('/gf/rest/reminders/:circleId', {circleId:'@circleId', userId:'@userId', remind_date:'@remind_date', people:'@people'},
+                     {
+                       query: {method:'GET', isArray:true},
+                       delete: {method:'DELETE'},
+                       save: {method:'POST', isArray:true}
+                     });
+                     
+      return Reminder;
+  }).
   factory('Password', function($resource) {
       var Password = $resource('http://www.littlebluebird.com/gf/rest/password/:userId/:currentpass/:newpass', {userId:'@userId', currentpass:'@currentpass', newpass:'@newpass'}, 
                     {

@@ -12,8 +12,8 @@ else if (!debugging || typeof console.log == "undefined") console.log = function
 
 
 // 2013-07-23  weird syntax needed for minification
-var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password', 'FacebookUser', 'MergeUsers', 'Circle', 'CircleParticipant',
-function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUsers, Circle, CircleParticipant) {
+var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password', 'FacebookUser', 'MergeUsers', 'Circle', 'CircleParticipant', 'Reminder',
+function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUsers, Circle, CircleParticipant, Reminder) {
 
   $scope.footermenu = '';
   $scope.eventfilter = 'current';

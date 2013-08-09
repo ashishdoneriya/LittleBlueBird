@@ -32,14 +32,14 @@ var app = angular.module('project', ['ngResource']).
       return FacebookUser;
   }).
   factory('MergeUsers', function($resource){
-      var MergeUsers = $resource('/gf/rest/mergeusers/:userId/:facebookId/:email', {userId:'@userId', facebookId:'@facebookId', email:'@email'}, 
+      var MergeUsers = $resource('http://www.littlebluebird.com/gf/rest/mergeusers/:userId/:facebookId/:email', {userId:'@userId', facebookId:'@facebookId', email:'@email'}, 
                        {
                          save: {method:'POST', isArray:false}
                        });
       return MergeUsers;
   })
 .factory('Circle', function($resource) {
-      var Circle = $resource('/gf/rest/circles/:circleId', {circleId:'@circleId', circleType:'@circleType', name:'@name', expirationdate:'@expirationdate', creatorId:'@creatorId', participants:'@participants', datedeleted:'@datedeleted'}, 
+      var Circle = $resource('http://www.littlebluebird.com/gf/rest/circles/:circleId', {circleId:'@circleId', circleType:'@circleType', name:'@name', expirationdate:'@expirationdate', creatorId:'@creatorId', participants:'@participants', datedeleted:'@datedeleted'}, 
                     {
                       query: {method:'GET', isArray:false}, 
                       activeEvents: {method:'GET', isArray:true}, 
@@ -50,7 +50,7 @@ var app = angular.module('project', ['ngResource']).
       return Circle;
   })
 .factory('CircleParticipant', function($resource) {
-      var CircleParticipant = $resource('/gf/rest/circleparticipants/:circleId', {circleId:'@circleId', userId:'@userId', inviterId:'@inviterId', 
+      var CircleParticipant = $resource('http://www.littlebluebird.com/gf/rest/circleparticipants/:circleId', {circleId:'@circleId', userId:'@userId', inviterId:'@inviterId', 
                                          participationLevel:'@participationLevel', who:'@who', email:'@email', circle:'@circle', adder:'@adder',
                                          notifyonaddtoevent:'@notifyonaddtoevent'}, 
                     {
@@ -62,7 +62,7 @@ var app = angular.module('project', ['ngResource']).
       return CircleParticipant;
   }).
   factory('Reminder', function($resource) {
-      var Reminder = $resource('/gf/rest/reminders/:circleId', {circleId:'@circleId', userId:'@userId', remind_date:'@remind_date', people:'@people'},
+      var Reminder = $resource('http://www.littlebluebird.com/gf/rest/reminders/:circleId', {circleId:'@circleId', userId:'@userId', remind_date:'@remind_date', people:'@people'},
                      {
                        query: {method:'GET', isArray:true},
                        delete: {method:'DELETE'},

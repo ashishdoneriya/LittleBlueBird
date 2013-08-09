@@ -134,6 +134,8 @@
     $scope.circle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:circle.circleType, 
                  creatorId:$rootScope.user.id},
                  function() {
+                   alert("inserting = "+inserting);
+                   alert($scope.circle.id);
                    if(inserting) {
                      $rootScope.user.circles.push($scope.circle);
                      circle.id = $scope.circle.id;

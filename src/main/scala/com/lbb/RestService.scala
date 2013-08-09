@@ -555,6 +555,7 @@ object RestService extends RestHelper with LbbLogger {
   }
   
   def insertCircle = {
+    debug("RestService.insertCircle:  S.request = "+S.request)
     S.request match {
       case Full(req) => {
         req.json match {
@@ -602,13 +603,13 @@ object RestService extends RestHelper with LbbLogger {
             
           } // case Full(jvalue:JObject)
           
-          case _ => BadResponse()
+          case _ => { debug("RestService.insertCircle: BAD got default case 2"); BadResponse(); }
           
         } // req.json match
         
       } // case Full(req)
           
-      case _ => BadResponse()
+      case _ => { debug("RestService.insertCircle: BAD got default case 1"); BadResponse(); }
       
     } // S.request match
     

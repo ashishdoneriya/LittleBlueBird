@@ -20,8 +20,12 @@
     <level value="error" />
   </logger>
  
+  <logger name="com.lbb.entity.Circle">
+    <level value="warn" />
+  </logger>
+ 
   <logger name="com.lbb.entity.Reminder">
-    <level value="debug" />
+    <level value="warn" />
   </logger>
  
   <root level="debug">

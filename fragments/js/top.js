@@ -5,15 +5,15 @@ if (typeof console == "undefined") var console = { log: function() {} };
 else if (!debugging || typeof console.log == "undefined") console.log = function() {};
 
 
+
 // 2013-07-23  $location is causing problems with jquery mobile: the browser back button stops working.  I think all links/routing stopped working.
 //function LbbController($scope, Email, $rootScope, User, $location) {
 
+
+
 // 2013-07-23  weird syntax needed for minification
-var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password', 'FacebookUser', 'MergeUsers',
-function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUsers) {
+var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password', 'FacebookUser', 'MergeUsers', 'Circle', 'CircleParticipant',
+function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUsers, Circle, CircleParticipant) {
 
   $scope.footermenu = '';
   $scope.eventfilter = 'current';
-  $scope.email = 'bdunklau@yahoo.com';
-  $scope.username = 'bdunklau';
-  $scope.password = 'bdunklau';

@@ -93,7 +93,7 @@
     		    <input id="password" name="password" type="password" ng-model="password" placeholder="Password" />
     		</p>
 		    <p>
-		        <a href="#welcome" ng-click="lbblogin($event)" data-role="button" data-theme="b">Login</a>
+		        <a href="#welcome" ng-click="lbblogin()" data-role="button" data-theme="b">Login</a>
     		</p>
     	  </fieldset>	
 		</form>		
@@ -152,18 +152,15 @@
     		  </P>
 		      <P>
 		        <label for="passagain" class="ui-hidden-accessible">Password (again):</label>
-    		    <input id="passagain" name="passagain" type="password" ng-model="passagain" placeholder="Password (again)" required/>
+    		    <input id="passagain" name="passagain" type="password" ng-model="newuser.passagain" placeholder="Password (again)" required/>
     		  </P>
 		      <P>
-		        <span ng-hide="regForm.$invalid || (passagain != newuser.password && !regForm.passagain.$error.required)">
+		        <span ng-hide="regForm.$invalid || (newuser.passagain != newuser.password && !regForm.passagain.$error.required)">
 		          <a ng-href="#welcome" ng-click="register(newuser)" data-role="button" data-theme="b">Register</a>
 		        </span>
-		        <span ng-show="regForm.$invalid || (passagain != newuser.password && !regForm.passagain.$error.required)">
+		        <span ng-show="regForm.$invalid || (newuser.passagain != newuser.password && !regForm.passagain.$error.required)">
 		          <button disabled="" ng-click="register(newuser)" data-role="button" data-theme="b">Register</button>
 		        </span>
-    		  </P>
-		      <P>
-		          <a ng-href="#" ng-click="test(regForm)" data-role="button" data-theme="b">test</a>
     		  </P>
               <span ng-show="regForm.username.$dirty">
                 <span ng-show="regForm.username.$error.taken">
@@ -282,7 +279,7 @@
       <div jquery-mobile-tpl>
 	    <ul id="eventview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="">
 	      <li ng-repeat="c in user.circles | filter: eventDateFilter" ng-cloak>
-	        <a href="#" data-transition="slide">
+	        <a href="#participants" ng-click="setcircle(c)" data-transition="slide">
 	          <p><h4>{{c.name}}</h4></p>
 	          <p>{{c.date | date:'MMM d, yyyy'}}</p>
 	        </a>
@@ -333,10 +330,17 @@
 	</div><!-- /header -->
 
 	<div data-role="content">
-	  
-	  <span ng-show="showUser==user">My Wish List</span>
-	  <span ng-hide="showUser==user">{{showUser.fullname}}'s Wish List</span>
 	
+	  <span ng-show="circle!=null">
+	    <ul data-role="listview" data-inset="true">
+	      <li><P><h4>{{circle.name}}</h4></P><P>{{circle.date | date: 'MMM d, yyyy'}}</P></li>
+	      <li>
+	        <span ng-show="showUser.id==user.id">My Wish List</span>
+	        <span ng-hide="showUser.id==user.id">{{showUser.fullname}}'s Wish List</span>
+	      </li>
+	    </ul>
+	  </span>
+	  
       <div jquery-mobile-tpl>
         <ul id="wishlistview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
           <li data-ng-repeat="gift in gifts"><a href="#gift" ng-click="setcurrentgift($index, gift)" data-transition="slide">{{gift.description}}</a></li>
@@ -515,6 +519,36 @@
 	
 	
 </div><!-- /page -->
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <!-- li>Notifications</li -->
+	        <li data-icon="false"><a href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
 
 <div id="personalinfo" data-role="page" data-add-back-btn="true">
 
@@ -739,15 +773,15 @@
 	  Choose Event Type
 	
       <ul data-role="listview" data-inset="true" class="ui-icon-alt">
-        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Christmas</a></li>
-        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Birthday</a></li>
-        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Anniversary</a></li>
-        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Mothers Day</a></li>
-        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Fathers Day</a></li>
-        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Valentines Day</a></li>
-        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Graduation</a></li>
-        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Baby Shower</a></li>
-        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent()">Other</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent('Christmas', -1)">Christmas</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent('Birthday', 1)">Birthday</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent('Anniversary', 2)">Anniversary</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent('Mothers Day', 1)">Mothers Day</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent('Fathers Day', 1)">Fathers Day</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent('Valentines Day', 1)">Valentines Day</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent('Graduation', 1)">Graduation</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent('Baby Shower', 1)">Baby Shower</a></li>
+        <li><a ng-href="#setnameanddate" data-transition="slide" ng-click="initNewEvent('Other', -1)">Other</a></li>
       </ul>
 	  
 	</div><!-- /content -->
@@ -797,14 +831,31 @@
 		    <fieldset data-role="fieldcontain">
 		      <P>
 		        <label for="name" class="ui-hidden-accessible">Name:</label>
-    		    <input id="name" name="name" type="text" ng-model="thecircle.name" placeholder="Name" required/>
+    		    <input id="name" name="name" type="text" ng-model="circle.name" placeholder="Name" required/>
     		  </P>
 		      <P>
 		        <input id="datepicker" name="datepicker" />
     		  </P>
     		  <div class="ui-grid-a">
 			    <div class="ui-block-a"><a href="#events" data-role="button" data-theme="c" data-mini="true">Cancel</a></div>
-			    <div class="ui-block-b"><a ng-href="#editparticipants" ng-click="setdate(thecircle)" data-role="button" data-theme="b" data-icon="arrow-r" data-mini="true" data-iconpos="right">Next</a></div>
+			
+			
+			  
+			    <div class="ui-block-b">
+		        <span ng-show="nameanddateForm.$valid && user.friends.length==0 && user.circles.length==0">
+		          <a ng-href="#invitebyemail" ng-click="savecircle(circle)" data-role="button" data-theme="b" data-icon="arrow-r" data-mini="true" data-iconpos="right">Next</a>
+		        </span>
+		        <span ng-show="nameanddateForm.$valid && (user.friends.length > 0 || user.circles.length > 0)">
+		          <a ng-href="#editparticipants" ng-click="savecircle(circle)" data-role="button" data-theme="b" data-icon="arrow-r" data-mini="true" data-iconpos="right">Next</a>
+		        </span>
+		        <span ng-show="nameanddateForm.$invalid">
+		          <button disabled="" data-role="button" data-theme="b" data-icon="arrow-r" data-mini="true" data-iconpos="right">Next</button>
+		        </span>
+		        </div>
+			
+			
+			
+			
 			  </div>
     		</fieldset>
     		
@@ -850,95 +901,27 @@
 <div id="editparticipants" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>Participants</h1>
+		<h1>Invite</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
 	  
-	  <B>Add Participants</B>
-	  <P>Add participants to this event</P>
+	  <P>Invite people to this event</P>
 	  
-	  	  
-	  <span ng-hide="user.friends.length==0">
-      <div jquery-mobile-tpl>
-	    <ul id="pfview" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search friends..." data-inset="true" repeat-done="" ng-cloak>
-	      <li ng-repeat="friend in user.friends">
-	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
-	          {{friend.fullname}}
-	        </a>
-	      </li>
-	    </ul>
-	  </div>
+	  <span ng-show="user.friends.length > 0">
+	  <a ng-href="#addbysearching" data-role="button" data-icon="arrow-r" data-iconpos="right">Search</a>
 	  </span>
 	  
-	  
-	  <span ng-hide="user.friends.length==0">
-	    <B>Invite by Email</B>
-	    <P>Didn't find who you were looking for? Invite them by email</P>
+	  <!-- Should be able to invite by email any time.  But if you have friends or circles, then we are going to show you a button to get there.
+	  If you don't have any friends or circles, then we will just show you that form here on this page 2013-08-08 -->
+	  <span ng-show="user.friends.length > 0 || user.circles.length > 0">
+	  <a ng-href="#invitebyemail" data-role="button" data-icon="arrow-r" data-iconpos="right">Invite By Email</a>
 	  </span>
 	  
-	  <form novalidate name="inviteForm">
-	    <ul data-role="listview" data-inset="true">
-          <li>
-		    <label for="invitename" class="ui-hidden-accessible">Name:</label>
-            <input id="invitename" name="invitename" type="text" ng-model="invitename" placeholder="Name" required/>
-	      </li>
-	  
-          <li>
-		    <label for="inviteemail" class="ui-hidden-accessible">Email:</label>
-            <input id="inviteemail" name="inviteemail" type="email" ng-model="inviteemail" placeholder="Email" required/>
-	      </li>
-	      
-    	<span ng-show="thecircle.receiverLimit != -1">
-          <li>
-		    <label for="flip-giver" data-inline="true"></label>
-            <select name="flip-giver" id="flip-giver" data-role="slider" data-inline="true" style="float:right">
-		            <option value="no">No</option>
-		            <option value="yes">Yes</option>
-		    </select>
-	      </li>
-          <li>
-		        <label for="flip-receiver" data-inline="true"></label>
-		        <select name="flip-receiver" id="flip-receiver" data-role="slider" data-inline="true" class="ui-btn-right">
-		            <option value="no">No</option>
-		            <option value="yes">Yes</option>
-		        </select>
-	      </li>
-    	</span>
-	          	
-    	
-	    <P>
-	        <span ng-hide="inviteForm.$invalid">
-	          <a ng-href="#participants" ng-click="invite(invitename, inviteemail, thecircle)" data-role="button" data-theme="b">Invite</a>
-	        </span>
-	        <span ng-show="inviteForm.$invalid">
-	          <button disabled="" data-role="button" data-theme="b">Invite</button>
-	        </span>
-		</P>
-	  </form>
-	  
-	
-      <!-- ------------------------------------ -->
-      <!-- BEGIN: Participants/Honorees section -->
-      <!-- ------------------------------------ -->
-	
-	  <!-- copied/adapted from newevent.html in web version 2013-08-05 -->
-      
-      
-      <!-- ------------------------------------ -->
-      <!-- END: Participants/Honorees section   -->
-      <!-- ------------------------------------ -->
-      
-      
-      <!-- ------------------------------------------------------- -->
-      <!-- BEGIN: Guests section (for those events that have them) -->
-      <!-- ------------------------------------------------------- -->
-      
-      <!-- ------------------------------------------------------- -->
-      <!-- END: Guests section (for those events that have them)   -->
-      <!-- ------------------------------------------------------- -->
-      
-	  	  
+	  <span ng-show="user.circles.length > 0">
+	  <a ng-href="#addfromanotherevent" data-role="button" data-icon="arrow-r" data-iconpos="right">Invite From Another Event</a>
+	  </span>
+	  	  	  
 	  
 	</div><!-- /content -->
 
@@ -979,47 +962,299 @@
 
 	<div data-role="header" data-theme="b">
 		<h1>Participants</h1>
+		<a href="#editparticipants" data-transition="slideup" data-icon="plus" class="ui-btn-right">Add</a>
 	</div><!-- /header -->
 
 	<div data-role="content">
 	  
-	  <B>{{thecircle.name}}</B>
-	  <P>{{thecircle.date | date: 'MMM d, yyyy'}}</P>
 	  
+	  <!-- hack: If you're trying to invite people by email, we first query by email to see if anyone is already in the db.  If it turns out there is 1 or more people already
+	  in the db, we keep those people in an array called 'maybepeople' and we present this/these people to the user and ask "Is any of these the person you're looking for"
+	  The problem is we can only set the href to one thing, there can only be one "next" page regardless of whether we found anyone or not.  So we hack this page with an ng-show/ng-hide
+	  switch to show these 'maybepeople' when they exist, or when they don't, we show the current list of event participants. yuck  2013-08-08 -->
+	  <span ng-show="maybepeople.length > 0">
+	  
+	      <span ng-show="maybepeople.length == 1">
+	        We found a '{{maybepeople[0].fullname}}' having the email address you entered.  Is this who you're looking for?
+	      
+		    <div class="ui-grid-a">
+		      <div class="ui-block-b"><a data-role="button" ng-href="#" ng-click="selectthisparticipant(newparticipant, newparticipant.participationLevel, true)">No</a></div>
+		      <div class="ui-block-b"><a data-role="button" ng-href="#" ng-click="selectthisparticipant(maybepeople[0], newparticipant.participationLevel, false)" data-theme="b">Yes</a></div>
+			</div>
+			
+	      </span>
 	
-      <!-- ------------------------------------ -->
-      <!-- BEGIN: Participants/Honorees section -->
-      <!-- ------------------------------------ -->
+	      <span ng-show="maybepeople.length > 1">
+	      <P>The email address you entered is associated with these {{maybepeople.length}} people.  If you see the person you're looking for, tap the name.  Otherwise, click "Not Found"</P>
+	      
+	      <div jquery-mobile-tpl>
+		    <ul id="maybepeopleview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
+		      <li ng-repeat="somebody in maybepeople">
+		        <a href="#" ng-click="selectthisparticipant(somebody, newparticipant.participationLevel, false)" data-transition="slide">
+		          {{somebody.fullname}}
+		        </a>
+		      </li>
+		    </ul>
+		  </div>
+	      
+	      <P><a data-role="button" ng-href="#" ng-click="selectthisparticipant(newparticipant, newparticipant.participationLevel, true)" data-theme="a">Not Found</a></P>
+	      </span>
+	      
+	  </span>
+	  
+	  
+	  
+	  <span ng-hide="maybepeople.length > 0">
+	      <!-- this block is the typical case -->
+	      
+	      <B>{{circle.name}}</B>
+		  <P>{{circle.date | date: 'MMM d, yyyy'}}</P>
+		  
+		
+	      <!-- ------------------------------------ -->
+	      <!-- BEGIN: Participants/Honorees section -->
+	      <!-- ------------------------------------ -->
+		
+		  <!-- copied/adapted from newevent.html in web version 2013-08-05 -->
+	      <span ng-show="circle.receiverLimit == -1">Participants</span>
+	      <span ng-show="circle.receiverLimit == 1">Honoree</span>
+	      <span ng-show="circle.receiverLimit > 1">Honorees</span>
+	      
+	      
+	      <div jquery-mobile-tpl>
+		    <ul id="receiverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
+		      <li ng-repeat="participant in circle.participants.receivers">
+		         <a ng-href="#wishlist" ng-click="giftlist(circle, participant)">{{participant.fullname}}</a>
+		      </li>
+		    </ul>
+		  </div>
+	      
+	      <!-- ------------------------------------ -->
+	      <!-- END: Participants/Honorees section   -->
+	      <!-- ------------------------------------ -->
+	      
+	      
+	      <!-- ------------------------------------------------------- -->
+	      <!-- BEGIN: Guests section (for those events that have them) -->
+	      <!-- ------------------------------------------------------- -->
+	      
+	      <span ng-show="circle.receiverLimit != -1">Guests</span>
+	      
+	      <div jquery-mobile-tpl>
+		    <ul id="giverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
+		      <li ng-repeat="participant in circle.participants.givers" data-icon="delete">
+		         <a ng-href="#" ng-click="removegiver($index, circle, participant)">{{participant.fullname}}</a>
+		      </li>
+		    </ul>
+		  </div>
+	      
+	      <!-- ------------------------------------------------------- -->
+	      <!-- END: Guests section (for those events that have them)   -->
+	      <!-- ---------------------------------
+	  </span>
+	  
+	  
+	  
+		  ---------------------- -->
+      
+	  	  
+	  
+	</div><!-- /content -->
+
+
 	
-	  <!-- copied/adapted from newevent.html in web version 2013-08-05 -->
-      <span ng-show="thecircle.receiverLimit == -1">Participants</span>
-      <span ng-show="thecircle.receiverLimit == 1">Honoree</span>
-      <span ng-show="thecircle.receiverLimit > 1">Honorees</span>
-      
-      
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <!-- li>Notifications</li -->
+	        <li data-icon="false"><a href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
+
+<div id="invitebyemail" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Invite</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	
+
+      Invite friends and family by email
+
+
+	  <form novalidate name="inviteForm">
+          <p>
+		    <label for="invitename" class="ui-hidden-accessible">Name:</label>
+            <input id="invitename" name="invitename" type="text" ng-model="newparticipant.name" placeholder="Name" required/>
+	      </p>
+	  
+          <p>
+		    <label for="inviteemail" class="ui-hidden-accessible">Email:</label>
+            <input id="inviteemail" name="inviteemail" type="email" ng-model="newparticipant.email" placeholder="Email" required/>
+	      </p>
+	      
+    	<span ng-show="circle.receiverLimit == 1">
+          <p>
+		        <label for="honoree01" data-inline="true">Is {{invitename}} the Honoree?</label>
+		        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
+		            <option value="Giver">No</option>
+		            <option value="Receiver">Yes</option>
+		        </select>
+	      </p>
+    	</span>
+	      
+    	<span ng-show="circle.receiverLimit > 1">
+          <p>
+		        <label for="honoree01" data-inline="true">Is {{invitename}} one of the Honorees?</label>
+		        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
+		            <option value="Giver">No</option>
+		            <option value="Receiver">Yes</option>
+		        </select>
+	      </p>
+    	</span>
+    	
+    	<span ng-show="circle.receiverLimit == -1">
+          <p>
+		        <input type="hidden" ng-model="newparticipant.participationLevel">
+	      </p>
+    	</span>
+    	
+	    <P>
+	        <span ng-hide="inviteForm.$invalid">
+	          <a ng-href="#participants" ng-click="invite(newparticipant, circle)" data-role="button" data-theme="b">Invite</a>
+	        </span>
+	        <span ng-show="inviteForm.$invalid">
+	          <button disabled="" data-role="button" data-theme="b">Invite</button>
+	        </span>
+		</P>
+	  </form>
+
+
+
+
+
+
+
+	  
+	</div><!-- /content -->
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <!-- li>Notifications</li -->
+	        <li data-icon="false"><a href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
+
+<div id="addbysearching" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Invite</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  	  
       <div jquery-mobile-tpl>
-	    <ul id="receiverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
-	      <li ng-repeat="participant in thecircle.participants.receivers">
-	          {{participant.fullname}}
+	    <ul id="pfview" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search and invite friends..." data-inset="true" repeat-done="" ng-cloak>
+	      <li ng-repeat="friend in user.friends">
+	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
+	          {{friend.fullname}}
+	        </a>
 	      </li>
 	    </ul>
 	  </div>
-      
-      
-      <!-- ------------------------------------ -->
-      <!-- END: Participants/Honorees section   -->
-      <!-- ------------------------------------ -->
-      
-      
-      <!-- ------------------------------------------------------- -->
-      <!-- BEGIN: Guests section (for those events that have them) -->
-      <!-- ------------------------------------------------------- -->
-      
-      <!-- ------------------------------------------------------- -->
-      <!-- END: Guests section (for those events that have them)   -->
-      <!-- ------------------------------------------------------- -->
-      
-	  	  
+	  
+	</div><!-- /content -->
+
+
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <!-- li>Notifications</li -->
+	        <li data-icon="false"><a href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
+
+<div id="addfromanotherevent" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Invite</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  
+	  Invite people from which event?
 	  
 	</div><!-- /content -->
 

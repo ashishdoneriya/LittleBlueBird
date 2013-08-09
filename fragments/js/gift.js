@@ -4,9 +4,9 @@
   // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.initNewGift() function
   $scope.initNewGift = function() {
     delete $scope.currentgift;
-    if(angular.isDefined($rootScope.circle)) {
-      $scope.currentgift = {addedBy:$rootScope.user, circle:$rootScope.circle};
-      $scope.currentgift.recipients = angular.copy($rootScope.circle.participants.receivers);
+    if(angular.isDefined($scope.circle)) {
+      $scope.currentgift = {addedBy:$rootScope.user, circle:$scope.circle};
+      $scope.currentgift.recipients = angular.copy($scope.circle.participants.receivers);
     }
     else {
       $scope.currentgift = {addedBy:$rootScope.user};
@@ -38,14 +38,14 @@
     
     var saveparms = {updater:$rootScope.user.fullname, description:gift.description, url:gift.url, 
                addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id};
-    if($rootScope.circle != undefined)
-      saveparms.circleId = $rootScope.circle.id;
+    if($scope.circle != undefined)
+      saveparms.circleId = $scope.circle.id;
     
     console.log(saveparms);
     
     var savedgift = Gift.save(saveparms,
                function() {
-                 if(add) {$rootScope.gifts.reverse();$rootScope.gifts.push(savedgift);$rootScope.gifts.reverse();}
+                 if(add) {$scope.gifts.reverse();$scope.gifts.push(savedgift);$scope.gifts.reverse();}
                  $scope.currentgift = {};
                  $scope.currentgift.recipients = [];
                  setTimeout(function(){
@@ -60,7 +60,7 @@
   
   // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.deletegift() function
   $scope.deletegift = function(gift) {
-    $rootScope.gifts.splice($scope.index, 1);
+    $scope.gifts.splice($scope.index, 1);
     Gift.delete({giftId:gift.id, updater:$rootScope.user.fullname}, 
                   function() {
                      setTimeout(function(){
@@ -80,14 +80,36 @@
   }
   
   
+  // 2013-08-08  taken from app-GiftCtrl.js
+  $scope.giftlist = function(circle, participant) {
+    
+    // We're expanding this to allow for null circle
+    // How do we tell if there's no circle?
+  
+    $scope.gifts = Gift.query({viewerId:$rootScope.user.id, circleId:circle.id, recipientId:participant.id}, 
+                            function() { 
+                              $scope.gifts.ready = true;
+                              $scope.circle = circle;
+                              $rootScope.showUser = participant;
+                              if($rootScope.user.id == participant.id) { $scope.gifts.mylist=true; } else { $scope.gifts.mylist=false; } 
+                              
+                              jQuery("#wishlistview").hide();
+                              setTimeout(function(){
+                                jQuery("#wishlistview").listview("refresh");
+                                jQuery("#wishlistview").show();
+                              },0);
+                            }, 
+                            function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again  (error code 402)");});
+  }
+  
   
   $scope.mywishlist = function() {
       $rootScope.showUser = $rootScope.user;
-      $rootScope.gifts = Gift.query({viewerId:$rootScope.user.id}, 
+      $scope.gifts = Gift.query({viewerId:$rootScope.user.id}, 
                             function() { 
-                              $rootScope.gifts.mylist=true;
-                              $rootScope.gifts.ready="true";
-                              delete $rootScope.circle;
+                              $scope.gifts.mylist=true;
+                              $scope.gifts.ready="true";
+                              delete $scope.circle;
                               jQuery("#wishlistview").hide();
                               setTimeout(function(){
                                 jQuery("#wishlistview").listview("refresh");

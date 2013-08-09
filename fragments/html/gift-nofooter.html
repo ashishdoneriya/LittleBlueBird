@@ -1,0 +1,42 @@
+
+<div id="gift" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Gift</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	 <P><b>Gift: </b>{{currentgift.description}}</P>
+	 
+	 <P><b>Recipient(s): </b><span ng-repeat="r in currentgift.recipients">{{r.fullname}}</span></P>
+	 
+	 
+	 <div ng-show="circle!=null">
+	   <P><b>Event: </b> {{circle.name}} {{circle.date | date:'EEE MMM d, yyyy'}}</P>
+	 </div>
+	
+	<P>
+	  <span ng-show="currentgift.canedit">
+	    <a href="#edititem" data-theme="b" data-role="button">Edit</a>
+	  </span>
+	  <span ng-show="currentgift.candelete">
+	    <a href="#wishlist" ng-click="deletegift(currentgift)" data-theme="c" data-role="button">Delete</a>
+	  </span>
+	</P>
+	
+	</div><!-- /content -->
+
+	
+	<div data-role="footer" data-theme="b" data-position="fixed">
+      <h4>LittleBlueBird</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist">Wish List</a></li>
+            <li><a href="#friends">Friends</a></li>
+            <li><a href="#events">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+	
+	
+</div><!-- /page -->

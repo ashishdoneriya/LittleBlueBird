@@ -5,11 +5,11 @@
   // 2013-07-23  copied/adapted from $rootScope.friendwishlist in app.js
   $scope.friendwishlist = function(friend) {
       $rootScope.showUser = friend;
-      $rootScope.gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, 
+      $scope.gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, 
                             function() { 
-                              $rootScope.gifts.mylist=false;
-                              $rootScope.gifts.ready="true";
-                              delete $rootScope.circle;
+                              $scope.gifts.mylist=false;
+                              $scope.gifts.ready="true";
+                              delete $scope.circle;
                               jQuery("#wishlistview").hide();
                               setTimeout(function(){
                                 jQuery("#wishlistview").listview("refresh");

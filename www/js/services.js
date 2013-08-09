@@ -37,6 +37,29 @@ var app = angular.module('project', ['ngResource']).
                          save: {method:'POST', isArray:false}
                        });
       return MergeUsers;
+  })
+.factory('Circle', function($resource) {
+      var Circle = $resource('/gf/rest/circles/:circleId', {circleId:'@circleId', circleType:'@circleType', name:'@name', expirationdate:'@expirationdate', creatorId:'@creatorId', participants:'@participants', datedeleted:'@datedeleted'}, 
+                    {
+                      query: {method:'GET', isArray:false}, 
+                      activeEvents: {method:'GET', isArray:true}, 
+                      expiredEvents: {method:'GET', isArray:true},
+                      save: {method:'POST'}
+                    });
+      console.log("CircleModule:  created Circle factory");              
+      return Circle;
+  })
+.factory('CircleParticipant', function($resource) {
+      var CircleParticipant = $resource('/gf/rest/circleparticipants/:circleId', {circleId:'@circleId', userId:'@userId', inviterId:'@inviterId', 
+                                         participationLevel:'@participationLevel', who:'@who', email:'@email', circle:'@circle', adder:'@adder',
+                                         notifyonaddtoevent:'@notifyonaddtoevent'}, 
+                    {
+                      query: {method:'GET', isArray:false}, 
+                      delete: {method:'DELETE'},
+                      save: {method:'POST'}
+                    });
+
+      return CircleParticipant;
   }).
   factory('Password', function($resource) {
       var Password = $resource('http://www.littlebluebird.com/gf/rest/password/:userId/:currentpass/:newpass', {userId:'@userId', currentpass:'@currentpass', newpass:'@newpass'}, 

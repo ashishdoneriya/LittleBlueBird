@@ -41,8 +41,7 @@
   
   // 2013-07-31
   $scope.initNewUser = function() {
-    //$scope.newuser = {fullname:'Scott Tiger', username:'scott', password:'scott', email:'bdunklau@yahoo.com'};
-    //$scope.passagain = 'scott';
+    $scope.newuser = {};
   }
   
   

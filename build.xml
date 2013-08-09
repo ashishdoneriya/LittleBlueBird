@@ -69,6 +69,30 @@
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
+		  <concat destfile="fragments/html/invitebyemail.html"
+		          force="yes">
+		     <fileset file="fragments/html/invitebyemail-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/html/addbysearching.html"
+		          force="yes">
+		     <fileset file="fragments/html/addbysearching-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/html/addfromanotherevent.html"
+		          force="yes">
+		     <fileset file="fragments/html/addfromanotherevent-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/html/gift.html"
+		          force="yes">
+		     <fileset file="fragments/html/gift-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
 	</target>
 	
 	
@@ -94,6 +118,9 @@
 	     <fileset file="fragments/html/setnameanddate.html" />
 	     <fileset file="fragments/html/editparticipants.html" />
 	     <fileset file="fragments/html/participants.html" />
+	     <fileset file="fragments/html/invitebyemail.html" />
+	     <fileset file="fragments/html/addbysearching.html" />
+	     <fileset file="fragments/html/addfromanotherevent.html" />
 	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
 	</target>

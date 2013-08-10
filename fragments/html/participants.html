@@ -1,4 +1,5 @@
 
+<!-- POOR NAMING: THIS PAGE SHOULD REALLY BE NAMED event.html  2013-08-10 -->
 
 <div id="participants" data-role="page" data-add-back-btn="true">
 
@@ -52,22 +53,24 @@
 	      <ul data-role="listview">
 	        <li>
 		      <p><h4>{{circle.name}}</h4></p>
-	          <p>{{circle.date | date:'MMM d, yyyy'}}</p>
+	          <p class="ui-li-aside">{{circle.date | date:'MMM d, yyyy'}}</p>
 	        </li>
 	      </ul>
 	      
 		
 	      <!-- ------------------------------------ -->
 	      <!-- BEGIN: Participants/Honorees section -->
-	      <!-- ------------------------------------ -->
-		
-		  <!-- copied/adapted from newevent.html in web version 2013-08-05 -->
-	      <span ng-show="circle.receiverLimit == 1">Honoree</span>
-	      <span ng-show="circle.receiverLimit > 1">Honorees</span>
-	      
+	      <!-- ------------------------------------ -->	      
 	      
 	      <div jquery-mobile-tpl>
 		    <ul id="receiverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
+		      <li data-role="list-divider">
+	            
+	              <span ng-show="circle.receiverLimit == -1">Participants</span>
+	              <span ng-show="circle.receiverLimit == 1">Honoree</span>
+	              <span ng-show="circle.receiverLimit > 1">Honorees</span>
+		              
+		      </li>
 		      <li ng-repeat="participant in circle.participants.receivers">
 		         <a ng-href="#wishlist" ng-click="giftlist(circle, participant)">{{participant.fullname}}</a>
 		      </li>
@@ -83,10 +86,9 @@
 	      <!-- BEGIN: Guests section (for those events that have them) -->
 	      <!-- ------------------------------------------------------- -->
 	      
-	      <span ng-show="circle.receiverLimit != -1">Guests</span>
-	      
 	      <div jquery-mobile-tpl>
 		    <ul id="giverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
+		      <li data-role="list-divider">Guests</li>
 		      <li ng-repeat="participant in circle.participants.givers" data-icon="delete">
 		         <a ng-href="#confirmdeleteparticipant" ng-click="preparetoremove($index, participant, 'Giver')">{{participant.fullname}}</a>
 		      </li>

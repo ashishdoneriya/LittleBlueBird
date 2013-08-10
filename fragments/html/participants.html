@@ -5,7 +5,7 @@
 
 	<div data-role="header" data-theme="b">
 		<h1>Event</h1>
-		<a href="#editparticipants" data-transition="slideup" data-icon="edit" class="ui-btn-right">Edit</a>
+		<a href="#setnameanddate" data-transition="slideup" data-icon="edit" class="ui-btn-right">Edit</a>
 	</div><!-- /header -->
 
 	<div data-role="content">
@@ -63,7 +63,7 @@
 	      <!-- ------------------------------------ -->	      
 	      
 	      <div jquery-mobile-tpl>
-		    <ul id="receiverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
+		    <ul id="receiverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak style="margin-top:30px;">
 		      <li data-role="list-divider">
 	            
 	              <span ng-show="circle.receiverLimit == -1">Participants</span>
@@ -86,6 +86,7 @@
 	      <!-- BEGIN: Guests section (for those events that have them) -->
 	      <!-- ------------------------------------------------------- -->
 	      
+	      <span ng-hide="circle.receiverLimit == -1">
 	      <div jquery-mobile-tpl>
 		    <ul id="giverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
 		      <li data-role="list-divider">Guests</li>
@@ -94,6 +95,7 @@
 		      </li>
 		    </ul>
 		  </div>
+		  </span>
 	      
 	      <!-- ------------------------------------------------------- -->
 	      <!-- END: Guests section (for those events that have them)   -->
@@ -112,7 +114,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>

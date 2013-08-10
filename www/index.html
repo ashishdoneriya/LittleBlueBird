@@ -215,7 +215,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -295,7 +295,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -332,17 +332,20 @@
 	<div data-role="content">
 	
 	  <span ng-show="circle!=null">
-	    <ul data-role="listview" data-inset="true">
-	      <li><P><h4>{{circle.name}}</h4></P><P>{{circle.date | date: 'MMM d, yyyy'}}</P></li>
-	      <li>
-	        <span ng-show="showUser.id==user.id">My Wish List</span>
-	        <span ng-hide="showUser.id==user.id">{{showUser.fullname}}'s Wish List</span>
-	      </li>
-	    </ul>
+        <ul data-role="listview">
+          <li>
+	        <p><h4>{{circle.name}}</h4></p>
+            <p>{{circle.date | date:'MMM d, yyyy'}}</p>
+          </li>
+        </ul>
 	  </span>
 	  
       <div jquery-mobile-tpl>
-        <ul id="wishlistview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
+        <ul id="wishlistview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak style="margin-top:30px;">
+	      <li data-role="list-divider">
+	        <span ng-show="showUser.id==user.id">My Wish List</span>
+	        <span ng-hide="showUser.id==user.id">{{showUser.fullname}}'s Wish List</span>
+	      </li>
           <li data-ng-repeat="gift in gifts"><a href="#gift" ng-click="setcurrentgift($index, gift)" data-transition="slide">{{gift.description}}</a></li>
         </ul>
       </div>
@@ -354,7 +357,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -408,7 +411,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -508,7 +511,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -599,7 +602,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -679,7 +682,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -721,7 +724,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -776,7 +779,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -821,25 +824,15 @@
 		      <P>
 		        <input id="datepicker" name="datepicker" />
     		  </P>
-    		  <div class="ui-grid-a">
-			    <div class="ui-block-a"><a href="#events" data-role="button" data-theme="c" data-mini="true">Cancel</a></div>
-			
-			
-			  
-			    <div class="ui-block-b">
-		        <span ng-show="nameanddateForm.$valid && user.friends.length==0 && user.circles.length==0">
-		          <a ng-href="#invitebyemail" ng-click="savecircle(circle)" data-role="button" data-theme="b" data-icon="arrow-r" data-mini="true" data-iconpos="right">Next</a>
-		        </span>
-		        <span ng-show="nameanddateForm.$valid && (user.friends.length > 0 || user.circles.length > 0)">
-		          <a ng-href="#editparticipants" ng-click="savecircle(circle)" data-role="button" data-theme="b" data-icon="arrow-r" data-mini="true" data-iconpos="right">Next</a>
+    		  
+    		  <P>
+		        <span ng-show="nameanddateForm.$valid">
+		          <a ng-href="#participants" ng-click="savecircle(circle)" data-role="button" data-theme="b">Save</a>
 		        </span>
 		        <span ng-show="nameanddateForm.$invalid">
-		          <button disabled="" data-role="button" data-theme="b" data-icon="arrow-r" data-mini="true" data-iconpos="right">Next</button>
+		          <button disabled="" data-role="button" data-theme="b">Save</button>
 		        </span>
-		        </div>
-			
-			
-			  </div>
+    		  </P>
 			  
 			  
     		</fieldset>
@@ -854,7 +847,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -914,7 +907,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -946,7 +939,7 @@
 
 	<div data-role="header" data-theme="b">
 		<h1>Event</h1>
-		<a href="#editparticipants" data-transition="slideup" data-icon="edit" class="ui-btn-right">Edit</a>
+		<a href="#setnameanddate" data-transition="slideup" data-icon="edit" class="ui-btn-right">Edit</a>
 	</div><!-- /header -->
 
 	<div data-role="content">
@@ -1004,7 +997,7 @@
 	      <!-- ------------------------------------ -->	      
 	      
 	      <div jquery-mobile-tpl>
-		    <ul id="receiverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
+		    <ul id="receiverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak style="margin-top:30px;">
 		      <li data-role="list-divider">
 	            
 	              <span ng-show="circle.receiverLimit == -1">Participants</span>
@@ -1027,6 +1020,7 @@
 	      <!-- BEGIN: Guests section (for those events that have them) -->
 	      <!-- ------------------------------------------------------- -->
 	      
+	      <span ng-hide="circle.receiverLimit == -1">
 	      <div jquery-mobile-tpl>
 		    <ul id="giverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
 		      <li data-role="list-divider">Guests</li>
@@ -1035,6 +1029,7 @@
 		      </li>
 		    </ul>
 		  </div>
+		  </span>
 	      
 	      <!-- ------------------------------------------------------- -->
 	      <!-- END: Guests section (for those events that have them)   -->
@@ -1053,7 +1048,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -1152,7 +1147,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -1205,7 +1200,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -1250,7 +1245,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
@@ -1308,7 +1303,7 @@
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
 		
-      <h4>LittleBlueBird</h4>
+      <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
         <ul>
             <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>

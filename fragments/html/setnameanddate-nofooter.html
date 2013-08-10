@@ -18,25 +18,15 @@
 		      <P>
 		        <input id="datepicker" name="datepicker" />
     		  </P>
-    		  <div class="ui-grid-a">
-			    <div class="ui-block-a"><a href="#events" data-role="button" data-theme="c" data-mini="true">Cancel</a></div>
-			
-			
-			  
-			    <div class="ui-block-b">
-		        <span ng-show="nameanddateForm.$valid && user.friends.length==0 && user.circles.length==0">
-		          <a ng-href="#invitebyemail" ng-click="savecircle(circle)" data-role="button" data-theme="b" data-icon="arrow-r" data-mini="true" data-iconpos="right">Next</a>
-		        </span>
-		        <span ng-show="nameanddateForm.$valid && (user.friends.length > 0 || user.circles.length > 0)">
-		          <a ng-href="#editparticipants" ng-click="savecircle(circle)" data-role="button" data-theme="b" data-icon="arrow-r" data-mini="true" data-iconpos="right">Next</a>
+    		  
+    		  <P>
+		        <span ng-show="nameanddateForm.$valid">
+		          <a ng-href="#participants" ng-click="savecircle(circle)" data-role="button" data-theme="b">Save</a>
 		        </span>
 		        <span ng-show="nameanddateForm.$invalid">
-		          <button disabled="" data-role="button" data-theme="b" data-icon="arrow-r" data-mini="true" data-iconpos="right">Next</button>
+		          <button disabled="" data-role="button" data-theme="b">Save</button>
 		        </span>
-		        </div>
-			
-			
-			  </div>
+    		  </P>
 			  
 			  
     		</fieldset>

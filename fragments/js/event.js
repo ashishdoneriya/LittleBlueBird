@@ -190,6 +190,8 @@
                      }
                      //$rootScope.combineReceiversAndGiversIntoBoth($scope.circle);
                    }  
+                   
+                   refreshParticipants();
                  },
                  function() {alert('Uh Oh - had a problem saving this event.\nIf this problem persists, contact us at info@littlebluebird.com');} 
              ); // Circle.save()

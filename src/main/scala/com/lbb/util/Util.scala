@@ -18,7 +18,7 @@ object Util extends LbbLogger {
   def ahead23hrs(d:Date) = {
     val orig = new DateTime(d.getTime())
     orig.dayOfMonth()
-    val newd = new DateTime(orig.getYear(), orig.getMonthOfYear(), orig.getDayOfMonth(), 23, 59, 59, 0)
+    val newd = new DateTime(orig.getYear(), orig.getMonthOfYear(), orig.getDayOfMonth(), 11, 59, 0, 0)
     new Date(newd.getMillis())
   }
   

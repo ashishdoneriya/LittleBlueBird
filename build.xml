@@ -93,6 +93,12 @@
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
+		  <concat destfile="fragments/html/confirmdeleteparticipant.html"
+		          force="yes">
+		     <fileset file="fragments/html/confirmdeleteparticipant-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
 	</target>
 	
 	
@@ -121,6 +127,7 @@
 	     <fileset file="fragments/html/invitebyemail.html" />
 	     <fileset file="fragments/html/addbysearching.html" />
 	     <fileset file="fragments/html/addfromanotherevent.html" />
+	     <fileset file="fragments/html/confirmdeleteparticipant.html" />
 	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
 	</target>

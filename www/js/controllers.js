@@ -222,6 +222,32 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
+  // not worrying yet about whether the person is a giver or receiver, assume receiver  2013-08-09
+  // We DO know thought that if circle.receiverLimit = -1, that the person will be added as a receiver
+  $scope.addparticipant = function(person, circle, participationLevel) {
+    if(!angular.isDefined(circle.participants))
+      circle.participants = {receivers:[], givers:[]};
+    var limitreached = circle.receiverLimit != -1 && circle.participants.receivers.length == circle.receiverLimit
+    var level = 'Receiver';
+    if(participationLevel == 'Giver' || limitreached) { 
+      circle.participants.givers.push(person); 
+      level = 'Giver';
+    }
+    else circle.participants.receivers.push(person);
+    
+    CircleParticipant.save({circleId:circle.id, inviterId:$rootScope.user.id, userId:person.id, participationLevel:level,
+                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$rootScope.user.fullname},
+                                         function() {circle.reminders = Reminder.query({circleId:circle.id})});
+      
+  }
+  
+  
+  // 2013-08-09
+  $scope.removeparticipant = function(participant, circle) {
+  
+  }
+  
+  
   // 2013-08-08
   $scope.setcircle = function(c) { 
     c.participants = CircleParticipant.query({circleId:c.id},
@@ -311,7 +337,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                               setTimeout(function(){
                                 jQuery("#eventview").listview("refresh");
                                 jQuery("#eventview").show();
-                              },0);
+                              },1000);
   }
   
   
@@ -377,26 +403,26 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                
   }
 
-
   
-  // 2013-08-08  taken from app-CircleCtrl.js
-  $scope.removereceiver = function(index, circle, participant) {
-    circle.participants.receivers.splice(index, 1)
-    if(angular.isDefined(circle.id)) {
-      CircleParticipant.delete({circleId:circle.id, userId:participant.id}, function() {Reminder.delete({circleId:$scope.circle.id, userId:participant.id})});
-      // now remove person from circle.reminders...
-      removeremindersforperson(participant);
-    }
+  
+  // 2013-08-09
+  $scope.preparetoremove = function(index, participant, participationLevel) {
+    $scope.index = index;  $scope.participant = participant;  $scope.participationLevel = participationLevel;
   }
   
-  // 2013-08-08  taken from app-CircleCtrl.js
-  $scope.removegiver = function(index, circle, participant) {
-    circle.participants.givers.splice(index, 1)
-    if(angular.isDefined(circle.id)) {
-      CircleParticipant.delete({circleId:circle.id, userId:participant.id}, function() {Reminder.delete({circleId:$scope.circle.id, userId:participant.id})});
-      // now remove person from circle.reminders...
-      removeremindersforperson(participant);
-    }
+  // 2013-08-08  taken from app-CircleCtrl.js $scope.removegiver
+  $scope.removeparticipant = function(index, participant, circle, participationLevel) {
+    
+    CircleParticipant.delete({circleId:circle.id, userId:participant.id}, 
+                        function() {
+                          Reminder.delete({circleId:$scope.circle.id, userId:participant.id});
+                          if(participationLevel=='Receiver') circle.participants.receivers.splice(index, 1);
+                          else circle.participants.givers.splice(index, 1);
+                          removeremindersforperson(participant);
+                          delete $scope.index;  delete $scope.participant;  $scope.participationLevel = participationLevel;
+                        }
+                    ); // CircleParticipant.delete
+  
   }
     
   
@@ -593,7 +619,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   $scope.scotttiger = {fullname:'Scott Tiger', username:'scott', password:'scott', passagain:'scott', email:'bdunklau@yahoo.com'};
   $scope.newuser = $scope.scotttiger;
   
-  $rootScope.user = $scope.brent_no_friends;
+  $rootScope.user = $scope.brent;
   $scope.logingood = true; // to get to the welcome screen
   
   // to prepopulate login forms and password recovery forms

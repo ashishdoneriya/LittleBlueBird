@@ -3,7 +3,7 @@
 <div id="participants" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>Participants</h1>
+		<h1>Event</h1>
 		<a href="#editparticipants" data-transition="slideup" data-icon="plus" class="ui-btn-right">Add</a>
 	</div><!-- /header -->
 
@@ -49,16 +49,19 @@
 	  <span ng-hide="maybepeople.length > 0">
 	      <!-- this block is the typical case -->
 	      
-	      <B>{{circle.name}}</B>
-		  <P>{{circle.date | date: 'MMM d, yyyy'}}</P>
-		  
+	      <ul data-role="listview">
+	        <li>
+		      <p><h4>{{circle.name}}</h4></p>
+	          <p>{{circle.date | date:'MMM d, yyyy'}}</p>
+	        </li>
+	      </ul>
+	      
 		
 	      <!-- ------------------------------------ -->
 	      <!-- BEGIN: Participants/Honorees section -->
 	      <!-- ------------------------------------ -->
 		
 		  <!-- copied/adapted from newevent.html in web version 2013-08-05 -->
-	      <span ng-show="circle.receiverLimit == -1">Participants</span>
 	      <span ng-show="circle.receiverLimit == 1">Honoree</span>
 	      <span ng-show="circle.receiverLimit > 1">Honorees</span>
 	      
@@ -85,20 +88,16 @@
 	      <div jquery-mobile-tpl>
 		    <ul id="giverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
 		      <li ng-repeat="participant in circle.participants.givers" data-icon="delete">
-		         <a ng-href="#" ng-click="removegiver($index, circle, participant)">{{participant.fullname}}</a>
+		         <a ng-href="#confirmdeleteparticipant" ng-click="preparetoremove($index, participant, 'Giver')">{{participant.fullname}}</a>
 		      </li>
 		    </ul>
 		  </div>
 	      
 	      <!-- ------------------------------------------------------- -->
 	      <!-- END: Guests section (for those events that have them)   -->
-	      <!-- ---------------------------------
+	      <!-- ------------------------------------------------------- -->
 	  </span>
 	  
-	  
-	  
-		  ---------------------- -->
-      
 	  	  
 	  
 	</div><!-- /content -->

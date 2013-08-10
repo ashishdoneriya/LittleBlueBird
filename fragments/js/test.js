@@ -45,7 +45,7 @@
   $scope.scotttiger = {fullname:'Scott Tiger', username:'scott', password:'scott', passagain:'scott', email:'bdunklau@yahoo.com'};
   $scope.newuser = $scope.scotttiger;
   
-  $rootScope.user = $scope.brent_no_friends;
+  $rootScope.user = $scope.brent;
   $scope.logingood = true; // to get to the welcome screen
   
   // to prepopulate login forms and password recovery forms

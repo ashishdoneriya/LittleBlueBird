@@ -944,7 +944,7 @@
 <div id="participants" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>Participants</h1>
+		<h1>Event</h1>
 		<a href="#editparticipants" data-transition="slideup" data-icon="plus" class="ui-btn-right">Add</a>
 	</div><!-- /header -->
 
@@ -990,16 +990,19 @@
 	  <span ng-hide="maybepeople.length > 0">
 	      <!-- this block is the typical case -->
 	      
-	      <B>{{circle.name}}</B>
-		  <P>{{circle.date | date: 'MMM d, yyyy'}}</P>
-		  
+	      <ul data-role="listview">
+	        <li>
+		      <p><h4>{{circle.name}}</h4></p>
+	          <p>{{circle.date | date:'MMM d, yyyy'}}</p>
+	        </li>
+	      </ul>
+	      
 		
 	      <!-- ------------------------------------ -->
 	      <!-- BEGIN: Participants/Honorees section -->
 	      <!-- ------------------------------------ -->
 		
 		  <!-- copied/adapted from newevent.html in web version 2013-08-05 -->
-	      <span ng-show="circle.receiverLimit == -1">Participants</span>
 	      <span ng-show="circle.receiverLimit == 1">Honoree</span>
 	      <span ng-show="circle.receiverLimit > 1">Honorees</span>
 	      
@@ -1026,20 +1029,16 @@
 	      <div jquery-mobile-tpl>
 		    <ul id="giverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
 		      <li ng-repeat="participant in circle.participants.givers" data-icon="delete">
-		         <a ng-href="#" ng-click="removegiver($index, circle, participant)">{{participant.fullname}}</a>
+		         <a ng-href="#confirmdeleteparticipant" ng-click="preparetoremove($index, participant, 'Giver')">{{participant.fullname}}</a>
 		      </li>
 		    </ul>
 		  </div>
 	      
 	      <!-- ------------------------------------------------------- -->
 	      <!-- END: Guests section (for those events that have them)   -->
-	      <!-- ---------------------------------
+	      <!-- ------------------------------------------------------- -->
 	  </span>
 	  
-	  
-	  
-		  ---------------------- -->
-      
 	  	  
 	  
 	</div><!-- /content -->
@@ -1187,7 +1186,7 @@
       <div jquery-mobile-tpl>
 	    <ul id="pfview" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search and invite friends..." data-inset="true" repeat-done="" ng-cloak>
 	      <li ng-repeat="friend in user.friends">
-	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
+	        <a href="#participants" ng-click="addparticipant(friend, circle, 'Receiver')" data-transition="slide">
 	          {{friend.fullname}}
 	        </a>
 	      </li>
@@ -1238,6 +1237,64 @@
 	<div data-role="content">
 	  
 	  Invite people from which event?
+	  
+	</div><!-- /content -->
+
+
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <!-- li>Notifications</li -->
+	        <li data-icon="false"><a href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
+<div id="confirmdeleteparticipant" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Confirm Delete</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	      
+      <ul data-role="listview">
+        <li>
+	      <p><h4>{{circle.name}}</h4></p>
+          <p>{{circle.date | date:'MMM d, yyyy'}}</p>
+        </li>
+      </ul>
+	  	  
+	  <P>&nbsp;</P>	  
+	  Delete {{participant.fullname}} from this event?
+	  <P>&nbsp;</P>	
+	  
+	  <div class="ui-grid-a">
+	    <div class="ui-block-a"><a data-role="button" ng-href="#participants">Cancel</a></div>
+	    <div class="ui-block-b"><a data-role="button" ng-href="#participants" ng-click="removeparticipant(index, participant, circle, participationLevel)">Delete</a></div>	   
+      </div>
 	  
 	</div><!-- /content -->
 

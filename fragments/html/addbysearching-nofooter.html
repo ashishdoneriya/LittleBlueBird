@@ -11,7 +11,7 @@
       <div jquery-mobile-tpl>
 	    <ul id="pfview" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search and invite friends..." data-inset="true" repeat-done="" ng-cloak>
 	      <li ng-repeat="friend in user.friends">
-	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
+	        <a href="#participants" ng-click="addparticipant(friend, circle, 'Receiver')" data-transition="slide">
 	          {{friend.fullname}}
 	        </a>
 	      </li>

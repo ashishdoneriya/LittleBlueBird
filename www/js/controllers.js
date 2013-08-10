@@ -346,10 +346,27 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   $scope.initNewEvent = function(circleType, receiverLimit) {
     $scope.circle = {circleType:circleType, receiverLimit:receiverLimit};
     //The Javascript: initializing the scroller
+	initdatepicker();
+  };
+  
+  
+  $scope.editevent = function(circle) {
+    //The Javascript: initializing the scroller
+	initdatepicker(circle.date);
+  }
+  
+  
+  initdatepicker = function(somemillidate) {  
+    console.log('somedate: ', somemillidate);
+    //The Javascript: initializing the scroller
 	jQuery(function(){
 	    jQuery("#datepicker").mobiscroll().date({dateOrder:'MM d yyyy', maxDate:new Date(new Date().getFullYear()+3,12,31)});
+	    if(typeof somemillidate != 'undefined') {
+	      somedate = new Date(somemillidate);
+          jQuery("#datepicker").mobiscroll('setValue', [somedate.getMonth(), somedate.getDate(), somedate.getFullYear()], true, 100);
+	    }
 	});
-  };
+  }
   
   
   // taken from app-CircleModule.js: $rootScope.savecircle = function(circle, expdate)  2013-08-08
@@ -395,7 +412,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                          $rootScope.user.circles.splice(i, 1, $scope.circle);
                        }
                      }
-                     //$rootScope.combineReceiversAndGiversIntoBoth($scope.circle);
+                     $scope.circle.participants = circle.participants;
                    }  
                    
                    refreshParticipants();

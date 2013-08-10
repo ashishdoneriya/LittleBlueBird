@@ -1,37 +1,29 @@
 
+<!-- POOR NAMING: THIS PAGE SHOULD REALLY BE NAMED event.html  2013-08-10 -->
 
-<div id="setnameanddate" data-role="page" data-add-back-btn="true">
+<div id="confirmdeleteevent" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>Event</h1>
+		<h1>Confirm Delete</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
-	  	  
-		<form novalidate name="nameanddateForm">
-		  <P>Enter the event's name and date</P>
-		    <fieldset data-role="fieldcontain">
-		      <P>
-		        <label for="name" class="ui-hidden-accessible">Name:</label>
-    		    <input id="name" name="name" type="text" ng-model="circle.name" placeholder="Name" required/>
-    		  </P>
-		      <P>
-		        <input id="datepicker" name="datepicker" />
-    		  </P>
-    		  
-    		  <P>
-		        <span ng-show="nameanddateForm.$valid">
-		          <a ng-href="#participants" ng-click="savecircle(circle)" data-role="button" data-theme="b">Save</a>
-		        </span>
-		        <span ng-show="nameanddateForm.$invalid">
-		          <button disabled="" data-role="button" data-theme="b">Save</button>
-		        </span>
-    		  </P>
-			  
-			  
-    		</fieldset>
+	  
+	  
+	      <ul data-role="listview">
+	        <li>
+		      <p><h4>{{circle.name}}</h4></p>
+	          <p>{{circle.date | date:'MMM d, yyyy'}}</p>
+	        </li>
+	      </ul>
+	      
+	      <div style="margin-top:30px;">Are you sure you want to delete this event?  Once it's gone, it's gone</div>
 		
-		</form>	
+		  <div class="ui-grid-a" style="margin-top:200px;">
+		    <div class="ui-block-a"><a data-role="button" ng-href="#participants">Cancel</a></div>
+		    <div class="ui-block-b"><a data-role="button" ng-href="#events" ng-click="deleteevent(circle)">Delete</a></div>	   
+	      </div>
+	  	  
 	  
 	</div><!-- /content -->
 

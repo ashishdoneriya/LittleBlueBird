@@ -236,6 +236,28 @@
                     ); // CircleParticipant.delete
   
   }
+  
+  
+  // taken from app-CircleModule.js: $rootScope.deletecircle() 2013-08-10
+  // TODO delete reminders
+  $rootScope.deleteevent = function(circle) {
+    Circle.save({circleId:$scope.circle.id, datedeleted:new Date().getTime()},
+                function() {
+                  // now find the circle we just deleted from the user's list of circles
+                  for(var i=0; i < $rootScope.user.circles.length; i++) {
+                    if(circle.id == $rootScope.user.circles[i].id) {
+                      $rootScope.user.circles.splice(i, 1);
+                    }
+                  }
+                  
+                  if($rootScope.user.circles.length > 0)
+                    $scope.circle = $rootScope.user.circles[0];
+                  else delete $scope.circle
+                  
+                } // end of success function
+    ); // end of Circle.save
+                
+  }
     
   
   // 2013-08-08  taken from app-CircleCtrl.js

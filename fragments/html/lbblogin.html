@@ -6,18 +6,23 @@
 	</div><!-- /header -->
 
 	<div data-role="content">
-		<form novalidate>
+		<form novalidate name="loginForm">
 		  <fieldset data-role="fieldcontain">
 		    <p>
 		        <label for="username" class="ui-hidden-accessible">Username:</label>
-    		    <input id="username" name="username" type="text" ng-model="username" placeholder="Username" />
+    		    <input id="username" name="username" type="text" ng-model="username" placeholder="Username" required />
     		</p>
 		    <p>
 		        <label for="password" class="ui-hidden-accessible">Password:</label>
-    		    <input id="password" name="password" type="password" ng-model="password" placeholder="Password" />
+    		    <input id="password" name="password" type="password" ng-model="password" placeholder="Password" required />
     		</p>
 		    <p>
+		      <span ng-show="loginForm.$valid">
 		        <a href="#welcome" ng-click="lbblogin()" data-role="button" data-theme="b">Login</a>
+		      </span>
+		      <span ng-show="loginForm.$invalid">
+		        <button disabled="" data-theme="b">Login</button>
+		      </span>
     		</p>
     	  </fieldset>	
 		</form>		

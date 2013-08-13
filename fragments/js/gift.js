@@ -24,6 +24,59 @@
   }
   
   
+  $scope.beginreserving = function(gift) {
+	jQuery(function(){
+	    jQuery("#givedatepicker").mobiscroll().date({dateOrder:'MM d yyyy', maxDate:new Date(new Date().getFullYear()+3,12,31)});
+	});
+	gift.senderName = $rootScope.user.fullname;
+	$scope.reserving = true;
+  }
+  
+  
+  rerenderWishlist = function() {
+      jQuery("#wishlistview").hide();
+      setTimeout(function(){
+        jQuery("#wishlistview").listview("refresh");
+        jQuery("#wishlistview").show();
+      },0);
+  }
+  
+  
+  
+  //2013-08-11  taken from app-GiftCtrl $scope.buygift()
+  $scope.reservegift = function(index, gift) {
+    console.log('$scope.buygift ------------------------- called');
+    
+    if($scope.circle)
+      gift.receivedate = new Date($scope.circle.date);
+    else
+      gift.receivedate = new Date(jQuery("#givedatepicker").mobiscroll('getDate'));
+      
+    gift.senderId = $rootScope.user.id;
+    // gift.senderName set by the input field on the html page 
+    
+    var circleId = angular.isDefined($scope.circle) ? $scope.circle.id : -1;
+    var parms = {giftId:gift.id, updater:$rootScope.user.fullname, circleId:circleId, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id, senderId:gift.senderId, senderName:gift.senderName, receivedate:gift.receivedate.getTime()};
+    console.log('parms: ', parms);
+    var savedgift = Gift.save(parms, 
+                      function() { $scope.currentgift = savedgift; 
+                                   $scope.gifts.splice(index, 1, savedgift);
+                                   rerenderWishlist();   });
+    delete $scope.reserving;
+  }
+  
+  
+  // taken from app-GiftCtrl $scope.returngift()
+  $scope.returngift = function(index, gift) {
+    var circleId = angular.isDefined($scope.circle) ? $scope.circle.id : -1;
+    var savedgift = Gift.save({giftId:gift.id, updater:$rootScope.user.fullname, circleId:circleId, recipients:gift.recipients, viewerId:$rootScope.user.id, 
+                               recipientId:$rootScope.showUser.id, senderId:-1, senderName:''},
+                      function() { $scope.currentgift = savedgift; 
+                                   $scope.gifts.splice(index, 1, savedgift);
+                                   rerenderWishlist();   });
+  }
+  
+  
   // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.addgift() function
   $scope.savegift = function(gift) {
     // the 'showUser' doesn't have to be a recipient - only add if it is
@@ -48,10 +101,7 @@
                  if(add) {$scope.gifts.reverse();$scope.gifts.push(savedgift);$scope.gifts.reverse();}
                  $scope.currentgift = {};
                  $scope.currentgift.recipients = [];
-                 setTimeout(function(){
-                   jQuery("#wishlistview").listview("refresh");
-                   jQuery("#wishlistview").show();
-                 },0);
+                 rerenderWishlist();
                });
                
   }    
@@ -63,10 +113,7 @@
     $scope.gifts.splice($scope.index, 1);
     Gift.delete({giftId:gift.id, updater:$rootScope.user.fullname}, 
                   function() {
-                     setTimeout(function(){
-                      jQuery("#wishlistview").listview("refresh");
-                      jQuery("#wishlistview").show();
-                    },0);
+                    rerenderWishlist();
                   } // end success function
                );
   }
@@ -91,13 +138,10 @@
                               $scope.gifts.ready = true;
                               $scope.circle = circle;
                               $rootScope.showUser = participant;
-                              if($rootScope.user.id == participant.id) { $scope.gifts.mylist=true; } else { $scope.gifts.mylist=false; } 
+                              if($rootScope.user.id == participant.id) { $scope.gifts.mylist=true; } 
+                              else { $scope.gifts.mylist=false; } 
                               
-                              jQuery("#wishlistview").hide();
-                              setTimeout(function(){
-                                jQuery("#wishlistview").listview("refresh");
-                                jQuery("#wishlistview").show();
-                              },0);
+                              rerenderWishlist();
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again  (error code 402)");});
   }
@@ -110,11 +154,7 @@
                               $scope.gifts.mylist=true;
                               $scope.gifts.ready="true";
                               delete $scope.circle;
-                              jQuery("#wishlistview").hide();
-                              setTimeout(function(){
-                                jQuery("#wishlistview").listview("refresh");
-                                jQuery("#wishlistview").show();
-                              },0);
+                              rerenderWishlist();
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
   }

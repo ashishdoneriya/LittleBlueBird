@@ -125,26 +125,44 @@ class UtilTest extends FunSuite with AssertionsForJUnit with LbbLogger {
   }
   
   
-  // take any date and move it to 11:59pm on that same day
-  test("ahead 23 hrs") {
-    val expyear = 2013; val expmonth = 1; val expday = 30; val exphr = 23; val expmin = 59; val expsec = 59;
-    val dt = new DateTime(expyear, expmonth, expday, 0, 0, 0, 0)
-    val d = new Date(dt.getMillis)
-    val newd = Util.ahead23hrs(d)
-    val newdt = new DateTime(newd.getTime)
-    val actyear = newdt.getYear
-    val actmonth = newdt.getMonthOfYear
-    val actday = newdt.getDayOfMonth
-    val acthr = newdt.getHourOfDay
-    val actmin = newdt.getMinuteOfHour
-    val actsec = newdt.getSecondOfMinute
-    assert(actyear===expyear)
-    assert(actmonth===expmonth)
-    assert(actday===expday)
-    assert(acthr===exphr)
-    assert(actmin===expmin)
-    assert(actsec===expsec)
+  /**
+   * Util.dateIsPassed is how we check to see if a circle is expired or not  
+   * This is a standard test - no funny business.  The circle expir date is 1/15/13 and 'now' is
+   * 2/1/13 11am.  Obviously, the circle is now expired.  But see the next test
+   */
+  test("date is passed? #1") {
+    val now =       new DateTime(2013, 02, 01, 11, 0, 0, 0)          // 2/1/13 11am
+    val expirDate = new DateTime(2013, 01, 15, 0, 0, 0, 0).getMillis // 1/15/13 midnight
+    val isPassed = Util.dateIsPassed(expirDate, now)
+    assert(isPassed===true)
   }
+  
+  
+  /**
+   * In this test, the expirDate is before the 'now' date.  According to old logic (prior to 8/11/13)
+   * we would say the circle is expired.  But not anymore, now we take a circle's expir date and roll it forward 1 day
+   * BUT WE DON'T SAVE THIS ROLLED-FORWARD DATE TO THE DB.  We save the midnight date.
+   * So even though 'expirDate' has technically passed, we say the circle is still active because the date hasn't passed 
+   * by more than 1 day yet.
+   */
+  test("date is passed? #2") {
+    val now =       new DateTime(2013, 02, 01, 23, 58, 0, 0)         // 2/1/13 11:58pm
+    val expirDate = new DateTime(2013, 02, 01, 0, 0, 0, 0).getMillis // 2/1/13 midnight
+    val isPassed = Util.dateIsPassed(expirDate, now)
+    assert(isPassed===false)
+  }
+  
+  /**
+   * Just to make sure we haven't missed anything, here's a test where the 'now' is clearly before
+   * the expirDate.  Expected result: the circle is not expired; the date has not passed.
+   */
+  test("date is passed? #3") {
+    val now =       new DateTime(2013, 02, 01, 11, 0, 0, 0)          // 2/1/13 11am
+    val expirDate = new DateTime(2013, 03, 01, 0, 0, 0, 0).getMillis // 3/1/13 midnight
+    val isPassed = Util.dateIsPassed(expirDate, now)
+    assert(isPassed===false)
+  }
+  
   
   test("List stuff") {
     val list = List(1,2,3,4)

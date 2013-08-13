@@ -15,12 +15,24 @@ object Util extends LbbLogger {
   
   
   // 2013-07-31
-  def ahead23hrs(d:Date) = {
-    val orig = new DateTime(d.getTime())
-    orig.dayOfMonth()
-    val newd = new DateTime(orig.getYear(), orig.getMonthOfYear(), orig.getDayOfMonth(), 11, 59, 0, 0)
-    new Date(newd.getMillis())
-  }
+//  def ahead23hrs(d:Date) = {
+//    val orig = new DateTime(d.getTime())
+//    orig.dayOfMonth()
+//    val newd = new DateTime(orig.getYear(), orig.getMonthOfYear(), orig.getDayOfMonth(), 11, 59, 0, 0)
+//    new Date(newd.getMillis())
+//  }
+  
+  
+  // 2013-08-11:  This is the new logic behind Circle.isExpired.  Rather than take a user-supplied date and move it ahead to 11:59pm
+  // All we really need to do is change the definition of "is expired".  We'll determine whether or not a circle is expired by comparing
+  // 'now' with the expiration date + 1 day.  That way, we don't have to do all that business of moving the date ahead 23 hrs, 59 mins
+  // There's 86,400 seconds in a day.  So take the passed-in date and add 86,400,000 millis to it.
+  // Compare 'now' with this value to figure out of the circle is expired
+  // UPDATE: Looks like the mobiscroll date picker sets the time part to noon when you don't explicitly set it.  So the effect of the
+  // logic below is this: If you check on an event the day AFTER but it is before noon, LittleBlueBird will tell you the event is
+  // still active.  Only after noon will LBB tell you the event has passed.  MINIMAL IMPACT - Who is really going to be checking on
+  // an event before noon the following day?  I doubt that anyone even checks the event after it's passed.
+  def dateIsPassed(date:Long, now:DateTime) = new DateTime(date + 86400000) isBefore(now)
   
   
   def hashPass(s:String) = {

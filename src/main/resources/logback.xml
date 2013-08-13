@@ -21,7 +21,7 @@
   </logger>
  
   <logger name="com.lbb.entity.Circle">
-    <level value="warn" />
+    <level value="info" />
   </logger>
  
   <logger name="com.lbb.entity.Reminder">

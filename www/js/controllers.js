@@ -448,7 +448,8 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   // taken from app-CircleModule.js: $rootScope.deletecircle() 2013-08-10
   // TODO delete reminders
   $rootScope.deleteevent = function(circle) {
-    Circle.save({circleId:$scope.circle.id, datedeleted:new Date().getTime()},
+    Circle.save({circleId:$scope.circle
+    .id, datedeleted:new Date().getTime()},
                 function() {
                   // now find the circle we just deleted from the user's list of circles
                   for(var i=0; i < $rootScope.user.circles.length; i++) {
@@ -483,8 +484,8 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   
   $scope.eventDateFilter = function(circle) {
     if($scope.eventfilter=='all') return true;
-    else if($scope.eventfilter=='current') return circle.date > new Date().getTime();
-    else if($scope.eventfilter=='past') return circle.date < new Date().getTime();
+    else if($scope.eventfilter=='current') return !circle.isExpired;
+    else if($scope.eventfilter=='past') return circle.isExpired;
   }
   
   
@@ -508,6 +509,59 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     // you need to specify who the gift is for if there is a circle and if there is more than one receiver in the circle
     $scope.needToSpecifyWhoTheGiftIsFor = angular.isDefined($scope.currentgift) && angular.isDefined($scope.currentgift.circle) 
            && angular.isDefined($scope.currentgift.recipients) && $scope.currentgift.recipients.length > 1;
+  }
+  
+  
+  $scope.beginreserving = function(gift) {
+	jQuery(function(){
+	    jQuery("#givedatepicker").mobiscroll().date({dateOrder:'MM d yyyy', maxDate:new Date(new Date().getFullYear()+3,12,31)});
+	});
+	gift.senderName = $rootScope.user.fullname;
+	$scope.reserving = true;
+  }
+  
+  
+  rerenderWishlist = function() {
+      jQuery("#wishlistview").hide();
+      setTimeout(function(){
+        jQuery("#wishlistview").listview("refresh");
+        jQuery("#wishlistview").show();
+      },0);
+  }
+  
+  
+  
+  //2013-08-11  taken from app-GiftCtrl $scope.buygift()
+  $scope.reservegift = function(index, gift) {
+    console.log('$scope.buygift ------------------------- called');
+    
+    if($scope.circle)
+      gift.receivedate = new Date($scope.circle.date);
+    else
+      gift.receivedate = new Date(jQuery("#givedatepicker").mobiscroll('getDate'));
+      
+    gift.senderId = $rootScope.user.id;
+    // gift.senderName set by the input field on the html page 
+    
+    var circleId = angular.isDefined($scope.circle) ? $scope.circle.id : -1;
+    var parms = {giftId:gift.id, updater:$rootScope.user.fullname, circleId:circleId, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id, senderId:gift.senderId, senderName:gift.senderName, receivedate:gift.receivedate.getTime()};
+    console.log('parms: ', parms);
+    var savedgift = Gift.save(parms, 
+                      function() { $scope.currentgift = savedgift; 
+                                   $scope.gifts.splice(index, 1, savedgift);
+                                   rerenderWishlist();   });
+    delete $scope.reserving;
+  }
+  
+  
+  // taken from app-GiftCtrl $scope.returngift()
+  $scope.returngift = function(index, gift) {
+    var circleId = angular.isDefined($scope.circle) ? $scope.circle.id : -1;
+    var savedgift = Gift.save({giftId:gift.id, updater:$rootScope.user.fullname, circleId:circleId, recipients:gift.recipients, viewerId:$rootScope.user.id, 
+                               recipientId:$rootScope.showUser.id, senderId:-1, senderName:''},
+                      function() { $scope.currentgift = savedgift; 
+                                   $scope.gifts.splice(index, 1, savedgift);
+                                   rerenderWishlist();   });
   }
   
   
@@ -535,10 +589,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                  if(add) {$scope.gifts.reverse();$scope.gifts.push(savedgift);$scope.gifts.reverse();}
                  $scope.currentgift = {};
                  $scope.currentgift.recipients = [];
-                 setTimeout(function(){
-                   jQuery("#wishlistview").listview("refresh");
-                   jQuery("#wishlistview").show();
-                 },0);
+                 rerenderWishlist();
                });
                
   }    
@@ -550,10 +601,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     $scope.gifts.splice($scope.index, 1);
     Gift.delete({giftId:gift.id, updater:$rootScope.user.fullname}, 
                   function() {
-                     setTimeout(function(){
-                      jQuery("#wishlistview").listview("refresh");
-                      jQuery("#wishlistview").show();
-                    },0);
+                    rerenderWishlist();
                   } // end success function
                );
   }
@@ -578,13 +626,10 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                               $scope.gifts.ready = true;
                               $scope.circle = circle;
                               $rootScope.showUser = participant;
-                              if($rootScope.user.id == participant.id) { $scope.gifts.mylist=true; } else { $scope.gifts.mylist=false; } 
+                              if($rootScope.user.id == participant.id) { $scope.gifts.mylist=true; } 
+                              else { $scope.gifts.mylist=false; } 
                               
-                              jQuery("#wishlistview").hide();
-                              setTimeout(function(){
-                                jQuery("#wishlistview").listview("refresh");
-                                jQuery("#wishlistview").show();
-                              },0);
+                              rerenderWishlist();
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again  (error code 402)");});
   }
@@ -597,11 +642,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                               $scope.gifts.mylist=true;
                               $scope.gifts.ready="true";
                               delete $scope.circle;
-                              jQuery("#wishlistview").hide();
-                              setTimeout(function(){
-                                jQuery("#wishlistview").listview("refresh");
-                                jQuery("#wishlistview").show();
-                              },0);
+                              rerenderWishlist();
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
   }

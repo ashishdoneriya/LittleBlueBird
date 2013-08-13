@@ -241,7 +241,8 @@
   // taken from app-CircleModule.js: $rootScope.deletecircle() 2013-08-10
   // TODO delete reminders
   $rootScope.deleteevent = function(circle) {
-    Circle.save({circleId:$scope.circle.id, datedeleted:new Date().getTime()},
+    Circle.save({circleId:$scope.circle
+    .id, datedeleted:new Date().getTime()},
                 function() {
                   // now find the circle we just deleted from the user's list of circles
                   for(var i=0; i < $rootScope.user.circles.length; i++) {
@@ -276,6 +277,6 @@
   
   $scope.eventDateFilter = function(circle) {
     if($scope.eventfilter=='all') return true;
-    else if($scope.eventfilter=='current') return circle.date > new Date().getTime();
-    else if($scope.eventfilter=='past') return circle.date < new Date().getTime();
+    else if($scope.eventfilter=='current') return !circle.isExpired;
+    else if($scope.eventfilter=='past') return circle.isExpired;
   }

@@ -6,22 +6,58 @@
 	</div><!-- /header -->
 
 	<div data-role="content">
-	 <P><b>Gift: </b>{{currentgift.description}}</P>
-	 
-	 <P><b>Recipient(s): </b><span ng-repeat="r in currentgift.recipients">{{r.fullname}}</span></P>
-	 
-	 
-	 <div ng-show="circle!=null">
-	   <P><b>Event: </b> {{circle.name}} {{circle.date | date:'EEE MMM d, yyyy'}}</P>
-	 </div>
 	
-	<P>
-	  <span ng-show="currentgift.canedit">
-	    <a href="#edititem" data-theme="b" data-role="button">Edit</a>
-	  </span>
-	  <span ng-show="currentgift.candelete">
-	    <a href="#wishlist" ng-click="deletegift(currentgift)" data-theme="c" data-role="button">Delete</a>
-	  </span>
-	</P>
+	  
+	 <span ng-show="circle!=null">
+	   <ul data-role="listview">
+	     <li data-iconpos="left" data-icon="arrow-l">
+	       <a ng-href="#wishlist">
+	         <p><h4>{{circle.name}}</h4></p>
+	         <p>{{circle.date | date:'MMM d, yyyy'}}</p>
+	       </a>
+	     </li>
+	   </ul>
+	 </span>
+	  
+
+
+	      <div style="margin-top:30px;"><h4>{{currentgift.description}}</h4></div>
+          <p>For <span ng-repeat="r in currentgift.recipients">{{r.fullname}}</span></p>
+          
+          <span ng-show="currentgift.canseestatus && currentgift.isbought">
+            <P>From {{currentgift.sender_name}}</P>
+          </span>
+	      
+	      
+		  <span ng-show="currentgift.canedit">
+		    <P><a href="#edititem" data-theme="b" data-role="button">Edit</a></P>
+		  </span>
+		  <span ng-show="currentgift.candelete">
+		    <P><a href="#wishlist" ng-click="deletegift(currentgift)" data-theme="b" data-role="button">Delete</a></P>
+		  </span>
+		  
+		  
+		  <span ng-hide="reserving">    
+			  <span ng-show="currentgift.canbuy">
+			    <P><a href="#" ng-click="beginreserving(currentgift)" data-theme="b" data-role="button">Reserve</a></P>
+			  </span>
+			  <span ng-show="currentgift.canreturn">
+			    <P><a href="#" ng-click="returngift(index, currentgift)" data-theme="b" data-role="button">Return</a></P>
+			  </span>
+	      </span>
+	      
+		  <span ng-show="reserving"> 
+		      <P>From: <input type="text" name="sender" ng-model="currentgift.senderName" /></P>
+		      <span ng-show="circle==null"><P>Give on: <input id="givedatepicker" name="givedatepicker" /></P></span>
+		      
+			  <div class="ui-grid-a" style="margin-top:25px;">
+			    <div class="ui-block-a"><a data-role="button" ng-href="#" ng-click="reserving=false">Cancel</a></div>
+			    <div class="ui-block-b"><a data-role="button" ng-href="#wishlist" ng-click="reservegift(index, currentgift)" data-theme="b">Reserve</a></div>	   
+		      </div>
+		      
+	      </span>
+		  
+		  
+	      
 	
 	</div><!-- /content -->

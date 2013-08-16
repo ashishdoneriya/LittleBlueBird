@@ -111,6 +111,12 @@
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
+		  <concat destfile="fragments/html/notifications.html"
+		          force="yes">
+		     <fileset file="fragments/html/notifications-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
 	</target>
 	
 	
@@ -142,6 +148,7 @@
 	     <fileset file="fragments/html/confirmdeleteparticipant.html" />
 	     <fileset file="fragments/html/confirmdeleteevent.html" />
 	     <fileset file="fragments/html/edititem.html" />
+	     <fileset file="fragments/html/notifications.html" />
 	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
 	</target>

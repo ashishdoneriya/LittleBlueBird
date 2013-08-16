@@ -77,6 +77,13 @@
   }
   
   
+  $scope.viewonline = function(gift, event) {
+    event.preventDefault();
+    window.open(gift.affiliateUrl, '_blank', 'location=yes');
+    return false;
+  }
+  
+  
   // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.addgift() function
   $scope.savegift = function(gift) {
     // the 'showUser' doesn't have to be a recipient - only add if it is

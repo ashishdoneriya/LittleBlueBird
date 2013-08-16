@@ -1,29 +1,17 @@
 
-
-<div id="editparticipants" data-role="page" data-add-back-btn="true">
+<!-- Lets the user turn on/off notifications: when they are added to events, when gifts they have bought are edited/deleted, and when gifts are
+"unbought" (have become available again) -->
+<div id="notifications" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>Invite</h1>
+		<h1>Notifications</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
-	  
-	  <P>Invite people to this event</P>
-	  
-	  <span ng-show="user.friends.length > 0">
-	  <a ng-href="#addbysearching" data-role="button" data-icon="arrow-r" data-iconpos="right">Search</a>
-	  </span>
-	  
-	  <!-- Should be able to invite by email any time.  But if you have friends or circles, then we are going to show you a button to get there.
-	  If you don't have any friends or circles, then we will just show you that form here on this page 2013-08-08 -->
-	  <span ng-show="user.friends.length > 0 || user.circles.length > 0">
-	  <a ng-href="#invitebyemail" data-role="button" data-icon="arrow-r" data-iconpos="right">Invite By Email</a>
-	  </span>
-	  
-	  <span ng-show="user.circles.length > 0">
-	  <a ng-href="#addfromanotherevent" data-role="button" data-icon="arrow-r" data-iconpos="right">Invite From Another Event</a>
-	  </span>
-	  	  	  
+	  	  
+	    <form novalidate>
+	      
+	    </form>
 	  
 	</div><!-- /content -->
 

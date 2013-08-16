@@ -37,8 +37,7 @@
 
 
   // 2013-07-19 copied from app-LoginCtrl.js, but there the method is just called login
-  $scope.lbblogin = function(event) {
-    console.log("event: ", event);
+  $scope.lbblogin = function() {
     if(!angular.isDefined($scope.username) || !angular.isDefined($scope.password)) {
       return;
     }
@@ -47,7 +46,9 @@
                                function() {$scope.logingood=true; 
                                            if($rootScope.user.dateOfBirth == 0) { $rootScope.user.dateOfBirth = ''; }
                                            $rootScope.showUser = $rootScope.user; 
-                                           console.log(JSON.stringify($rootScope.user)); 
+                                           //console.log(JSON.stringify($rootScope.user)); 
                                           }, 
                                function() {$scope.logingood=false; alert('Wrong user/pass');}  );
+                               
+    delete $scope.password;
   }

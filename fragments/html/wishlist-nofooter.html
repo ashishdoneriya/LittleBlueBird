@@ -10,11 +10,13 @@
 	<div data-role="content">
 	
 	  <span ng-show="circle!=null">
-        <ul data-role="listview" data-icon="arrow-l">
-          <li>
-	        <p><h4>{{circle.name}}</h4></p>
-            <p>{{circle.date | date:'MMM d, yyyy'}}</p>
-          </li>
+        <ul data-role="listview">
+	      <li data-icon="arrow-l">
+	       <a ng-href="#participants">
+	         <p><h4>{{circle.name}}</h4></p>
+	         <p>{{circle.date | date:'MMM d, yyyy'}}</p>
+	       </a>
+	      </li>
         </ul>
 	  </span>
 	  
@@ -28,16 +30,25 @@
             <a ng-href="#gift" ng-click="setcurrentgift($index, gift)">
               <h4>{{gift.description}}</h4>
               <span ng-show="gift.recipients.length > 1"><P>For <span ng-repeat="r in gift.recipients">{{r.fullname}}</span></P></span>
-              <span ng-show="gift.canseestatus && gift.isbought">
-                <P>Already bought by {{gift.sender_name}}</P>
+              <P>
+                <span ng-show="gift.canseestatus && gift.isbought">
+                  Already bought by {{gift.sender_name}}
+                </span>
+                <span ng-show="gift.canseestatus && !gift.isbought">
+                  Still Available
+                </span>
+              </P>
+              <span ng-show="gift.issurprise">
+                <P>Shhhhh! This item is a Surprise!</P>
+                <P>{{showUser.fullname}} does not know anything about it</P>
               </span>
-              <span ng-show="gift.canseestatus && !gift.isbought">
-                <P>Still Available</P>
-              </span>
+              
+              
             </a>  
           </li>
         </ul>
       </div>
+      
 	  
 	</div><!-- /content -->
 

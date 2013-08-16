@@ -253,6 +253,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     c.participants = CircleParticipant.query({circleId:c.id},
                         function() {
                           $scope.circle = c;
+                          $scope.$parent.circle = c;
                           refreshParticipants();
                         }
                      );
@@ -521,7 +522,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
-  rerenderWishlist = function() {
+  refreshWishlist = function() {
       jQuery("#wishlistview").hide();
       setTimeout(function(){
         jQuery("#wishlistview").listview("refresh");
@@ -549,7 +550,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     var savedgift = Gift.save(parms, 
                       function() { $scope.currentgift = savedgift; 
                                    $scope.gifts.splice(index, 1, savedgift);
-                                   rerenderWishlist();   });
+                                   refreshWishlist();   });
     delete $scope.reserving;
   }
   
@@ -561,7 +562,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                                recipientId:$rootScope.showUser.id, senderId:-1, senderName:''},
                       function() { $scope.currentgift = savedgift; 
                                    $scope.gifts.splice(index, 1, savedgift);
-                                   rerenderWishlist();   });
+                                   refreshWishlist();   });
   }
   
   
@@ -589,7 +590,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                  if(add) {$scope.gifts.reverse();$scope.gifts.push(savedgift);$scope.gifts.reverse();}
                  $scope.currentgift = {};
                  $scope.currentgift.recipients = [];
-                 rerenderWishlist();
+                 refreshWishlist();
                });
                
   }    
@@ -601,7 +602,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     $scope.gifts.splice($scope.index, 1);
     Gift.delete({giftId:gift.id, updater:$rootScope.user.fullname}, 
                   function() {
-                    rerenderWishlist();
+                    refreshWishlist();
                   } // end success function
                );
   }
@@ -629,7 +630,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                               if($rootScope.user.id == participant.id) { $scope.gifts.mylist=true; } 
                               else { $scope.gifts.mylist=false; } 
                               
-                              rerenderWishlist();
+                              refreshWishlist();
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again  (error code 402)");});
   }
@@ -642,7 +643,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                               $scope.gifts.mylist=true;
                               $scope.gifts.ready="true";
                               delete $scope.circle;
-                              rerenderWishlist();
+                              refreshWishlist();
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
   }

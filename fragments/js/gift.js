@@ -33,7 +33,7 @@
   }
   
   
-  rerenderWishlist = function() {
+  refreshWishlist = function() {
       jQuery("#wishlistview").hide();
       setTimeout(function(){
         jQuery("#wishlistview").listview("refresh");
@@ -61,7 +61,7 @@
     var savedgift = Gift.save(parms, 
                       function() { $scope.currentgift = savedgift; 
                                    $scope.gifts.splice(index, 1, savedgift);
-                                   rerenderWishlist();   });
+                                   refreshWishlist();   });
     delete $scope.reserving;
   }
   
@@ -73,7 +73,7 @@
                                recipientId:$rootScope.showUser.id, senderId:-1, senderName:''},
                       function() { $scope.currentgift = savedgift; 
                                    $scope.gifts.splice(index, 1, savedgift);
-                                   rerenderWishlist();   });
+                                   refreshWishlist();   });
   }
   
   
@@ -101,7 +101,7 @@
                  if(add) {$scope.gifts.reverse();$scope.gifts.push(savedgift);$scope.gifts.reverse();}
                  $scope.currentgift = {};
                  $scope.currentgift.recipients = [];
-                 rerenderWishlist();
+                 refreshWishlist();
                });
                
   }    
@@ -113,7 +113,7 @@
     $scope.gifts.splice($scope.index, 1);
     Gift.delete({giftId:gift.id, updater:$rootScope.user.fullname}, 
                   function() {
-                    rerenderWishlist();
+                    refreshWishlist();
                   } // end success function
                );
   }
@@ -141,7 +141,7 @@
                               if($rootScope.user.id == participant.id) { $scope.gifts.mylist=true; } 
                               else { $scope.gifts.mylist=false; } 
                               
-                              rerenderWishlist();
+                              refreshWishlist();
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again  (error code 402)");});
   }
@@ -154,7 +154,7 @@
                               $scope.gifts.mylist=true;
                               $scope.gifts.ready="true";
                               delete $scope.circle;
-                              rerenderWishlist();
+                              refreshWishlist();
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
   }

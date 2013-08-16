@@ -960,7 +960,7 @@ object RestService extends RestHelper with LbbLogger {
   def deleteGift(id:Long, deleter:String) = {
     val giftBox = Gift.findByKey(id)
     for(gift <- giftBox) yield {
-      for(sender <- gift.sender; if(sender.notifyondeletegift.is.equals("true") && !sender.email.isEmpty())) yield {
+      for(sender <- gift.sender; if(sender.notifyondeletegift.is.equals("true") && sender.email.is!=null && !sender.email.is.trim.equals(""))) yield {
         val salut = sender.first.is + " " + sender.last.is
         Emailer.notifyGiftDeleted(sender.email.is, salut, deleter, gift.description.is)
       }

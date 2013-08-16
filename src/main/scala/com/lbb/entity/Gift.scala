@@ -138,7 +138,7 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger with DateChangeListener 
   def setDescription(nu:String, updater:String) = {
     val old = description.is
     debug("Gift.setDescription:  updater="+updater+"  sender: "+sender.obj.getOrElse("n/a"))
-    for(sss <- sender.obj; if(sss.notifyoneditgift.is.equals("true")); if(!sss.email.isEmpty()); if(!old.equals(nu))) yield {
+    for(sss <- sender.obj; if(sss.notifyoneditgift.is.equals("true")); if(sss.email.is!=null && !sss.email.is.trim.equals("")); if(!old.equals(nu))) yield {
       Emailer.notifyGiftDescriptionChanged(sss.email.is, sss.first.is, updater, old, nu)
     }
     description(nu)

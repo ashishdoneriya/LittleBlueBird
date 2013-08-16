@@ -153,7 +153,7 @@ object AppRequest extends AppRequest with LongKeyedMetaMapper[AppRequest] {
     // his name.  We don't want to give the impression that a user isn't fully a user yet when they actually are.
     val facebookIds = reqs.map(_.facebookId.is)
     
-    val userswithemail = User.findAll(ByList(User.facebookId, facebookIds)).filter(u => !u.email.isEmpty())
+    val userswithemail = User.findAll(ByList(User.facebookId, facebookIds)).filter(u => {u.email.is!=null && !u.email.is.trim.equals("")})
     val facebookIds_ofpeole_thatarealreadyusers = userswithemail.map(_.facebookId.is)
     
     for(req <- reqs; if(facebookIds_ofpeole_thatarealreadyusers.contains(req.facebookId.is))) {

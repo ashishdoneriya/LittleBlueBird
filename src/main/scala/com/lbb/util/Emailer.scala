@@ -129,7 +129,7 @@ object Emailer extends LbbLogger {
     // TODO create a unit test for this
     val emailList = g.getEmailListForReturns
     
-    for(p <- emailList; if(p.notifyonreturngift.is.equals("true")); if(!p.email.isEmpty())) yield {
+    for(p <- emailList; if(p.notifyonreturngift.is.equals("true")); if(p.email.is!=null); if(!p.email.is.trim.equals(""))) yield {
       val msg = createGiftReturnedEmail(p, g)
       val e = Email(p.email, "info@littlebluebird.com", "LittleBlueBird.com", "A gift is available again on LittleBlueBird.com", msg, Nil, Nil)
       Emailer.send(e)
@@ -203,7 +203,7 @@ object Emailer extends LbbLogger {
     // It's possible the either one could have changed from the time the 
     // reminder was scheduled
     for(person <- User.findByKey(personId); 
-        if(!person.email.isEmpty())) {
+        if(person.email.is!=null && !person.email.is.trim.equals(""))) {
       val msg = creatEventComingUpEmail(person, circle)
       val e = Email(person.email.is, "info@littlebluebird.com", "LittleBlueBird.com", circle.name+" Reminder from LittleBlueBird.com", msg, Nil, Nil)
       Emailer.send(e)

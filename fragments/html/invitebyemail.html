@@ -25,7 +25,7 @@
 	      
     	<span ng-show="circle.receiverLimit == 1">
           <p>
-		        <label for="honoree01" data-inline="true">Is {{invitename}} the Honoree?</label>
+		        <label for="honoree01" data-inline="true">Is {{newparticipant.name}} the Honoree?</label>
 		        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
 		            <option value="Giver">No</option>
 		            <option value="Receiver">Yes</option>
@@ -35,7 +35,7 @@
 	      
     	<span ng-show="circle.receiverLimit > 1">
           <p>
-		        <label for="honoree01" data-inline="true">Is {{invitename}} one of the Honorees?</label>
+		        <label for="honoree01" data-inline="true">Is {{newparticipant.name}} one of the Honorees?</label>
 		        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
 		            <option value="Giver">No</option>
 		            <option value="Receiver">Yes</option>

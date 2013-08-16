@@ -1223,7 +1223,7 @@
 	      
     	<span ng-show="circle.receiverLimit == 1">
           <p>
-		        <label for="honoree01" data-inline="true">Is {{invitename}} the Honoree?</label>
+		        <label for="honoree01" data-inline="true">Is {{newparticipant.name}} the Honoree?</label>
 		        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
 		            <option value="Giver">No</option>
 		            <option value="Receiver">Yes</option>
@@ -1233,7 +1233,7 @@
 	      
     	<span ng-show="circle.receiverLimit > 1">
           <p>
-		        <label for="honoree01" data-inline="true">Is {{invitename}} one of the Honorees?</label>
+		        <label for="honoree01" data-inline="true">Is {{newparticipant.name}} one of the Honorees?</label>
 		        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
 		            <option value="Giver">No</option>
 		            <option value="Receiver">Yes</option>
@@ -1603,6 +1603,42 @@
 	  	  
 	    <form novalidate>
 	      
+	      <P>
+	        <label for="notifyonaddtoevent" data-inline="true">When added to an event</label>
+	        <select name="notifyonaddtoevent" id="notifyonaddtoevent" data-role="slider" ng-model="user.notifyonaddtoevent" data-inline="true" class="ui-btn-right">
+	            <option value="false">No</option>
+	            <option value="true">Yes</option>
+	        </select>
+	      </P>
+	      
+	      <P>
+	        <label for="notifyondeletegift" data-inline="true">When a gift I bought is deleted</label>
+	        <select name="notifyondeletegift" id="notifyondeletegift" data-role="slider" ng-model="user.notifyondeletegift" data-inline="true" class="ui-btn-right">
+	            <option value="false">No</option>
+	            <option value="true">Yes</option>
+	        </select>
+	      </P>
+	      
+	      <P>
+	        <label for="notifyoneditgift" data-inline="true">When a gift I bought is edited</label>
+	        <select name="notifyoneditgift" id="notifyoneditgift" data-role="slider" ng-model="user.notifyoneditgift" data-inline="true" class="ui-btn-right">
+	            <option value="false">No</option>
+	            <option value="true">Yes</option>
+	        </select>
+	      </P>
+	      
+	      <P>
+	        <label for="notifyonreturngift" data-inline="true">When a gift becomes available again</label>
+	        <select name="notifyonreturngift" id="notifyonreturngift" data-role="slider" ng-model="user.notifyonreturngift" data-inline="true" class="ui-btn-right">
+	            <option value="false">No</option>
+	            <option value="true">Yes</option>
+	        </select>
+	      </P>
+	      
+	      <P>
+	        <a ng-href="#" data-role="button" data-theme="b" ng-click="saveuser(user)">Update</a>    
+	      </P>
+	        
 	    </form>
 	  
 	</div><!-- /content -->

@@ -684,7 +684,13 @@ object RestService extends RestHelper with LbbLogger {
                 case ("notifyonaddtoevent", b:Boolean) => user.notifyonaddtoevent(b.toString())
                 case ("notifyondeletegift", b:Boolean) => user.notifyondeletegift(b.toString())
                 case ("notifyoneditgift", b:Boolean) => user.notifyoneditgift(b.toString())
-                case ("notifyonreturngift", b:Boolean) => user.notifyonreturngift(b.toString())             
+                case ("notifyonreturngift", b:Boolean) => user.notifyonreturngift(b.toString())    
+                // could be strings too? 2013-08-16  See notifications-nofooter.html
+                case ("notifyonaddtoevent", b:String) => user.notifyonaddtoevent(b)
+                case ("notifyondeletegift", b:String) => user.notifyondeletegift(b)
+                case ("notifyoneditgift", b:String) => user.notifyoneditgift(b)
+                case ("notifyonreturngift", b:String) => user.notifyonreturngift(b)  
+                
                 case ("dateOfBirth", s:String) => {
                   if(s!=null && !s.toString().trim().equals("") && !s.toString().trim().equals("0")) {
                     debug("updateUser:  s = '"+s+"'");  user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s.toString())) // not sure about this on yet

@@ -144,9 +144,11 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
-  // 2013-07-31
+  // 2013-07-31, 2013-08-16 added 4 notification fields
   $scope.saveuser = function(user) {
-      User.save({userId:user.id, fullname:user.fullname, username:user.username, email:user.email, bio:user.bio, dateOfBirth:user.dateOfBirthStr, profilepic:user.profilepic}, 
+    console.log('user: ', user);
+      User.save({userId:user.id, fullname:user.fullname, username:user.username, email:user.email, bio:user.bio, dateOfBirth:user.dateOfBirthStr, profilepic:user.profilepic,
+                 notifyonaddtoevent:user.notifyonaddtoevent, notifyondeletegift:user.notifyondeletegift, notifyoneditgift:user.notifyoneditgift, notifyonreturngift:user.notifyonreturngift}, 
                                   function() {
                                     if(user.dateOfBirth == 0) { user.dateOfBirth = ''; } 
                                   },

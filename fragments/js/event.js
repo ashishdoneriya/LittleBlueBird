@@ -46,7 +46,7 @@
     c.participants = CircleParticipant.query({circleId:c.id},
                         function() {
                           $scope.circle = c;
-                          $scope.$parent.circle = c;
+                          console.log(JSON.stringify(c))
                           refreshParticipants();
                         }
                      );

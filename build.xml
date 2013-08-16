@@ -105,6 +105,12 @@
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
+		  <concat destfile="fragments/html/edititem.html"
+		          force="yes">
+		     <fileset file="fragments/html/edititem-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
 	</target>
 	
 	
@@ -135,6 +141,7 @@
 	     <fileset file="fragments/html/addfromanotherevent.html" />
 	     <fileset file="fragments/html/confirmdeleteparticipant.html" />
 	     <fileset file="fragments/html/confirmdeleteevent.html" />
+	     <fileset file="fragments/html/edititem.html" />
 	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
 	</target>
@@ -150,7 +157,7 @@
 	     <fileset file="fragments/js/event.js" />
 	     <fileset file="fragments/js/gift.js" />
 		 <fileset file="fragments/js/nav.js" />
-		 <!-- fileset file="fragments/js/test.js" / -->
+		 <fileset file="fragments/js/test.js" />
 	     <fileset file="fragments/js/bottom.js" />
 	  </concat>
 	</target>

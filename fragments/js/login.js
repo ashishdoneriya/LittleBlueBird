@@ -47,7 +47,7 @@
                                function() {$scope.logingood=true; 
                                            if($rootScope.user.dateOfBirth == 0) { $rootScope.user.dateOfBirth = ''; }
                                            $rootScope.showUser = $rootScope.user; 
-                                           console.log($rootScope.user); 
+                                           console.log(JSON.stringify($rootScope.user)); 
                                           }, 
                                function() {$scope.logingood=false; alert('Wrong user/pass');}  );
   }

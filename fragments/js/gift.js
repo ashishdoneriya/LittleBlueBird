@@ -89,8 +89,11 @@
       }
     }
     
-    var saveparms = {updater:$rootScope.user.fullname, description:gift.description, url:gift.url, 
-               addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id};
+    var saveparms = {giftId:gift.id, updater:$rootScope.user.fullname, description:gift.description, url:gift.url, 
+               addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id,
+               senderId:gift.sender, senderName:gift.sender_name};
+               
+               
     if($scope.circle != undefined)
       saveparms.circleId = $scope.circle.id;
     
@@ -140,7 +143,7 @@
                               $rootScope.showUser = participant;
                               if($rootScope.user.id == participant.id) { $scope.gifts.mylist=true; } 
                               else { $scope.gifts.mylist=false; } 
-                              
+                              console.log(JSON.stringify($rootScope.showUser));
                               refreshWishlist();
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+participant.first+"'s list\n  Try again  (error code 402)");});

@@ -86,6 +86,14 @@
   }
   
   
+  $scope.initNtfy = function() {
+    jQuery("#notifyonaddtoevent").slider("refresh");
+    jQuery("#notifyondeletegift").slider("refresh");
+    jQuery("#notifyoneditgift").slider("refresh");
+    jQuery("#notifyonreturngift").slider("refresh");
+  }
+  
+  
   // 2013-07-31
   $scope.resetPass = function(currentpass, newpass) {
       Password.reset({userId: $rootScope.user.id, currentpass: currentpass, newpass: newpass},

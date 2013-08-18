@@ -1,0 +1,45 @@
+
+<!-- 2013-08-18: This is the page that asks the user if he/she is participating in the event that is being created.
+                 This is the page the user comes to next after "setnameanddate" -->
+
+<div id="areyouparticipating" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Event</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  
+	  
+      <div data-role="fieldcontain">
+          <label for="areyouparticipating" data-inline="true">Are you participating in this event?</label>
+          <select name="areyouparticipating" id="areyouparticipating" data-role="slider" ng-model="userisparticipant" data-inline="true" class="ui-btn-right">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+      </div>
+      
+      <div ng-show="userisparticipant=='true' && circle.receiverLimit != -1">
+          <label for="areyouanhonoree" data-inline="true">
+            Are you <span ng-show="circle.receiverLimit==1">the</span> <span ng-show="circle.receiverLimit > 1">an</span> Honoree?
+          </label>
+          <select name="areyouanhonoree" id="areyouanhonoree" data-role="slider" ng-model="userishonoree" data-inline="true" class="ui-btn-right">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+      </div>
+      
+      <div class="ui-grid-a">
+        <div class="ui-block-a">
+          <a ng-href="#setnameanddate" data-role="button" data-icon="arrow-l" data-iconpos="left">Back</a>
+        </div>
+        <div class="ui-block-b">
+          <a ng-href="#participants" ng-click="saveNewCircle(userisparticipant, userishonoree, user, circle)" data-role="button" data-icon="arrow-r" data-iconpos="right">Next</a>
+        </div>
+      </div>
+	  
+	  
+	</div><!-- /content -->
+
+
+	

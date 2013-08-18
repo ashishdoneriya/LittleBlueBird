@@ -233,6 +233,15 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
+  // set/refresh the flip switches on 'areyouparticipating'
+  $scope.initMyParticipation = function(user, circle) {
+    $scope.userisparticipant = "true";
+    $scope.userishonoree = "true";
+    jQuery("#areyouparticipating").slider("refresh");
+    jQuery("#areyouanhonoree").slider("refresh");
+  }
+  
+  
   // not worrying yet about whether the person is a giver or receiver, assume receiver  2013-08-09
   // We DO know thought that if circle.receiverLimit = -1, that the person will be added as a receiver
   $scope.addparticipant = function(person, circle, participationLevel) {
@@ -345,6 +354,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   
   // the only reason this function is here is to kick jquery to reapply the listview style to the friend list
   $scope.events = function() {
+    console.log('user.circle:', $scope.user.circles);
                               jQuery("#eventview").hide();
                               setTimeout(function(){
                                 jQuery("#eventview").listview("refresh");
@@ -358,7 +368,8 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   $scope.initNewEvent = function(circleType, receiverLimit) {
     $scope.circle = {circleType:circleType, receiverLimit:receiverLimit};
     //The Javascript: initializing the scroller
-	initdatepicker();
+    var xmasMillis = new Date(new Date().getFullYear(), 11, 25).getTime();
+	initdatepicker(xmasMillis);
   };
   
   
@@ -381,20 +392,26 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
-  // taken from app-CircleModule.js: $rootScope.savecircle = function(circle, expdate)  2013-08-08
-  $scope.savecircle = function(circle) {
+  // 2013-08-18  This is called from 'areyouparticipating'.  The circle.id is still null when you're on this page, and if fact, you can
+  // only get to that page if the circle.id is null.  When circle.is != null and you're on setnameanddate, the next page you go to is
+  // participants
+  $scope.saveNewCircle = function(userisparticipant, userishonoree, user, circle) {
     circle.expirationdate = new Date(jQuery("#datepicker").mobiscroll('getDate'));
     
     if(!angular.isDefined(circle.participants))
       circle.participants = {receivers:[], givers:[]};
+      
+    if(userisparticipant=='true') {
+      if(userishonoree=='true') circle.participants.receivers.push(user);
+      else if(userishonoree=='false') circle.participants.givers.push(user);
+      else circle.participants.receivers.push(user);
+    }
     
-    var inserting = !angular.isDefined(circle.id)
     
     // The saved circle should become the current circle if it isn't already
     $scope.circle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:circle.circleType, 
                  creatorId:$rootScope.user.id},
                  function() {
-                   if(inserting) {
                      $rootScope.user.circles.push($scope.circle);
                      circle.id = $scope.circle.id;
                      
@@ -416,16 +433,37 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                                          ); // CircleParticipant.save
                      }
                      $scope.circle.participants = circle.participants;
-                   } 
-                   else {
-                     // else, we are updating, circle.id IS defined so update the circle in $rootScope.user.circles
-                     for(var i=0; i < $rootScope.user.circles.length; i++) {
+                   
+                     refreshParticipants();
+                 },
+                 function() {alert('Uh Oh - had a problem saving this event.\nIf this problem persists, contact us at info@littlebluebird.com');} 
+             ); // Circle.save()
+               
+    
+  }
+  
+  
+  // taken from app-CircleModule.js: $rootScope.savecircle = function(circle, expdate)  2013-08-08
+  // Update 2013-08-18:  Now that we have saveNewCircle(), this method should only be called on updating circles
+  //					So we don't check to see if the circle.id is null here anymore; we assume it is not null.
+  $scope.savecircle = function(circle) {
+    circle.expirationdate = new Date(jQuery("#datepicker").mobiscroll('getDate'));
+    
+    if(!angular.isDefined(circle.participants))
+      circle.participants = {receivers:[], givers:[]};
+    
+    
+    // The saved circle should become the current circle if it isn't already
+    $scope.circle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:circle.circleType, 
+                 creatorId:$rootScope.user.id},
+                 function() {
+                   // else, we are updating, circle.id IS defined so update the circle in $rootScope.user.circles
+                   for(var i=0; i < $rootScope.user.circles.length; i++) {
                        if($rootScope.user.circles[i].id == $scope.circle.id) {
                          $rootScope.user.circles.splice(i, 1, $scope.circle);
                        }
-                     }
-                     $scope.circle.participants = circle.participants;
-                   }  
+                   }
+                   $scope.circle.participants = circle.participants;
                    
                    refreshParticipants();
                  },

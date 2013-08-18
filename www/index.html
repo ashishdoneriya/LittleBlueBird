@@ -280,6 +280,11 @@
         <label for="radio-choice-c">&nbsp; All &nbsp;</label>
       </fieldset>
 		  
+      <div ng-show="user.circles.length==0">
+        <P>You do not belong to any events</P>
+        <P>You are either very unpopular or you are a new user</P>
+        <P>Create your first event by clicking "Add" in the top right</P>
+      </div>
 	  
       <div jquery-mobile-tpl>
 	    <ul id="eventview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="">
@@ -353,6 +358,7 @@
 	        <span ng-show="showUser.id==user.id">My Wish List</span>
 	        <span ng-hide="showUser.id==user.id">{{showUser.fullname}}'s Wish List</span>
 	      </li>
+	      <li ng-show="gifts.length==0"><h4>Nothing on this list</h4><P>Click "Add" to add something</P></li>
           <li data-ng-repeat="gift in gifts">
             <a ng-href="#gift" ng-click="setcurrentgift($index, gift)">
               <h4>{{gift.description}}</h4>
@@ -940,21 +946,34 @@
 		  <P>Enter the event's name and date</P>
 		    <fieldset data-role="fieldcontain">
 		      <P>
-		        <label for="name" class="ui-hidden-accessible">Name:</label>
-    		    <input id="name" name="name" type="text" ng-model="circle.name" placeholder="Name" required/>
+		        <label for="name" class="ui-hidden-accessible">Event Name:</label>
+    		    <input id="name" name="name" type="text" ng-model="circle.name" placeholder="Event Name" required/>
     		  </P>
 		      <P>
-		        <input id="datepicker" name="datepicker" />
+		        <input id="datepicker" name="datepicker" ng-required="true"/>
     		  </P>
     		  
-    		  <P>
+    		  <!--  Where we go next depends on whether the circle is being created or updated
+    		  // If it's being created (circle.id = null), the next thing we do is ask the user how he/she is participating
+    		  // If the circle has already been created, then we are just updating the name and date here and so all we need
+    		  // to do is update the db and (I guess) send the user back to the 'participants' page -->
+    		  <div ng-show="circle.id==null">
+		        <span ng-show="nameanddateForm.$valid">
+		          <a ng-href="#areyouparticipating" ng-click="initMyParticipation(user, circle);" data-role="button" data-theme="b" data-icon="arrow-r" data-iconpos="right">Next</a>
+		        </span>
+		        <span ng-show="nameanddateForm.$invalid">
+		          <button disabled="" data-role="button" data-theme="b" data-icon="arrow-r" data-iconpos="right">Next</button>
+		        </span>
+    		  </div>
+    		  
+    		  <div ng-show="circle.id!=null">
 		        <span ng-show="nameanddateForm.$valid">
 		          <a ng-href="#participants" ng-click="savecircle(circle)" data-role="button" data-theme="b">Save</a>
 		        </span>
 		        <span ng-show="nameanddateForm.$invalid">
 		          <button disabled="" data-role="button" data-theme="b">Save</button>
 		        </span>
-    		  </P>
+    		  </div>
 			  
 			  
     		</fieldset>
@@ -1157,7 +1176,7 @@
 	      <!-- END: Guests section (for those events that have them)   -->
 	      <!-- ------------------------------------------------------- -->
 	      
-	      <P><a href="#editparticipants" data-transition="slideup" data-role="button">Invite More People</a></P>
+	      <P><a href="#editparticipants" data-transition="slideup" data-role="button">Invite People</a></P>
 	      <P><a href="#confirmdeleteevent" data-transition="slideup" data-role="button">Delete Event</a></P>
 	  </span>
 	  
@@ -1630,7 +1649,7 @@
 	      <div data-role="fieldcontain">
 	          <label for="notifyonreturngift" data-inline="true">Email me when someone returns a gift so that I know it is available again to give</label>
 	          <select name="notifyonreturngift" id="notifyonreturngift" data-role="slider" ng-model="user.notifyonreturngift" data-inline="true" class="ui-btn-right">
-	            <option value="false" selected="selected">No</option>
+	            <option value="false">No</option>
 	            <option value="true">Yes</option>
 	          </select>
 	      </div>
@@ -1642,6 +1661,80 @@
 	      </P>
 	        
 	    </form>
+	  
+	</div><!-- /content -->
+
+
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird.com</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
+<!-- 2013-08-18: This is the page that asks the user if he/she is participating in the event that is being created.
+                 This is the page the user comes to next after "setnameanddate" -->
+
+<div id="areyouparticipating" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Event</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  
+	  
+      <div data-role="fieldcontain">
+          <label for="areyouparticipating" data-inline="true">Are you participating in this event?</label>
+          <select name="areyouparticipating" id="areyouparticipating" data-role="slider" ng-model="userisparticipant" data-inline="true" class="ui-btn-right">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+      </div>
+      
+      <div ng-show="userisparticipant=='true' && circle.receiverLimit != -1">
+          <label for="areyouanhonoree" data-inline="true">
+            Are you <span ng-show="circle.receiverLimit==1">the</span> <span ng-show="circle.receiverLimit > 1">an</span> Honoree?
+          </label>
+          <select name="areyouanhonoree" id="areyouanhonoree" data-role="slider" ng-model="userishonoree" data-inline="true" class="ui-btn-right">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+      </div>
+      
+      <div class="ui-grid-a">
+        <div class="ui-block-a">
+          <a ng-href="#setnameanddate" data-role="button" data-icon="arrow-l" data-iconpos="left">Back</a>
+        </div>
+        <div class="ui-block-b">
+          <a ng-href="#participants" ng-click="saveNewCircle(userisparticipant, userishonoree, user, circle)" data-role="button" data-icon="arrow-r" data-iconpos="right">Next</a>
+        </div>
+      </div>
+	  
 	  
 	</div><!-- /content -->
 

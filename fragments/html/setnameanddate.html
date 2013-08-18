@@ -12,21 +12,34 @@
 		  <P>Enter the event's name and date</P>
 		    <fieldset data-role="fieldcontain">
 		      <P>
-		        <label for="name" class="ui-hidden-accessible">Name:</label>
-    		    <input id="name" name="name" type="text" ng-model="circle.name" placeholder="Name" required/>
+		        <label for="name" class="ui-hidden-accessible">Event Name:</label>
+    		    <input id="name" name="name" type="text" ng-model="circle.name" placeholder="Event Name" required/>
     		  </P>
 		      <P>
-		        <input id="datepicker" name="datepicker" />
+		        <input id="datepicker" name="datepicker" ng-required="true"/>
     		  </P>
     		  
-    		  <P>
+    		  <!--  Where we go next depends on whether the circle is being created or updated
+    		  // If it's being created (circle.id = null), the next thing we do is ask the user how he/she is participating
+    		  // If the circle has already been created, then we are just updating the name and date here and so all we need
+    		  // to do is update the db and (I guess) send the user back to the 'participants' page -->
+    		  <div ng-show="circle.id==null">
+		        <span ng-show="nameanddateForm.$valid">
+		          <a ng-href="#areyouparticipating" ng-click="initMyParticipation(user, circle);" data-role="button" data-theme="b" data-icon="arrow-r" data-iconpos="right">Next</a>
+		        </span>
+		        <span ng-show="nameanddateForm.$invalid">
+		          <button disabled="" data-role="button" data-theme="b" data-icon="arrow-r" data-iconpos="right">Next</button>
+		        </span>
+    		  </div>
+    		  
+    		  <div ng-show="circle.id!=null">
 		        <span ng-show="nameanddateForm.$valid">
 		          <a ng-href="#participants" ng-click="savecircle(circle)" data-role="button" data-theme="b">Save</a>
 		        </span>
 		        <span ng-show="nameanddateForm.$invalid">
 		          <button disabled="" data-role="button" data-theme="b">Save</button>
 		        </span>
-    		  </P>
+    		  </div>
 			  
 			  
     		</fieldset>

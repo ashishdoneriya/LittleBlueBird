@@ -18,6 +18,11 @@
         <label for="radio-choice-c">&nbsp; All &nbsp;</label>
       </fieldset>
 		  
+      <div ng-show="user.circles.length==0">
+        <P>You do not belong to any events</P>
+        <P>You are either very unpopular or you are a new user</P>
+        <P>Create your first event by clicking "Add" in the top right</P>
+      </div>
 	  
       <div jquery-mobile-tpl>
 	    <ul id="eventview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="">

@@ -1,44 +1,48 @@
 
+<!-- 2013-08-18: This is the page that asks the user if he/she is participating in the event that is being created.
+                 This is the page the user comes to next after "setnameanddate" -->
 
-<div id="events" data-role="page" data-add-back-btn="true">
+<div id="areyouparticipating" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>Events</h1>
-		<a href="#addevent" data-transition="slideup" data-icon="plus" class="ui-btn-right">Add</a>
+		<h1>Event</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
-	
-      <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-        <input name="event-radio-group" id="radio-choice-d" value="current" checked="checked" type="radio" ng-click="eventfilter='current';events()">
-        <label for="radio-choice-d">Current</label>
-        <input name="event-radio-group" id="radio-choice-e" value="past" type="radio" ng-click="eventfilter='past';events()">
-        <label for="radio-choice-e">Past</label>
-        <input name="event-radio-group" id="radio-choice-c" value="all" type="radio" ng-click="eventfilter='all';events()">
-        <label for="radio-choice-c">&nbsp; All &nbsp;</label>
-      </fieldset>
-		  
-      <div ng-show="user.circles.length==0">
-        <P>You do not belong to any events</P>
-        <P>You are either very unpopular or you are a new user</P>
-        <P>Create your first event by clicking "Add" in the top right</P>
-      </div>
 	  
-      <div jquery-mobile-tpl>
-	    <ul id="eventview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="">
-	      <li ng-repeat="c in user.circles | filter: eventDateFilter" ng-cloak>
-	        <a href="#participants" ng-click="setcircle(c)" data-transition="slide">
-	          <p><h4>{{c.name}}</h4></p>
-	          <p>{{c.date | date:'MMM d, yyyy'}}</p>
-	        </a>
-	      </li>
-	    </ul>
-	  </div>
+	  
+      <div data-role="fieldcontain">
+          <label for="areyouparticipating" data-inline="true">Are you participating in this event?</label>
+          <select name="areyouparticipating" id="areyouparticipating" data-role="slider" ng-model="userisparticipant" data-inline="true" class="ui-btn-right">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+      </div>
+      
+      <div ng-show="userisparticipant=='true' && circle.receiverLimit != -1">
+          <label for="areyouanhonoree" data-inline="true">
+            Are you <span ng-show="circle.receiverLimit==1">the</span> <span ng-show="circle.receiverLimit > 1">an</span> Honoree?
+          </label>
+          <select name="areyouanhonoree" id="areyouanhonoree" data-role="slider" ng-model="userishonoree" data-inline="true" class="ui-btn-right">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+      </div>
+      
+      <div class="ui-grid-a">
+        <div class="ui-block-a">
+          <a ng-href="#setnameanddate" data-role="button" data-icon="arrow-l" data-iconpos="left">Back</a>
+        </div>
+        <div class="ui-block-b">
+          <a ng-href="#participants" ng-click="saveNewCircle(userisparticipant, userishonoree, user, circle)" data-role="button" data-icon="arrow-r" data-iconpos="right">Next</a>
+        </div>
+      </div>
 	  
 	  
 	</div><!-- /content -->
 
 
+	
 	
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
 	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	

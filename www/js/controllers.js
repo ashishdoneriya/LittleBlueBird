@@ -847,7 +847,8 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
 // see https://github.com/phonegap-build/BarcodeScanner/blob/master/README.md
 
   $scope.scan = function() {
-    console.log('window:', window);
+    alert('scan fn');
+  
     var scanner = window.cordova.require("cordova/plugin/BarcodeScanner");
 
     scanner.scan(

@@ -846,7 +846,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
 
 // see https://github.com/phonegap-build/BarcodeScanner/blob/master/README.md
 
-  $scope.scanner = function() {
+  $scope.scan = function() {
     console.log('window:', window);
     var scanner = window.cordova.require("cordova/plugin/BarcodeScanner");
 
@@ -861,6 +861,8 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
           alert("Scanning failed: " + error);
       }
     );
+    
+    $scope.scanner = JSON.stringify(scanner);
   }
   
 }];

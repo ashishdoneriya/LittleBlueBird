@@ -123,6 +123,18 @@
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
+		  <concat destfile="fragments/html/addfriend.html"
+		          force="yes">
+		     <fileset file="fragments/html/addfriend-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/html/deletefriends.html"
+		          force="yes">
+		     <fileset file="fragments/html/deletefriends-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
 	</target>
 	
 	
@@ -156,6 +168,8 @@
 	     <fileset file="fragments/html/edititem.html" />
 	     <fileset file="fragments/html/notifications.html" />
 	     <fileset file="fragments/html/areyouparticipating.html" />
+	     <fileset file="fragments/html/addfriend.html" />
+	     <fileset file="fragments/html/deletefriends.html" />
 	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
 	</target>

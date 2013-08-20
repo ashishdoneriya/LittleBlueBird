@@ -2,22 +2,88 @@
 
 <div id="friends" data-role="page" data-add-back-btn="true">
 
+    <div data-role="panel" id="friendcontrolpanel" data-position="right" data-display="overlay" data-theme="a">
+        <h4>Friend Menu</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#addfriend" ng-click="initNewFriend()" data-transition="slideup">Add Friends</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#deletefriends" ng-click="prepareDeleteFriends()">Delete Friends</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
 	<div data-role="header" data-theme="b">
 		<h1>Friends</h1>
-		<a href="#addfriend" data-transition="slideup" data-icon="plus" class="ui-btn-right">Add</a>
+		<a href="#friendcontrolpanel" data-icon="gear" data-iconpos="notext" class="ui-btn-right">Friend Menu</a>
 	</div><!-- /header -->
 
 	<div data-role="content">
 	  	  
-      <div jquery-mobile-tpl>
-	    <ul id="friendview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
-	      <li ng-repeat="friend in user.friends">
-	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
-	          {{friend.fullname}}
-	        </a>
-	      </li>
-	    </ul>
-	  </div>
+	  <span ng-show="searchingforfriends">
+	    <P>Searching...</P>
+	  </span>
+	  
+	  
+	  <!-- Everything goes in this block -->
+	  <span ng-hide="searchingforfriends">
+	  	  
+		  <!-- hack: If you're trying to add/invite friends by email, we first query by email to see if anyone is already in the db.  If it turns out there is 1 or more people already
+		  in the db, we keep those people in an array called 'maybefriends' and we present this/these people to the user and ask "Is any of these the person you're looking for"
+		  The problem is we can only set the href to one thing, there can only be one "next" page regardless of whether we found anyone or not.  So we hack this page with an ng-show/ng-hide
+		  switch to show these 'maybefriends' when they exist, or when they don't, we show the current list of friends. yuck  2013-08-08 -->
+		  <span ng-show="maybefriends.length > 0">
+		  
+		      <span ng-show="maybefriends.length == 1">
+		        We found a '{{maybefriends[0].fullname}}' having the email address you entered.  Is this who you're looking for?
+		      
+			    <div class="ui-grid-a">
+			      <div class="ui-block-b"><a data-role="button" ng-href="#" ng-click="selectthisfriend(newfriend, true)">No</a></div>
+			      <div class="ui-block-b"><a data-role="button" ng-href="#" ng-click="selectthisfriend(maybefriends[0], false)" data-theme="b">Yes</a></div>
+				</div>
+				
+		      </span>
+		
+		      <span ng-show="maybefriends.length > 1">
+			      <P>The email address you entered is associated with these {{maybefriends.length}} people.  If you see the person you're looking for, tap the name.  Otherwise, click "Not Found"</P>
+			      
+			      <div jquery-mobile-tpl>
+				    <ul id="maybefriendsview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
+				      <li ng-repeat="somebody in maybefriends">
+				        <a href="#" ng-click="selectthisfriend(somebody, false)" data-transition="slide">
+				          {{somebody.fullname}}
+				        </a>
+				      </li>
+				    </ul>
+				  </div>
+			      
+			      <P><a data-role="button" ng-href="#" ng-click="selectthisfriend(newfriend, true)" data-theme="a">Not Found</a></P>
+		      </span>
+		      
+		  </span>
+		  	  
+		  	  
+		  <span ng-hide="maybefriends.length > 0">
+		  
+			  <div ng-show="user.friends.length==0">
+			    <P>You have no friends - well, at least none that we know about</P>
+			    <P>Why don't you add some of your friends and family so you can see what they want</P>
+			    <P>Click "Add" in the top right</P>
+			  </div> 	  
+		  
+		  
+		      <div jquery-mobile-tpl>
+			    <ul id="friendview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
+			      <li ng-repeat="friend in user.friends">
+			        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
+			          {{friend.fullname}}
+			        </a>
+			      </li>
+			    </ul>
+			  </div>
+		  </span>
+		  
+	  </span> <!-- ng-hide="searchingforfriends" -->
+	    
+	  	  
 	  
 	</div><!-- /content -->
 

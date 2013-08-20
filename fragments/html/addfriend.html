@@ -1,62 +1,34 @@
 
 
-<div id="invitebyemail" data-role="page" data-add-back-btn="true">
+<div id="addfriend" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>Invite</h1>
+		<h1>Add Friend</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
-	
-
-      Invite friends and family by email
 
 
-	  <form novalidate name="inviteForm">
+	  <form novalidate name="addfriendForm">
           <p>
 		    <label for="invitename" class="ui-hidden-accessible">Name:</label>
-            <input id="invitename" name="invitename" type="text" ng-model="newparticipant.name" placeholder="Name" required/>
+            <input id="invitename" name="invitename" type="text" ng-model="newfriend.name" placeholder="Name" required/>
 	      </p>
 	  
           <p>
 		    <label for="inviteemail" class="ui-hidden-accessible">Email:</label>
-            <input id="inviteemail" name="inviteemail" type="email" ng-model="newparticipant.email" placeholder="Email" required/>
+            <input id="inviteemail" name="inviteemail" type="email" ng-model="newfriend.email" placeholder="Email" required/>
 	      </p>
 	      
-    	<span ng-show="circle.receiverLimit == 1">
-          <p>
-		        <label for="honoree01" data-inline="true">Is {{newparticipant.name}} the Honoree?</label>
-		        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
-		            <option value="Giver">No</option>
-		            <option value="Receiver">Yes</option>
-		        </select>
-	      </p>
-    	</span>
-	      
-    	<span ng-show="circle.receiverLimit > 1">
-          <p>
-		        <label for="honoree01" data-inline="true">Is {{newparticipant.name}} one of the Honorees?</label>
-		        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
-		            <option value="Giver">No</option>
-		            <option value="Receiver">Yes</option>
-		        </select>
-	      </p>
-    	</span>
     	
-    	<span ng-show="circle.receiverLimit == -1">
-          <p>
-		        <input type="hidden" ng-model="newparticipant.participationLevel">
-	      </p>
-    	</span>
-    	
-	    <P>
-	        <span ng-hide="inviteForm.$invalid">
-	          <a ng-href="#participants" ng-click="invite(newparticipant, circle)" data-role="button" data-theme="b">Invite</a>
+	      <P>
+	        <span ng-hide="addfriendForm.$invalid">
+	          <a ng-href="#friends" ng-click="searchforfriend(newfriend)" data-role="button" data-theme="b" data-icon="">Add Friend</a>
 	        </span>
-	        <span ng-show="inviteForm.$invalid">
-	          <button disabled="" data-role="button" data-theme="b">Invite</button>
+	        <span ng-show="addfriendForm.$invalid">
+	          <button disabled="" data-role="button" data-theme="b">Add Friend</button>
 	        </span>
-		</P>
+		  </P>
 	  </form>
 
 

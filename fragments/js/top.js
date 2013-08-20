@@ -12,8 +12,8 @@ else if (!debugging || typeof console.log == "undefined") console.log = function
 
 
 // 2013-07-23  weird syntax needed for minification
-var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password', 'FacebookUser', 'MergeUsers', 'Circle', 'CircleParticipant', 'Reminder',
-function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUsers, Circle, CircleParticipant, Reminder) {
+var LbbController = ['$scope', 'Email', '$rootScope', 'User', 'Gift', 'Password', 'FacebookUser', 'MergeUsers', 'Circle', 'CircleParticipant', 'Reminder', 'Friend', // MUST END WITH A COMMA !
+function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUsers, Circle, CircleParticipant, Reminder, Friend) {
 
   $scope.footermenu = '';
   $scope.eventfilter = 'current';

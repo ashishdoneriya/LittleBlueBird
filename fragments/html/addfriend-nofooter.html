@@ -1,0 +1,37 @@
+
+
+<div id="addfriend" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Add Friend</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+
+
+	  <form novalidate name="addfriendForm">
+          <p>
+		    <label for="invitename" class="ui-hidden-accessible">Name:</label>
+            <input id="invitename" name="invitename" type="text" ng-model="newfriend.name" placeholder="Name" required/>
+	      </p>
+	  
+          <p>
+		    <label for="inviteemail" class="ui-hidden-accessible">Email:</label>
+            <input id="inviteemail" name="inviteemail" type="email" ng-model="newfriend.email" placeholder="Email" required/>
+	      </p>
+	      
+    	
+	      <P>
+	        <span ng-hide="addfriendForm.$invalid">
+	          <a ng-href="#friends" ng-click="searchforfriend(newfriend)" data-role="button" data-theme="b" data-icon="">Add Friend</a>
+	        </span>
+	        <span ng-show="addfriendForm.$invalid">
+	          <button disabled="" data-role="button" data-theme="b">Add Friend</button>
+	        </span>
+		  </P>
+	  </form>
+
+
+	  
+	</div><!-- /content -->
+	

@@ -419,22 +419,88 @@
 
 <div id="friends" data-role="page" data-add-back-btn="true">
 
+    <div data-role="panel" id="friendcontrolpanel" data-position="right" data-display="overlay" data-theme="a">
+        <h4>Friend Menu</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#addfriend" ng-click="initNewFriend()" data-transition="slideup">Add Friends</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#deletefriends" ng-click="prepareDeleteFriends()">Delete Friends</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
 	<div data-role="header" data-theme="b">
 		<h1>Friends</h1>
-		<a href="#addfriend" data-transition="slideup" data-icon="plus" class="ui-btn-right">Add</a>
+		<a href="#friendcontrolpanel" data-icon="gear" data-iconpos="notext" class="ui-btn-right">Friend Menu</a>
 	</div><!-- /header -->
 
 	<div data-role="content">
 	  	  
-      <div jquery-mobile-tpl>
-	    <ul id="friendview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
-	      <li ng-repeat="friend in user.friends">
-	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
-	          {{friend.fullname}}
-	        </a>
-	      </li>
-	    </ul>
-	  </div>
+	  <span ng-show="searchingforfriends">
+	    <P>Searching...</P>
+	  </span>
+	  
+	  
+	  <!-- Everything goes in this block -->
+	  <span ng-hide="searchingforfriends">
+	  	  
+		  <!-- hack: If you're trying to add/invite friends by email, we first query by email to see if anyone is already in the db.  If it turns out there is 1 or more people already
+		  in the db, we keep those people in an array called 'maybefriends' and we present this/these people to the user and ask "Is any of these the person you're looking for"
+		  The problem is we can only set the href to one thing, there can only be one "next" page regardless of whether we found anyone or not.  So we hack this page with an ng-show/ng-hide
+		  switch to show these 'maybefriends' when they exist, or when they don't, we show the current list of friends. yuck  2013-08-08 -->
+		  <span ng-show="maybefriends.length > 0">
+		  
+		      <span ng-show="maybefriends.length == 1">
+		        We found a '{{maybefriends[0].fullname}}' having the email address you entered.  Is this who you're looking for?
+		      
+			    <div class="ui-grid-a">
+			      <div class="ui-block-b"><a data-role="button" ng-href="#" ng-click="selectthisfriend(newfriend, true)">No</a></div>
+			      <div class="ui-block-b"><a data-role="button" ng-href="#" ng-click="selectthisfriend(maybefriends[0], false)" data-theme="b">Yes</a></div>
+				</div>
+				
+		      </span>
+		
+		      <span ng-show="maybefriends.length > 1">
+			      <P>The email address you entered is associated with these {{maybefriends.length}} people.  If you see the person you're looking for, tap the name.  Otherwise, click "Not Found"</P>
+			      
+			      <div jquery-mobile-tpl>
+				    <ul id="maybefriendsview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
+				      <li ng-repeat="somebody in maybefriends">
+				        <a href="#" ng-click="selectthisfriend(somebody, false)" data-transition="slide">
+				          {{somebody.fullname}}
+				        </a>
+				      </li>
+				    </ul>
+				  </div>
+			      
+			      <P><a data-role="button" ng-href="#" ng-click="selectthisfriend(newfriend, true)" data-theme="a">Not Found</a></P>
+		      </span>
+		      
+		  </span>
+		  	  
+		  	  
+		  <span ng-hide="maybefriends.length > 0">
+		  
+			  <div ng-show="user.friends.length==0">
+			    <P>You have no friends - well, at least none that we know about</P>
+			    <P>Why don't you add some of your friends and family so you can see what they want</P>
+			    <P>Click "Add" in the top right</P>
+			  </div> 	  
+		  
+		  
+		      <div jquery-mobile-tpl>
+			    <ul id="friendview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
+			      <li ng-repeat="friend in user.friends">
+			        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
+			          {{friend.fullname}}
+			        </a>
+			      </li>
+			    </ul>
+			  </div>
+		  </span>
+		  
+	  </span> <!-- ng-hide="searchingforfriends" -->
+	    
+	  	  
 	  
 	</div><!-- /content -->
 
@@ -1277,11 +1343,6 @@
 	  </form>
 
 
-
-
-
-
-
 	  
 	</div><!-- /content -->
 	
@@ -1735,6 +1796,135 @@
         </div>
       </div>
 	  
+	  
+	</div><!-- /content -->
+
+
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird.com</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
+
+<div id="addfriend" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Add Friend</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+
+
+	  <form novalidate name="addfriendForm">
+          <p>
+		    <label for="invitename" class="ui-hidden-accessible">Name:</label>
+            <input id="invitename" name="invitename" type="text" ng-model="newfriend.name" placeholder="Name" required/>
+	      </p>
+	  
+          <p>
+		    <label for="inviteemail" class="ui-hidden-accessible">Email:</label>
+            <input id="inviteemail" name="inviteemail" type="email" ng-model="newfriend.email" placeholder="Email" required/>
+	      </p>
+	      
+    	
+	      <P>
+	        <span ng-hide="addfriendForm.$invalid">
+	          <a ng-href="#friends" ng-click="searchforfriend(newfriend)" data-role="button" data-theme="b" data-icon="">Add Friend</a>
+	        </span>
+	        <span ng-show="addfriendForm.$invalid">
+	          <button disabled="" data-role="button" data-theme="b">Add Friend</button>
+	        </span>
+		  </P>
+	  </form>
+
+
+	  
+	</div><!-- /content -->
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird.com</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
+
+<div id="deletefriends" data-role="page" data-add-back-btn="true">
+
+
+	<div data-role="header" data-theme="b">
+		<h1>Delete Friends</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  	  
+	    <fieldset data-role="controlgroup">
+	        <legend>Delete Who?</legend>
+	        
+			<span ng-repeat="friend in user.friends">
+		        <input name="deletefriend-{{friend.id}}" id="deletefriend-{{friend.id}}" type="checkbox" ng-click="prepareDeleteFriend(friend)">
+		        <label for="deletefriend-{{friend.id}}">{{friend.fullname}}</label>
+			</span>
+	        
+	    </fieldset>
+	    
+	    <div ng-show="friendstodelete.length==0">
+	      <button disabled="">Delete Friends</button>
+	    </div>
+	    
+	    <div ng-show="friendstodelete.length > 0">
+	      <a data-role="button" ng-href="#friends" ng-click="removeFriends(friendstodelete)">Delete {{friendstodelete.length}} Friend<span ng-show="friendstodelete.length > 1">s</span></a>
+	    </div>
+	  	  
 	  
 	</div><!-- /content -->
 

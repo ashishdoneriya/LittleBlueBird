@@ -97,6 +97,13 @@ var app = angular.module('project', ['ngResource']).
                     });
 
       return Gift;
+  }).
+  factory('Friend', function($resource) {
+      var Friend = $resource('/gf/rest/friend/:userId/:friendId', {userId:'@userId', friendId:'@friendId'},
+                    {
+                      delete: {method:'DELETE'}
+                    });
+      return Friend;
   });
   
   

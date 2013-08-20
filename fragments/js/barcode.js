@@ -4,11 +4,11 @@
 // see https://github.com/phonegap-build/BarcodeScanner/blob/master/README.md
 
   $scope.scan = function() {
-    alert('scan fn');
+    alert('window.cordova='+window.cordova);
+    alert('window.PhoneGap='+window.PhoneGap);
   
     var scanner = window.cordova.require("cordova/plugin/BarcodeScanner");
     
-    alert(scanner);
 
     scanner.scan(
       function (result) {

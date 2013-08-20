@@ -7,6 +7,8 @@
     alert('scan fn');
   
     var scanner = window.cordova.require("cordova/plugin/BarcodeScanner");
+    
+    alert(scanner);
 
     scanner.scan(
       function (result) {

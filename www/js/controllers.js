@@ -850,6 +850,8 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     alert('scan fn');
   
     var scanner = window.cordova.require("cordova/plugin/BarcodeScanner");
+    
+    alert(scanner);
 
     scanner.scan(
       function (result) {

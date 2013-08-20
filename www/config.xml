@@ -15,7 +15,7 @@
         Brent Dunklau
     </author>
     
-    
+    <gap:plugin name="com.phonegap.plugins.barcodescanner" />
     
     <gap:plugin name="com.phonegap.plugins.facebookconnect">
        <param name="APP_ID" value="136122483829" />

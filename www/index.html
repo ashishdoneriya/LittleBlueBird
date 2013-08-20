@@ -68,6 +68,7 @@
 		<p><a href="#lbblogin" data-role="button" data-theme="b">Login via LittleBlueBird</a> </p>	
 		<p><a href="#register" data-role="button" data-theme="b" ng-click="initNewUser()">Register</a> </p>	
 		<p><a href="#forgot" data-role="button" data-theme="b">Forgot User/Pass?</a> </p>	
+		<p><a href="#" ng-click="scanner()" data-role="button" data-theme="b">scan</a> </p>	
 		<!-- p><a href="#welcome" ng-click="test()" data-role="button" data-theme="b">test</a> </p -->	
 	</div><!-- /content -->
 
@@ -231,13 +232,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -316,13 +316,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -401,13 +400,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -521,13 +519,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -600,13 +597,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -672,11 +668,11 @@
 		  
 		  <span ng-hide="reserving">    
 			  <span ng-show="currentgift.canbuy">
-			    <P><a href="#" ng-click="beginreserving(currentgift)" data-theme="b" data-role="button">Give This</a></P>
+			    <P style="margin-top:10px;"><a href="#" ng-click="beginreserving(currentgift)" data-theme="b" data-role="button">Give This</a></P>
 			  </span>
 			  <span ng-show="currentgift.canreturn">
 			    <P class="nowrap" style="margin-top:10px;">Changed your mind?  No biggie.  Just click "Return" to make this gift available again.</P>
-			    <P><a href="#" ng-click="returngift(index, currentgift)" data-theme="b" data-role="button">Return</a></P>
+			    <P style="margin-top:10px;"><a href="#" ng-click="returngift(index, currentgift)" data-theme="b" data-role="button">Return</a></P>
 			  </span>
 	      </span>
 	      
@@ -719,13 +715,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -810,13 +805,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -890,13 +884,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -932,13 +925,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -987,13 +979,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -1068,13 +1059,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -1128,13 +1118,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -1270,13 +1259,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -1364,13 +1352,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -1417,13 +1404,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -1462,13 +1448,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -1520,13 +1505,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -1580,13 +1564,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -1659,13 +1642,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -1745,13 +1727,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -1819,13 +1800,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -1885,13 +1865,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">
@@ -1948,13 +1927,12 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a">
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
         <h4>My Account</h4>
         <ul data-role="listview" data-theme="a">
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">

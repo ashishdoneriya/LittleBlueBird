@@ -636,8 +636,9 @@
 	 </span>
 	  
 
-
-	      <div style="margin-top:30px;"><h4>{{currentgift.description}}</h4></div>
+     <ul data-role="listview" style="margin-top:30px;" data-inset="true" data-theme="d">
+       <li>
+	      <div><h4>{{currentgift.description}}</h4></div>
           <p>To: <span ng-repeat="r in currentgift.recipients">{{r.fullname}}</span></p>
           
 	      
@@ -697,6 +698,8 @@
 			    <div class="ui-block-b"><a href="#wishlist" ng-click="deletegift(currentgift)" data-theme="c" data-role="button">Delete</a></div>	   
 		      </div>
 		  </span>
+       </li>
+     </ul>
 		  
 	      
 	

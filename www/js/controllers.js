@@ -238,6 +238,21 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
 			                                jQuery("#maybefriendsview").show();
 			                             },0);
 			                             delete $scope.searchingforfriends;
+			                             
+			                             // If the user entered an email that wasn't found in the db...
+			                             if($scope.maybefriends.length==0) {
+			                               // then this newfriend needs to have a new account created in the db
+			                               anewuser = User.save({fullname:newfriend.name, email:newfriend.email, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname},
+			                                   function() {
+			                                       // upon successful save of the new friend's account, update the current user with this new friends
+			                                       User.save({userId:$rootScope.user.id, username:$rootScope.user.username, lbbfriends:[anewuser]},
+			                                           function(){ 
+			                                               // ...and assuming the update of the current user was ok, add the newfriend to the user's list of friends
+			                                               $rootScope.user.friends.push(anewuser); 
+			                                               refreshFriends();
+			                                           });
+			                                   });
+			                             }
                                       },
                                       function() {delete $scope.searchingforfriends;} );
   }

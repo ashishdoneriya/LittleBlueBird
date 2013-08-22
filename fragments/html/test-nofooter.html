@@ -1,0 +1,33 @@
+
+
+<div id="test" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Test</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  	  
+	  <form name="testscanform">
+	    <input type="text" ng-model="barcode" required/>
+	    <span ng-show="testscanform.$valid">  
+	      <P><a ng-href="#" ng-click="barcodelookup(barcode)" data-role="button" data-theme="b">Lookup</a></P>
+	      <P><a ng-href="#" ng-click="scan()" data-role="button" data-theme="b">Scan !</a></P>
+	    </span>
+	    <span ng-hide="testscanform.$valid">  
+	      <P><button disabled="" data-theme="b">Lookup</button></P>
+	      <P><button disabled="" data-theme="b">Scan !</button></P>
+	    </span>
+	  </form>
+	    <h4>Products</h4>
+	    <div ng-repeat="product in products">
+	        <P>{{product.name}}</P>
+	        <P>{{product.url}}</P>
+	        <hr/>
+	    </div>
+	    
+	  
+	</div><!-- /content -->
+
+
+	

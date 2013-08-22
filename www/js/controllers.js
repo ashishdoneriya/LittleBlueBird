@@ -742,9 +742,9 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
-  $scope.viewonline = function(gift, event) {
+  $scope.viewonline = function(url, event) {
     event.preventDefault();
-    window.open(gift.affiliateUrl, '_blank', 'location=yes');
+    window.open(url, '_blank', 'location=yes');
     return false;
   }
   

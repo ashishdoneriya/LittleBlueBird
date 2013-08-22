@@ -663,7 +663,7 @@
           
 	      <span ng-show="currentgift.affiliateUrl != ''">
 	        <P>
-	          <a ng-href="#" ng-click="viewonline(currentgift, $event)" data-theme="b" data-role="button" target="item">
+	          <a ng-href="#" ng-click="viewonline(currentgift.affiliateUrl, $event)" data-theme="b" data-role="button" target="item">
 	            View Online
 	          </a>
 	        </P>
@@ -1970,7 +1970,11 @@
 	    <h4>Products</h4>
 	    <div ng-repeat="product in products">
 	        <P>{{product.name}}</P>
-	        <P>{{product.url}}</P>
+	        <P>
+	          <a ng-href="#" ng-click="viewonline(product.url, $event)" data-theme="b" data-role="button" target="item">
+	            View Online
+	          </a>
+	        </P>
 	        <hr/>
 	    </div>
 	    

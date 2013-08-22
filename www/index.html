@@ -1960,9 +1960,11 @@
 	  <form name="testscanform">
 	    <input type="text" ng-model="barcode" required/>
 	    <span ng-show="testscanform.$valid">  
-	      <P><a ng-href="#" ng-click="barcodelookup(barcode)" data-role="button" data-theme="b">Scan !</a></P>
+	      <P><a ng-href="#" ng-click="barcodelookup(barcode)" data-role="button" data-theme="b">Lookup</a></P>
+	      <P><a ng-href="#" ng-click="scan()" data-role="button" data-theme="b">Scan !</a></P>
 	    </span>
 	    <span ng-hide="testscanform.$valid">  
+	      <P><button disabled="" data-theme="b">Lookup</button></P>
 	      <P><button disabled="" data-theme="b">Scan !</button></P>
 	    </span>
 	  </form>

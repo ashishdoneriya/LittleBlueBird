@@ -855,6 +855,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
 	      function (result) {
 	        $scope.scanresult = result.text;
 	        $scope.scanformat = result.format;
+	        $scope.barcodelookup(result.text, result.format);
 	      }, 
 	      function (error) {
 	          alert("Scanning failed: " + error);
@@ -868,11 +869,10 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
-  $scope.barcodelookup = function(barcode) {
+  $scope.barcodelookup = function(barcode, formatIgnoredAtTheMoment) {
   
     //635753490879  one hit
     //075371080043  two hits
-    
   
     var upcresult = UPC.lookup({code:barcode}, 
                           function() {

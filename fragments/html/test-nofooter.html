@@ -18,16 +18,19 @@
 	    </span>
 	    <P><a ng-href="#" ng-click="scan()" data-role="button" data-theme="b">Scan !</a></P>
 	  </form>
-	    <h4>Products</h4>
-	    <div ng-repeat="product in products">
+	  
+	  <hr/>
+      <div jquery-mobile-tpl>
+	    <div ng-repeat="product in products" repeat-done="">
 	        <P>{{product.name}}</P>
 	        <P>
-	          <a ng-href="#" ng-click="viewonline(product.url, $event)" data-theme="b" data-role="button" target="item">
+	          <a ng-href="#" ng-click="viewonline(product.url, $event)" data-theme="b" data-role="button">
 	            View Online
 	          </a>
 	        </P>
 	        <hr/>
 	    </div>
+	  </div>
 	    
 	  
 	</div><!-- /content -->

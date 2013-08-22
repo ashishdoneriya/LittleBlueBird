@@ -12,6 +12,7 @@
 	      function (result) {
 	        $scope.scanresult = result.text;
 	        $scope.scanformat = result.format;
+            alert('barcode: '+result.text);
 	        $scope.barcodelookup(result.text, result.format);
 	      }, 
 	      function (error) {
@@ -28,6 +29,7 @@
   
   $scope.barcodelookup = function(barcode, formatIgnoredAtTheMoment) {
   
+    alert('$scope.barcodelookup() begin');
     //635753490879  one hit
     //075371080043  two hits
   

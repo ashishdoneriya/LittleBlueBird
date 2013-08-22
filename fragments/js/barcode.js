@@ -12,7 +12,6 @@
 	      function (result) {
 	        $scope.scanresult = result.text;
 	        $scope.scanformat = result.format;
-            alert('barcode: '+result.text);
 	        $scope.barcodelookup(result.text, result.format);
 	      }, 
 	      function (error) {
@@ -29,22 +28,17 @@
   
   $scope.barcodelookup = function(barcode, formatIgnoredAtTheMoment) {
   
-    alert('$scope.barcodelookup() begin');
     //635753490879  one hit
     //075371080043  two hits
   
     var upcresult = UPC.lookup({code:barcode}, 
                           function() {
-                              alert('begin success fn');
-                              console.log('upcresult', upcresult);
-                              alert('calling DOMParser');
+                              //console.log('upcresult', upcresult);
 						      parser=new DOMParser();
 						      xml=parser.parseFromString(upcresult.xml,"text/xml");
-                              alert('got xml');
 							  console.log('upcresult.xml', upcresult.xml);
 							  console.log('xml', xml);
 							  $scope.testjson = xmlToJson(xml);
-                              alert('converted to json');
 							  
 							  $scope.products = [];
 							  if(!angular.isDefined($scope.testjson.ItemLookupResponse.Items.Item)) {
@@ -62,7 +56,6 @@
 							    var product = {name: $scope.testjson.ItemLookupResponse.Items.Item.ItemAttributes.Title.text, url:$scope.testjson.ItemLookupResponse.Items.Item.DetailPageURL.text};
 							    $scope.products.push(product);
 							  }
-                              alert('done');
 							  
                           }, 
                           function() {console.log('UPC.lookup() failed')});

@@ -28,13 +28,17 @@ import net.liftweb.http.NoContentResponse
 import net.liftweb.http.NoContentResponse
 import net.liftweb.http.S
 import net.liftweb.http.js.JE.JsArray
+import net.liftweb.http.js.JE.Str
+import net.liftweb.http.js.JsExp
 import net.liftweb.http.js.JsExp.strToJsExp
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonAST.JArray
 import net.liftweb.json.JsonAST.JField
 import net.liftweb.json.JsonAST.JObject
+import net.liftweb.json.JsonAST.JString
 import net.liftweb.json.JsonAST.JValue
+import net.liftweb.json.JsonParser
 import net.liftweb.mapper.By
 import net.liftweb.mapper.ByList
 import net.liftweb.mapper.Cmp
@@ -109,6 +113,7 @@ object RestService extends RestHelper with LbbLogger {
   }
   
   serve {
+    case Get("rest" :: "barcode" :: code :: _, _) => debug("rest/barcode/"+code); lookupBarcode(code)
     case Get("rest" :: "usersearch" :: _, _) => debug("RestService.serve:  Get: usersearch"); SearchHelper.usersearch
     case JsonPost("rest" :: "circles" :: Nil, (json, req)) => insertCircle
     
@@ -117,6 +122,17 @@ object RestService extends RestHelper with LbbLogger {
     case Post(_, _) => debug("RestService.serve:  case Post(_, _)"); JsonResponse("Post(_, _)  S.uri="+S.uri)
     
     //case _ => debug("RestService.serve:  666666666"); debugRequest 
+  }
+  
+  
+  def lookupBarcode(code:String) = {
+    val barcodeType = "UPC"
+    val searchIndex = "All"
+    val url = "http://sowacs.appspot.com/AWS/%5Bbdunklau@yahoo.com%5Decs.amazonaws.com/onca/xml?IdType="+barcodeType+"&ItemId="+code+"&SearchIndex="+searchIndex+"&Service=AWSECommerceService&AWSAccessKeyId=056DP6E1ENJTZNSNP602&Operation=ItemLookup&AssociateTag=wwwlittleb040-20"
+    val res = io.Source.fromURL(url).mkString
+    val f1 = JField("xml", JString(res))
+    val jobj:JsExp = JObject(List(f1))
+    JsonResponse(jobj)
   }
   
   

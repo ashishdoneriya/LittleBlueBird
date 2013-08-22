@@ -99,11 +99,18 @@ var app = angular.module('project', ['ngResource']).
       return Gift;
   }).
   factory('Friend', function($resource) {
-      var Friend = $resource('/gf/rest/friend/:userId/:friendId', {userId:'@userId', friendId:'@friendId'},
+      var Friend = $resource('http://www.littlebluebird.com/gf/rest/friend/:userId/:friendId', {userId:'@userId', friendId:'@friendId'},
                     {
                       delete: {method:'DELETE'}
                     });
       return Friend;
+  }).
+  factory('UPC', function($resource) {
+      var UPC = $resource('http://www.littlebluebird.com/gf/rest/barcode/:code', {code:'@code'},
+                    {
+                      lookup: {method:'GET', isArray:false}
+                    });
+      return UPC;
   });
   
   

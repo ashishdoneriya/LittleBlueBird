@@ -164,6 +164,13 @@ class UtilTest extends FunSuite with AssertionsForJUnit with LbbLogger {
   }
   
   
+  test("read url") {
+    val url = "http://sowacs.appspot.com/AWS/%5Bbdunklau@yahoo.com%5Decs.amazonaws.com/onca/xml?IdType=UPC&ItemId=635753490879&SearchIndex=All&Service=AWSECommerceService&AWSAccessKeyId=056DP6E1ENJTZNSNP602&Operation=ItemLookup&AssociateTag=wwwlittleb040-20"
+    val res = io.Source.fromURL(url).mkString
+    println(res)
+  }
+  
+  
   test("List stuff") {
     val list = List(1,2,3,4)
     val l2 = list.filter(i => i > 5)

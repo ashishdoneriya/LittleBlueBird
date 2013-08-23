@@ -141,6 +141,18 @@
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
+		  <concat destfile="fragments/html/scanresults.html"
+		          force="yes">
+		     <fileset file="fragments/html/scanresults-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/html/selectedproduct.html"
+		          force="yes">
+		     <fileset file="fragments/html/selectedproduct-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
 	</target>
 	
 	
@@ -177,6 +189,8 @@
 	     <fileset file="fragments/html/addfriend.html" />
 	     <fileset file="fragments/html/deletefriends.html" />
 	     <fileset file="fragments/html/test.html" />
+	     <fileset file="fragments/html/scanresults.html" />
+	     <fileset file="fragments/html/selectedproduct.html" />
 	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
 	</target>

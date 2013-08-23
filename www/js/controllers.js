@@ -900,8 +900,10 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
 							    $scope.products.push(product);
 							  }
 							  
+							  $scope.scanreturncode = $scope.products.length;
+							  
                           }, 
-                          function() {console.log('UPC.lookup() failed')});
+                          function() {$scope.scanreturncode = -1;});
   
   }
   

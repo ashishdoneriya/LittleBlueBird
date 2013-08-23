@@ -219,6 +219,8 @@
 	    <li><a href="#events" ng-click="events();setfootermenu('events')" data-transition="slide">Events</a></li>
 	    <li><a href="#friends" ng-click="friends();setfootermenu('friends')" data-transition="slide">Friends</a></li>
 	  </ul>
+	  
+	  <P><a ng-href="#scanresults" ng-click="scan()" data-role="button" data-theme="b">Scan !</a></P>
 	  </span>
 	
 	
@@ -1981,6 +1983,176 @@
 	    </div>
 	  </div>
 	    
+	  
+	</div><!-- /content -->
+
+
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird.com</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
+
+<div id="scanresults" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Results</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  	  
+	  <div ng-show="scanreturncode == -1">Woops! Our Bad! - The barcode scanner totally flipped out on you. Try again and if it still doesn't work, drop 
+	    us an email at <a ng-href="mailto:info@littlebluebird.com">info@littlebluebird.com</a>
+	  </div>
+	  
+	  
+	  <!-- the good/success case: but no products found 
+	    When no products are found, present the "Bummer" message 
+	  -->
+	  <div ng-show="scanreturncode == 0">
+	    Bummer! The barcode you scanned wasn't in our database.  If you want to add this item to your wish list, you will
+	    have to manually enter it.
+	  </div>
+	  
+	  
+	  
+	  <!-- the good/success case: one product found 
+	    When only one product is found, we can immediately present the user with the buttons "Add to My List", "Add to Someone Else's List" 
+	  -->
+	  <div ng-show="scanreturncode == 1">
+        <ul data-role="listview" data-theme="d" data-inset="true">
+	      <li>
+	        <div><h4 class="nowrap">{{products[0].name}}</h4></div>
+	        <P>
+	          <a ng-href="#" ng-click="viewonline(products[0].url, $event)" data-theme="b" data-role="button" target="item">
+	            View Online
+	          </a>
+	        </P>
+	        <P>
+	          <a ng-href="#" data-theme="b" data-role="button" target="item">
+	            Add to My List
+	          </a>
+	        </P>
+	        <P>
+	          <a ng-href="#" data-theme="b" data-role="button" target="item">
+	            Add to Someone Else's List
+	          </a>
+	        </P>
+	      </li>
+	    </ul>
+	  </div>
+	  
+	  
+	  
+	  <!-- the good/success case: more than one product found 
+	     In this case, we present the user with the list of products.  Each <li> is a link over to that product's
+	     page where the user see the "Add to My List", "Add to Someone Else's List" buttons
+	  -->
+	  <div ng-show="scanreturncode > 1">
+        <div jquery-mobile-tpl>
+          <ul data-role="listview" data-theme="d" data-inset="true">
+          
+	        <li ng-repeat="product in products" repeat-done="">
+	          <a ng-href="#selectedproduct" data-theme="b" data-role="button">
+	            <h4>{{product.name}}</h4>
+	          </a>
+	        </li>
+	      </ul>
+	    
+	    </div>
+	  </div>
+	    
+	  
+	</div><!-- /content -->
+
+
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird.com</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
+
+<div id="selectedproduct" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Product</h1>
+	</div><!-- /header -->
+
+
+
+	<div data-role="content">
+	  
+        <ul data-role="listview" data-theme="d" data-inset="true">
+	      <li>
+	        <div><h4 class="nowrap">{{products[0].name}}</h4></div>
+	        <P>
+	          <a ng-href="#" ng-click="viewonline(products[0].url, $event)" data-theme="b" data-role="button" target="item">
+	            View Online
+	          </a>
+	        </P>
+	        <P>
+	          <a ng-href="#" data-theme="b" data-role="button" target="item">
+	            Add to My List
+	          </a>
+	        </P>
+	        <P>
+	          <a ng-href="#" data-theme="b" data-role="button" target="item">
+	            Add to Someone Else's List
+	          </a>
+	        </P>
+	      </li>
+	    </ul>
+	  	  
 	  
 	</div><!-- /content -->
 

@@ -900,6 +900,8 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
 							    $scope.products.push(product);
 							  }
 							  
+							  refreshScanResults();
+							  
 							  $scope.scanreturncode = $scope.products.length;
 							  
                           }, 
@@ -951,6 +953,16 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
 	}
 	return obj;
   };
+  
+  
+  
+  refreshScanResults = function() {                     
+        jQuery("#scanresultlist").hide();
+          setTimeout(function(){
+            jQuery("#scanresultlist").listview("refresh");
+            jQuery("#scanresultlist").show();
+         },0);
+  }
   
   
   

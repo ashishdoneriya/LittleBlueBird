@@ -57,6 +57,8 @@
 							    $scope.products.push(product);
 							  }
 							  
+							  refreshScanResults();
+							  
 							  $scope.scanreturncode = $scope.products.length;
 							  
                           }, 
@@ -108,5 +110,15 @@
 	}
 	return obj;
   };
+  
+  
+  
+  refreshScanResults = function() {                     
+        jQuery("#scanresultlist").hide();
+          setTimeout(function(){
+            jQuery("#scanresultlist").listview("refresh");
+            jQuery("#scanresultlist").show();
+         },0);
+  }
   
   

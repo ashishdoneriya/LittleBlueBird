@@ -2026,8 +2026,8 @@
 
 	<div data-role="content">
 	  	  
-	  <div ng-show="scanreturncode == -1">Woops! Our Bad! - The barcode scanner totally flipped out on you. Try again and if it still doesn't work, drop 
-	    us an email at <a ng-href="mailto:info@littlebluebird.com">info@littlebluebird.com</a>
+	  <div ng-show="scanreturncode == -1">
+	    Scan cancelled - hit the Back button and try again if you like
 	  </div>
 	  
 	  
@@ -2075,7 +2075,7 @@
 	  -->
 	  <div ng-show="scanreturncode > 1">
         <div jquery-mobile-tpl>
-          <ul data-role="listview" data-theme="d" data-inset="true">
+          <ul id="scanresultlist" data-role="listview" data-theme="d" data-inset="true">
           
 	        <li ng-repeat="product in products" repeat-done="">
 	          <a ng-href="#selectedproduct">

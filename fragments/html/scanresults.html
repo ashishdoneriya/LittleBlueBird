@@ -66,7 +66,7 @@
           <ul id="scanresultlist" data-role="listview" data-theme="d" data-inset="true">
           
 	        <li ng-repeat="product in products" repeat-done="">
-	          <a ng-href="#selectedproduct">
+	          <a ng-href="#selectedproduct" ng-click="showproduct(product)">
 	            <h4 class="nowrap">{{product.name}}</h4>
 	          </a>
 	        </li>
@@ -101,6 +101,7 @@
 	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
 	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
         </ul>
         <h4>Who Are We</h4>
         <ul data-role="listview" data-theme="a">

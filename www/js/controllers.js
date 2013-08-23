@@ -794,6 +794,12 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
+  // 2013-08-22: 'product' is the result of a barcode scan
+  $scope.showproduct = function(product) {
+    $scope.product = product;
+  }
+  
+  
   
   // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.deletegift() function
   $scope.deletegift = function(gift) {

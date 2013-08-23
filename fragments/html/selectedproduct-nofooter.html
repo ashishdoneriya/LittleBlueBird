@@ -1,0 +1,38 @@
+
+
+<div id="selectedproduct" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Product</h1>
+	</div><!-- /header -->
+
+
+
+	<div data-role="content">
+	  
+        <ul data-role="listview" data-theme="d" data-inset="true">
+	      <li>
+	        <div><h4 class="nowrap">{{products[0].name}}</h4></div>
+	        <P>
+	          <a ng-href="#" ng-click="viewonline(products[0].url, $event)" data-theme="b" data-role="button" target="item">
+	            View Online
+	          </a>
+	        </P>
+	        <P>
+	          <a ng-href="#" data-theme="b" data-role="button" target="item">
+	            Add to My List
+	          </a>
+	        </P>
+	        <P>
+	          <a ng-href="#" data-theme="b" data-role="button" target="item">
+	            Add to Someone Else's List
+	          </a>
+	        </P>
+	      </li>
+	    </ul>
+	  	  
+	  
+	</div><!-- /content -->
+
+
+	

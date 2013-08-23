@@ -32,17 +32,22 @@
 	        <div><h4 class="nowrap">{{products[0].name}}</h4></div>
 	        <P>
 	          <a ng-href="#" ng-click="viewonline(products[0].url, $event)" data-theme="b" data-role="button" target="item">
-	            View Online
+	            View/Buy Online
 	          </a>
 	        </P>
 	        <P>
-	          <a ng-href="#" data-theme="b" data-role="button" target="item">
+	          <a ng-href="#" ng-click="addtomywishlist(product)" data-theme="b" data-role="button" target="item">
 	            Add to My List
 	          </a>
 	        </P>
 	        <P>
 	          <a ng-href="#" data-theme="b" data-role="button" target="item">
 	            Add to Someone Else's List
+	          </a>
+	        </P>
+	        <P>
+	          <a ng-href="#" data-theme="c" data-role="button" target="item">
+	            This is not what I scanned
 	          </a>
 	        </P>
 	      </li>
@@ -56,12 +61,13 @@
 	     page where the user see the "Add to My List", "Add to Someone Else's List" buttons
 	  -->
 	  <div ng-show="scanreturncode > 1">
+	    Found {{products.length}} items that match this barcode
         <div jquery-mobile-tpl>
           <ul id="scanresultlist" data-role="listview" data-theme="d" data-inset="true">
           
 	        <li ng-repeat="product in products" repeat-done="">
 	          <a ng-href="#selectedproduct">
-	            <h4>{{product.name}}</h4>
+	            <h4 class="nowrap">{{product.name}}</h4>
 	          </a>
 	        </li>
 	      </ul>

@@ -783,6 +783,18 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   
   
   
+  // 2013-08-22: originally created to pass in a barcode-scanned product.  product has 'name' and 'url'
+  $scope.addtomywishlist = function(product) {
+    $rootScope.showUser = $rootScope.user;
+    $scope.initNewGift(); // produced $scope.currentgift
+    $scope.currentgift.description = product.name;
+    $scope.currentgift.url = product.url;
+    $scope.currentgift.affiliateUrl = product.url;
+    $scope.savegift($scope.currentgift);
+  }
+  
+  
+  
   // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.deletegift() function
   $scope.deletegift = function(gift) {
     $scope.gifts.splice($scope.index, 1);

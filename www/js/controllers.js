@@ -868,7 +868,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   
     try {
 	    var scanner = window.cordova.require("cordova/plugin/BarcodeScanner");
-	
+	console.log('scanner', scanner);
 	    scanner.scan(
 	      function (result) {
 	        $scope.scanresult = result.text;
@@ -901,6 +901,8 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
 							  console.log('xml', xml);
 							  $scope.testjson = xmlToJson(xml);
 							  
+							  console.log('testjson for: '+barcode, JSON.stringify($scope.testjson));
+							  
 							  $scope.products = [];
 							  if(!angular.isDefined($scope.testjson.ItemLookupResponse.Items.Item)) {
 							    console.log("not even defined");
@@ -919,6 +921,8 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
 							  }
 							  
 							  refreshScanResults();
+							  
+							  console.log('products for '+barcode, JSON.stringify($scope.products));
 							  
 							  $scope.scanreturncode = $scope.products.length;
 							  

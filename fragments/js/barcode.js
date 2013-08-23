@@ -7,7 +7,7 @@
   
     try {
 	    var scanner = window.cordova.require("cordova/plugin/BarcodeScanner");
-	
+	console.log('scanner', scanner);
 	    scanner.scan(
 	      function (result) {
 	        $scope.scanresult = result.text;
@@ -40,6 +40,8 @@
 							  console.log('xml', xml);
 							  $scope.testjson = xmlToJson(xml);
 							  
+							  console.log('testjson for: '+barcode, JSON.stringify($scope.testjson));
+							  
 							  $scope.products = [];
 							  if(!angular.isDefined($scope.testjson.ItemLookupResponse.Items.Item)) {
 							    console.log("not even defined");
@@ -58,6 +60,8 @@
 							  }
 							  
 							  refreshScanResults();
+							  
+							  console.log('products for '+barcode, JSON.stringify($scope.products));
 							  
 							  $scope.scanreturncode = $scope.products.length;
 							  

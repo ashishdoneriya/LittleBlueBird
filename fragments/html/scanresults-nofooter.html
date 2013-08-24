@@ -61,7 +61,7 @@
 	     page where the user see the "Add to My List", "Add to Someone Else's List" buttons
 	  -->
 	  <div ng-show="scanreturncode > 1">
-	    Found {{products.length}} items that match this barcode
+	    Found {{products.length}} items that match this barcode.  Tap the one you want.
         <div jquery-mobile-tpl>
           <ul id="scanresultlist" data-role="listview" data-theme="d" data-inset="true">
           
@@ -73,9 +73,15 @@
 	      </ul>
 	    
 	    </div>
+	    <P><a ng-href="#" data-role="button" data-theme="d">None of These</a></P>
 	  </div>
 	    
 	  
+	    
+	  	<div ng-show="testing">
+	  	  <P>Logged in as: {{user.fullname}}</P>
+	  	</div>
+	  	
 	</div><!-- /content -->
 
 

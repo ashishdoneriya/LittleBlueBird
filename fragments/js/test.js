@@ -1,5 +1,8 @@
 
   
+  // 2013-08-23
+  $scope.testing = true; // drop show/hide's on pages to reveal info like who the current user is
+  
   
   // 2013-08-03 created to test whatever you want temporarily
 
@@ -83,4 +86,8 @@
   // combined the 2 products above into one array
   $scope.phonymultipleresults = [$scope.products_678149033229[0], $scope.products_025192966521[0]];
   
+  $scope.products = $scope.phonymultipleresults;
+  $scope.scanreturncode = $scope.products.length;
+  
+  refreshScanResults();
   

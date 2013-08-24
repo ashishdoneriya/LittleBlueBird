@@ -85,7 +85,21 @@
   
   
   // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.addgift() function
-  $scope.savegift = function(gift) {
+  $scope.savegift = function(gift) {    
+    successFn = function() {
+                 if(add) {$scope.gifts.reverse();$scope.gifts.push(savedgift);$scope.gifts.reverse();}
+                 $scope.currentgift = {};
+                 $scope.currentgift.recipients = [];
+                 refreshWishlist();
+               };
+    
+    $scope.savegift_takingargs(successFn);
+  }   
+  
+  
+  // by 'takingargs', we mean this function is like $scope.savegift() except that $scope.savegift_takingargs() takes args,
+  // namely the success function that will be called after the gift is saved
+  $scope.savegift_takingargs = function(successFn) {
     // the 'showUser' doesn't have to be a recipient - only add if it is
     var add = false;
     
@@ -106,27 +120,10 @@
     
     console.log(saveparms);
     
-    var savedgift = Gift.save(saveparms,
-               function() {
-                 if(add) {$scope.gifts.reverse();$scope.gifts.push(savedgift);$scope.gifts.reverse();}
-                 $scope.currentgift = {};
-                 $scope.currentgift.recipients = [];
-                 refreshWishlist();
-               });
+    var savedgift = Gift.save(saveparms, successFn);
                
-  }    
+  } 
   
-  
-  
-  // 2013-08-22: originally created to pass in a barcode-scanned product.  product has 'name' and 'url'
-  $scope.addtomywishlist = function(product) {
-    $rootScope.showUser = $rootScope.user;
-    $scope.initNewGift(); // produced $scope.currentgift
-    $scope.currentgift.description = product.name;
-    $scope.currentgift.url = product.url;
-    $scope.currentgift.affiliateUrl = product.url;
-    $scope.savegift($scope.currentgift);
-  }
   
   
   // 2013-08-22: 'product' is the result of a barcode scan
@@ -175,14 +172,39 @@
   }
   
   
-  $scope.mywishlist = function() {
+  $scope.mywishlist_takingargs = function(successFn) {
       $rootScope.showUser = $rootScope.user;
       $scope.gifts = Gift.query({viewerId:$rootScope.user.id}, 
-                            function() { 
+                            successFn,
+                            function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
+  }
+  
+  
+  $scope.mywishlist = function() {
+      successFn = function() { 
                               $scope.gifts.mylist=true;
                               $scope.gifts.ready="true";
                               delete $scope.circle;
+                              console.log("mywishlist with successFn");
                               refreshWishlist();
-                            }, 
-                            function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
+                            };
+      $scope.mywishlist_takingargs(successFn);
+  }
+  
+  
+  // 2013-08-22: originally created to pass in a barcode-scanned product.  product has 'name' and 'url'
+  $scope.addtomywishlist = function(product) {
+    $scope.initNewGift(); // produced $scope.currentgift
+    successFn = function() {
+	    $scope.currentgift.description = product.name;
+	    $scope.currentgift.url = product.url;
+	    $scope.currentgift.affiliateUrl = product.url;
+        $scope.gifts.mylist=true;
+        $scope.gifts.ready="true";
+        delete $scope.circle;
+	    $scope.savegift_takingargs($scope.currentgift, function() {refreshWishlist();});
+    }
+    // we don't have to check to see if the 'showUser' is the current user; we make them equal if they aren't
+    // and if they are already, setting them equal in the function below is of no consequence
+    $scope.mywishlist_takingargs(successFn);
   }

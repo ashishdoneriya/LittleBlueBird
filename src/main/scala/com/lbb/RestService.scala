@@ -105,7 +105,7 @@ object RestService extends RestHelper with LbbLogger {
   }
   
   serve {
-    case JsonPost("rest" :: "gifts" :: _ :: Nil, (json, req)) => debug("RestService.serve:  CCCCCCC"); debug(json); insertGift
+    case JsonPost("rest" :: "gifts" :: _ :: Nil, (json, req)) => debug("RestService.serve:  insertGift"); debug(json); insertGift
     case JsonPost("rest" :: "users" :: AsLong(userId) :: _, (json, req)) => debug("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
     case JsonPost("rest" :: "users" :: Nil, (json, req)) => debug("RestService.serve:  4444444444444444"); debug(json); insertUser
     case JsonPost("rest" :: "password" :: AsLong(userId) :: currentpass :: newpass :: _, (json, req)) => resetPass(userId, currentpass, newpass) // 2013-08-01 mobile only at this time

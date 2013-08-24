@@ -18,6 +18,8 @@
         $scope.currentgift.recipients[i].checked = true;
     }
     
+    console.log();
+    
     // you need to specify who the gift is for if there is a circle and if there is more than one receiver in the circle
     $scope.needToSpecifyWhoTheGiftIsFor = angular.isDefined($scope.currentgift) && angular.isDefined($scope.currentgift.circle) 
            && angular.isDefined($scope.currentgift.recipients) && $scope.currentgift.recipients.length > 1;
@@ -34,6 +36,7 @@
   
   
   refreshWishlist = function() {
+      console.log('refreshWishlist called');
       jQuery("#wishlistview").hide();
       setTimeout(function(){
         jQuery("#wishlistview").listview("refresh");
@@ -93,26 +96,20 @@
                  refreshWishlist();
                };
     
-    $scope.savegift_takingargs(successFn);
+    $scope.savegift_takingargs(gift, successFn);
   }   
   
   
   // by 'takingargs', we mean this function is like $scope.savegift() except that $scope.savegift_takingargs() takes args,
   // namely the success function that will be called after the gift is saved
-  $scope.savegift_takingargs = function(successFn) {
+  $scope.savegift_takingargs = function(gift, successFn) {
     // the 'showUser' doesn't have to be a recipient - only add if it is
-    var add = false;
-    
-    for(var i=0; i < gift.recipients.length; i++) {
-      if(gift.recipients[i].checked && gift.recipients[i].id == $rootScope.showUser.id) {
-        add = true;
-        //alert(" gift.recipients["+i+"].checked="+gift.recipients[i].checked+"\n gift.recipients["+i+"].id="+gift.recipients[i].id+"\n $rootScope.showUser.id="+$rootScope.showUser.id);
-      }
-    }
     
     var saveparms = {giftId:gift.id, updater:$rootScope.user.fullname, description:gift.description, url:gift.url, 
-               addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$rootScope.user.id, recipientId:$rootScope.showUser.id,
+               addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$rootScope.user.id, 
                senderId:gift.sender, senderName:gift.sender_name};
+               
+    console.log('savegift_takingargs: saveparms=', saveparms);
                
                
     if($scope.circle != undefined)
@@ -174,6 +171,7 @@
   
   $scope.mywishlist_takingargs = function(successFn) {
       $rootScope.showUser = $rootScope.user;
+      console.log('mywishlist_takingargs: set $rootScope.showUser = $rootScope.user', $rootScope.showUser);
       $scope.gifts = Gift.query({viewerId:$rootScope.user.id}, 
                             successFn,
                             function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
@@ -194,7 +192,9 @@
   
   // 2013-08-22: originally created to pass in a barcode-scanned product.  product has 'name' and 'url'
   $scope.addtomywishlist = function(product) {
-    $scope.initNewGift(); // produced $scope.currentgift
+    delete $scope.circle;                     // have to prep before you call initNewGift()
+    $rootScope.showUser = $rootScope.user;    // have to prep before you call initNewGift()
+    $scope.initNewGift(); // produces $scope.currentgift
     successFn = function() {
 	    $scope.currentgift.description = product.name;
 	    $scope.currentgift.url = product.url;
@@ -202,7 +202,15 @@
         $scope.gifts.mylist=true;
         $scope.gifts.ready="true";
         delete $scope.circle;
-	    $scope.savegift_takingargs($scope.currentgift, function() {refreshWishlist();});
+        console.log('success: deleted the current circle');
+	    $scope.savegift_takingargs($scope.currentgift, 
+	        function() {
+                $scope.gifts.reverse();$scope.gifts.push($scope.currentgift);$scope.gifts.reverse();
+                $scope.currentgift = {};
+                $scope.currentgift.recipients = [];
+	            refreshWishlist();
+	        }
+	    );
     }
     // we don't have to check to see if the 'showUser' is the current user; we make them equal if they aren't
     // and if they are already, setting them equal in the function below is of no consequence

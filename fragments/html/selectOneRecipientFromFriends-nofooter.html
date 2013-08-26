@@ -1,0 +1,30 @@
+
+
+<div id="selectOneRecipientFromFriends" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Recipient</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  
+	  <!-- When you're selecting just one recipient, we show you the search box and you start typing in a name
+	  The <ul> shows you a filtered list of your friends that you choose from -->
+	    
+  
+      <div jquery-mobile-tpl>
+	    <ul id="selectOneRecipientView" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search and invite friends..." data-inset="true" repeat-done="" ng-cloak>
+	      <li ng-repeat="friend in user.friends">
+	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
+	          {{friend.fullname}}
+	        </a>
+	      </li>
+	    </ul>
+	  </div>
+		  
+	  
+	  
+	</div><!-- /content -->
+
+
+	

@@ -1,0 +1,40 @@
+
+
+<div id="selectOneRecipientByEmail" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Recipient</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  
+	    
+	  <form novalidate name="inviteForm">
+        <p>
+		    <label for="selectone-invitename" class="ui-hidden-accessible">Name:</label>
+            <input id="selectone-invitename" name="invitename" type="text" ng-model="newrecipient.name" placeholder="Name" required/>
+        </p>
+	  
+        <p>
+		    <label for="selectone-inviteemail" class="ui-hidden-accessible">Email:</label>
+            <input id="selectone-inviteemail" name="inviteemail" type="email" ng-model="newrecipient.email" placeholder="Email" required/>
+	    </p>
+	      
+    	
+	    <P>
+	        <span ng-hide="inviteForm.$invalid">
+	          <a ng-href="#wishlist" ng-click="addRecipientByEmail(newrecipient, currentgift)" data-role="button" data-theme="b">Make Recipient</a>
+	        </span>
+	        <span ng-show="inviteForm.$invalid">
+	          <button disabled="" data-role="button" data-theme="b">Make Recipient</button>
+	        </span>
+		</P>
+	  </form>
+	    
+		  
+	  
+	  
+	</div><!-- /content -->
+
+
+	

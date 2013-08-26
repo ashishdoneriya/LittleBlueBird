@@ -195,9 +195,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   
   // 2013-07-23  copied/adapted from $rootScope.friendwishlist in app.js
   $scope.friendwishlist = function(friend) {
-      $rootScope.showUser = friend;
-      $scope.gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, 
-                            function() { 
+      success = function() { 
                               $scope.gifts.mylist=false;
                               $scope.gifts.ready="true";
                               delete $scope.circle;
@@ -206,8 +204,17 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
                                 jQuery("#wishlistview").listview("refresh");
                                 jQuery("#wishlistview").show();
                               },0);
-                            }, 
-                            function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
+                            };
+      
+      fail = function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");};
+  
+      $scope.friendwishlist_takingargs(friend, success, fail);
+  }
+  
+  
+  $scope.friendwishlist_takingargs = function(friend, success, fail) {
+      $rootScope.showUser = friend;
+      $scope.gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, success, fail);
   }
   
   
@@ -670,11 +677,11 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   $scope.initNewGift = function() {
     delete $scope.currentgift;
     if(angular.isDefined($scope.circle)) {
-      $scope.currentgift = {addedBy:$rootScope.user, circle:$scope.circle};
+      $scope.currentgift = {addedBy:$rootScope.user.id, circle:$scope.circle};
       $scope.currentgift.recipients = angular.copy($scope.circle.participants.receivers);
     }
     else {
-      $scope.currentgift = {addedBy:$rootScope.user};
+      $scope.currentgift = {addedBy:$rootScope.user.id};
       $scope.currentgift.recipients = [$rootScope.showUser];
     }
     
@@ -754,8 +761,21 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   
   // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.addgift() function
   $scope.savegift = function(gift) {    
-    successFn = function() {
-                 if(add) {$scope.gifts.reverse();$scope.gifts.push(savedgift);$scope.gifts.reverse();}
+    successFn = function(savedgift) {
+                 add = true;
+                 for(var i=0; i < $scope.gifts.length; ++i) {
+                   if($scope.gifts[i].id == savedgift.id) {
+                     add = false;
+                     break;
+                   }
+                 }
+                 
+                 if(add) {
+                   $scope.gifts.reverse();
+                   $scope.gifts.push(gift);
+                   $scope.gifts.reverse();
+                 }
+                 
                  $scope.currentgift = {};
                  $scope.currentgift.recipients = [];
                  refreshWishlist();
@@ -770,8 +790,13 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   $scope.savegift_takingargs = function(gift, successFn) {
     // the 'showUser' doesn't have to be a recipient - only add if it is
     
+    for(var i=0; i < gift.recipients.length; ++i) {
+      gift.recipients[i].checked = true;
+    }
+    
+    // we need recipientId for gift.edbr on the server side
     var saveparms = {giftId:gift.id, updater:$rootScope.user.fullname, description:gift.description, url:gift.url, 
-               addedBy:gift.addedBy.id, recipients:gift.recipients, viewerId:$rootScope.user.id, 
+               addedBy:gift.addedBy, recipientId:$rootScope.showUser.id, recipients:gift.recipients, viewerId:$rootScope.user.id, 
                senderId:gift.sender, senderName:gift.sender_name};
                
     console.log('savegift_takingargs: saveparms=', saveparms);
@@ -782,15 +807,20 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     
     console.log(saveparms);
     
-    var savedgift = Gift.save(saveparms, successFn);
+    savedgift = Gift.save(saveparms, 
+        function() {
+            console.log('got this savedgift', savedgift); // we do get this
+            successFn(savedgift);
+        }, 
+        function() {console.log("$scope.savegift_takingargs: FAIL FUNCTION")});
                
   } 
   
   
   
   // 2013-08-22: 'product' is the result of a barcode scan
-  $scope.showproduct = function(product) {
-    $scope.product = product;
+  $scope.convertProductToGift = function(product) {
+    $scope.currentgift = Gift.convertProductToGift(product, $scope.circle, $rootScope.user);
   }
   
   
@@ -855,31 +885,152 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
+  $scope.selectrecipient = function(recipient, gift, isnewperson) {
+      delete $scope.circle;                  
+      delete $scope.mayberecipients;
+      if(!angular.isDefined(gift.recipients))
+        gift.recipients = [];
+      gift.recipients.push(recipient);
+    
+    
+      if(isnewperson) {
+        // copied/adapted from $rootScope.createonthefly() in app-UserModule.js 2013-08-05
+        
+        onSuccessfulSaveOfNewUser = function() {    
+                                $rootScope.showUser = anewuser;
+                                User.addfriend($rootScope.user, anewuser);
+                                $scope.friendwishlist(anewuser);
+                              }
+        
+        anewuser = User.save({fullname:recipient.name, email:recipient.email, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
+                              onSuccessfulSaveOfNewUser
+                            );
+      }
+      else {
+        // In this case, the user has chosen an existing user to be the recipient of the gift
+        // Make the user and the recipient friends if they aren't already
+        User.addfriend($rootScope.user, recipient);
+        
+        
+        $rootScope.showUser = recipient;
+        
+		onsuccessfulWishlistQuery = function() {
+	        $scope.gifts.mylist=false;
+	        $scope.gifts.ready="true";
+		    refreshWishlist();
+		}
+		
+        failWishlistQuery = function() {alert("Hmmm... Had a problem getting "+recipient.fullname+"'s list\n  Try again  (error code 502)");};
+        
+		onsuccessfulSave = function(savedgift) {
+	      $scope.currentgift = {};
+	      $scope.currentgift.recipients = [];
+		  // now requery for the recipient's wishlist
+	      $scope.friendwishlist_takingargs(recipient, onsuccessfulWishlistQuery, failWishlistQuery);
+		};
+        
+        $scope.savegift_takingargs(gift, onsuccessfulSave);
+        
+      }
+    
+  }
+  
+  
   // 2013-08-22: originally created to pass in a barcode-scanned product.  product has 'name' and 'url'
-  $scope.addtomywishlist = function(product) {
-    delete $scope.circle;                     // have to prep before you call initNewGift()
-    $rootScope.showUser = $rootScope.user;    // have to prep before you call initNewGift()
-    $scope.initNewGift(); // produces $scope.currentgift
-    successFn = function() {
-	    $scope.currentgift.description = product.name;
-	    $scope.currentgift.url = product.url;
-	    $scope.currentgift.affiliateUrl = product.url;
+  $scope.addtomywishlist = function(gift) {
+    delete $scope.circle;                     
+    $rootScope.showUser = $rootScope.user; 
+    if(!angular.isDefined(gift.recipients)) gift.recipients = [];
+    gift.recipients.push($rootScope.user);
+    console.log('gift.recipients:', gift.recipients);
+    
+	onsuccessfulWishlistQuery = function() {
         $scope.gifts.mylist=true;
         $scope.gifts.ready="true";
         delete $scope.circle;
         console.log('success: deleted the current circle');
-	    $scope.savegift_takingargs($scope.currentgift, 
-	        function() {
-                $scope.gifts.reverse();$scope.gifts.push($scope.currentgift);$scope.gifts.reverse();
-                $scope.currentgift = {};
-                $scope.currentgift.recipients = [];
-	            refreshWishlist();
-	        }
-	    );
-    }
-    // we don't have to check to see if the 'showUser' is the current user; we make them equal if they aren't
-    // and if they are already, setting them equal in the function below is of no consequence
-    $scope.mywishlist_takingargs(successFn);
+	    refreshWishlist();
+	}
+	    
+	onsuccessfulSave = function(savedgift) {
+	  // now requery for my wishlist
+      $scope.currentgift = {};
+      $scope.currentgift.recipients = [];
+      $scope.mywishlist_takingargs(onsuccessfulWishlistQuery);
+	};
+	    
+    $scope.savegift_takingargs(gift, onsuccessfulSave);
+    
+  }
+  
+  
+  // If someone is already friends with the person they are making the recipient, don't ask them if the person we found is the person they want - we know it is
+  // We have to check the user's list of friends
+  $scope.addRecipientByEmail = function(recipient, gift) {
+      $scope.searching = true;
+      $scope.mayberecipients = User.query({email:recipient.email},
+          function() {
+              if(!angular.isDefined(gift.recipients)) gift.recipients = [];
+              if($scope.mayberecipients.length==0) {
+                  // if no one comes back in this query, then 'recipient' is a brand new user whose account needs to be created for him
+                  
+		          // copied/adapted from $rootScope.createonthefly() in app-UserModule.js 2013-08-05
+		          anewuser = User.save({fullname:recipient.name, email:recipient.email, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
+                              function() {
+                                // now that the new user's account has been created, he has to be made a recipient of the gift
+                                $rootScope.user.friends.push(anewuser);
+                                gift.recipients.push(anewuser);
+                                $scope.savegift(gift);
+                                $scope.friendwishlist(anewuser);
+                              } // end success function
+                            );
+              }
+              else {
+                  // Here, we need to see if exactly one person came back and if that person is already a friend of the user,
+                  // because if the user and this person are already friends, we don't have to ask the user if "this is the person you want" - we know it is
+                  var alreadyfriends = User.alreadyfriends($rootScope.user, $scope.mayberecipients[0]);
+                  if(alreadyfriends) {
+
+			        $rootScope.showUser = $scope.mayberecipients[0];
+			        
+					onsuccessfulWishlistQuery = function() {
+				        $scope.gifts.mylist=false;
+				        $scope.gifts.ready="true";
+					    refreshWishlist();
+					}
+					
+			        failWishlistQuery = function() {alert("Hmmm... Had a problem getting "+recipient.fullname+"'s list\n  Try again  (error code 502)");};
+			        
+					onsuccessfulSave = function(savedgift) {
+				      $scope.currentgift = {};
+				      $scope.currentgift.recipients = [];
+					  // now requery for the recipient's wishlist
+				      $scope.friendwishlist_takingargs($rootScope.showUser, onsuccessfulWishlistQuery, failWishlistQuery);
+					};
+		
+		            var parms = {recipient:$rootScope.showUser, gift:gift, user:$rootScope.user, 
+		                         saveGiftSuccessFn:onsuccessfulSave};
+			        
+                    Gift.addrecipient(parms);
+                    
+                    delete $scope.circle; 
+                    delete $scope.mayberecipients;
+                    
+                  }
+                  else {// FYI - this 'else' doesn't matter.  If we hit this block, there's nothing to do.  It means the email address
+	                  // we entered returned 1 or more people.  In that event, the wishlist page displays the list of 'mayberecipients'
+	                  // There is nothing for us to do in this 'else' case except refresh the list of 'mayberecipients' to ensure the css styles are still applied
+			          jQuery("#mayberecipientsview").hide();
+			            setTimeout(function(){
+			              jQuery("#mayberecipientsview").listview("refresh");
+			              jQuery("#mayberecipientsview").show();
+			          },0);
+                  }
+              
+	                  
+		      }
+		      delete $scope.searching;
+          });
   }
   
   
@@ -1102,14 +1253,21 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   
   
   
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  // GIFTS TO CHOOSE FROM
+  $scope.youmedupree_addedbytamie = {"addedBy":4,"circle":{"$lift_class":"circles","circleType":"Birthday","name":"Kiera's 12th Birthday","date":1376629199000,"id":447,"date_deleted":0,"cutoff_date":0,"dateStr":"8/15/2013","receiverLimit":1,"reminders":[],"isExpired":false,"$$hashKey":"004","participants":{"givers":[{"id":1,"first":"Brent","last":"Dunklau","fullname":"Brent Dunklau","username":"bdunklau","profilepicUrl":"http://graph.facebook.com/569956369/picture?type=large","profilepicheight":139,"profilepicwidth":180,"appRequestStatus":"","profilepicadjustedheight":150,"profilepicadjustedwidth":194,"profilepicmargintop":"0px","profilepicmarginleft":"-22px","profilepicadjustedheight100":100,"profilepicadjustedwidth100":129,"profilepicmargintop100":"0px","profilepicmarginleft100":"-14px","profilepicadjustedheight50":50,"profilepicadjustedwidth50":64,"profilepicmargintop50":"0px","profilepicmarginleft50":"-7px","email":"bdunklau@yahoo.com","bio":"All I want this year are gift cards...","age":42,"dateOfBirth":30088800000,"facebookId":"569956369","notifyonaddtoevent":"true","notifyondeletegift":"true","notifyoneditgift":"true","notifyonreturngift":"true","giftsHaveBeenPurchasedForMe":null,"$$hashKey":"01I"},{"id":4,"first":"Tamie","last":"Dunklau","fullname":"Tamie Dunklau","username":"tamie","profilepicUrl":"http://graph.facebook.com/tamie.dunklau/picture?type=normal","profilepicheight":100,"profilepicwidth":100,"appRequestStatus":"","profilepicadjustedheight":150,"profilepicadjustedwidth":150,"profilepicmargintop":"0px","profilepicmarginleft":"0px","profilepicadjustedheight100":100,"profilepicadjustedwidth100":100,"profilepicmargintop100":"0px","profilepicmarginleft100":"0px","profilepicadjustedheight50":50,"profilepicadjustedwidth50":50,"profilepicmargintop50":"0px","profilepicmarginleft50":"0px","email":"tamiemarie@gmail.com","bio":"","age":36,"dateOfBirth":213771600000,"facebookId":"1435144902","notifyonaddtoevent":"true","notifyondeletegift":"true","notifyoneditgift":"true","notifyonreturngift":"true","giftsHaveBeenPurchasedForMe":null,"$$hashKey":"01K"}],"receivers":[{"id":3,"first":"Kiera","last":"Daniell","fullname":"Kiera Daniell","username":"kiera","profilepicUrl":"http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg","profilepicheight":-1,"profilepicwidth":-1,"appRequestStatus":"","profilepicadjustedheight":150,"profilepicadjustedwidth":150,"profilepicmargintop":"0px","profilepicmarginleft":"0px","profilepicadjustedheight100":100,"profilepicadjustedwidth100":100,"profilepicmargintop100":"0px","profilepicmarginleft100":"0px","profilepicadjustedheight50":50,"profilepicadjustedwidth50":50,"profilepicmargintop50":"0px","profilepicmarginleft50":"0px","email":"superkikid@gmail.com","bio":"If you want to buy Kiera gift cards, she likes Taco Bueno, McDonalds and Half Price Books.","age":11,"dateOfBirth":1000616400000,"facebookId":null,"notifyonaddtoevent":"true","notifyondeletegift":"true","notifyoneditgift":"true","notifyonreturngift":"true","giftsHaveBeenPurchasedForMe":false,"$$hashKey":"01G"}]}},"description":"You, Me and Dupree","url":"http://www.amazon.com/You-Me-Dupree-Owen-Wilson/dp/B000ICM5X0%3FSubscriptioâ€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3DB000ICM5X0","affiliateUrl":"http://www.amazon.com/You-Me-Dupree-Owen-Wilson/dp/B000ICM5X0%3FSubscriptioâ€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3DB000ICM5X0","canedit":true};
+  
+  
+  
+  
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // UPC/Barcode scanning tests...
   
-  $scope.upcresults_678149033229 = {"ItemLookupResponse":{"@attributes":{"xmlns":"http://webservices.amazon.com/AWSECommerceService/2011-08-01"},"OperationRequest":{"HTTPHeaders":{"Header":{"@attributes":{"Name":"UserAgent","Value":"Java/1.6.0_29"}}},"RequestId":{"text":"6fc932f1-5afe-4145-b4bf-b6b040bdad3b"},"Arguments":{"Argument":[{"@attributes":{"Name":"Operation","Value":"ItemLookup"}},{"@attributes":{"Name":"Service","Value":"AWSECommerceService"}},{"@attributes":{"Name":"Signature","Value":"Xgo/dI0mVVabE0kCPA2/ZyLYCPFJe0nCrhjyqPWzgcc="}},{"@attributes":{"Name":"AssociateTag","Value":"wwwlittleb040-20"}},{"@attributes":{"Name":"ItemId","Value":"678149033229"}},{"@attributes":{"Name":"IdType","Value":"UPC"}},{"@attributes":{"Name":"AWSAccessKeyId","Value":"056DP6E1ENJTZNSNP602"}},{"@attributes":{"Name":"Timestamp","Value":"2013-08-23T15:30:12.000Z"}},{"@attributes":{"Name":"SearchIndex","Value":"All"}}]},"RequestProcessingTime":{"text":"0.0287750000000000"}},"Items":{"Request":{"IsValid":{"text":"True"},"ItemLookupRequest":{"IdType":{"text":"UPC"},"ItemId":{"text":"678149033229"},"ResponseGroup":{"text":"Small"},"SearchIndex":{"text":"All"},"VariationPage":{"text":"All"}}},"Item":{"ASIN":{"text":"B00008OM99"},"DetailPageURL":{"text":"http://www.amazon.com/Catch-Screen-Two-Disc-Special-Edition/dp/B00008OM99%3…nkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3DB00008OM99"},"ItemLinks":{"ItemLink":[{"Description":{"text":"Technical Details"},"URL":{"text":"http://www.amazon.com/Catch-Screen-Two-Disc-Special-Edition/dp/tech-data/B0…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}},{"Description":{"text":"Add To Baby Registry"},"URL":{"text":"http://www.amazon.com/gp/registry/baby/add-item.html%3Fasin.0%3DB00008OM99%…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}},{"Description":{"text":"Add To Wedding Registry"},"URL":{"text":"http://www.amazon.com/gp/registry/wedding/add-item.html%3Fasin.0%3DB00008OM…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}},{"Description":{"text":"Add To Wishlist"},"URL":{"text":"http://www.amazon.com/gp/registry/wishlist/add-item.html%3Fasin.0%3DB00008O…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}},{"Description":{"text":"Tell A Friend"},"URL":{"text":"http://www.amazon.com/gp/pdp/taf/B00008OM99%3FSubscriptionId%3D056DP6E1ENJT…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}},{"Description":{"text":"All Customer Reviews"},"URL":{"text":"http://www.amazon.com/review/product/B00008OM99%3FSubscriptionId%3D056DP6E1…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}},{"Description":{"text":"All Offers"},"URL":{"text":"http://www.amazon.com/gp/offer-listing/B00008OM99%3FSubscriptionId%3D056DP6…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}}]},"ItemAttributes":{"Actor":[{"text":"Leonardo DiCaprio"},{"text":"Tom Hanks"},{"text":"Christopher Walken"},{"text":"Martin Sheen"},{"text":"Nathalie Baye"}],"Creator":[{"@attributes":{"Role":"Producer"},"text":"Anthony Romano"},{"@attributes":{"Role":"Producer"},"text":"Barry Kemp"},{"@attributes":{"Role":"Producer"},"text":"Daniel Lupi"},{"@attributes":{"Role":"Producer"},"text":"Devorah Moos-Hankin"},{"@attributes":{"Role":"Writer"},"text":"Frank Abagnale Jr."},{"@attributes":{"Role":"Writer"},"text":"Jeff Nathanson"},{"@attributes":{"Role":"Writer"},"text":"Stan Redding"}],"Director":{"text":"Steven Spielberg"},"Manufacturer":{"text":"Dreamworks Video"},"ProductGroup":{"text":"DVD"},"Title":{"text":"Catch Me If You Can (Full Screen Two-Disc Special Edition)"}}}}}};
-  $scope.products_678149033229 = [{"name":"Catch Me If You Can (Full Screen Two-Disc Special Edition)","url":"http://www.amazon.com/Catch-Screen-Two-Disc-Special-Edition/dp/B00008OM99%3…nkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3DB00008OM99"}];
+  $scope.upcresults_678149033229 = {"ItemLookupResponse":{"@attributes":{"xmlns":"http://webservices.amazon.com/AWSECommerceService/2011-08-01"},"OperationRequest":{"HTTPHeaders":{"Header":{"@attributes":{"Name":"UserAgent","Value":"Java/1.6.0_29"}}},"RequestId":{"text":"6fc932f1-5afe-4145-b4bf-b6b040bdad3b"},"Arguments":{"Argument":[{"@attributes":{"Name":"Operation","Value":"ItemLookup"}},{"@attributes":{"Name":"Service","Value":"AWSECommerceService"}},{"@attributes":{"Name":"Signature","Value":"Xgo/dI0mVVabE0kCPA2/ZyLYCPFJe0nCrhjyqPWzgcc="}},{"@attributes":{"Name":"AssociateTag","Value":"wwwlittleb040-20"}},{"@attributes":{"Name":"ItemId","Value":"678149033229"}},{"@attributes":{"Name":"IdType","Value":"UPC"}},{"@attributes":{"Name":"AWSAccessKeyId","Value":"056DP6E1ENJTZNSNP602"}},{"@attributes":{"Name":"Timestamp","Value":"2013-08-23T15:30:12.000Z"}},{"@attributes":{"Name":"SearchIndex","Value":"All"}}]},"RequestProcessingTime":{"text":"0.0287750000000000"}},"Items":{"Request":{"IsValid":{"text":"True"},"ItemLookupRequest":{"IdType":{"text":"UPC"},"ItemId":{"text":"678149033229"},"ResponseGroup":{"text":"Small"},"SearchIndex":{"text":"All"},"VariationPage":{"text":"All"}}},"Item":{"ASIN":{"text":"B00008OM99"},"DetailPageURL":{"text":"http://www.amazon.com/Catch-Screen-Two-Disc-Special-Edition/dp/B00008OM99%3â€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3DB00008OM99"},"ItemLinks":{"ItemLink":[{"Description":{"text":"Technical Details"},"URL":{"text":"http://www.amazon.com/Catch-Screen-Two-Disc-Special-Edition/dp/tech-data/B0â€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}},{"Description":{"text":"Add To Baby Registry"},"URL":{"text":"http://www.amazon.com/gp/registry/baby/add-item.html%3Fasin.0%3DB00008OM99%â€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}},{"Description":{"text":"Add To Wedding Registry"},"URL":{"text":"http://www.amazon.com/gp/registry/wedding/add-item.html%3Fasin.0%3DB00008OMâ€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}},{"Description":{"text":"Add To Wishlist"},"URL":{"text":"http://www.amazon.com/gp/registry/wishlist/add-item.html%3Fasin.0%3DB00008Oâ€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}},{"Description":{"text":"Tell A Friend"},"URL":{"text":"http://www.amazon.com/gp/pdp/taf/B00008OM99%3FSubscriptionId%3D056DP6E1ENJTâ€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}},{"Description":{"text":"All Customer Reviews"},"URL":{"text":"http://www.amazon.com/review/product/B00008OM99%3FSubscriptionId%3D056DP6E1â€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}},{"Description":{"text":"All Offers"},"URL":{"text":"http://www.amazon.com/gp/offer-listing/B00008OM99%3FSubscriptionId%3D056DP6â€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB00008OM99"}}]},"ItemAttributes":{"Actor":[{"text":"Leonardo DiCaprio"},{"text":"Tom Hanks"},{"text":"Christopher Walken"},{"text":"Martin Sheen"},{"text":"Nathalie Baye"}],"Creator":[{"@attributes":{"Role":"Producer"},"text":"Anthony Romano"},{"@attributes":{"Role":"Producer"},"text":"Barry Kemp"},{"@attributes":{"Role":"Producer"},"text":"Daniel Lupi"},{"@attributes":{"Role":"Producer"},"text":"Devorah Moos-Hankin"},{"@attributes":{"Role":"Writer"},"text":"Frank Abagnale Jr."},{"@attributes":{"Role":"Writer"},"text":"Jeff Nathanson"},{"@attributes":{"Role":"Writer"},"text":"Stan Redding"}],"Director":{"text":"Steven Spielberg"},"Manufacturer":{"text":"Dreamworks Video"},"ProductGroup":{"text":"DVD"},"Title":{"text":"Catch Me If You Can (Full Screen Two-Disc Special Edition)"}}}}}};
+  $scope.products_678149033229 = [{"name":"Catch Me If You Can (Full Screen Two-Disc Special Edition)","url":"http://www.amazon.com/Catch-Screen-Two-Disc-Special-Edition/dp/B00008OM99%3â€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3DB00008OM99"}];
   
-  $scope.upcresults_025192966521 = {"ItemLookupResponse":{"@attributes":{"xmlns":"http://webservices.amazon.com/AWSECommerceService/2011-08-01"},"OperationRequest":{"HTTPHeaders":{"Header":{"@attributes":{"Name":"UserAgent","Value":"Java/1.6.0_29"}}},"RequestId":{"text":"7fe0bce3-9e4f-4d8e-8b96-f00705d76966"},"Arguments":{"Argument":[{"@attributes":{"Name":"Operation","Value":"ItemLookup"}},{"@attributes":{"Name":"Service","Value":"AWSECommerceService"}},{"@attributes":{"Name":"AssociateTag","Value":"wwwlittleb040-20"}},{"@attributes":{"Name":"SearchIndex","Value":"All"}},{"@attributes":{"Name":"Signature","Value":"d+Gudc24Y/eLhtTaPtnlCJq4g+v/D8qXEmN3pgJ4eDI="}},{"@attributes":{"Name":"ItemId","Value":"025192966521"}},{"@attributes":{"Name":"IdType","Value":"UPC"}},{"@attributes":{"Name":"AWSAccessKeyId","Value":"056DP6E1ENJTZNSNP602"}},{"@attributes":{"Name":"Timestamp","Value":"2013-08-23T15:43:29.000Z"}}]},"RequestProcessingTime":{"text":"0.0501840000000000"}},"Items":{"Request":{"IsValid":{"text":"True"},"ItemLookupRequest":{"IdType":{"text":"UPC"},"ItemId":{"text":"025192966521"},"ResponseGroup":{"text":"Small"},"SearchIndex":{"text":"All"},"VariationPage":{"text":"All"}}},"Item":{"ASIN":{"text":"B000ICM5X0"},"DetailPageURL":{"text":"http://www.amazon.com/You-Me-Dupree-Owen-Wilson/dp/B000ICM5X0%3FSubscriptio…nkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3DB000ICM5X0"},"ItemLinks":{"ItemLink":[{"Description":{"text":"Technical Details"},"URL":{"text":"http://www.amazon.com/You-Me-Dupree-Owen-Wilson/dp/tech-data/B000ICM5X0%3FS…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}},{"Description":{"text":"Add To Baby Registry"},"URL":{"text":"http://www.amazon.com/gp/registry/baby/add-item.html%3Fasin.0%3DB000ICM5X0%…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}},{"Description":{"text":"Add To Wedding Registry"},"URL":{"text":"http://www.amazon.com/gp/registry/wedding/add-item.html%3Fasin.0%3DB000ICM5…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}},{"Description":{"text":"Add To Wishlist"},"URL":{"text":"http://www.amazon.com/gp/registry/wishlist/add-item.html%3Fasin.0%3DB000ICM…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}},{"Description":{"text":"Tell A Friend"},"URL":{"text":"http://www.amazon.com/gp/pdp/taf/B000ICM5X0%3FSubscriptionId%3D056DP6E1ENJT…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}},{"Description":{"text":"All Customer Reviews"},"URL":{"text":"http://www.amazon.com/review/product/B000ICM5X0%3FSubscriptionId%3D056DP6E1…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}},{"Description":{"text":"All Offers"},"URL":{"text":"http://www.amazon.com/gp/offer-listing/B000ICM5X0%3FSubscriptionId%3D056DP6…nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}}]},"ItemAttributes":{"Actor":[{"text":"Owen Wilson"},{"text":"Kate Hudson"},{"text":"Matt Dillon"},{"text":"Michael Douglas"},{"text":"Seth Rogen"}],"Creator":[{"@attributes":{"Role":"Producer"},"text":"Owen Wilson"},{"@attributes":{"Role":"Producer"},"text":"Mary Parent"},{"@attributes":{"Role":"Producer"},"text":"Scott Stuber"},{"@attributes":{"Role":"Writer"},"text":"Michael LeSieur"}],"Director":[{"text":"Anthony Russo"},{"text":"Joe Russo"}],"Manufacturer":{"text":"Universal Studios"},"ProductGroup":{"text":"DVD"},"Title":{"text":"You, Me and Dupree"}}}}}};
-  $scope.products_025192966521 =  [{"name":"You, Me and Dupree","url":"http://www.amazon.com/You-Me-Dupree-Owen-Wilson/dp/B000ICM5X0%3FSubscriptio…nkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3DB000ICM5X0"}];
+  $scope.upcresults_025192966521 = {"ItemLookupResponse":{"@attributes":{"xmlns":"http://webservices.amazon.com/AWSECommerceService/2011-08-01"},"OperationRequest":{"HTTPHeaders":{"Header":{"@attributes":{"Name":"UserAgent","Value":"Java/1.6.0_29"}}},"RequestId":{"text":"7fe0bce3-9e4f-4d8e-8b96-f00705d76966"},"Arguments":{"Argument":[{"@attributes":{"Name":"Operation","Value":"ItemLookup"}},{"@attributes":{"Name":"Service","Value":"AWSECommerceService"}},{"@attributes":{"Name":"AssociateTag","Value":"wwwlittleb040-20"}},{"@attributes":{"Name":"SearchIndex","Value":"All"}},{"@attributes":{"Name":"Signature","Value":"d+Gudc24Y/eLhtTaPtnlCJq4g+v/D8qXEmN3pgJ4eDI="}},{"@attributes":{"Name":"ItemId","Value":"025192966521"}},{"@attributes":{"Name":"IdType","Value":"UPC"}},{"@attributes":{"Name":"AWSAccessKeyId","Value":"056DP6E1ENJTZNSNP602"}},{"@attributes":{"Name":"Timestamp","Value":"2013-08-23T15:43:29.000Z"}}]},"RequestProcessingTime":{"text":"0.0501840000000000"}},"Items":{"Request":{"IsValid":{"text":"True"},"ItemLookupRequest":{"IdType":{"text":"UPC"},"ItemId":{"text":"025192966521"},"ResponseGroup":{"text":"Small"},"SearchIndex":{"text":"All"},"VariationPage":{"text":"All"}}},"Item":{"ASIN":{"text":"B000ICM5X0"},"DetailPageURL":{"text":"http://www.amazon.com/You-Me-Dupree-Owen-Wilson/dp/B000ICM5X0%3FSubscriptioâ€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3DB000ICM5X0"},"ItemLinks":{"ItemLink":[{"Description":{"text":"Technical Details"},"URL":{"text":"http://www.amazon.com/You-Me-Dupree-Owen-Wilson/dp/tech-data/B000ICM5X0%3FSâ€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}},{"Description":{"text":"Add To Baby Registry"},"URL":{"text":"http://www.amazon.com/gp/registry/baby/add-item.html%3Fasin.0%3DB000ICM5X0%â€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}},{"Description":{"text":"Add To Wedding Registry"},"URL":{"text":"http://www.amazon.com/gp/registry/wedding/add-item.html%3Fasin.0%3DB000ICM5â€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}},{"Description":{"text":"Add To Wishlist"},"URL":{"text":"http://www.amazon.com/gp/registry/wishlist/add-item.html%3Fasin.0%3DB000ICMâ€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}},{"Description":{"text":"Tell A Friend"},"URL":{"text":"http://www.amazon.com/gp/pdp/taf/B000ICM5X0%3FSubscriptionId%3D056DP6E1ENJTâ€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}},{"Description":{"text":"All Customer Reviews"},"URL":{"text":"http://www.amazon.com/review/product/B000ICM5X0%3FSubscriptionId%3D056DP6E1â€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}},{"Description":{"text":"All Offers"},"URL":{"text":"http://www.amazon.com/gp/offer-listing/B000ICM5X0%3FSubscriptionId%3D056DP6â€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D386001%26creativeASIN%3DB000ICM5X0"}}]},"ItemAttributes":{"Actor":[{"text":"Owen Wilson"},{"text":"Kate Hudson"},{"text":"Matt Dillon"},{"text":"Michael Douglas"},{"text":"Seth Rogen"}],"Creator":[{"@attributes":{"Role":"Producer"},"text":"Owen Wilson"},{"@attributes":{"Role":"Producer"},"text":"Mary Parent"},{"@attributes":{"Role":"Producer"},"text":"Scott Stuber"},{"@attributes":{"Role":"Writer"},"text":"Michael LeSieur"}],"Director":[{"text":"Anthony Russo"},{"text":"Joe Russo"}],"Manufacturer":{"text":"Universal Studios"},"ProductGroup":{"text":"DVD"},"Title":{"text":"You, Me and Dupree"}}}}}};
+  $scope.products_025192966521 =  [{"name":"You, Me and Dupree","url":"http://www.amazon.com/You-Me-Dupree-Owen-Wilson/dp/B000ICM5X0%3FSubscriptioâ€¦nkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3DB000ICM5X0"}];
   
   // combined the 2 products above into one array
   $scope.phonymultipleresults = [$scope.products_678149033229[0], $scope.products_025192966521[0]];
@@ -1128,7 +1286,9 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   $scope.circle = $scope.kieras12thbday; //{name:'test', date:testdate, receiverLimit:-1, circleType:'Christmas'};
   $scope.gifts = $scope.kierasbdaywishlist;
   $scope.products = $scope.phonymultipleresults;
+  $scope.product = $scope.products_025192966521[0]; // for #selectedproduct
   $scope.scanreturncode = $scope.products.length;
+  $scope.currentgift = $scope.youmedupree_addedbytamie;
   
   $scope.newuser = $scope.scotttiger;
   $scope.newparticipant = {participationLevel:'Receiver'};

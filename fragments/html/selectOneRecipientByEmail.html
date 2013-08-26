@@ -1,41 +1,38 @@
 
 
-<div id="selectedproduct" data-role="page" data-add-back-btn="true">
+<div id="selectOneRecipientByEmail" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>Product</h1>
+		<h1>Recipient</h1>
 	</div><!-- /header -->
 
-
 	<div data-role="content">
-	
-	    <!-- When you go from scanresults to this page, the 'product' you selected gets converted to the 'currentgift'
-	    by the function convertProductToGift() -->
 	  
-        <ul data-role="listview" data-theme="d" data-inset="true">
-	      <li>
-	        <div><h4 class="nowrap">{{currentgift.description}}</h4></div>
-	        <P>
-	          <a ng-href="#" ng-click="viewonline(currentgift.url, $event)" data-theme="b" data-role="button" target="item">
-	            View Online
-	          </a>
-	        </P>
-	        <P>
-	          <a ng-href="#wishlist" ng-click="addtomywishlist(currentgift)" data-theme="b" data-role="button" target="item">
-	            Add to My List
-	          </a>
-	        </P>
-	        <P>
-	          <a ng-href="#addToSomeoneElsesList" data-theme="b" data-role="button" target="item">
-	            Add to Someone Else's List
-	          </a>
-	        </P>
-	      </li>
-	    </ul>
 	    
-	  	<div ng-show="testing">
-	  	  <P>Logged in as: {{user.fullname}}</P>
-	  	</div>
+	  <form novalidate name="inviteForm">
+        <p>
+		    <label for="selectone-invitename" class="ui-hidden-accessible">Name:</label>
+            <input id="selectone-invitename" name="invitename" type="text" ng-model="newrecipient.name" placeholder="Name" required/>
+        </p>
+	  
+        <p>
+		    <label for="selectone-inviteemail" class="ui-hidden-accessible">Email:</label>
+            <input id="selectone-inviteemail" name="inviteemail" type="email" ng-model="newrecipient.email" placeholder="Email" required/>
+	    </p>
+	      
+    	
+	    <P>
+	        <span ng-hide="inviteForm.$invalid">
+	          <a ng-href="#wishlist" ng-click="addRecipientByEmail(newrecipient, currentgift)" data-role="button" data-theme="b">Make Recipient</a>
+	        </span>
+	        <span ng-show="inviteForm.$invalid">
+	          <button disabled="" data-role="button" data-theme="b">Make Recipient</button>
+	        </span>
+		</P>
+	  </form>
+	    
+		  
+	  
 	  
 	</div><!-- /content -->
 

@@ -7,24 +7,26 @@
 	</div><!-- /header -->
 
 
-
 	<div data-role="content">
+	
+	    <!-- When you go from scanresults to this page, the 'product' you selected gets converted to the 'currentgift'
+	    by the function convertProductToGift() -->
 	  
         <ul data-role="listview" data-theme="d" data-inset="true">
 	      <li>
-	        <div><h4 class="nowrap">{{product.name}}</h4></div>
+	        <div><h4 class="nowrap">{{currentgift.description}}</h4></div>
 	        <P>
-	          <a ng-href="#" ng-click="viewonline(product.url, $event)" data-theme="b" data-role="button" target="item">
+	          <a ng-href="#" ng-click="viewonline(currentgift.url, $event)" data-theme="b" data-role="button" target="item">
 	            View Online
 	          </a>
 	        </P>
 	        <P>
-	          <a ng-href="#wishlist" ng-click="addtomywishlist(product)" data-theme="b" data-role="button" target="item">
+	          <a ng-href="#wishlist" ng-click="addtomywishlist(currentgift)" data-theme="b" data-role="button" target="item">
 	            Add to My List
 	          </a>
 	        </P>
 	        <P>
-	          <a ng-href="#" data-theme="b" data-role="button" target="item">
+	          <a ng-href="#addToSomeoneElsesList" data-theme="b" data-role="button" target="item">
 	            Add to Someone Else's List
 	          </a>
 	        </P>

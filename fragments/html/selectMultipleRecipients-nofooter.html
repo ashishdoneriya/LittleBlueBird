@@ -1,0 +1,28 @@
+
+
+<div id="selectMultipleRecipients" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Recipients</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+
+      <!-- When you are selecting multiple recipients, we show you all your friends up front and they
+      have checkboxes next to them.  -->
+      
+      
+      <div jquery-mobile-tpl>
+	    <ul id="selectOneRecipientView" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search and invite friends..." data-inset="true" repeat-done="" ng-cloak>
+	      <li ng-repeat="friend in user.friends">
+	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
+	          {{friend.fullname}}
+	        </a>
+	      </li>
+	    </ul>
+	  </div>
+	  
+	</div><!-- /content -->
+
+
+	

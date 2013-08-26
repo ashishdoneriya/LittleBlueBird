@@ -5,23 +5,9 @@ if (typeof console == "undefined") var console = { log: function() {} };
 else if (!debugging || typeof console.log == "undefined") console.log = function() {};
 
   
-var app = angular.module('project', ['ngResource']).
+var app = angular.module('project', ['ngResource', 'User', 'Email', 'Gift']).
   config(function($locationProvider){ 
     $locationProvider.hashPrefix('#').html5Mode(false);
-  }).
-  factory('User', function($resource) {
-      var User = $resource('http://www.littlebluebird.com/gf/rest/users/:userId', {userId:'@userId', fullname:'@fullname', first:'@first', last:'@last', email:'@email', username:'@username', 
-                                                 password:'@password', dateOfBirth:'@dateOfBirth', bio:'@bio', profilepic:'@profilepic', login:'@login', 
-                                                 creatorId:'@creatorId', creatorName:'@creatorName', facebookId:'@facebookId', friends:'@friends', lbbfriends:'@lbbfriends',
-                                                 notifyonaddtoevent:'@notifyonaddtoevent', notifyondeletegift:'@notifyondeletegift', 
-                                                 notifyoneditgift:'@notifyoneditgift', notifyonreturngift:'@notifyonreturngift'}, 
-                    {
-                      query: {method:'GET', isArray:true}, 
-                      find: {method:'GET', isArray:false}, 
-                      save: {method:'POST'}
-                    });
-
-      return User;
   }).
   factory('FacebookUser', function($resource) {
       var FacebookUser = $resource('http://www.littlebluebird.com/gf/rest/fb/:facebookId/:email/:first/:last', {facebookId:'@facebookId', email:'@email', first:'@first', last:'#last'}, 
@@ -79,24 +65,6 @@ var app = angular.module('project', ['ngResource']).
                     });
 
       return Password;
-  }).
-  factory('Email', function($resource) {
-      var Email = $resource('http://www.littlebluebird.com/gf/rest/email', {to:'@to', from:'@from', subject:'@subject', message:'@message', type:'@type', user:'@user'}, 
-                    {
-                      send: {method:'POST'}
-                    });
-
-      return Email;
-  }).
-  factory('Gift', function($resource) {
-      var Gift = $resource('http://www.littlebluebird.com/gf/rest/gifts/:giftId/:updater', {giftId:'@giftId', updater:'@updater', viewerId:'@viewerId', recipientId:'@recipientId', recipients:'@recipients', circleId:'@circleId', description:'@description', url:'@url', addedBy:'@addedBy', status:'@status', senderId:'@senderId', senderName:'@senderName', reallyWants:'@reallyWants', deleted:'@deleted', urlAff:'@urlAff', affiliateId:'@affiliateId', receivedate:'@receivedate'}, 
-                    {
-                      query: {method:'GET', isArray:true}, 
-                      delete: {method:'DELETE'},
-                      save: {method:'POST'},
-                    });
-
-      return Gift;
   }).
   factory('Friend', function($resource) {
       var Friend = $resource('http://www.littlebluebird.com/gf/rest/friend/:userId/:friendId', {userId:'@userId', friendId:'@friendId'},

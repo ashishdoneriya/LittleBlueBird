@@ -153,6 +153,36 @@
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
+		  <concat destfile="fragments/html/addToSomeoneElsesList.html"
+		          force="yes">
+		     <fileset file="fragments/html/addToSomeoneElsesList-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/html/selectOneRecipient.html"
+		          force="yes">
+		     <fileset file="fragments/html/selectOneRecipient-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/html/selectMultipleRecipients.html"
+		          force="yes">
+		     <fileset file="fragments/html/selectMultipleRecipients-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/html/selectOneRecipientByEmail.html"
+		          force="yes">
+		     <fileset file="fragments/html/selectOneRecipientByEmail-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+
+		  <concat destfile="fragments/html/selectOneRecipientFromFriends.html"
+		          force="yes">
+		     <fileset file="fragments/html/selectOneRecipientFromFriends-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
+		
 	</target>
 	
 	
@@ -191,6 +221,11 @@
 	     <fileset file="fragments/html/test.html" />
 	     <fileset file="fragments/html/scanresults.html" />
 	     <fileset file="fragments/html/selectedproduct.html" />
+	     <fileset file="fragments/html/addToSomeoneElsesList.html" />
+	     <fileset file="fragments/html/selectOneRecipient.html" />
+	     <fileset file="fragments/html/selectMultipleRecipients.html" />
+	     <fileset file="fragments/html/selectOneRecipientByEmail.html" />
+	     <fileset file="fragments/html/selectOneRecipientFromFriends.html" />
 	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
 	</target>

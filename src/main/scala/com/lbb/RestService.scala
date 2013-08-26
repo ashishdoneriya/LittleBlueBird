@@ -119,7 +119,7 @@ object RestService extends RestHelper with LbbLogger {
     
     case Post("rest" :: "users" :: _, _) => debug("RestService.serve:  Post(api :: users  :: _, _)  S.uri="+S.uri); JsonResponse("Post(api :: users  :: _, _)  S.uri="+S.uri)
     
-    case Post(_, _) => debug("RestService.serve:  case Post(_, _)"); JsonResponse("Post(_, _)  S.uri="+S.uri)
+    case Post(_, _) => debug("RestService.serve:  case Post(_, _): S.uri="+S.uri); JsonResponse("Post(_, _)  S.uri="+S.uri)
     
     //case _ => debug("RestService.serve:  666666666"); debugRequest 
   }
@@ -1051,7 +1051,7 @@ object RestService extends RestHelper with LbbLogger {
                 }
                 case ("description", s:String) => gift.description(s)
                 case ("url", s:String) => gift.url(s)
-                case ("recipients", l:List[Map[String, Any]]) => {
+                case ("recipients", l:List[Map[String, Any]]) => { // expects checkboxes to indicate who the recipients are
                   //debug("insertGift:  so far so good  kv._2="+kv._2)
                   l.filter(e => e.get("checked").getOrElse(false).equals(true) )
                      .foreach(e => {

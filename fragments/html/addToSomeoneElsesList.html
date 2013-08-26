@@ -1,41 +1,28 @@
 
 
-<div id="selectedproduct" data-role="page" data-add-back-btn="true">
+<div id="addToSomeoneElsesList" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>Product</h1>
+		<h1>Gift</h1>
 	</div><!-- /header -->
 
-
 	<div data-role="content">
-	
-	    <!-- When you go from scanresults to this page, the 'product' you selected gets converted to the 'currentgift'
-	    by the function convertProductToGift() -->
 	  
-        <ul data-role="listview" data-theme="d" data-inset="true">
-	      <li>
-	        <div><h4 class="nowrap">{{currentgift.description}}</h4></div>
-	        <P>
-	          <a ng-href="#" ng-click="viewonline(currentgift.url, $event)" data-theme="b" data-role="button" target="item">
-	            View Online
-	          </a>
-	        </P>
-	        <P>
-	          <a ng-href="#wishlist" ng-click="addtomywishlist(currentgift)" data-theme="b" data-role="button" target="item">
-	            Add to My List
-	          </a>
-	        </P>
-	        <P>
-	          <a ng-href="#addToSomeoneElsesList" data-theme="b" data-role="button" target="item">
-	            Add to Someone Else's List
-	          </a>
-	        </P>
-	      </li>
-	    </ul>
-	    
-	  	<div ng-show="testing">
-	  	  <P>Logged in as: {{user.fullname}}</P>
-	  	</div>
+	  Is this gift for more than one person?
+	  
+	  <span ng-show="user.friends.length > 0">
+	    <div class="ui-grid-a" style="margin-top:50px;">
+	      <div class="ui-block-a"><a ng-href="#selectOneRecipient" data-theme="c" data-role="button">No</a></div>
+	      <div class="ui-block-b"><a ng-href="#selectMultipleRecipients" data-theme="b" data-role="button">Yes</a></div>
+	    </div>
+	  </span>
+	  
+	  <span ng-hide="user.friends.length > 0">
+	    <div class="ui-grid-a" style="margin-top:50px;">
+	      <div class="ui-block-a"><a ng-href="#selectOneRecipientByEmail" data-theme="c" data-role="button">No</a></div>
+	      <div class="ui-block-b"><a ng-href="#selectMultipleRecipients" data-theme="b" data-role="button">Yes</a></div>
+	    </div>
+	  </span>
 	  
 	</div><!-- /content -->
 

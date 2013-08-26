@@ -4,9 +4,7 @@
   
   // 2013-07-23  copied/adapted from $rootScope.friendwishlist in app.js
   $scope.friendwishlist = function(friend) {
-      $rootScope.showUser = friend;
-      $scope.gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, 
-                            function() { 
+      success = function() { 
                               $scope.gifts.mylist=false;
                               $scope.gifts.ready="true";
                               delete $scope.circle;
@@ -15,8 +13,17 @@
                                 jQuery("#wishlistview").listview("refresh");
                                 jQuery("#wishlistview").show();
                               },0);
-                            }, 
-                            function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
+                            };
+      
+      fail = function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");};
+  
+      $scope.friendwishlist_takingargs(friend, success, fail);
+  }
+  
+  
+  $scope.friendwishlist_takingargs = function(friend, success, fail) {
+      $rootScope.showUser = friend;
+      $scope.gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, success, fail);
   }
   
   

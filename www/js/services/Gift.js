@@ -29,13 +29,9 @@ angular.module('Gift', ['ngResource']).
           var user = parms.user;
           var saveGiftSuccessFn = parms.saveGiftSuccessFn;
           
-	      if(!angular.isDefined(gift.recipients))
-	        gift.recipients = [];
-	      gift.recipients.push(recipient);
+	      gift = Gift.setRecipients(gift, [recipient]);
 	      
-	      for(var i=0; i < gift.recipients.length; ++i) {
-	        gift.recipients[i].checked = true;
-	      }
+	      console.log('Gift.setRecipients:', gift.recipients);
 	      
 	      // we need recipientId for gift.edbr on the server side
 	      var saveparms = {giftId:gift.id, updater:user.fullname, description:gift.description, url:gift.url, 
@@ -50,6 +46,50 @@ angular.module('Gift', ['ngResource']).
 	            saveGiftSuccessFn(savedgift);
 	        }, 
 	        function() {console.log("$scope.savegift_takingargs: FAIL FUNCTION")});
+      }
+      
+      
+      Gift.setRecipients = function(gift, recipients) {
+	      if(!angular.isDefined(gift.recipients))
+	        gift.recipients = [];
+	      for(var i=0; i < recipients.length; ++i) {
+	        gift.recipients.push(recipients[i]);
+	      }
+	      
+	      for(var i=0; i < gift.recipients.length; ++i) {
+	        gift.recipients[i].checked = true;
+	      } 
+	      return gift;
+      }
+      
+      
+      Gift.prepareAddRecipient = function(recipient, gift) {
+	      if(!angular.isDefined(gift.recipients))
+	        gift.recipients = [];
+	      gift.recipients.push(recipient);
+        
+      }
+      
+      
+      Gift.addrecipients = function(parms) {
+          var recipients = parms.recipients;
+          var gift = parms.gift;
+          var user = parms.user;
+          var saveGiftSuccessFn = parms.saveGiftSuccessFn;
+          gift = Gift.setRecipients(gift, recipients);
+          
+	      // recipientId not needed in this case because we don't return to a wishlist, we return to #recipients.  Since there's multiple recipients, we don't know whose list to return to
+	      var saveparms = {giftId:gift.id, updater:user.fullname, description:gift.description, url:gift.url, 
+               addedBy:gift.addedBy, recipients:gift.recipients, viewerId:user.id, 
+               senderId:gift.sender, senderName:gift.sender_name};
+          
+	      savedgift = Gift.save(saveparms, 
+	        function() {
+	            console.log('Gift.addrecipients: got this savedgift', savedgift); // we do get this
+	            saveGiftSuccessFn(savedgift);
+	        }, 
+	        function() {console.log("$scope.savegift_takingargs: FAIL FUNCTION")});
+          
       }
       
 

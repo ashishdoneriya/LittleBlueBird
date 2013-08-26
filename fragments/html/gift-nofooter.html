@@ -25,7 +25,7 @@
      <ul data-role="listview" data-theme="d" data-inset="true" style="margin-top:30px;">
        <li>
 	      <div><h4 class="nowrap">{{currentgift.description}}</h4></div>
-          <p style="margin-top:10px;">To: <span ng-repeat="r in currentgift.recipients">{{r.fullname}}</span></p>
+          <p style="margin-top:10px;">For {{commasep(currentgift.recipients)}}</p>
           
 	      
           <P>
@@ -33,7 +33,7 @@
               Bought by: {{currentgift.sender_name}}
             </span>
             <span ng-show="currentgift.canseestatus && !currentgift.isbought">
-              Bought by: (still available)
+              Bought by (still available)
             </span>
           </P>
 		  

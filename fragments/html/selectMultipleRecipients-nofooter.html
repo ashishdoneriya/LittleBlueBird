@@ -11,16 +11,30 @@
       <!-- When you are selecting multiple recipients, we show you all your friends up front and they
       have checkboxes next to them.  -->
       
-      
-      <div jquery-mobile-tpl>
-	    <ul id="selectOneRecipientView" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search and invite friends..." data-inset="true" repeat-done="" ng-cloak>
-	      <li ng-repeat="friend in user.friends">
-	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
-	          {{friend.fullname}}
-	        </a>
-	      </li>
-	    </ul>
-	  </div>
+	  
+	    <fieldset data-role="controlgroup">
+	        <legend>Who is this gift for?</legend>
+	        
+			<span ng-repeat="friend in user.friends">
+		        <input name="makefriendrecipient-{{friend.id}}" id="makefriendrecipient-{{friend.id}}" type="checkbox" ng-click="prepareMultipleRecipients(friend, currentgift)">
+		        <label for="makefriendrecipient-{{friend.id}}">{{friend.fullname}}</label>
+			</span>
+	        
+	    </fieldset>
+	  
+	  
+	    
+	    <div ng-show="recipientstoadd.length==0">
+	      <button disabled="">Add Recipients</button>
+	    </div>
+	    
+	    <div ng-show="recipientstoadd.length > 0">
+	      <a data-role="button" ng-href="#recipients" ng-click="addrecipients(recipientstoadd, currentgift)">Add {{recipientstoadd.length}} Recipient<span ng-show="recipientstoadd.length > 1">s</span></a>
+	    </div>
+	  
+	  
+	  
+	  
 	  
 	</div><!-- /content -->
 

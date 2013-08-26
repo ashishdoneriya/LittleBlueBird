@@ -448,7 +448,7 @@
 		                <P><strong>Shhhhh! This item is a Surprise!</strong></P>
 		                <P><strong>{{showUser.fullname}} does not know about it</strong></P>
 		              </span>
-		              <span ng-show="gift.recipients.length > 1"><P>For <span ng-repeat="r in gift.recipients">{{r.fullname}}</span></P></span>
+		              <span ng-show="gift.recipients.length > 1"><P>For {{commasep(gift.recipients)}}</P></span>
 		              <P>
 		                <span ng-show="gift.canseestatus && gift.isbought">
 		                  Bought by {{gift.sender_name}}
@@ -655,27 +655,30 @@
 		    <!-- No need to list recipients if the event is a single-recipient event -->
     		<span ng-hide="circle.receiverLimit == 1">
 		    <p>
-		        Recipients:
+		        <strong>Recipients</strong>
 		    </p>
 		    <p>
 		      <ul data-role="listview">
-                <li ng-repeat="r in currentgift.recipients">{{r.fullname}}</li>
+                <li>{{commasep(currentgift.recipients)}}</li>
               </ul>
 		    </p>
+		    </span>
+    		
+    		<!-- No need to show 'Edit Recipients' button if this is for a single-recipient event -->
+    		<span ng-hide="circle.receiverLimit == 1">
+    		<div style="margin-top:40px;">
+		      <a ng-href="#selectOneRecipient" data-role="button" ng-click="beginAddingRecipients(currentgift)" data-theme="b">Add Recipients</a>
+		    </div>
+    		<div>
+		      <a ng-href="#beginDeletingRecipients" data-role="button" ng-click="beginDeletingRecipients(currentgift)" data-theme="b">Delete Recipients</a>
+		    </div>
 		    </span>
 		    
       
 		    <div class="ui-grid-a">
-              <div class="ui-block-a"><a href="#wishlist" data-role="button">Cancel</a></div>
+              <div class="ui-block-a"><a href="#wishlist" data-role="button" data-theme="b">Cancel</a></div>
 		      <div class="ui-block-b"><a href="#wishlist" data-role="button" ng-click="savegift(currentgift)" data-theme="b">Save</a></div>
     		</div>
-    		
-    		<!-- No need to show 'Edit Recipients' button if this is for a single-recipient event -->
-    		<span ng-hide="circle.receiverLimit == 1">
-    		<P>
-		      <button ng-href="#wishlist" ng-click="savegift(currentgift)" data-theme="b">Edit Recipients</button>
-		    </P>
-		    </span>
     	
     	  </fieldset>	
 	  </form>
@@ -737,7 +740,7 @@
      <ul data-role="listview" data-theme="d" data-inset="true" style="margin-top:30px;">
        <li>
 	      <div><h4 class="nowrap">{{currentgift.description}}</h4></div>
-          <p style="margin-top:10px;">To: <span ng-repeat="r in currentgift.recipients">{{r.fullname}}</span></p>
+          <p style="margin-top:10px;">For {{commasep(currentgift.recipients)}}</p>
           
 	      
           <P>
@@ -745,7 +748,7 @@
               Bought by: {{currentgift.sender_name}}
             </span>
             <span ng-show="currentgift.canseestatus && !currentgift.isbought">
-              Bought by: (still available)
+              Bought by (still available)
             </span>
           </P>
 		  
@@ -1730,27 +1733,30 @@
 		    <!-- No need to list recipients if the event is a single-recipient event -->
     		<span ng-hide="circle.receiverLimit == 1">
 		    <p>
-		        Recipients:
+		        <strong>Recipients</strong>
 		    </p>
 		    <p>
 		      <ul data-role="listview">
-                <li ng-repeat="r in currentgift.recipients">{{r.fullname}}</li>
+                <li>{{commasep(currentgift.recipients)}}</li>
               </ul>
 		    </p>
+		    </span>
+    		
+    		<!-- No need to show 'Edit Recipients' button if this is for a single-recipient event -->
+    		<span ng-hide="circle.receiverLimit == 1">
+    		<div style="margin-top:40px;">
+		      <a ng-href="#selectOneRecipient" data-role="button" ng-click="beginAddingRecipients(currentgift)" data-theme="b">Add Recipients</a>
+		    </div>
+    		<div>
+		      <a ng-href="#beginDeletingRecipients" data-role="button" ng-click="beginDeletingRecipients(currentgift)" data-theme="b">Delete Recipients</a>
+		    </div>
 		    </span>
 		    
       
 		    <div class="ui-grid-a">
-              <div class="ui-block-a"><a href="#wishlist" data-role="button">Cancel</a></div>
+              <div class="ui-block-a"><a href="#wishlist" data-role="button" data-theme="b">Cancel</a></div>
 		      <div class="ui-block-b"><a href="#wishlist" data-role="button" ng-click="savegift(currentgift)" data-theme="b">Save</a></div>
     		</div>
-    		
-    		<!-- No need to show 'Edit Recipients' button if this is for a single-recipient event -->
-    		<span ng-hide="circle.receiverLimit == 1">
-    		<P>
-		      <button ng-href="#wishlist" ng-click="savegift(currentgift)" data-theme="b">Edit Recipients</button>
-		    </P>
-		    </span>
     	
     	  </fieldset>	
 	  </form>
@@ -2460,16 +2466,30 @@
       <!-- When you are selecting multiple recipients, we show you all your friends up front and they
       have checkboxes next to them.  -->
       
-      
-      <div jquery-mobile-tpl>
-	    <ul id="selectOneRecipientView" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search and invite friends..." data-inset="true" repeat-done="" ng-cloak>
-	      <li ng-repeat="friend in user.friends">
-	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
-	          {{friend.fullname}}
-	        </a>
-	      </li>
-	    </ul>
-	  </div>
+	  
+	    <fieldset data-role="controlgroup">
+	        <legend>Who is this gift for?</legend>
+	        
+			<span ng-repeat="friend in user.friends">
+		        <input name="makefriendrecipient-{{friend.id}}" id="makefriendrecipient-{{friend.id}}" type="checkbox" ng-click="prepareMultipleRecipients(friend, currentgift)">
+		        <label for="makefriendrecipient-{{friend.id}}">{{friend.fullname}}</label>
+			</span>
+	        
+	    </fieldset>
+	  
+	  
+	    
+	    <div ng-show="recipientstoadd.length==0">
+	      <button disabled="">Add Recipients</button>
+	    </div>
+	    
+	    <div ng-show="recipientstoadd.length > 0">
+	      <a data-role="button" ng-href="#recipients" ng-click="addrecipients(recipientstoadd, currentgift)">Add {{recipientstoadd.length}} Recipient<span ng-show="recipientstoadd.length > 1">s</span></a>
+	    </div>
+	  
+	  
+	  
+	  
 	  
 	</div><!-- /content -->
 
@@ -2592,7 +2612,7 @@
       <div jquery-mobile-tpl>
 	    <ul id="selectOneRecipientView" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search and invite friends..." data-inset="true" repeat-done="" ng-cloak>
 	      <li ng-repeat="friend in user.friends">
-	        <a href="#wishlist" ng-click="friendwishlist(friend)" data-transition="slide">
+	        <a href="#wishlist" ng-click="addrecipient(friend, currentgift)" data-transition="slide">
 	          {{friend.fullname}}
 	        </a>
 	      </li>
@@ -2600,6 +2620,138 @@
 	  </div>
 		  
 	  
+	  
+	</div><!-- /content -->
+
+
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a ng-href="#scanresults" data-role="button" ng-click="scan()" class="ui-btn-left">Scan</a>
+	  <a ng-href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird.com</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
+<!-- After you add multiple recipients for a gift, you get sent to this page, which shows each recipient in a list so that you could
+click on any of their names to see their list and the item that was just added -->
+
+<div id="recipients" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Recipients</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  	  
+	  	<div ng-show="loading">Loading...</div>
+	  	
+	  	
+	  	<div ng-hide="loading">
+	  	
+	      <div jquery-mobile-tpl>
+		    <ul id="recipientsview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
+		      <li ng-repeat="recipient in recipientsjustadded">
+		        <a href="#wishlist" ng-click="friendwishlist(recipient)" data-transition="slide">
+		          {{recipient.fullname}}
+		        </a>
+		      </li>
+		    </ul>
+		  </div>
+		  
+	  	</div>
+	  	<!-- div ng-hide="loading" -->
+	  	
+	  
+	    
+	  	<div ng-show="testing">
+	  	  <P>Logged in as: {{user.fullname}}</P>
+	  	</div>
+	  	
+	</div><!-- /content -->
+
+
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a ng-href="#scanresults" data-role="button" ng-click="scan()" class="ui-btn-left">Scan</a>
+	  <a ng-href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird.com</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
+
+<div id="beginDeletingRecipients" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Delete Recipients</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  	  
+	    <fieldset data-role="controlgroup">
+	        <legend>Delete Who?</legend>
+	        
+			<span ng-repeat="r in currentgift.recipients">
+		        <input name="deleterecipient-{{r.id}}" id="deleterecipient-{{r.id}}" type="checkbox" ng-click="prepareDeleteRecipient(r)">
+		        <label for="deleterecipient-{{r.id}}">{{r.fullname}}</label>
+			</span>
+	        
+	    </fieldset>
+	    
+	    <div ng-show="recipientstodelete.length==0">
+	      <button disabled="">Delete Recipients</button>
+	    </div>
+	    
+	    <div ng-show="recipientstodelete.length > 0">
+	      <a data-role="button" ng-href="#gift" ng-click="removeRecipients(recipientstodelete, currentgift)">Delete {{recipientstodelete.length}} Recipient<span ng-show="recipientstodelete.length > 1">s</span></a>
+	    </div>
 	  
 	</div><!-- /content -->
 

@@ -295,6 +295,7 @@
   // If someone is already friends with the person they are making the recipient, don't ask them if the person we found is the person they want - we know it is
   // We have to check the user's list of friends
   $scope.addRecipientByEmail = function(recipient, gift) {
+      console.log('addRecipientByEmail: recipient=', recipient);
       $scope.searching = true;
       $scope.mayberecipients = User.query({email:recipient.email},
           function() {
@@ -321,21 +322,6 @@
 
 			        $rootScope.showUser = $scope.mayberecipients[0];
 			        
-					onsuccessfulWishlistQuery = function() {
-				        $scope.gifts.mylist=false;
-				        $scope.gifts.ready="true";
-					    refreshWishlist();
-					}
-					
-			        failWishlistQuery = function() {alert("Hmmm... Had a problem getting "+recipient.fullname+"'s list\n  Try again  (error code 502)");};
-			        
-					onsuccessfulSave = function(savedgift) {
-				      $scope.currentgift = {};
-				      $scope.currentgift.recipients = [];
-					  // now requery for the recipient's wishlist
-				      $scope.friendwishlist_takingargs($rootScope.showUser, onsuccessfulWishlistQuery, failWishlistQuery);
-					};
-		
 		            var parms = {recipient:$rootScope.showUser, gift:gift, user:$rootScope.user, 
 		                         saveGiftSuccessFn:onsuccessfulSave};
 			        
@@ -343,7 +329,6 @@
                     
                     delete $scope.circle; 
                     delete $scope.mayberecipients;
-                    
                   }
                   else {// FYI - this 'else' doesn't matter.  If we hit this block, there's nothing to do.  It means the email address
 	                  // we entered returned 1 or more people.  In that event, the wishlist page displays the list of 'mayberecipients'
@@ -359,4 +344,78 @@
 		      }
 		      delete $scope.searching;
           });
+  }
+  
+  
+  var onsuccessfulWishlistQuery = function() {
+				        $scope.gifts.mylist=false;
+				        $scope.gifts.ready="true";
+					    refreshWishlist();
+					};
+					
+  var failWishlistQuery = function() {alert("Hmmm... Had a problem getting "+recipient.fullname+"'s list\n  Try again  (error code 502)");};
+  
+  var onsuccessfulSave = function(savedgift) {
+				      $scope.currentgift = {};
+				      $scope.currentgift.recipients = [];
+					  // now requery for the recipient's wishlist
+				      $scope.friendwishlist_takingargs($rootScope.showUser, onsuccessfulWishlistQuery, failWishlistQuery);
+					};
+  
+  
+  $scope.addrecipient = function(recipient, gift) {
+    $rootScope.showUser = recipient;
+    var parms = {recipient:$rootScope.showUser, gift:gift, user:$rootScope.user, 
+                 saveGiftSuccessFn:onsuccessfulSave};
+                 
+    Gift.addrecipient(parms);
+    
+    delete $scope.circle; 
+  }
+  
+  
+  $scope.prepareMultipleRecipients = function(recipient, gift) {
+    if(!angular.isDefined($scope.recipientstoadd))
+      $scope.recipientstoadd = [];
+    if('checked' == jQuery("#makefriendrecipient-"+recipient.id).attr('checked'))
+      $scope.recipientstoadd.push(recipient);
+    else {
+      for(var i=0; i < $scope.recipientstoadd.length; i++ ) {
+        var ff = $scope.recipientstoadd[i].id;
+        if(ff == recipient.id) {
+          $scope.recipientstoadd.splice(i, 1);
+          break;
+        }
+      }
+    }
+    
+    console.log('$scope.recipientstoadd', $scope.recipientstoadd);
+  }
+  
+  
+  refreshRecipientList = function() {
+	  jQuery("#recipientsview").hide();
+	    setTimeout(function(){
+	      jQuery("#recipientsview").listview("refresh");
+	      jQuery("#recipientsview").show();
+	  },0);
+  }
+  
+  
+  // We don't need to also query for a wishlist because there are several recipients.  We let the user tap one of the recipients on the next page, #recipients
+  $scope.addrecipients = function(recipients, gift) {
+    $scope.loading = true;
+    var onsuccessfulGiftSave = function(savedgift) {
+      $scope.recipientsjustadded = angular.copy(recipients);
+      recipients.splice(0, recipients.length);
+      refreshRecipientList();
+      delete $scope.loading;
+    }
+    var parms = {recipients:recipients, gift:gift, user:$rootScope.user, saveGiftSuccessFn: onsuccessfulGiftSave};
+    Gift.addrecipients(parms);
+  }
+  
+  
+  $scope.beginAddingRecipients = function(gift) {
+    
   }

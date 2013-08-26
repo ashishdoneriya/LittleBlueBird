@@ -23,27 +23,30 @@
 		    <!-- No need to list recipients if the event is a single-recipient event -->
     		<span ng-hide="circle.receiverLimit == 1">
 		    <p>
-		        Recipients:
+		        <strong>Recipients</strong>
 		    </p>
 		    <p>
 		      <ul data-role="listview">
-                <li ng-repeat="r in currentgift.recipients">{{r.fullname}}</li>
+                <li>{{commasep(currentgift.recipients)}}</li>
               </ul>
 		    </p>
+		    </span>
+    		
+    		<!-- No need to show 'Edit Recipients' button if this is for a single-recipient event -->
+    		<span ng-hide="circle.receiverLimit == 1">
+    		<div style="margin-top:40px;">
+		      <a ng-href="#selectOneRecipient" data-role="button" ng-click="beginAddingRecipients(currentgift)" data-theme="b">Add Recipients</a>
+		    </div>
+    		<div>
+		      <a ng-href="#beginDeletingRecipients" data-role="button" ng-click="beginDeletingRecipients(currentgift)" data-theme="b">Delete Recipients</a>
+		    </div>
 		    </span>
 		    
       
 		    <div class="ui-grid-a">
-              <div class="ui-block-a"><a href="#wishlist" data-role="button">Cancel</a></div>
+              <div class="ui-block-a"><a href="#wishlist" data-role="button" data-theme="b">Cancel</a></div>
 		      <div class="ui-block-b"><a href="#wishlist" data-role="button" ng-click="savegift(currentgift)" data-theme="b">Save</a></div>
     		</div>
-    		
-    		<!-- No need to show 'Edit Recipients' button if this is for a single-recipient event -->
-    		<span ng-hide="circle.receiverLimit == 1">
-    		<P>
-		      <button ng-href="#wishlist" ng-click="savegift(currentgift)" data-theme="b">Edit Recipients</button>
-		    </P>
-		    </span>
     	
     	  </fieldset>	
 	  </form>

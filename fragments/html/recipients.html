@@ -1,29 +1,39 @@
 
+<!-- After you add multiple recipients for a gift, you get sent to this page, which shows each recipient in a list so that you could
+click on any of their names to see their list and the item that was just added -->
 
-<div id="selectOneRecipientFromFriends" data-role="page" data-add-back-btn="true">
+<div id="recipients" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>Recipient</h1>
+		<h1>Recipients</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
-	  
-	  <!-- When you're selecting just one recipient, we show you the search box and you start typing in a name
-	  The <ul> shows you a filtered list of your friends that you choose from -->
-	    
-  
-      <div jquery-mobile-tpl>
-	    <ul id="selectOneRecipientView" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search and invite friends..." data-inset="true" repeat-done="" ng-cloak>
-	      <li ng-repeat="friend in user.friends">
-	        <a href="#wishlist" ng-click="addrecipient(friend, currentgift)" data-transition="slide">
-	          {{friend.fullname}}
-	        </a>
-	      </li>
-	    </ul>
-	  </div>
+	  	  
+	  	<div ng-show="loading">Loading...</div>
+	  	
+	  	
+	  	<div ng-hide="loading">
+	  	
+	      <div jquery-mobile-tpl>
+		    <ul id="recipientsview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
+		      <li ng-repeat="recipient in recipientsjustadded">
+		        <a href="#wishlist" ng-click="friendwishlist(recipient)" data-transition="slide">
+		          {{recipient.fullname}}
+		        </a>
+		      </li>
+		    </ul>
+		  </div>
 		  
+	  	</div>
+	  	<!-- div ng-hide="loading" -->
+	  	
 	  
-	  
+	    
+	  	<div ng-show="testing">
+	  	  <P>Logged in as: {{user.fullname}}</P>
+	  	</div>
+	  	
 	</div><!-- /content -->
 
 

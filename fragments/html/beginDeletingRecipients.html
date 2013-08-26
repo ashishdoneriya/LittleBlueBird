@@ -1,28 +1,30 @@
 
 
-<div id="selectOneRecipientFromFriends" data-role="page" data-add-back-btn="true">
+<div id="beginDeletingRecipients" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1>Recipient</h1>
+		<h1>Delete Recipients</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
-	  
-	  <!-- When you're selecting just one recipient, we show you the search box and you start typing in a name
-	  The <ul> shows you a filtered list of your friends that you choose from -->
+	  	  
+	    <fieldset data-role="controlgroup">
+	        <legend>Delete Who?</legend>
+	        
+			<span ng-repeat="r in currentgift.recipients">
+		        <input name="deleterecipient-{{r.id}}" id="deleterecipient-{{r.id}}" type="checkbox" ng-click="prepareDeleteRecipient(r)">
+		        <label for="deleterecipient-{{r.id}}">{{r.fullname}}</label>
+			</span>
+	        
+	    </fieldset>
 	    
-  
-      <div jquery-mobile-tpl>
-	    <ul id="selectOneRecipientView" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search and invite friends..." data-inset="true" repeat-done="" ng-cloak>
-	      <li ng-repeat="friend in user.friends">
-	        <a href="#wishlist" ng-click="addrecipient(friend, currentgift)" data-transition="slide">
-	          {{friend.fullname}}
-	        </a>
-	      </li>
-	    </ul>
-	  </div>
-		  
-	  
+	    <div ng-show="recipientstodelete.length==0">
+	      <button disabled="">Delete Recipients</button>
+	    </div>
+	    
+	    <div ng-show="recipientstodelete.length > 0">
+	      <a data-role="button" ng-href="#gift" ng-click="removeRecipients(recipientstodelete, currentgift)">Delete {{recipientstodelete.length}} Recipient<span ng-show="recipientstodelete.length > 1">s</span></a>
+	    </div>
 	  
 	</div><!-- /content -->
 

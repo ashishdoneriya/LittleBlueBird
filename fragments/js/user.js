@@ -119,3 +119,12 @@
   }
   
   
+  $scope.commasep = function(people) {
+    var names = [];
+    for(var i=0; i < people.length; ++i) {
+      names.push(people[i].fullname);
+    }
+    return names.join(" and ");
+  }
+  
+  

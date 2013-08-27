@@ -32,7 +32,8 @@ angular.module('Gift', ['ngResource']).
           var user = parms.user;
           var saveGiftSuccessFn = parms.saveGiftSuccessFn;
           
-	      gift = Gift.setRecipients(gift, [recipient]);
+	      var parms2 = {gift:gift, recipients:[recipient], replace:false};
+	      gift = Gift.setRecipients(parms2);
 	      
 	      console.log('Gift.setRecipients:', gift.recipients);
 	      
@@ -53,10 +54,17 @@ angular.module('Gift', ['ngResource']).
       
       
       //2013-08-26
-      Gift.setRecipients = function(gift, recipients) {
+      Gift.setRecipients = function(parms) {
+          var gift = parms.gift;
+          var recipients = parms.recipients;
+          var replace = parms.replace;
+          
 	      if(!angular.isDefined(gift.recipients))
 	        gift.recipients = [];
-	      gift.recipients.splice(0, gift.recipients.length);  
+	        
+	      if(replace)
+	        gift.recipients.splice(0, gift.recipients.length);
+	          
 	      for(var i=0; i < recipients.length; ++i) {
 	        gift.recipients.push(recipients[i]);
 	      }
@@ -83,7 +91,9 @@ angular.module('Gift', ['ngResource']).
           var gift = parms.gift;
           var user = parms.user;
           var saveGiftSuccessFn = parms.saveGiftSuccessFn;
-          gift = Gift.setRecipients(gift, recipients);
+          
+	      var parms2 = {gift:gift, recipients:recipients, replace:false};
+          gift = Gift.setRecipients(parms2);
           
 	      // recipientId not needed in this case because we don't return to a wishlist, we return to #recipients.  Since there's multiple recipients, we don't know whose list to return to
 	      var saveparms = {giftId:gift.id, updater:user.fullname, description:gift.description, url:gift.url, 
@@ -104,7 +114,6 @@ angular.module('Gift', ['ngResource']).
       Gift.removeRecipients = function(parms) {
         var deleteRecipients = parms.deleteRecipients;
         var gift = parms.gift;
-        var recipients = parms.recipients;
         var updaterName = parms.updaterName;
         var viewerId = parms.viewerId;
         var successFn = parms.successFn;
@@ -119,7 +128,8 @@ angular.module('Gift', ['ngResource']).
 	      }
 	    }
 	    
-	    gift = Gift.setRecipients(gift, angular.copy(gift.recipients));
+	    var parms2 = {gift:gift, recipients:angular.copy(gift.recipients), replace:true};
+	    gift = Gift.setRecipients(parms2);
 	    
 	    // have to supply 'updaterName' otherwise RestService will think this call should be an insert
 	    var savedgift = Gift.save({giftId:gift.id, recipients:gift.recipients, updater:updaterName, viewerId:viewerId}, function() {successFn(savedgift)});

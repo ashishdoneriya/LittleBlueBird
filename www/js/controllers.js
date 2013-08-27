@@ -1131,12 +1131,14 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     onsuccessfulRemoval = function(savedgift) {recipients.splice(0, recipients.length);$scope.currentgift = savedgift;}
     parms = {deleteRecipients:recipients, 
              gift:gift, 
-             recipients:recipients, 
              updaterName:$rootScope.user.fullname, 
              viewerId:$rootScope.user.id,
              successFn:onsuccessfulRemoval};
     $scope.currentgift = Gift.removeRecipients(parms);
   }
+  
+    
+ 
   
   
   $scope.setfootermenu = function(selected) {

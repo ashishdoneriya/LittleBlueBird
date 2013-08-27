@@ -29,16 +29,6 @@
               </ul>
 		    </p>
 		    </span>
-    		
-    		<!-- No need to show 'Edit Recipients' button if this is for a single-recipient event -->
-    		<span ng-hide="circle.receiverLimit == 1">
-    		<div style="margin-top:40px;">
-		      <a ng-href="#selectOneRecipient" data-role="button" ng-click="beginAddingRecipients(currentgift)" data-theme="b">Add Recipients</a>
-		    </div>
-    		<div>
-		      <a ng-href="#beginDeletingRecipients" data-role="button" ng-click="prepareDeleteRecipients()" data-theme="b">Delete Recipients</a>
-		    </div>
-		    </span>
 		    
       
 		    <div class="ui-grid-a">

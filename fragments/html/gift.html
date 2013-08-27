@@ -24,8 +24,8 @@
 
      <ul data-role="listview" data-theme="d" data-inset="true" style="margin-top:30px;">
        <li>
-	      <div><h4 class="nowrap">{{currentgift.description}}</h4></div>
-          <p style="margin-top:10px;">For {{commasep(currentgift.recipients)}}</p>
+	      <div><h4 class="wraptext">{{currentgift.description}}</h4></div>
+          <p class="wraptext" style="margin-top:10px;">For {{commasep(currentgift.recipients)}}</p>
           
 	      
           <P>
@@ -38,8 +38,8 @@
           </P>
 		  
           <span ng-show="currentgift.issurprise">
-            <P style="margin-top:10px;"><strong class="nowrap">Shhhhh! Don't say anything to {{showUser.first}} about this</strong></P>
-            <P class="nowrap">{{currentgift.addedByName}} added it as a surprise!</P>
+            <P style="margin-top:10px;"><strong class="wraptext">Shhhhh! Don't say anything to {{showUser.first}} about this</strong></P>
+            <P class="wraptext">{{currentgift.addedByName}} added it as a surprise!</P>
           </span>
           
           
@@ -60,7 +60,7 @@
 			    <P style="margin-top:10px;"><a href="#" ng-click="beginreserving(currentgift)" data-theme="b" data-role="button">Give This</a></P>
 			  </span>
 			  <span ng-show="currentgift.canreturn">
-			    <P class="nowrap" style="margin-top:10px;">Changed your mind?  No biggie.  Just click "Return" to make this gift available again.</P>
+			    <P class="wraptext" style="margin-top:10px;">Changed your mind?  No biggie.  Just click "Return" to make this gift available again.</P>
 			    <P style="margin-top:10px;"><a href="#" ng-click="returngift(index, currentgift)" data-theme="b" data-role="button">Return</a></P>
 			  </span>
 	      </span>

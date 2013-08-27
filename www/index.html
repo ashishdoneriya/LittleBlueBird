@@ -443,12 +443,12 @@
 			      <li ng-show="gifts.length==0"><h4>Nothing on this list</h4><P>Click "Add" to add something</P></li>
 		          <li data-ng-repeat="gift in gifts">
 		            <a ng-href="#gift" ng-click="setcurrentgift($index, gift)">
-		              <h4>{{gift.description}}</h4>
+		              <h4 class="wraptext">{{gift.description}}</h4>
 		              <span ng-show="gift.issurprise">
 		                <P><strong>Shhhhh! This item is a Surprise!</strong></P>
 		                <P><strong>{{showUser.fullname}} does not know about it</strong></P>
 		              </span>
-		              <span ng-show="gift.recipients.length > 1"><P>For {{commasep(gift.recipients)}}</P></span>
+		              <span ng-show="gift.recipients.length > 1"><P class="wraptext">For {{commasep(gift.recipients)}}</P></span>
 		              <P>
 		                <span ng-show="gift.canseestatus && gift.isbought">
 		                  Bought by {{gift.sender_name}}
@@ -670,7 +670,7 @@
 		      <a ng-href="#selectOneRecipient" data-role="button" ng-click="beginAddingRecipients(currentgift)" data-theme="b">Add Recipients</a>
 		    </div>
     		<div>
-		      <a ng-href="#beginDeletingRecipients" data-role="button" ng-click="beginDeletingRecipients(currentgift)" data-theme="b">Delete Recipients</a>
+		      <a ng-href="#beginDeletingRecipients" data-role="button" ng-click="prepareDeleteRecipients()" data-theme="b">Delete Recipients</a>
 		    </div>
 		    </span>
 		    
@@ -739,8 +739,8 @@
 
      <ul data-role="listview" data-theme="d" data-inset="true" style="margin-top:30px;">
        <li>
-	      <div><h4 class="nowrap">{{currentgift.description}}</h4></div>
-          <p style="margin-top:10px;">For {{commasep(currentgift.recipients)}}</p>
+	      <div><h4 class="wraptext">{{currentgift.description}}</h4></div>
+          <p class="wraptext" style="margin-top:10px;">For {{commasep(currentgift.recipients)}}</p>
           
 	      
           <P>
@@ -753,8 +753,8 @@
           </P>
 		  
           <span ng-show="currentgift.issurprise">
-            <P style="margin-top:10px;"><strong class="nowrap">Shhhhh! Don't say anything to {{showUser.first}} about this</strong></P>
-            <P class="nowrap">{{currentgift.addedByName}} added it as a surprise!</P>
+            <P style="margin-top:10px;"><strong class="wraptext">Shhhhh! Don't say anything to {{showUser.first}} about this</strong></P>
+            <P class="wraptext">{{currentgift.addedByName}} added it as a surprise!</P>
           </span>
           
           
@@ -775,7 +775,7 @@
 			    <P style="margin-top:10px;"><a href="#" ng-click="beginreserving(currentgift)" data-theme="b" data-role="button">Give This</a></P>
 			  </span>
 			  <span ng-show="currentgift.canreturn">
-			    <P class="nowrap" style="margin-top:10px;">Changed your mind?  No biggie.  Just click "Return" to make this gift available again.</P>
+			    <P class="wraptext" style="margin-top:10px;">Changed your mind?  No biggie.  Just click "Return" to make this gift available again.</P>
 			    <P style="margin-top:10px;"><a href="#" ng-click="returngift(index, currentgift)" data-theme="b" data-role="button">Return</a></P>
 			  </span>
 	      </span>
@@ -1748,7 +1748,7 @@
 		      <a ng-href="#selectOneRecipient" data-role="button" ng-click="beginAddingRecipients(currentgift)" data-theme="b">Add Recipients</a>
 		    </div>
     		<div>
-		      <a ng-href="#beginDeletingRecipients" data-role="button" ng-click="beginDeletingRecipients(currentgift)" data-theme="b">Delete Recipients</a>
+		      <a ng-href="#beginDeletingRecipients" data-role="button" ng-click="prepareDeleteRecipients()" data-theme="b">Delete Recipients</a>
 		    </div>
 		    </span>
 		    
@@ -2184,7 +2184,7 @@
 	  <div ng-show="scanreturncode == 1">
         <ul data-role="listview" data-theme="d" data-inset="true">
 	      <li>
-	        <div><h4 class="nowrap">{{products[0].name}}</h4></div>
+	        <div><h4 class="wraptext">{{products[0].name}}</h4></div>
 	        <P>
 	          <a ng-href="#" ng-click="viewonline(products[0].url, $event)" data-theme="b" data-role="button" target="item">
 	            View/Buy Online
@@ -2222,7 +2222,7 @@
           
 	        <li ng-repeat="product in products" repeat-done="">
 	          <a ng-href="#selectedproduct" ng-click="convertProductToGift(product)">
-	            <h4 class="nowrap">{{product.name}}</h4>
+	            <h4 class="wraptext">{{product.name}}</h4>
 	          </a>
 	        </li>
 	      </ul>
@@ -2287,7 +2287,7 @@
 	  
         <ul data-role="listview" data-theme="d" data-inset="true">
 	      <li>
-	        <div><h4 class="nowrap">{{currentgift.description}}</h4></div>
+	        <div><h4 class="wraptext">{{currentgift.description}}</h4></div>
 	        <P>
 	          <a ng-href="#" ng-click="viewonline(currentgift.url, $event)" data-theme="b" data-role="button" target="item">
 	            View Online
@@ -2750,7 +2750,7 @@ click on any of their names to see their list and the item that was just added -
 	    </div>
 	    
 	    <div ng-show="recipientstodelete.length > 0">
-	      <a data-role="button" ng-href="#gift" ng-click="removeRecipients(recipientstodelete, currentgift)">Delete {{recipientstodelete.length}} Recipient<span ng-show="recipientstodelete.length > 1">s</span></a>
+	      <a data-role="button" ng-href="#gift" ng-click="removeRecipients(currentgift, recipientstodelete)">Delete {{recipientstodelete.length}} Recipient<span ng-show="recipientstodelete.length > 1">s</span></a>
 	    </div>
 	  
 	</div><!-- /content -->

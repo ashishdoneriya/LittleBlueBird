@@ -8,6 +8,8 @@ angular.module('Gift', ['ngResource']).
                       save: {method:'POST'},
                     });
                     
+                    
+      //2013-08-26
       // product is a barcode-scanned product              
       Gift.convertProductToGift = function(product, circle, user) {
         var gift = {addedBy:user.id};
@@ -23,6 +25,7 @@ angular.module('Gift', ['ngResource']).
       
       
       
+      //2013-08-26
       Gift.addrecipient = function(parms) {
           var recipient = parms.recipient;
           var gift = parms.gift;
@@ -49,9 +52,11 @@ angular.module('Gift', ['ngResource']).
       }
       
       
+      //2013-08-26
       Gift.setRecipients = function(gift, recipients) {
 	      if(!angular.isDefined(gift.recipients))
 	        gift.recipients = [];
+	      gift.recipients.splice(0, gift.recipients.length);  
 	      for(var i=0; i < recipients.length; ++i) {
 	        gift.recipients.push(recipients[i]);
 	      }
@@ -63,6 +68,7 @@ angular.module('Gift', ['ngResource']).
       }
       
       
+      //2013-08-26
       Gift.prepareAddRecipient = function(recipient, gift) {
 	      if(!angular.isDefined(gift.recipients))
 	        gift.recipients = [];
@@ -71,6 +77,7 @@ angular.module('Gift', ['ngResource']).
       }
       
       
+      //2013-08-26
       Gift.addrecipients = function(parms) {
           var recipients = parms.recipients;
           var gift = parms.gift;
@@ -92,6 +99,32 @@ angular.module('Gift', ['ngResource']).
           
       }
       
+      
+      //2013-08-26
+      Gift.removeRecipients = function(parms) {
+        var deleteRecipients = parms.deleteRecipients;
+        var gift = parms.gift;
+        var recipients = parms.recipients;
+        var updaterName = parms.updaterName;
+        var viewerId = parms.viewerId;
+        var successFn = parms.successFn;
+    
+	    for(j=0; j < deleteRecipients.length; ++j ) {
+	      for(i=0; i < gift.recipients.length; ++i ) {
+	        if(deleteRecipients[j].id == gift.recipients[i].id) {
+	          console.log('at i='+i+' before splice, gift.recipients:', gift.recipients);
+	          gift.recipients.splice(i, 1);
+	          console.log('at i='+i+' after splice, gift.recipients:', gift.recipients);
+	        }
+	      }
+	    }
+	    
+	    gift = Gift.setRecipients(gift, angular.copy(gift.recipients));
+	    
+	    // have to supply 'updaterName' otherwise RestService will think this call should be an insert
+	    var savedgift = Gift.save({giftId:gift.id, recipients:gift.recipients, updater:updaterName, viewerId:viewerId}, function() {successFn(savedgift)});
+    
+      }
 
       return Gift;
   });

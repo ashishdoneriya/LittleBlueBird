@@ -23,7 +23,7 @@
 	    </div>
 	    
 	    <div ng-show="recipientstodelete.length > 0">
-	      <a data-role="button" ng-href="#gift" ng-click="removeRecipients(recipientstodelete, currentgift)">Delete {{recipientstodelete.length}} Recipient<span ng-show="recipientstodelete.length > 1">s</span></a>
+	      <a data-role="button" ng-href="#gift" ng-click="removeRecipients(currentgift, recipientstodelete)">Delete {{recipientstodelete.length}} Recipient<span ng-show="recipientstodelete.length > 1">s</span></a>
 	    </div>
 	  
 	</div><!-- /content -->

@@ -29,7 +29,7 @@
 	  <div ng-show="scanreturncode == 1">
         <ul data-role="listview" data-theme="d" data-inset="true">
 	      <li>
-	        <div><h4 class="nowrap">{{products[0].name}}</h4></div>
+	        <div><h4 class="wraptext">{{products[0].name}}</h4></div>
 	        <P>
 	          <a ng-href="#" ng-click="viewonline(products[0].url, $event)" data-theme="b" data-role="button" target="item">
 	            View/Buy Online
@@ -67,7 +67,7 @@
           
 	        <li ng-repeat="product in products" repeat-done="">
 	          <a ng-href="#selectedproduct" ng-click="convertProductToGift(product)">
-	            <h4 class="nowrap">{{product.name}}</h4>
+	            <h4 class="wraptext">{{product.name}}</h4>
 	          </a>
 	        </li>
 	      </ul>

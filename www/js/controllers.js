@@ -1083,6 +1083,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
+  // 2013-08-26 
   // We don't need to also query for a wishlist because there are several recipients.  We let the user tap one of the recipients on the next page, #recipients
   $scope.addrecipients = function(recipients, gift) {
     $scope.loading = true;
@@ -1097,8 +1098,44 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
+  // 2013-08-26 
   $scope.beginAddingRecipients = function(gift) {
     
+  }
+  
+  
+  
+  // 2013-08-26 modeled after $scope.prepareDeleteFriends 
+  $scope.prepareDeleteRecipients = function() {
+    $scope.recipientstodelete = [];
+  }
+  
+  
+  // 2013-08-26 modeled after $scope.prepareDeleteFriend
+  $scope.prepareDeleteRecipient = function(recipient) {
+    if('checked' == jQuery("#deleterecipient-"+recipient.id).attr('checked'))
+      $scope.recipientstodelete.push(recipient);
+    else {
+      for(var i=0; i < $scope.recipientstodelete.length; i++ ) {
+        var ff = $scope.recipientstodelete[i].id;
+        if(ff == recipient.id) {
+          $scope.recipientstodelete.splice(i, 1);
+          break;
+        }
+      }
+    }
+  } 
+  
+  
+  $scope.removeRecipients = function(gift, recipients) {
+    onsuccessfulRemoval = function(savedgift) {recipients.splice(0, recipients.length);$scope.currentgift = savedgift;}
+    parms = {deleteRecipients:recipients, 
+             gift:gift, 
+             recipients:recipients, 
+             updaterName:$rootScope.user.fullname, 
+             viewerId:$rootScope.user.id,
+             successFn:onsuccessfulRemoval};
+    $scope.currentgift = Gift.removeRecipients(parms);
   }
   
   

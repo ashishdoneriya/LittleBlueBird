@@ -194,6 +194,12 @@
 		     <fileset file="fragments/html/beginDeletingRecipients-nofooter.html" />
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
+
+		  <concat destfile="fragments/html/gift2.html"
+		          force="yes">
+		     <fileset file="fragments/html/gift2-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
 		
 	</target>
 	
@@ -211,7 +217,6 @@
 	     <fileset file="fragments/html/events.html" />
 	     <fileset file="fragments/html/wishlist.html" />
 	     <fileset file="fragments/html/friends.html" />
-	     <fileset file="fragments/html/edititem.html" />
 	     <fileset file="fragments/html/gift.html" />
 	     <fileset file="fragments/html/personalinfo.html" />
 	     <fileset file="fragments/html/passwordreset.html" />
@@ -240,6 +245,9 @@
 	     <fileset file="fragments/html/selectOneRecipientFromFriends.html" />
 	     <fileset file="fragments/html/recipients.html" />
 	     <fileset file="fragments/html/beginDeletingRecipients.html" />
+	     <fileset file="fragments/html/edititem.html" />
+	     <fileset file="fragments/html/gift2.html" />
+	     <fileset file="fragments/html/editrecipients.html" />
 	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
 	</target>

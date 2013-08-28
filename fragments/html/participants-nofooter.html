@@ -66,10 +66,21 @@
 		    <ul id="receiverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak style="margin-top:30px;">
 		      <li data-role="list-divider">
 	            
-	              <span ng-show="circle.receiverLimit == -1">Participants</span>
-	              <span ng-show="circle.receiverLimit == 1">Honoree</span>
-	              <span ng-show="circle.receiverLimit > 1">Honorees</span>
-		              
+	            <div class="ui-grid-a">
+                  <div class="ui-block-a">
+		              <span ng-show="circle.receiverLimit == -1">Participants</span>
+		              <span ng-show="circle.receiverLimit == 1">Honoree</span>
+		              <span ng-show="circle.receiverLimit > 1">Honorees</span>
+                  </div>
+                  <div class="ui-block-b" style="text-align:right;">
+                      <a data-role="button" ng-href="#addremoveparticipants" ng-click="prepAddRemoveParticipants(circle, circle.participants.receivers, 'Receiver')" data-icon="edit" data-iconpos="notext" class="ui-btn-right" data-theme="b" data-rel="dialog" data-transition="pop">Edit</a>
+                  </div>
+                </div>
+	            
+		      </li>
+		      <li ng-show="circle.participants.receivers.length==0">
+                No <span ng-show="circle.receiverLimit == -1">Participants</span>
+                <span ng-show="circle.receiverLimit != -1">Honorees</span> in this event
 		      </li>
 		      <li ng-repeat="participant in circle.participants.receivers">
 		         <a ng-href="#wishlist" ng-click="giftlist(circle, participant)">{{participant.fullname}}</a>
@@ -89,7 +100,14 @@
 	      <span ng-hide="circle.receiverLimit == -1">
 	      <div jquery-mobile-tpl>
 		    <ul id="giverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
-		      <li data-role="list-divider">Guests</li>
+		      <li data-role="list-divider">
+	            <div class="ui-grid-a">
+                  <div class="ui-block-a">Guests</div>
+                  <div class="ui-block-b" style="text-align:right;">
+                      <a data-role="button" ng-href="#addremoveparticipants" ng-click="prepAddRemoveParticipants(circle, circle.participants.givers, 'Giver')" data-icon="edit" data-iconpos="notext" class="ui-btn-right" data-theme="b" data-rel="dialog" data-transition="pop">Edit</a>
+                  </div>
+                </div>
+              </li>
 		      <li ng-repeat="participant in circle.participants.givers">
 		         <a ng-href="#confirmdeleteparticipant" ng-click="preparetoremove($index, participant, 'Giver')">{{participant.fullname}}</a>
 		      </li>
@@ -101,7 +119,6 @@
 	      <!-- END: Guests section (for those events that have them)   -->
 	      <!-- ------------------------------------------------------- -->
 	      
-	      <P><a href="#editparticipants" data-transition="slideup" data-role="button">Invite People</a></P>
 	      <P><a href="#confirmdeleteevent" data-transition="slideup" data-role="button">Delete Event</a></P>
 	  </span>
 	  

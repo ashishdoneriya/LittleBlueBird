@@ -120,6 +120,7 @@
   
   
   $scope.commasep = function(people) {
+    if(!angular.isDefined(people)) return "";
     var names = [];
     for(var i=0; i < people.length; ++i) {
       names.push(people[i].fullname);

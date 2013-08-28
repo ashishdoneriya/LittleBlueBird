@@ -191,6 +191,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   
   
   $scope.commasep = function(people) {
+    if(!angular.isDefined(people)) return "";
     var names = [];
     for(var i=0; i < people.length; ++i) {
       names.push(people[i].fullname);
@@ -366,13 +367,19 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   //             Think about Marian continually inviting Eric by email.  If we don't query by email first, we'll end up with tons of duplicate accounts for Eric!
   $scope.invite = function(newparticipant, circle) {
       $scope.maybepeople = User.query({email:newparticipant.email},
-                                      function() {
-                                        jQuery("#maybepeopleview").hide();
-			                              setTimeout(function(){
-			                                jQuery("#maybepeopleview").listview("refresh");
-			                                jQuery("#maybepeopleview").show();
-			                             },0);
-                                      });
+              function() {
+                if($scope.maybepeople.length == 1 && User.alreadyfriends($scope.maybepeople[0], $rootScope.user)) {
+                  $scope.selectthisparticipant($scope.maybepeople[0], $scope.newparticipant.participationLevel, false)
+                }
+                else {
+                  jQuery("#maybepeopleview").hide();
+                    setTimeout(function(){
+                      jQuery("#maybepeopleview").listview("refresh");
+                      jQuery("#maybepeopleview").show();
+                    },0);
+                }
+              }
+      );
   }
   
   
@@ -380,6 +387,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   $scope.initMyParticipation = function(user, circle) {
     $scope.userisparticipant = "true";
     $scope.userishonoree = "true";
+	console.log('initMyParticipation: circle=', circle);
     jQuery("#areyouparticipating").slider("refresh");
     jQuery("#areyouanhonoree").slider("refresh");
   }
@@ -388,20 +396,12 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   // not worrying yet about whether the person is a giver or receiver, assume receiver  2013-08-09
   // We DO know thought that if circle.receiverLimit = -1, that the person will be added as a receiver
   $scope.addparticipant = function(person, circle, participationLevel) {
-    if(!angular.isDefined(circle.participants))
-      circle.participants = {receivers:[], givers:[]};
-    var limitreached = circle.receiverLimit != -1 && circle.participants.receivers.length == circle.receiverLimit
-    var level = 'Receiver';
-    if(participationLevel == 'Giver' || limitreached) { 
-      circle.participants.givers.push(person); 
-      level = 'Giver';
-    }
-    else circle.participants.receivers.push(person);
-    
-    CircleParticipant.save({circleId:circle.id, inviterId:$rootScope.user.id, userId:person.id, participationLevel:level,
-                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, adder:$rootScope.user.fullname},
-                                         function() {circle.reminders = Reminder.query({circleId:circle.id})});
-      
+  
+    var parms = {user:person, circle:circle, inviter:$rootScope.user, saveParticipant:true, 
+                 onSuccessfulParticipantSave:refreshParticipants};
+    console.log('$scope.addparticipant: parms:', parms);
+    $scope.circle = Circle.addParticipant(parms);
+  
   }
   
   
@@ -513,6 +513,7 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     //The Javascript: initializing the scroller
     var xmasMillis = new Date(new Date().getFullYear(), 11, 25).getTime();
 	initdatepicker(xmasMillis);
+	console.log('initNewGift: $scope.circle=', $scope.circle);
   };
   
   
@@ -540,49 +541,59 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   // participants
   $scope.saveNewCircle = function(userisparticipant, userishonoree, user, circle) {
     circle.expirationdate = new Date(jQuery("#datepicker").mobiscroll('getDate'));
-    
-    if(!angular.isDefined(circle.participants))
-      circle.participants = {receivers:[], givers:[]};
+        
+	console.log('saveNewCircle: circle=', circle);
       
-    if(userisparticipant=='true') {
-      if(userishonoree=='true') circle.participants.receivers.push(user);
-      else if(userishonoree=='false') circle.participants.givers.push(user);
-      else circle.participants.receivers.push(user);
-    }
+    // CircleParticipant records are written at the time the circle is inserted.  Circle updates are different - participants are written independently of circle updates  
+    var parms = {userisparticipant:userisparticipant, userishonoree:userishonoree, user:user, circle:circle, saveParticipant:false}; // since this is a new circle, the participant will be saved at the same time the circle is inserted
+    circle = Circle.addParticipant(parms);
+    
+	console.log('saveNewCircle: userisparticipant: circle=', circle);
     
     
     // The saved circle should become the current circle if it isn't already
     $scope.circle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:circle.circleType, 
-                 creatorId:$rootScope.user.id},
+                 creatorId:$rootScope.user.id, participants:circle.participants},
                  function() {
-                     $rootScope.user.circles.push($scope.circle);
-                     circle.id = $scope.circle.id;
-                     
-                     // on brand new circles, where all are receivers, add the current user by default
-                     if(circle.receiverLimit == -1)
-                       circle.participants.receivers.push($rootScope.user);
-                     
-                     // since we are inserting, we have participants that need to be added to the event
-                     for(var i=0; i < circle.participants.receivers.length; i++) {
-                       CircleParticipant.save({circleId:$scope.circle.id, inviterId:$rootScope.user.id, userId:circle.participants.receivers[i].id, 
-                                         participationLevel:'Receiver', who:circle.participants.receivers[i].fullname, email:circle.participants.receivers[i].email, circle:circle.name, 
-                                         adder:$rootScope.user.fullname}
-                                         ); // CircleParticipant.save
-                     }
-                     for(var i=0; i < circle.participants.givers.length; i++) {
-                       CircleParticipant.save({circleId:$scope.circle.id, inviterId:$rootScope.user.id, userId:circle.participants.givers[i].id, 
-                                         participationLevel:'Giver', who:circle.participants.givers[i].fullname, email:circle.participants.givers[i].email, circle:circle.name, 
-                                         adder:$rootScope.user.fullname}
-                                         ); // CircleParticipant.save
-                     }
-                     $scope.circle.participants = circle.participants;
-                   
+                     console.log('JUST SAVED A NEW CIRCLE');
+                     $scope.circle.participants = circle.participants; // so we don't have to query the db
+                     if(Circle.userIsParticipating(user, circle))
+                       $rootScope.user.circles.push($scope.circle);
                      refreshParticipants();
                  },
                  function() {alert('Uh Oh - had a problem saving this event.\nIf this problem persists, contact us at info@littlebluebird.com');} 
              ); // Circle.save()
                
     
+  }
+  
+
+  // 2013-08-27  
+  $scope.beginDeleteParticipants = function(type) {
+    $scope.participationLevel = type;
+    $scope.participantstodelete = [];
+  }
+  
+  
+  // 2013-08-27 
+  $scope.prepareDeleteParticipant = function(person) {
+    if('checked' == jQuery("#deleteparticipant-"+person.id).attr('checked'))
+      $scope.participantstodelete.push(person);
+    else {
+      for(var i=0; i < $scope.participantstodelete.length; i++ ) {
+        var ff = $scope.participantstodelete[i].id;
+        if(ff == person.id) {
+          $scope.participantstodelete.splice(i, 1);
+          break;
+        }
+      }
+    }
+  }
+  
+  
+  // 2013-08-27 
+  $scope.deletehonoree = function(circle) {
+    $scope.removeParticipants(circle.participants.receivers, circle);
   }
   
   
@@ -638,6 +649,17 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
   }
   
   
+  // 2013-08-27 - We don't need to know Giver/Receiver, just remove the people from whatever list they are in
+  $scope.removeParticipants = function(people, circle) {
+    for(var i=0; i < people.length; ++i) {
+      CircleParticipant.delete({circleId:circle.id, userId:people[i].id}, function(){}); // not messing with success and fail functions 
+    }
+    
+    $scope.circle = Circle.removePeople(people, circle);
+    refreshParticipants();
+  }
+  
+  
   // taken from app-CircleModule.js: $rootScope.deletecircle() 2013-08-10
   // TODO delete reminders
   $rootScope.deleteevent = function(circle) {
@@ -680,6 +702,28 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     else if($scope.eventfilter=='current') return !circle.isExpired;
     else if($scope.eventfilter=='past') return circle.isExpired;
   }
+  
+  
+  // participants are either circle.participants.givers or circle.participants.receivers (see #participants)
+  // This page sets up booleans that tell #addremoveparticipants which buttons to display
+  $scope.prepAddRemoveParticipants = function(circle, participants, participationLevel) {
+      $scope.participants = participants;
+  
+      $scope.showDeleteReceiverButton = participationLevel == 'Receiver' && participants.length > 0;
+      $scope.showAddReceiverButton = participationLevel == 'Receiver' && !Circle.receiverLimitReached(circle);
+      $scope.deleteReceiverButton = circle.receiverLimit == -1 ? "Remove Participants" : "Remove Honoree";
+      $scope.addReceiverButton = circle.receiverLimit == -1 ? "Add Participants" : "Add Honoree";
+      
+      $scope.showDeleteGiverButton = participationLevel == 'Giver' && participants.length > 0;
+      $scope.showAddGiverButton = participationLevel == 'Giver' ;
+      $scope.deleteGiverButton = "Remove Guests";
+      $scope.addGiverButton = "Add Guests";
+      
+      console.log('$scope.showDeleteGiverButton', $scope.showDeleteGiverButton);
+  }
+  
+  
+  
   
   
   // 2013-07-26  copied/adapted from app-GiftCtrl's $scope.initNewGift() function
@@ -1294,6 +1338,11 @@ function($scope, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUse
     $scope.circle = circle;
     $scope.circleservice = Circle;
     alert(Circle);
+  }
+  
+  
+  $scope.seeform = function(form) {
+    console.log('form:', form);
   }
   
   

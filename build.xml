@@ -200,6 +200,12 @@
 		     <fileset file="fragments/html/gift2-nofooter.html" />
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
+
+		  <concat destfile="fragments/html/deletereceivers.html"
+		          force="yes">
+		     <fileset file="fragments/html/deletereceivers-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
 		
 	</target>
 	
@@ -248,6 +254,9 @@
 	     <fileset file="fragments/html/edititem.html" />
 	     <fileset file="fragments/html/gift2.html" />
 	     <fileset file="fragments/html/editrecipients.html" />
+	     <fileset file="fragments/html/deletereceivers.html" />
+	     <fileset file="fragments/html/deleteparticipants.html" />
+	     <fileset file="fragments/html/addremoveparticipants.html" />
 	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
 	</target>

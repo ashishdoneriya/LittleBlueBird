@@ -21,6 +21,11 @@
   }
   
   
+  $scope.seeform = function(form) {
+    console.log('form:', form);
+  }
+  
+  
   
   var testdate = new Date(new Date().getFullYear(), 11, 25);
   console.log('testdate: ', testdate);

@@ -28,6 +28,8 @@
     <script src="js/angular.js"></script>
     <script src="js/angular-resource.js"></script>
   
+    <script src="js/services/CircleParticipant.js"></script>
+    <script src="js/services/Circle.js"></script>
     <script src="js/services/Email.js"></script>
     <script src="js/services/Gift.js"></script>
     <script src="js/services/User.js"></script>
@@ -176,6 +178,8 @@
 		        <label for="passagain" class="ui-hidden-accessible">Password (again):</label>
     		    <input id="passagain" name="passagain" type="password" ng-model="newuser.passagain" placeholder="Password (again)" required/>
     		  </P>
+    		  <P>
+		          <a ng-href="#" ng-click="seeform(regForm)" data-role="button" data-theme="b">see form</a></P>
 		      <P>
 		        <span ng-hide="regForm.$invalid || (newuser.passagain != newuser.password && !regForm.passagain.$error.required)">
 		          <a ng-href="#welcome" ng-click="register(newuser)" data-role="button" data-theme="b">Register</a>
@@ -1233,10 +1237,21 @@
 		    <ul id="receiverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak style="margin-top:30px;">
 		      <li data-role="list-divider">
 	            
-	              <span ng-show="circle.receiverLimit == -1">Participants</span>
-	              <span ng-show="circle.receiverLimit == 1">Honoree</span>
-	              <span ng-show="circle.receiverLimit > 1">Honorees</span>
-		              
+	            <div class="ui-grid-a">
+                  <div class="ui-block-a">
+		              <span ng-show="circle.receiverLimit == -1">Participants</span>
+		              <span ng-show="circle.receiverLimit == 1">Honoree</span>
+		              <span ng-show="circle.receiverLimit > 1">Honorees</span>
+                  </div>
+                  <div class="ui-block-b" style="text-align:right;">
+                      <a data-role="button" ng-href="#addremoveparticipants" ng-click="prepAddRemoveParticipants(circle, circle.participants.receivers, 'Receiver')" data-icon="edit" data-iconpos="notext" class="ui-btn-right" data-theme="b" data-rel="dialog" data-transition="pop">Edit</a>
+                  </div>
+                </div>
+	            
+		      </li>
+		      <li ng-show="circle.participants.receivers.length==0">
+                No <span ng-show="circle.receiverLimit == -1">Participants</span>
+                <span ng-show="circle.receiverLimit != -1">Honorees</span> in this event
 		      </li>
 		      <li ng-repeat="participant in circle.participants.receivers">
 		         <a ng-href="#wishlist" ng-click="giftlist(circle, participant)">{{participant.fullname}}</a>
@@ -1256,7 +1271,14 @@
 	      <span ng-hide="circle.receiverLimit == -1">
 	      <div jquery-mobile-tpl>
 		    <ul id="giverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
-		      <li data-role="list-divider">Guests</li>
+		      <li data-role="list-divider">
+	            <div class="ui-grid-a">
+                  <div class="ui-block-a">Guests</div>
+                  <div class="ui-block-b" style="text-align:right;">
+                      <a data-role="button" ng-href="#addremoveparticipants" ng-click="prepAddRemoveParticipants(circle, circle.participants.givers, 'Giver')" data-icon="edit" data-iconpos="notext" class="ui-btn-right" data-theme="b" data-rel="dialog" data-transition="pop">Edit</a>
+                  </div>
+                </div>
+              </li>
 		      <li ng-repeat="participant in circle.participants.givers">
 		         <a ng-href="#confirmdeleteparticipant" ng-click="preparetoremove($index, participant, 'Giver')">{{participant.fullname}}</a>
 		      </li>
@@ -1268,7 +1290,6 @@
 	      <!-- END: Guests section (for those events that have them)   -->
 	      <!-- ------------------------------------------------------- -->
 	      
-	      <P><a href="#editparticipants" data-transition="slideup" data-role="button">Invite People</a></P>
 	      <P><a href="#confirmdeleteevent" data-transition="slideup" data-role="button">Delete Event</a></P>
 	  </span>
 	  
@@ -1322,7 +1343,7 @@
       Invite friends and family by email
 
 
-	  <form novalidate name="inviteForm">
+	  <form novalidate name="fooForm">
           <p>
 		    <label for="invitename" class="ui-hidden-accessible">Name:</label>
             <input id="invitename" name="invitename" type="text" ng-model="newparticipant.name" placeholder="Name" required/>
@@ -1333,43 +1354,50 @@
             <input id="inviteemail" name="inviteemail" type="email" ng-model="newparticipant.email" placeholder="Email" required/>
 	      </p>
 	      
-    	<span ng-show="circle.receiverLimit == 1">
-          <p>
-		        <label for="honoree01" data-inline="true">Is {{newparticipant.name}} the Honoree?</label>
-		        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
-		            <option value="Giver">No</option>
-		            <option value="Receiver">Yes</option>
-		        </select>
-	      </p>
-    	</span>
+	      <!--
+	      <P>
+	          <a ng-href="#" ng-click="seeform(fooForm)" data-role="button" data-theme="b">see form</a>
+		  </P>
+		  -->
+		  
 	      
-    	<span ng-show="circle.receiverLimit > 1">
-          <p>
-		        <label for="honoree01" data-inline="true">Is {{newparticipant.name}} one of the Honorees?</label>
-		        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
-		            <option value="Giver">No</option>
-		            <option value="Receiver">Yes</option>
-		        </select>
-	      </p>
-    	</span>
-    	
-    	<span ng-show="circle.receiverLimit == -1">
-          <p>
-		        <input type="hidden" ng-model="newparticipant.participationLevel">
-	      </p>
-    	</span>
-    	
-	    <P>
-	        <span ng-hide="inviteForm.$invalid">
+	      <span ng-show="circle.receiverLimit == 1">
+	          <p>
+			        <label for="honoree01" data-inline="true">Is {{newparticipant.name}} the Honoree?</label>
+			        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
+			            <option value="Giver">No</option>
+			            <option value="Receiver">Yes</option>
+			        </select>
+		      </p>
+	      </span>
+		      
+	      <span ng-show="circle.receiverLimit > 1">
+	          <p>
+			        <label for="honoree01" data-inline="true">Is {{newparticipant.name}} one of the Honorees?</label>
+			        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
+			            <option value="Giver">No</option>
+			            <option value="Receiver">Yes</option>
+			        </select>
+		      </p>
+	      </span>
+	    	
+	      <span ng-show="circle.receiverLimit == -1">
+	          <p>
+			        <input type="hidden" ng-model="newparticipant.participationLevel">
+		      </p>
+	      </span>
+		  
+	      <P>
+	        <span ng-hide="fooForm.$invalid">
 	          <a ng-href="#participants" ng-click="invite(newparticipant, circle)" data-role="button" data-theme="b">Invite</a>
 	        </span>
-	        <span ng-show="inviteForm.$invalid">
+	        <span ng-show="fooForm.$invalid">
 	          <button disabled="" data-role="button" data-theme="b">Invite</button>
 	        </span>
-		</P>
+		  </P>
 	  </form>
-
-
+	  
+	  
 	  
 	</div><!-- /content -->
 	
@@ -1416,7 +1444,7 @@
       <div jquery-mobile-tpl>
 	    <ul id="pfview" data-role="listview" data-filter="true" data-filter-reveal="true" data-filter-placeholder="Search and invite friends..." data-inset="true" repeat-done="" ng-cloak>
 	      <li ng-repeat="friend in user.friends">
-	        <a href="#participants" ng-click="addparticipant(friend, circle, 'Receiver')" data-transition="slide">
+	        <a href="#participants" ng-click="addparticipant(friend, circle, participationLevel)" data-transition="slide">
 	          {{friend.fullname}}
 	        </a>
 	      </li>
@@ -2879,6 +2907,135 @@ click on any of their names to see their list and the item that was just added -
 		    </div>
 	</div><!-- /content -->
 </div>
+
+<div id="deletereceivers" data-role="page" data-add-back-btn="true">
+
+
+	<div data-role="header" data-theme="b">
+		<h1>Remove</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  	  
+	    <fieldset data-role="controlgroup">
+	        <legend>Remove from this event</legend>
+	        
+	        <!-- participants is actually either circle.participants.givers or receivers -->
+			<span ng-repeat="r in participants">
+		        <input name="deleteparticipant-{{r.id}}" id="deleteparticipant-{{r.id}}" type="checkbox" ng-click="prepareDeleteParticipant(r)">
+		        <label for="deleteparticipant-{{r.id}}">{{r.fullname}}</label>
+			</span>
+	        
+	    </fieldset>
+	    
+	    <div ng-show="participantstodelete.length==0">
+	      <button disabled="">Remove People</button>
+	    </div>
+	    
+	    <div ng-show="participantstodelete.length > 0">
+	      <a data-role="button" ng-href="#participants" ng-click="removeParticipants(participantstodelete, circle)">Remove
+	        <span ng-show="participantstodelete.length > 1"> {{participantstodelete.length}} People</span>
+	        <span ng-show="participantstodelete.length == 1"> 1 Person</span>
+	      </a>
+	    </div>
+	  	  
+	  
+	</div><!-- /content -->
+
+
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a ng-href="#scanresults" data-role="button" ng-click="scan()" class="ui-btn-left">Scan</a>
+	  <a ng-href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird.com</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
+
+<div id="wwww" data-role="page">
+
+
+	<div data-role="header" data-theme="b">
+		<h1>Remove People</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  	  
+	  
+	  <!-- If there's only one honoree, we can just delete him here -->
+	  <span ng-show="circle.receiverLimit == 1 && circle.participants.receivers.length == 1">  
+	    <P><a data-role="button" ng-href="#participants" ng-click="deletehonoree(circle)" data-theme="b">Remove Honoree</a></P>
+	  </span>
+	  
+	  
+	  <!-- If there's more than one honoree, we have to send the user to a page with users and checkboxes so they can select who to remove -->
+	  <span ng-show="circle.receiverLimit > 1 && circle.participants.receivers.length > 1">  
+	    <P><a data-role="button" href="#deletereceivers" ng-click="beginDeleteParticipants('Receiver')" data-theme="b">Remove Honoree</a></P>
+	  </span>
+	    
+	  <span ng-show="circle.receiverLimit != -1 && circle.participants.givers.length > 0">  
+	    <P><a data-role="button" ng-href="#deletereceivers" ng-click="beginDeleteParticipants('Giver')" data-theme="b">Remove Guests</a></P>
+	  </span>
+	  
+	</div><!-- /content -->
+
+
+</div>
+
+<div id="addremoveparticipants" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Recipients</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	
+      
+      <div ng-show="showAddReceiverButton">
+        <a ng-href="#editparticipants" data-role="button" data-theme="b">{{addReceiverButton}}</a>
+      </div>
+      
+      <div ng-show="showDeleteReceiverButton">
+        <a data-role="button" ng-href="#deletereceivers" ng-click="beginDeleteParticipants('Receiver')" data-theme="b">{{deleteReceiverButton}}</a>
+      </div>
+      
+      <div ng-show="showAddGiverButton">
+        <a ng-href="#editparticipants" data-role="button" data-theme="b">{{addGiverButton}}</a>
+      </div>
+      
+      <div ng-show="showDeleteGiverButton">
+        <a data-role="button" ng-href="#deletereceivers" ng-click="beginDeleteParticipants('Giver')" data-theme="b">{{deleteGiverButton}}</a>
+      </div>
+	
+		  
+	</div><!-- /content -->
+
+</div>
+	
     <script>
         document.addEventListener('deviceready', function() {
                 try {

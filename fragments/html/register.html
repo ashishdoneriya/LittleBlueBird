@@ -28,6 +28,8 @@
 		        <label for="passagain" class="ui-hidden-accessible">Password (again):</label>
     		    <input id="passagain" name="passagain" type="password" ng-model="newuser.passagain" placeholder="Password (again)" required/>
     		  </P>
+    		  <P>
+		          <a ng-href="#" ng-click="seeform(regForm)" data-role="button" data-theme="b">see form</a></P>
 		      <P>
 		        <span ng-hide="regForm.$invalid || (newuser.passagain != newuser.password && !regForm.passagain.$error.required)">
 		          <a ng-href="#welcome" ng-click="register(newuser)" data-role="button" data-theme="b">Register</a>

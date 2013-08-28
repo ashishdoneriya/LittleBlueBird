@@ -21,8 +21,8 @@
 	        We found a '{{maybepeople[0].fullname}}' having the email address you entered.  Is this who you're looking for?
 	      
 		    <div class="ui-grid-a">
-		      <div class="ui-block-b"><a data-role="button" ng-href="#" ng-click="selectthisparticipant(newparticipant, newparticipant.participationLevel, true)">No</a></div>
-		      <div class="ui-block-b"><a data-role="button" ng-href="#" ng-click="selectthisparticipant(maybepeople[0], newparticipant.participationLevel, false)" data-theme="b">Yes</a></div>
+		      <div class="ui-block-b"><a data-role="button" ng-href="#" ng-click="selectthisparticipant(newparticipant, participationLevel, true)">No</a></div>
+		      <div class="ui-block-b"><a data-role="button" ng-href="#" ng-click="selectthisparticipant(maybepeople[0], participationLevel, false)" data-theme="b">Yes</a></div>
 			</div>
 			
 	      </span>
@@ -33,14 +33,14 @@
 	      <div jquery-mobile-tpl>
 		    <ul id="maybepeopleview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
 		      <li ng-repeat="somebody in maybepeople">
-		        <a href="#" ng-click="selectthisparticipant(somebody, newparticipant.participationLevel, false)" data-transition="slide">
+		        <a href="#" ng-click="selectthisparticipant(somebody, participationLevel, false)" data-transition="slide">
 		          {{somebody.fullname}}
 		        </a>
 		      </li>
 		    </ul>
 		  </div>
 	      
-	      <P><a data-role="button" ng-href="#" ng-click="selectthisparticipant(newparticipant, newparticipant.participationLevel, true)" data-theme="a">Not Found</a></P>
+	      <P><a data-role="button" ng-href="#" ng-click="selectthisparticipant(newparticipant, participationLevel, true)" data-theme="a">Not Found</a></P>
 	      </span>
 	      
 	  </span>
@@ -68,9 +68,10 @@
 	            
 	            <div class="ui-grid-a">
                   <div class="ui-block-a">
-		              <span ng-show="circle.receiverLimit == -1">Participants</span>
+		            <h4><span ng-show="circle.receiverLimit == -1">Participants</span>
 		              <span ng-show="circle.receiverLimit == 1">Honoree</span>
 		              <span ng-show="circle.receiverLimit > 1">Honorees</span>
+		            </h4>
                   </div>
                   <div class="ui-block-b" style="text-align:right;">
                       <a data-role="button" ng-href="#addremoveparticipants" ng-click="prepAddRemoveParticipants(circle, circle.participants.receivers, 'Receiver')" data-icon="edit" data-iconpos="notext" class="ui-btn-right" data-theme="b" data-rel="dialog" data-transition="pop">Edit</a>
@@ -102,7 +103,7 @@
 		    <ul id="giverview" data-role="listview" data-inset="true" repeat-done="" ng-cloak>
 		      <li data-role="list-divider">
 	            <div class="ui-grid-a">
-                  <div class="ui-block-a">Guests</div>
+                  <div class="ui-block-a"><h4>Guests</h4></div>
                   <div class="ui-block-b" style="text-align:right;">
                       <a data-role="button" ng-href="#addremoveparticipants" ng-click="prepAddRemoveParticipants(circle, circle.participants.givers, 'Giver')" data-icon="edit" data-iconpos="notext" class="ui-btn-right" data-theme="b" data-rel="dialog" data-transition="pop">Edit</a>
                   </div>

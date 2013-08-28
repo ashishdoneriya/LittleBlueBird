@@ -38,6 +38,7 @@ angular.module('Circle', ['ngResource', 'CircleParticipant'])
         var userisparticipant = parms.userisparticipant;
         var userishonoree = parms.userishonoree;
         var newparticipant = parms.user;
+        var level = parms.level;
         var inviter = parms.inviter;
         var circle = parms.circle;
         var saveParticipant = parms.saveParticipant;
@@ -47,8 +48,6 @@ angular.module('Circle', ['ngResource', 'CircleParticipant'])
         if(Circle.alreadyParticipating(circle, newparticipant))
           return circle;
           
-        var level = 'Receiver';
-        
         if(angular.isDefined(userisparticipant)) {
 		    if(userisparticipant=='true') {
 		      if(userishonoree=='true') {circle.participants.receivers.push(newparticipant); level = 'Receiver';}
@@ -56,12 +55,14 @@ angular.module('Circle', ['ngResource', 'CircleParticipant'])
 		      else  {circle.participants.receivers.push(newparticipant); level = 'Receiver';}
 		    }
 		}
-		else {
+		else if(!angular.isDefined(level)) {
 		    // when the newparticipant isn't explicitly classified as either Giver or Receiver, assume Receiver.  If we've reached the limit on Receivers
 		    // then make the newparticipant a Giver
 		    if(Circle.receiverLimitReached(circle))  {circle.participants.givers.push(newparticipant); level = 'Giver';}
 		    else  {circle.participants.receivers.push(newparticipant); level = 'Receiver';}
 		}
+		else if(level == 'Receiver') circle.participants.receivers.push(newparticipant);
+		else circle.participants.givers.push(newparticipant);
 		
 		if(angular.isDefined(saveParticipant)) {
 				    

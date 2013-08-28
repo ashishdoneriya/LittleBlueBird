@@ -99,6 +99,14 @@
         console.log('$scope.circle', $scope.circle);
       }
       else {
+      
+	    var parms = {user:person, circle:$scope.circle, inviter:$rootScope.user, saveParticipant: $scope.circle.id!=null, 
+	                 onSuccessfulParticipantSave:refreshParticipants, level:participationLevel};
+	    console.log('$scope.selectthisparticipant: parms:', parms);
+	    $scope.circle = Circle.addParticipant(parms);
+  
+      
+        /****************************************************************
         if(participationLevel == 'Receiver') $scope.circle.participants.receivers.push(person);
         else $scope.circle.participants.givers.push(person);
         
@@ -113,6 +121,7 @@
 	    }
                                     
         refreshParticipants();
+        ****************************************************************/
       }
       
   }
@@ -346,6 +355,7 @@
   // This page sets up booleans that tell #addremoveparticipants which buttons to display
   $scope.prepAddRemoveParticipants = function(circle, participants, participationLevel) {
       $scope.participants = participants;
+      $scope.participationLevel = participationLevel;
   
       $scope.showDeleteReceiverButton = participationLevel == 'Receiver' && participants.length > 0;
       $scope.showAddReceiverButton = participationLevel == 'Receiver' && !Circle.receiverLimitReached(circle);

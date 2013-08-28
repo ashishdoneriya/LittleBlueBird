@@ -1,0 +1,31 @@
+
+
+<div id="wwww" data-role="page">
+
+
+	<div data-role="header" data-theme="b">
+		<h1>Remove People</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  	  
+	  
+	  <!-- If there's only one honoree, we can just delete him here -->
+	  <span ng-show="circle.receiverLimit == 1 && circle.participants.receivers.length == 1">  
+	    <P><a data-role="button" ng-href="#participants" ng-click="deletehonoree(circle)" data-theme="b">Remove Honoree</a></P>
+	  </span>
+	  
+	  
+	  <!-- If there's more than one honoree, we have to send the user to a page with users and checkboxes so they can select who to remove -->
+	  <span ng-show="circle.receiverLimit > 1 && circle.participants.receivers.length > 1">  
+	    <P><a data-role="button" href="#deletereceivers" ng-click="beginDeleteParticipants('Receiver')" data-theme="b">Remove Honoree</a></P>
+	  </span>
+	    
+	  <span ng-show="circle.receiverLimit != -1 && circle.participants.givers.length > 0">  
+	    <P><a data-role="button" ng-href="#deletereceivers" ng-click="beginDeleteParticipants('Giver')" data-theme="b">Remove Guests</a></P>
+	  </span>
+	  
+	</div><!-- /content -->
+
+
+</div>

@@ -1,0 +1,32 @@
+
+
+<div id="addremoveparticipants" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Recipients</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	
+      
+      <div ng-show="showAddReceiverButton">
+        <a ng-href="#editparticipants" data-role="button" data-theme="b">{{addReceiverButton}}</a>
+      </div>
+      
+      <div ng-show="showDeleteReceiverButton">
+        <a data-role="button" ng-href="#deletereceivers" ng-click="beginDeleteParticipants('Receiver')" data-theme="b">{{deleteReceiverButton}}</a>
+      </div>
+      
+      <div ng-show="showAddGiverButton">
+        <a ng-href="#editparticipants" data-role="button" data-theme="b">{{addGiverButton}}</a>
+      </div>
+      
+      <div ng-show="showDeleteGiverButton">
+        <a data-role="button" ng-href="#deletereceivers" ng-click="beginDeleteParticipants('Giver')" data-theme="b">{{deleteGiverButton}}</a>
+      </div>
+	
+		  
+	</div><!-- /content -->
+
+</div>
+	

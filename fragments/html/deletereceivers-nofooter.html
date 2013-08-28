@@ -1,0 +1,38 @@
+
+
+<div id="deletereceivers" data-role="page" data-add-back-btn="true">
+
+
+	<div data-role="header" data-theme="b">
+		<h1>Remove</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  	  
+	    <fieldset data-role="controlgroup">
+	        <legend>Remove from this event</legend>
+	        
+	        <!-- participants is actually either circle.participants.givers or receivers -->
+			<span ng-repeat="r in participants">
+		        <input name="deleteparticipant-{{r.id}}" id="deleteparticipant-{{r.id}}" type="checkbox" ng-click="prepareDeleteParticipant(r)">
+		        <label for="deleteparticipant-{{r.id}}">{{r.fullname}}</label>
+			</span>
+	        
+	    </fieldset>
+	    
+	    <div ng-show="participantstodelete.length==0">
+	      <button disabled="">Remove People</button>
+	    </div>
+	    
+	    <div ng-show="participantstodelete.length > 0">
+	      <a data-role="button" ng-href="#participants" ng-click="removeParticipants(participantstodelete, circle)">Remove
+	        <span ng-show="participantstodelete.length > 1"> {{participantstodelete.length}} People</span>
+	        <span ng-show="participantstodelete.length == 1"> 1 Person</span>
+	      </a>
+	    </div>
+	  	  
+	  
+	</div><!-- /content -->
+
+
+	

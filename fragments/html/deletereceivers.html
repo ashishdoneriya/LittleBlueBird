@@ -1,0 +1,69 @@
+
+
+<div id="deletereceivers" data-role="page" data-add-back-btn="true">
+
+
+	<div data-role="header" data-theme="b">
+		<h1>Remove</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  	  
+	    <fieldset data-role="controlgroup">
+	        <legend>Remove from this event</legend>
+	        
+	        <!-- participants is actually either circle.participants.givers or receivers -->
+			<span ng-repeat="r in participants">
+		        <input name="deleteparticipant-{{r.id}}" id="deleteparticipant-{{r.id}}" type="checkbox" ng-click="prepareDeleteParticipant(r)">
+		        <label for="deleteparticipant-{{r.id}}">{{r.fullname}}</label>
+			</span>
+	        
+	    </fieldset>
+	    
+	    <div ng-show="participantstodelete.length==0">
+	      <button disabled="">Remove People</button>
+	    </div>
+	    
+	    <div ng-show="participantstodelete.length > 0">
+	      <a data-role="button" ng-href="#participants" ng-click="removeParticipants(participantstodelete, circle)">Remove
+	        <span ng-show="participantstodelete.length > 1"> {{participantstodelete.length}} People</span>
+	        <span ng-show="participantstodelete.length == 1"> 1 Person</span>
+	      </a>
+	    </div>
+	  	  
+	  
+	</div><!-- /content -->
+
+
+	
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a ng-href="#scanresults" data-role="button" ng-click="scan()" class="ui-btn-left">Scan</a>
+	  <a ng-href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+		
+      <h4>LittleBlueBird.com</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
+        <h4>My Account</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+        </ul>
+        <h4>Who Are We</h4>
+        <ul data-role="listview" data-theme="a">
+	        <li data-icon="false"><a style="margin-left:10px;" href="#contactus" data-mini="true">Contact Us</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>

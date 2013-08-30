@@ -3,11 +3,12 @@
   // 2013-08-08  But what if the email address is already in the database?  This call would create a second account for this person erroneously
   //			 We have to query by email first and return all people found so the user can choose "Yes, it's one of these people" or "No, not any of these people"
   //             Think about Marian continually inviting Eric by email.  If we don't query by email first, we'll end up with tons of duplicate accounts for Eric!
-  $scope.invite = function(newparticipant, circle) {
+  $scope.invite = function(newparticipant, circle, participationLevel) {
+      $scope.loading = true;
       $scope.maybepeople = User.query({email:newparticipant.email},
               function() {
                 if($scope.maybepeople.length == 1 && User.alreadyfriends($scope.maybepeople[0], $rootScope.user)) {
-                  $scope.selectthisparticipant($scope.maybepeople[0], $scope.newparticipant.participationLevel, false)
+                  $scope.selectthisparticipant($scope.maybepeople[0], participationLevel, false)
                 }
                 else {
                   jQuery("#maybepeopleview").hide();
@@ -16,7 +17,9 @@
                       jQuery("#maybepeopleview").show();
                     },0);
                 }
-              }
+                delete $scope.loading;
+              },
+              function() { delete $scope.loading; }
       );
   }
   
@@ -54,10 +57,93 @@
     c.participants = CircleParticipant.query({circleId:c.id},
                         function() {
                           $scope.circle = c;
+                          $scope.circle.participants = c.participants
                           console.log(JSON.stringify(c))
                           refreshParticipants();
                         }
                      );
+  }
+  
+  
+  $scope.choosethiscircle = function(c) {
+    $scope.chosencircle = c;
+    $scope.participantstoadd = []; // these are the people from 'chosencircle' that will be added to circle
+    $scope.chosencircle.participants = CircleParticipant.query({circleId:c.id},
+        function() {
+                                           
+	        jQuery("#addfromthiseventview").hide();
+	          setTimeout(function(){
+	            jQuery("#addfromthiseventview").listview("refresh");
+	            jQuery("#addfromthiseventview").show();
+	         },0);
+                        
+        }
+    );
+    $scope.selectAllButton = "Select All";
+  }
+  
+  
+  $scope.refreshOtherEventsList = function() {
+               
+	        jQuery("#addfromtheseeventsview").hide();
+	          setTimeout(function(){
+	            jQuery("#addfromtheseeventsview").listview("refresh");
+	            jQuery("#addfromtheseeventsview").show();
+	         },0);
+  }
+  
+  
+  // 2013-08-29
+  $scope.prepareAddParticipant = function(person) {
+    if('checked' == jQuery("#addthisparticipant-"+person.id).attr('checked'))
+      $scope.participantstoadd.push(person);
+    else {
+      for(var i=0; i < $scope.participantstoadd.length; ++i) {
+        if($scope.participantstoadd[i].id == person.id) {
+          $scope.participantstoadd.splice(i, 1);
+          break;
+        }
+      }
+    }
+  }
+  
+  
+  // 2013-08-29
+  $scope.selectAll = function(circle) {
+    var selected = false
+    if($scope.selectAllButton=='Select All') {
+      $scope.selectAllButton='Unselect All';
+      selected = true;
+    }
+    else {
+      $scope.selectAllButton='Select All';
+      selected = false;
+    }
+    
+    // without this, you're going to run into trouble if the user checks a few boxes and then click "Select All"
+    if(selected) $scope.participantstoadd.splice(0, $scope.participantstoadd.length);
+  
+    for(var i=0; i < circle.participants.receivers.length; ++i) {
+      var person = circle.participants.receivers[i];
+      jQuery("#addthisparticipant-"+person.id).trigger('create');
+      console.log("checkbox", jQuery("#addthisparticipant-"+person.id)[0].checked);
+      jQuery("#addthisparticipant-"+person.id)[0].checked=selected;
+      $scope.prepareAddParticipant(person);
+    }
+    for(var i=0; i < circle.participants.givers.length; ++i) {
+      var person = circle.participants.receivers[i];
+      jQuery("#addthisparticipant-"+person.id).trigger('create');
+      console.log("checkbox", jQuery("#addthisparticipant-"+person.id)[0].checked);
+      jQuery("#addthisparticipant-"+person.id)[0].checked=selected;
+      $scope.prepareAddParticipant(person);
+    }
+  }
+  
+  
+  // 2013-08-29
+  $scope.addParticipants = function(people, circle, level) {
+    var parms = {people:people, circle:circle, level:level, inviter:$rootScope.user, successFn:refreshParticipants};
+    Circle.addParticipants(parms);
   }
   
   
@@ -104,24 +190,6 @@
 	                 onSuccessfulParticipantSave:refreshParticipants, level:participationLevel};
 	    console.log('$scope.selectthisparticipant: parms:', parms);
 	    $scope.circle = Circle.addParticipant(parms);
-  
-      
-        /****************************************************************
-        if(participationLevel == 'Receiver') $scope.circle.participants.receivers.push(person);
-        else $scope.circle.participants.givers.push(person);
-        
-        console.log('$scope.circle', $scope.circle);
-      
-        // 2013-08-08  took this code from app-CircleModule.js
-	    // if the circle already exists, add the participant to the db immediately
-	    if(angular.isDefined($scope.circle.id)) {
-	      CircleParticipant.save({circleId:$scope.circle.id, inviterId:$rootScope.user.id, userId:person.id, participationLevel:participationLevel,
-	                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:$scope.circle.name, adder:$rootScope.user.fullname},
-	                                         function() {$scope.circle.reminders = Reminder.query({circleId:$scope.circle.id})});
-	    }
-                                    
-        refreshParticipants();
-        ****************************************************************/
       }
       
   }
@@ -138,6 +206,15 @@
           setTimeout(function(){
             jQuery("#giverview").listview("refresh");
             jQuery("#giverview").show();
+         },0);
+  }
+  
+  
+  refreshParticipantsToDelete = function() {                     
+        jQuery("#participantsToDelete").hide();
+          setTimeout(function(){
+            jQuery("#participantsToDelete").listview("refresh");
+            jQuery("#participantsToDelete").show();
          },0);
   }
   
@@ -219,6 +296,7 @@
   $scope.beginDeleteParticipants = function(type) {
     $scope.participationLevel = type;
     $scope.participantstodelete = [];
+    refreshParticipantsToDelete();
   }
   
   

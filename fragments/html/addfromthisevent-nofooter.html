@@ -1,0 +1,56 @@
+
+
+<div id="addfromthisevent" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Add</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	  
+	  Add people from this event
+	  
+      <div jquery-mobile-tpl>
+	    <ul id="addfromthiseventview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="">
+	      <li ng-repeat="p in chosencircle.participants.receivers" ng-cloak>
+	          <!-- checkbox list of people -->
+			  <input name="addthisparticipant-{{p.id}}" id="addthisparticipant-{{p.id}}" type="checkbox" ng-click="prepareAddParticipant(p)">
+			  <label for="addthisparticipant-{{p.id}}">{{p.fullname}}</label>
+	      </li>
+	      <li ng-repeat="p in chosencircle.participants.givers" ng-cloak>
+	          <!-- checkbox list of people -->
+			  <input name="addthisparticipant-{{p.id}}" id="addthisparticipant-{{p.id}}" type="checkbox" ng-click="prepareAddParticipant(p)">
+			  <label for="addthisparticipant-{{p.id}}">{{p.fullname}}</label>
+	      </li>
+	    </ul>
+	  </div>
+	 
+	  <div><a ng-href="#" data-role="button" ng-click="selectAll(chosencircle)">{{selectAllButton}}</a></div>
+		
+	  <div ng-hide="participationLevel=='Receiver' && circle.receiverLimit != -1 && (participantstoadd.length > circle.receiverLimit)"> 
+		  <div ng-show="participantstoadd.length==0">
+		      <button disabled="">Add People</button>
+		  </div>
+		    
+		  <div ng-show="participantstoadd.length > 0">
+		      <a data-role="button" ng-href="#participants" ng-click="addParticipants(participantstoadd, circle, participationLevel)">Add
+		        <span ng-show="participantstoadd.length > 1"> {{participantstoadd.length}} People</span>
+		        <span ng-show="participantstoadd.length == 1"> 1 Person</span>
+		      </a>
+		  </div>
+	  </div>
+	  
+	  <div ng-show="participationLevel=='Receiver' && circle.receiverLimit != -1 && (participantstoadd.length > circle.receiverLimit)"> 
+	    This event only allows {{circle.receiverLimit}} Honoree<span ng-show="circle.receiverLimit > 1">s</span>
+	    <P>
+	      You need to uncheck {{participantstoadd.length - circle.receiverLimit}} 
+	      <span ng-show="participantstoadd.length - circle.receiverLimit == 1">person</span>
+	      <span ng-show="participantstoadd.length - circle.receiverLimit > 1">people</span>
+	    </P>
+	  </div>
+	  
+	  
+	</div><!-- /content -->
+
+
+	

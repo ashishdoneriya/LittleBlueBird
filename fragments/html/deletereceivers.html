@@ -11,12 +11,17 @@
 	  	  
 	    <fieldset data-role="controlgroup">
 	        <legend>Remove from this event</legend>
-	        
-	        <!-- participants is actually either circle.participants.givers or receivers -->
-			<span ng-repeat="r in participants">
-		        <input name="deleteparticipant-{{r.id}}" id="deleteparticipant-{{r.id}}" type="checkbox" ng-click="prepareDeleteParticipant(r)">
-		        <label for="deleteparticipant-{{r.id}}">{{r.fullname}}</label>
-			</span>
+	      
+	      
+		    <div jquery-mobile-tpl>
+			    <ul id="participantsToDelete" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
+			      <li ng-repeat="r in participants" style="padding:0px;border:0px;">
+			        <input name="deleteparticipant-{{r.id}}" id="deleteparticipant-{{r.id}}" type="checkbox" ng-click="prepareDeleteParticipant(r)">
+			        <label for="deleteparticipant-{{r.id}}">{{r.fullname}}</label>
+			      </li>
+			    </ul>
+			</div>
+	      
 	        
 	    </fieldset>
 	    

@@ -29,36 +29,10 @@
 		  </P>
 		  -->
 		  
-	      
-	      <span ng-show="circle.receiverLimit == 1">
-	          <p>
-			        <label for="honoree01" data-inline="true">Is {{newparticipant.name}} the Honoree?</label>
-			        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
-			            <option value="Giver">No</option>
-			            <option value="Receiver">Yes</option>
-			        </select>
-		      </p>
-	      </span>
-		      
-	      <span ng-show="circle.receiverLimit > 1">
-	          <p>
-			        <label for="honoree01" data-inline="true">Is {{newparticipant.name}} one of the Honorees?</label>
-			        <select name="honoree01" id="honoree01" data-role="slider" ng-model="newparticipant.participationLevel" data-inline="true" class="ui-btn-right">
-			            <option value="Giver">No</option>
-			            <option value="Receiver">Yes</option>
-			        </select>
-		      </p>
-	      </span>
-	    	
-	      <span ng-show="circle.receiverLimit == -1">
-	          <p>
-			        <input type="hidden" ng-model="newparticipant.participationLevel">
-		      </p>
-	      </span>
 		  
 	      <P>
 	        <span ng-hide="fooForm.$invalid">
-	          <a ng-href="#participants" ng-click="invite(newparticipant, circle)" data-role="button" data-theme="b">Invite</a>
+	          <a ng-href="#participants" ng-click="invite(newparticipant, circle, participationLevel)" data-role="button" data-theme="b">Invite</a>
 	        </span>
 	        <span ng-show="fooForm.$invalid">
 	          <button disabled="" data-role="button" data-theme="b">Invite</button>

@@ -9,6 +9,7 @@ angular.module('Circle', ['ngResource', 'CircleParticipant'])
                     });
         
       
+      // 2013-08-29
       Circle.initParticipants = function(circle) {
         if(!angular.isDefined(circle.participants))
           circle.participants = {receivers:[], givers:[]};
@@ -19,6 +20,8 @@ angular.module('Circle', ['ngResource', 'CircleParticipant'])
         return circle;
       }
       
+      
+      // 2013-08-29
       Circle.alreadyParticipating = function(circle, person) {
         for(var i=0; i < circle.participants.receivers.length; ++i) {
           if(circle.participants.receivers[i].id == person.id) {
@@ -34,6 +37,37 @@ angular.module('Circle', ['ngResource', 'CircleParticipant'])
       }
       
       
+      // 2013-08-29
+      Circle.addParticipants = function(parms) {
+        var people = parms.people;
+        var circle = parms.circle;
+        var level = parms.level;
+        var inviter = parms.inviter;
+        var successFn = parms.successFn;
+        
+        // can assumed that circle.participants has already been init-ed because you can't get to this fn
+        // except by way of the #participants page
+        for(var i=0; i < people.length; i++) {
+          if(!Circle.alreadyParticipating(circle, people[i])) {
+          
+		    if(level=='Giver') parms.circle.participants.givers.push(people[i]);
+		    else parms.circle.participants.receivers.push(people[i]);
+		                                           
+            console.log('parms.people[i]: ', parms.people[i]);
+		    CircleParticipant.save({circleId:circle.id, inviterId:inviter.id, userId:people[i].id, participationLevel:level,
+		                                         who:inviter.fullname, notifyonaddtoevent:people[i].notifyonaddtoevent, email:people[i].email, circle:circle.name, adder:inviter.fullname},
+		                                         function() {
+		                                           // don't mess with reminders right now
+		                                           // YOU CAN'T REFER TO LOOP VARIABLES HERE BECAUSE THIS IS A CALLBACK FN
+		                                           successFn();
+		                                         });
+            
+          }
+        }
+      }
+      
+      
+      // 2013-08-29
       Circle.addParticipant = function(parms) {
         var userisparticipant = parms.userisparticipant;
         var userishonoree = parms.userishonoree;
@@ -64,7 +98,7 @@ angular.module('Circle', ['ngResource', 'CircleParticipant'])
 		else if(level == 'Receiver') circle.participants.receivers.push(newparticipant);
 		else circle.participants.givers.push(newparticipant);
 		
-		if(angular.isDefined(saveParticipant)) {
+		if(angular.isDefined(saveParticipant) && saveParticipant) {
 				    
 		    CircleParticipant.save({circleId:circle.id, inviterId:inviter.id, userId:newparticipant.id, participationLevel:level,
 		                                         who:inviter.fullname, notifyonaddtoevent:newparticipant.notifyonaddtoevent, email:newparticipant.email, circle:circle.name, adder:inviter.fullname},

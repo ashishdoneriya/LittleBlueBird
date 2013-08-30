@@ -10,6 +10,19 @@
 	  
 	  Invite people from which event?
 	  
+	  
+      <div jquery-mobile-tpl>
+	    <ul id="addfromtheseeventsview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="">
+	      <li ng-repeat="c in user.circles | filter:c.id!=circle.id" ng-cloak> <!-- notice how we filter out the current event. Makes no sense to add from another event and include the current event in that list -->
+	        <a href="#addfromthisevent" ng-click="choosethiscircle(c)" data-transition="slide">
+	          <p><h4>{{c.name}}</h4></p>
+	          <p>{{c.date | date:'MMM d, yyyy'}}</p>
+	        </a>
+	      </li>
+	    </ul>
+	  </div>
+	  
+	  
 	</div><!-- /content -->
 
 

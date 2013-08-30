@@ -206,6 +206,12 @@
 		     <fileset file="fragments/html/deletereceivers-nofooter.html" />
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
+
+		  <concat destfile="fragments/html/addfromthisevent.html"
+		          force="yes">
+		     <fileset file="fragments/html/addfromthisevent-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
 		
 	</target>
 	
@@ -257,6 +263,7 @@
 	     <fileset file="fragments/html/deletereceivers.html" />
 	     <fileset file="fragments/html/deleteparticipants.html" />
 	     <fileset file="fragments/html/addremoveparticipants.html" />
+	     <fileset file="fragments/html/addfromthisevent.html" />
 	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
 	</target>
@@ -273,7 +280,7 @@
 	     <fileset file="fragments/js/gift.js" />
 		 <fileset file="fragments/js/nav.js" />
 		 <fileset file="fragments/js/barcode.js" />
-		 <!-- fileset file="fragments/js/test.js" / --> <!-- not for production -->
+		 <fileset file="fragments/js/test.js" /> <!-- not for production -->
 	     <fileset file="fragments/js/bottom.js" />
 	  </concat>
 	</target>

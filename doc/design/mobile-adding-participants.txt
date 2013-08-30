@@ -1,0 +1,228 @@
+How a circle gets created...
+
+events-nofooter contains a link in the header to #addevent
+
+addevent-nofooter contains several links, all to #setnameanddate
+Each link also fires the js fn: initNewEvent
+
+initNewEvent creates the $scope.circle and sets the receiverLimit and circleType
+initNewEvent also inits the mobiscroll datepicker
+
+setnameanddate-nofooter:  Here you set the name and date of the event
+There are 2 sets of buttons - one for when the circle doesn't exist yet
+and one for when the circle already exists.
+
+When the circle doesn't exist yet, there is a Next button that takes you to #areyouparticipating
+
+Clicking the Next button also fires the js fn initMyParticipation()
+
+initMyParticipation() sets initial values for:
+    $scope.userisparticipant = "true";
+    $scope.userishonoree = "true";
+
+These are the initial values of the flip switches on areyouparticipating-nofooter.  These flip switches make
+the user define his involvement in the event so that he doesn't forget about himself.
+
+areyouparticipating-nofooter contains a Next button that goes to #participants and fires the
+js fn: saveNewCircle
+
+saveNewCircle takes the values from the flip switched, plus the current user, plus the new circle
+and sends all that stuff to Circle.addParticipant().  There's also a parm called saveParticipant that
+is set to false.
+
+If saveParticipant isn't included, Circle.addParticipant() will also try to call CircleParticipant.save()
+THIS WON'T WORK BECAUSE THE CIRCLE HASN'T BEEN SAVED YET.
+So we pass in saveParticipant:false to tell Circle.addParticipant() that the current user should only
+be added to the js $scope.circle
+
+In saveNewCircle, after the call to Circle.addParticipant(), we call $scope.circle = Circle.save()
+and pass circle.participants to Circle.save()
+
+Of course, circle.participants only contains the current user (either as a 'Giver' or 'Receiver')
+
+Circle.save() saves the circle and then saves circle.participants
+
+THIS IS THE END:  THE NEW CIRCLE HAS BEEN CREATED
+
+==================================================================================================
+
+Now what happens when the user tries to add people to an existing circle?
+
+participants-nofooter displays either 1 or 2 sections: Either a single section called "Participants"
+or 2 sections where one is "Honorees" and the other is "Guests"
+
+Both of these sections contain a little edit button/icon in the top right of the respective listview
+
+Each edit button goes to #addremoveparticipants (a pop up dialog/lightbox) and calls either:
+prepAddRemoveParticipants(circle, circle.participants.receivers, 'Receiver')
+or
+prepAddRemoveParticipants(circle, circle.participants.givers, 'Giver')
+
+
+prepAddRemoveParticipants() sets up the buttons on the #addremoveparticipants page
+prepAddRemoveParticipants has to figure out which buttons to show:
+  - Add Honoree (or Participant)
+  - Remove Honoree (or Participant)
+  - Add Guest
+  - Remove Guest
+
+prepAddRemoveParticipants looks at the participationLevel (Giver/Receiver) arg to figure out whether to
+show the Honoree or Guest set of buttons
+
+Within each set, prepAddRemoveParticipants also figures out if it's appropriate to show the Add button
+and if it's appropriate to show the Remove button.
+
+For example, if there is already an Honoree chosen for a birthday event, prepAddRemoveParticipants is not
+going to show an Add Honoree button
+
+Likewise, if a birthday event doesn't yet have an honoree selected, prepAddRemoveParticipants is not
+going to show a Remove Honoree button.
+
+Same goes for the Add/Remove Guest buttons, except that there is no limit to the number of Guests an event can have
+
+=====================================================================================================
+
+CASE: ADDING AN HONOREE
+
+User clicks the Edit icon in the Honoree section
+
+#addremoveparticipants display an Add Honoree button that points to #editparticipants
+
+editparticipants-nofooter displays 3 buttons: Search, Invite By Email, and Invite From Another Event (not yet implemented)
+
+=====================================================================================================
+
+CASE: ADDING AN HONOREE BY NAME/EMAIL
+
+Invite By Email:  When the user clicks this button, he goes to #invitebyemail
+
+invitebyemail-nofooter contains fields for: name, email
+
+It also contains some flip switches that are conditionally displayed.
+
+THESE ARE NOT NEEDED BECAUSE WE KNOW BEFORE WE GET TO THIS PAGE WHETHER THE PERSON IS GOING TO BE
+A GIVER OR RECEIVER.
+
+***** CHANGE DONE Get rid of these flip switches 
+
+***** CHANGE DONE Get rid of the hidden field on invitebyemail-nofooter: newparticipant.participationLevel
+
+***** CHANGE DONE the signature of invite() to also include participationLevel
+
+The form on this page is submitted via an "Invite" button that calls js fn invite() and sends the user
+back to the #participants page
+
+invite() querys the person table by email to see if the email address already exists (it can exist more than once)
+
+invite() returns a list of 'maybepeople'.  The success function of the email query checks the array of 'maybepeople'
+If there is only 1 person in the array, we want to know if these person is already friends with the user
+If they are already friends, we call:
+
+	$scope.selectthisparticipant($scope.maybepeople[0], $scope.newparticipant.participationLevel, false)
+
+from inside the success fn.
+
+***** CHANGE DONE $scope.newparticipant.participationLevel to just participationLevel because participationLevel 
+is now an arg to the invite() fn
+
+THIS VARIABLE IS GOING AWAY BECAUSE WE GOT RID OF THE HIDDEN FIELD FLIP SWITCHES ON invitebyemail-nofooter
+
+REMEMBER, participationLevel is now being passed in from prepAddRemoveParticipants(), so it's accessible
+from all js functions as $scope.participationLevel and from all pages as participationLevel
+
+$scope.selectthisparticipant(): saves the selected person as a participant.  The save depends on whether
+this person is already in the database or not.  The boolean/3rd arg in $scope.selectthisparticipant()
+is what tells the fn whether this participant is a new person or not.  So in the case of someone who is 
+already the friend of the current user, the 3rd arg is false, meaning we do not have to create an account
+for this person; it already exists.
+
+SO LET'S CONSIDER THE CASE OF SOMEONE WHO IS ALREADY A FRIEND OF THE CURRENT USER - it's just that the
+user decided to enter that person name and email rather than do a Search.
+
+We call this function (also mentioned above):
+
+	$scope.selectthisparticipant($scope.maybepeople[0], $scope.newparticipant.participationLevel, false)
+
+and because this person is not a new person, we call the 'else' block in $scope.selectthisparticipant()
+
+This 'else' block just calls Circle.addParticipant() 
+
+SO LET'S SEE WHAT Circle.addParticipant() does...
+
+Circle.addParticipant() takes one arg 'parms' that is like a map or container for an arbitrary list of values
+These are all the things that COULD be passed to Circle.addParticipants():
+
+        var userisparticipant = parms.userisparticipant;
+        var userishonoree = parms.userishonoree;
+        var newparticipant = parms.user;
+        var level = parms.level;
+        var inviter = parms.inviter;
+        var circle = parms.circle;
+        var saveParticipant = parms.saveParticipant;
+        var onSuccessfulParticipantSave = parms.onSuccessfulParticipantSave;
+
+In the case of our call from $scope.selectthisparticipant(), we are passing: 
+
+	var parms = {user:person, circle:$scope.circle, inviter:$rootScope.user, 
+                     saveParticipant: $scope.circle.id!=null, 
+	             onSuccessfulParticipantSave:refreshParticipants, 
+                     level:participationLevel};
+
+Since we are passing in parms.level, Circle.addParticipant() doesn't have to guess Giver/Receiver
+And since parms.saveParticipant is passed in as true, Circle.addParticipant() calls:
+
+	CircleParticipant.save()
+
+The success fn on CircleParticipant.save() re-queries for the circle's reminders
+then calls onSuccessfulParticipantSave(), a function passed in via parms.
+
+The end of Circle.addParticipants() returns circle
+
+IS THIS TOO SOON SINCE THE SUCCESS FN OF CircleParticipant.save() SETS THE REMINDERS OF THE CIRCLE ?
+
+========================================================================================================
+
+CASE: ADDING PARTICIPANTS FROM ANOTHER CIRCLE
+
+Assume the event is a Christmas event where everyone receives.
+
+From #participants, click the Edit pencil icon to call prepAddRemoveParticipants(circle, circle.participants.receivers, 'Receiver')
+and go to #addremoveparticipants
+
+prepAddRemoveParticipants() looks at the circle type and participation level to determine whether to
+show the Add/Remove Honoree buttons, the Add/Remove Guest buttons, or the Add/Remove Participants buttons
+(which are the same thing as Receivers)
+
+In the context of a Christmas circle, #addremoveparticipants will show the Add/Remove Participants buttons
+
+Clicking Add Participants will send the user to #editparticipants
+
+#editparticipants displays 3 buttons: Search, Invite by Email, and Add from Another Event
+
+Clicking Add from Another Event calls refreshOtherEventsList() and sends the user to #addfromanotherevent
+
+#addfromanotherevent displays all the user's circles to choose from.
+
+Clicking one of the circles calls choosethiscircle() which sets the clicked-on circle as the $scope.chosencircle
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

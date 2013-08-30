@@ -78,26 +78,34 @@ angular.module('Circle', ['ngResource', 'CircleParticipant'])
         var saveParticipant = parms.saveParticipant;
         var onSuccessfulParticipantSave = parms.onSuccessfulParticipantSave;
         
+        console.log("Circle.addParticipant:  begin");
+        
         circle = Circle.initParticipants(circle);
         if(Circle.alreadyParticipating(circle, newparticipant))
           return circle;
           
+        console.log("Circle.addParticipant:  111111111");
+        
         if(angular.isDefined(userisparticipant)) {
 		    if(userisparticipant=='true') {
 		      if(userishonoree=='true') {circle.participants.receivers.push(newparticipant); level = 'Receiver';}
 		      else if(userishonoree=='false') {circle.participants.givers.push(newparticipant); level = 'Giver';}
 		      else  {circle.participants.receivers.push(newparticipant); level = 'Receiver';}
 		    }
+        console.log("Circle.addParticipant:  22222222");
 		}
 		else if(!angular.isDefined(level)) {
 		    // when the newparticipant isn't explicitly classified as either Giver or Receiver, assume Receiver.  If we've reached the limit on Receivers
 		    // then make the newparticipant a Giver
 		    if(Circle.receiverLimitReached(circle))  {circle.participants.givers.push(newparticipant); level = 'Giver';}
 		    else  {circle.participants.receivers.push(newparticipant); level = 'Receiver';}
+        console.log("Circle.addParticipant:  3333333333");
 		}
 		else if(level == 'Receiver') circle.participants.receivers.push(newparticipant);
 		else circle.participants.givers.push(newparticipant);
 		
+        console.log("Circle.addParticipant:  44444444444");
+        
 		if(angular.isDefined(saveParticipant) && saveParticipant) {
 				    
 		    CircleParticipant.save({circleId:circle.id, inviterId:inviter.id, userId:newparticipant.id, participationLevel:level,
@@ -105,29 +113,12 @@ angular.module('Circle', ['ngResource', 'CircleParticipant'])
 		                                         function() {
 		                                           circle.reminders = Reminder.query({circleId:circle.id});
 		                                           onSuccessfulParticipantSave();
+        console.log("Circle.addParticipant:  5555555555555555");
 		                                         });
 		}
 		
+        console.log("Circle.addParticipant:  circle.participants:", circle.participants);
 	    return circle;
-      }
-      
-      
-      Circle.userIsParticipating = function(user, circle) {
-        if(!angular.isDefined(circle.participants))
-          return false;
-        if(angular.isDefined(circle.participants.receivers)) {
-          for(var i=0; i < circle.participants.receivers.length; ++i) {
-            if(circle.participants.receivers[i].id == user.id)
-              return true;
-          }
-        }
-        if(angular.isDefined(circle.participants.givers)) {
-          for(var i=0; i < circle.participants.givers.length; ++i) {
-            if(circle.participants.givers[i].id == user.id)
-              return true;
-          }
-        }
-        return false;
       }
       
       

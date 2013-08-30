@@ -317,7 +317,7 @@
 	    <ul id="eventview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="">
 	      <li ng-repeat="c in user.circles | filter: eventDateFilter" ng-cloak>
 	        <a href="#participants" ng-click="setcircle(c)" data-transition="slide">
-	          <p><h4>{{c.name}}</h4></p>
+	          <p><h4 class="wraptext">{{c.name}}</h4></p>
 	          <p>{{c.date | date:'MMM d, yyyy'}}</p>
 	        </a>
 	      </li>

@@ -276,13 +276,15 @@
     
     
     // The saved circle should become the current circle if it isn't already
-    $scope.circle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:circle.circleType, 
+    var savedcircle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:circle.circleType, 
                  creatorId:$rootScope.user.id, participants:circle.participants},
                  function() {
                      console.log('JUST SAVED A NEW CIRCLE');
+                     $scope.circle = savedcircle;
                      $scope.circle.participants = circle.participants; // so we don't have to query the db
-                     if(Circle.userIsParticipating(user, circle))
-                       $rootScope.user.circles.push($scope.circle);
+                     console.log("saveNewCircle:  calling new fn");
+                     if(Circle.alreadyParticipating($scope.circle, $rootScope.user))
+                       $rootScope.user.circles.push(angular.copy($scope.circle));
                      refreshParticipants();
                  },
                  function() {alert('Uh Oh - had a problem saving this event.\nIf this problem persists, contact us at info@littlebluebird.com');} 

@@ -1,6 +1,7 @@
 
     <script>
-        document.addEventListener('deviceready', function() {
+        document.addEventListener('deviceready', 
+            function() {
                 try {
                     FB.init({ appId: '136122483829', nativeInterface: CDV.FB, useCachedDialogs: false });
                     // document.getElementById('data').innerHTML = "";
@@ -8,7 +9,6 @@
                 catch (e) {
                     alert(e);
                 }
-            }, 
             false);
     </script>
 

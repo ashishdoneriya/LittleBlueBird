@@ -221,10 +221,12 @@
   
   // the only reason this function is here is to kick jquery to reapply the listview style to the friend list
   $scope.events = function() {
+    //$scope.loading = "true";
     console.log('user.circle:', $scope.user.circles);
                               jQuery("#eventview").hide();
-                              setTimeout(function(){
-                                jQuery("#eventview").listview("refresh");
+                              $timeout(function(){
+                                //$scope.loading = "false";
+                                jQuery("#eventview").listview().listview("refresh");
                                 jQuery("#eventview").show();
                               },1000);
   }

@@ -69,12 +69,56 @@
         navigator.splashscreen.hide();
       }, 2000);
     }
+    
+    function pageLoaded() {
+      
+                var ua = navigator.userAgent.toLowerCase();
+                if(ua.indexOf('iphone') == -1 && ua.indexOf('android') == -1 && ua.indexOf('blackberry') == -1) {
+      
+	            
+				    window.fbAsyncInit = function() {
+				        console.log("FB initing --------------- //connect.facebook.net/en_US/all.js");
+				        FB.init({
+				          appId      : '136122483829', // App ID
+				          channelUrl : 'http://www.littlebluebird.com/gf/channel.html', // Path to your Channel File
+				          status     : true, // check login status
+				          cookie     : true, // enable cookies to allow the server to access the session
+				          oauth      : true,
+				          xfbml      : true  // parse XFBML
+				        });
+				        
+				        $.browser.chrome = /chrome/.test(navigator.userAgent.toLowerCase());
+					    if ($.browser.chrome || $.browser.msie) {
+						    //FB.XD._origin = window.location.protocol + "//" + document.domain + "/" + FB.guid();
+						    //FB.XD.Flash.init();
+						    //FB.XD._transport = "flash";
+						} else if ($.browser.opera) {
+						    FB.XD._transport = "fragment";
+						    FB.XD.Fragment._channelUrl = window.location.protocol + "//" + window.location.host + "/";
+						}
+				        
+				    };
+				
+				    // Load the SDK Asynchronously
+				    (function(d){
+				        var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+				        if (d.getElementById(id)) {return;}
+				        js = d.createElement('script'); js.id = id; js.async = true;
+				        js.src = "//connect.facebook.net/en_US/all.js";
+				        ref.parentNode.insertBefore(js, ref);
+				    }(document));
+	            
+	            
+                }       
+      
+      
+    }
 
   </script>
   
   	
 </head>
-<body ng-controller="LbbController">
+<body ng-controller="LbbController" onLoad="pageLoaded()">
 
 
 <div id="home" data-role="page">
@@ -298,32 +342,35 @@
 
 	<div data-role="content">
 	
-      <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-        <input name="event-radio-group" id="radio-choice-d" value="current" checked="checked" type="radio" ng-click="eventfilter='current';events()">
-        <label for="radio-choice-d">Current</label>
-        <input name="event-radio-group" id="radio-choice-e" value="past" type="radio" ng-click="eventfilter='past';events()">
-        <label for="radio-choice-e">Past</label>
-        <input name="event-radio-group" id="radio-choice-c" value="all" type="radio" ng-click="eventfilter='all';events()">
-        <label for="radio-choice-c">&nbsp; All &nbsp;</label>
-      </fieldset>
+	  <span ng-show="loading=='true'">Loading...</span>
+	
+	  <span ng-hide="loading=='true'">
+	      <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+	        <input name="event-radio-group" id="radio-choice-d" value="current" checked="checked" type="radio" ng-click="eventfilter='current';events()">
+	        <label for="radio-choice-d">Current</label>
+	        <input name="event-radio-group" id="radio-choice-e" value="past" type="radio" ng-click="eventfilter='past';events()">
+	        <label for="radio-choice-e">Past</label>
+	        <input name="event-radio-group" id="radio-choice-c" value="all" type="radio" ng-click="eventfilter='all';events()">
+	        <label for="radio-choice-c">&nbsp; All &nbsp;</label>
+	      </fieldset>
+			  
+	      <div ng-show="user.circles.length==0">
+	        <P>You do not belong to any events</P>
+	        <P>You are either very unpopular or you are a new user</P>
+	        <P>Create your first event by clicking "Add" in the top right</P>
+	      </div>
 		  
-      <div ng-show="user.circles.length==0">
-        <P>You do not belong to any events</P>
-        <P>You are either very unpopular or you are a new user</P>
-        <P>Create your first event by clicking "Add" in the top right</P>
-      </div>
-	  
-      <div jquery-mobile-tpl>
-	    <ul id="eventview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="">
-	      <li ng-repeat="c in user.circles | filter: eventDateFilter" ng-cloak>
-	        <a href="#participants" ng-click="setcircle(c)" data-transition="slide">
-	          <p><h4 class="wraptext">{{c.name}}</h4></p>
-	          <p>{{c.date | date:'MMM d, yyyy'}}</p>
-	        </a>
-	      </li>
-	    </ul>
-	  </div>
-	  
+	      <div jquery-mobile-tpl>
+		    <ul id="eventview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="">
+		      <li ng-repeat="c in user.circles | filter: eventDateFilter" ng-cloak>
+		        <a href="#participants" ng-click="setcircle(c)" data-transition="slide">
+		          <p><h4 class="wraptext">{{c.name}}</h4></p>
+		          <p>{{c.date | date:'MMM d, yyyy'}}</p>
+		        </a>
+		      </li>
+		    </ul>
+		  </div>
+	  </span>
 	  
 	</div><!-- /content -->
 
@@ -2039,29 +2086,6 @@
 
 	<div data-role="content">
 	  	  
-	  <form name="testscanform">
-	    <input type="text" ng-model="barcode" required/>
-	    <span ng-show="testscanform.$valid">  
-	      <P><a ng-href="#" ng-click="barcodelookup(barcode, 'format ignored currently')" data-role="button" data-theme="b">Lookup</a></P>
-	    </span>
-	    <span ng-hide="testscanform.$valid">  
-	      <P><button disabled="" data-theme="b">Lookup</button></P>
-	    </span>
-	    <P><a ng-href="#" ng-click="scan()" data-role="button" data-theme="b">Scan !</a></P>
-	  </form>
-	  
-	  <hr/>
-      <div jquery-mobile-tpl>
-	    <div ng-repeat="product in products" repeat-done="">
-	        <P>{{product.name}}</P>
-	        <P>
-	          <a ng-href="#" ng-click="viewonline(product.url, $event)" data-theme="b" data-role="button">
-	            View Online
-	          </a>
-	        </P>
-	        <hr/>
-	    </div>
-	  </div>
 	    
 	  
 	</div><!-- /content -->
@@ -3127,7 +3151,8 @@ click on any of their names to see their list and the item that was just added -
 
 </div>
     <script>
-        document.addEventListener('deviceready', function() {
+        document.addEventListener('deviceready', 
+            function() {
                 try {
                     FB.init({ appId: '136122483829', nativeInterface: CDV.FB, useCachedDialogs: false });
                     // document.getElementById('data').innerHTML = "";
@@ -3135,7 +3160,6 @@ click on any of their names to see their list and the item that was just added -
                 catch (e) {
                     alert(e);
                 }
-            }, 
             false);
     </script>
 

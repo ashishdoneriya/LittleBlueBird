@@ -9,32 +9,35 @@
 
 	<div data-role="content">
 	
-      <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-        <input name="event-radio-group" id="radio-choice-d" value="current" checked="checked" type="radio" ng-click="eventfilter='current';events()">
-        <label for="radio-choice-d">Current</label>
-        <input name="event-radio-group" id="radio-choice-e" value="past" type="radio" ng-click="eventfilter='past';events()">
-        <label for="radio-choice-e">Past</label>
-        <input name="event-radio-group" id="radio-choice-c" value="all" type="radio" ng-click="eventfilter='all';events()">
-        <label for="radio-choice-c">&nbsp; All &nbsp;</label>
-      </fieldset>
+	  <span ng-show="loading=='true'">Loading...</span>
+	
+	  <span ng-hide="loading=='true'">
+	      <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+	        <input name="event-radio-group" id="radio-choice-d" value="current" checked="checked" type="radio" ng-click="eventfilter='current';events()">
+	        <label for="radio-choice-d">Current</label>
+	        <input name="event-radio-group" id="radio-choice-e" value="past" type="radio" ng-click="eventfilter='past';events()">
+	        <label for="radio-choice-e">Past</label>
+	        <input name="event-radio-group" id="radio-choice-c" value="all" type="radio" ng-click="eventfilter='all';events()">
+	        <label for="radio-choice-c">&nbsp; All &nbsp;</label>
+	      </fieldset>
+			  
+	      <div ng-show="user.circles.length==0">
+	        <P>You do not belong to any events</P>
+	        <P>You are either very unpopular or you are a new user</P>
+	        <P>Create your first event by clicking "Add" in the top right</P>
+	      </div>
 		  
-      <div ng-show="user.circles.length==0">
-        <P>You do not belong to any events</P>
-        <P>You are either very unpopular or you are a new user</P>
-        <P>Create your first event by clicking "Add" in the top right</P>
-      </div>
-	  
-      <div jquery-mobile-tpl>
-	    <ul id="eventview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="">
-	      <li ng-repeat="c in user.circles | filter: eventDateFilter" ng-cloak>
-	        <a href="#participants" ng-click="setcircle(c)" data-transition="slide">
-	          <p><h4 class="wraptext">{{c.name}}</h4></p>
-	          <p>{{c.date | date:'MMM d, yyyy'}}</p>
-	        </a>
-	      </li>
-	    </ul>
-	  </div>
-	  
+	      <div jquery-mobile-tpl>
+		    <ul id="eventview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="">
+		      <li ng-repeat="c in user.circles | filter: eventDateFilter" ng-cloak>
+		        <a href="#participants" ng-click="setcircle(c)" data-transition="slide">
+		          <p><h4 class="wraptext">{{c.name}}</h4></p>
+		          <p>{{c.date | date:'MMM d, yyyy'}}</p>
+		        </a>
+		      </li>
+		    </ul>
+		  </div>
+	  </span>
 	  
 	</div><!-- /content -->
 

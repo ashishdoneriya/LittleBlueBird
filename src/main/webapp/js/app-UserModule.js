@@ -170,6 +170,8 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
   
     // 5/8/13 - moved this from app-EventCtrl to here trying to make it accessible from app-EventCtrl and app-FriendCtrl
     $rootScope.resetInviteByEmailForm = function(form){
+      delete $rootScope.addmethod;
+      delete $rootScope.noonefound;
       form.$setPristine();
       $rootScope.newuser = {fullname: '', email: ''};
       //angular.resetForm($scope, 'emailnewuserform', {newuser:{fullname: '', email: ''}}); 

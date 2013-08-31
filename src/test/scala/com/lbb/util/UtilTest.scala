@@ -72,7 +72,7 @@ class UtilTest extends FunSuite with AssertionsForJUnit with LbbLogger {
   
   // testing the 'no profile pic' image
   test("adjusted dimensions 1") {
-    val profilepicUrl = new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg")
+    val profilepicUrl = new URL("http://www.littlebluebird.com/gf/img/Silhouette-male.gif")
     val img = new ImageIcon(profilepicUrl)	
     val profilepicheight = img.getIconHeight()
     val profilepicwidth = img.getIconWidth()
@@ -108,7 +108,7 @@ class UtilTest extends FunSuite with AssertionsForJUnit with LbbLogger {
 
   // testing the 'no profile pic' image
   test("adjusted dimensions 3") {
-    val profilepicUrl = new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg")
+    val profilepicUrl = new URL("http://www.littlebluebird.com/gf/img/Silhouette-male.gif")
     val img = new ImageIcon(profilepicUrl)	
     val profilepicheight = img.getIconHeight()
     val profilepicwidth = img.getIconWidth()

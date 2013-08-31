@@ -544,7 +544,7 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany with NOO
   def asReceiverJs(box:Box[Circle]) = {
     // this is the same as asJsShallow with one extra boolean field
     // TODO duplicated code here and in supplementalJs
-    val profilepicUrl = if(profilepic.is==null || profilepic.is.trim().toString().equals("")) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
+    val profilepicUrl = if(profilepic.is==null || profilepic.is.trim().toString().equals("")) new URL("http://www.littlebluebird.com/gf/img/Silhouette-male.gif") else new URL(profilepic.is)
     val img = new ImageIcon(profilepicUrl)	
     val profilepicheight = img.getIconHeight()
     val profilepicwidth = img.getIconWidth()
@@ -625,7 +625,7 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany with NOO
     val jsCircles = JsArray(jsonCircles)
     val jsonFriends = friendList.map(_.asJsShallow).toList//friendList.map(_.asJsShallow)
     val jsFriends = JArray(jsonFriends)
-    val profilepicUrl = if(profilepic.is==null || profilepic.is.trim().toString().equals("")) new URL("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg") else new URL(profilepic.is)
+    val profilepicUrl = if(profilepic.is==null || profilepic.is.trim().toString().equals("")) new URL("http://www.littlebluebird.com/gf/img/Silhouette-male.gif") else new URL(profilepic.is)
     val img = new ImageIcon(profilepicUrl)	
     val profilepicheight = img.getIconHeight()
     val profilepicwidth = img.getIconWidth()
@@ -749,7 +749,7 @@ object User extends User with LongKeyedMetaMapper[User] {
   
   override def create = {
     val u = super.create
-    u.facebookId(Empty).notifyonaddtoevent("true").notifyondeletegift("true").notifyoneditgift("true").notifyonreturngift("true").profilepic("http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg")
+    u.facebookId(Empty).notifyonaddtoevent("true").notifyondeletegift("true").notifyoneditgift("true").notifyonreturngift("true").profilepic("http://www.littlebluebird.com/gf/img/Silhouette-male.gif")
   }
   
   def create(name:String, facebookId:String):User = {

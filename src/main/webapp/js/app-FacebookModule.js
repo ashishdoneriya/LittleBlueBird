@@ -339,7 +339,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                           $cookieStore.put("showUser", $rootScope.showUser.id);
                           console.log("$rootScope.users.length == 1:  $rootScope.users[0].profilepicUrl...");
                           console.log($rootScope.users[0].profilepicUrl);
-                          var placeholderPic = "http://sphotos.xx.fbcdn.net/hphotos-snc6/155781_125349424193474_1654655_n.jpg";
+                          var placeholderPic = "http://www.littlebluebird.com/gf/img/Silhouette-male.gif";
                                                          
                           console.log("$rootScope.users[0].profilepicUrl != placeholderPic...");
                           console.log($rootScope.users[0].profilepicUrl != placeholderPic);

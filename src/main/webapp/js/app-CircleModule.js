@@ -365,6 +365,10 @@ angular.module('CircleModule', [])
     if($rootScope.eventfilter=='all') return true;
     else if($rootScope.eventfilter=='current') return !circle.isExpired;
     else if($rootScope.eventfilter=='past') return circle.isExpired;
+    else {
+      $rootScope.eventfilter='current';
+      return !circle.isExpired;
+    }
   }
   
     

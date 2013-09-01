@@ -2,21 +2,6 @@
 <div class="span7 marg5" ng-controller="GiftCtrl">
 <form novalidate name="buygiftForm"> 
   <div class="row">     
-    <div class="spantiny padtop5">
-        
-      <ul gift-actions class="nav marg0">
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret pad0"></span></a>
-	      <ul class="dropdown-menu">
-		    <span ng-show="gift.canedit"><li><a href="editgift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="gift.buying=false;editgift(gift);"><i class="icon-pencil"></i> Edit</a></li></span> 
-            <span ng-show="gift.candelete"><li><a href="deletegift/{{circle.id}}/{{showUser.id}}/{{gift.id}}" ng-click="deletegift($index, gift)"><i class="icon-remove"></i> Delete</a></li></span>
-		    <span ng-hide="gift.canedit"><li><a ng-click="alertcannotedit()"><i class="icon-pencil"></i> Edit</a></li></span> 
-		    <span ng-hide="gift.candelete"><li><a ng-click="alertcannotdelete()"><i class="icon-remove"></i> Delete</a></li></span>
-		  </ul>
-        </li>
-      </ul>
-  
-    </div>
     
     <div class="span5">
                 
@@ -25,10 +10,10 @@
                   <div class="btn-toolbar">
                     <div class="btn-group">
                       <a ng-href="{{currentlocation}}" class="btn btn-mini btn-success" ng-click="gift.buying=false;buygift($index, gift, recdate);">Reserve</a>
-                      <a ng-href="{{gift.url}}" target="new" class="btn btn-mini btn-success" ng-click="gift.buying=false;buygift($index, gift);">Buy Online</a>
+                      <a class="btn btn-mini" ng-click="gift.buying=false">Cancel</a>
                     </div>
                     <div class="btn-group">
-                      <a class="btn btn-mini" ng-click="gift.buying=false">Cancel</a>
+                      <a ng-href="{{gift.url}}" target="new" class="btn btn-mini btn-success" ng-click="gift.buying=false;buygift($index, gift);">View/Buy Online</a>
                     </div>
                   </div> <!-- end btn toolbar 1 -->
                   </span>
@@ -38,10 +23,10 @@
                   <div class="btn-toolbar">
                     <div class="btn-group">
                       <a ng-href="{{currentlocation}}" class="btn btn-mini btn-success" ng-click="gift.buying=false;buygift($index, gift, recdate);">Reserve</a>
-                      <a class="btn btn-mini" ng-disabled="true" title="No link was provided for this item.  Search for this item on Amazon.com">Buy Online</a>
+                      <a class="btn btn-mini" ng-click="gift.buying=false">Cancel</a>
                     </div>
                     <div class="btn-group">
-                      <a class="btn btn-mini" ng-click="gift.buying=false">Cancel</a>
+                      <a class="btn btn-mini" ng-disabled="true" title="No link was provided for this item.  Search for this item on Amazon.com">View/Buy Online</a>
                     </div>
                   </div> <!-- end btn toolbar 2 -->
                   </span>
@@ -50,7 +35,6 @@
         
   </div>
   <div class="row">     
-    <div class="spantiny">&nbsp;</div>
     <div class="span4 bold font14">
         <a ng-href="{{gift.affiliateUrl}}" 
            target="item" 
@@ -62,8 +46,7 @@
   </div>
   
   <div class="row">  
-    <div class="spantiny">&nbsp;</div>
-    <div class="span1">To:</div>
+    <div class="spantiny">To:</div>
     <div class="span3">
       {{gift.recipients[0].first}} <span ng-repeat="recipient in gift.recipients.slice(1)"> and {{recipient.first}}</span>
     </div>  
@@ -71,8 +54,7 @@
   </div>
   
   <div class="row"> 
-    <div class="spantiny">&nbsp;</div>
-    <div class="span1 padtop5">
+    <div class="spantiny padtop5">
       <input type="hidden" ng-model="gift.id" />
       <input type="hidden" ng-model="gift.senderId" />
       From:

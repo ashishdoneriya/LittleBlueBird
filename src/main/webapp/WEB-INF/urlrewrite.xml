@@ -49,6 +49,11 @@
    </rule>
 
    <rule match-type="wildcard">
+     <from>*/giftlist/*</from>
+     <to>/index.html</to>
+   </rule>
+
+   <rule match-type="wildcard">
      <from>*/giftlist/*/*</from>
      <to>/index.html</to>
    </rule>

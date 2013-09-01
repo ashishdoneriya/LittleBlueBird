@@ -28,7 +28,7 @@
 			            <img src="img/spinner-16.gif"/>
 			          </span>
 			          <span ng-hide="gift.returning">
-			            <a ng-href="{{currentlocation}}" class="btn btn-mini padleft15 padright15" ng-click="returngift($index, gift)">Undo</a>
+			            <a ng-href="{{currentlocation}}" ui-jq="popover" ui-options="changedYourMindPopover($index, gift)" class="btn btn-mini padleft15 padright15" ng-click="returngift($index, gift)">Undo</a>
 			          </span>
 			        </span>
 			        <span ng-show="!gift.canbuy && !gift.canreturn && gift.canseestatus && gift.isbought">

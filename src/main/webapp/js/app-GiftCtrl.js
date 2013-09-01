@@ -180,6 +180,13 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
              +'</table>';
     return {title:'Shhh !', content:cnt, placement:'right'}
   }
+
+  $scope.changedYourMindPopover = function(idx, gift) {
+    var cnt = '<table border="0" width="100%">'
+             + '<tr><td>Click Undo if you change your mind and decide not to give this gift</td></tr>'
+             +'</table>';
+    return {title:'Changed Your Mind?', content:cnt, placement:'right'}
+  }
   
   $rootScope.$on("circlechange", function(event) {
     $rootScope.gifts = Circle.gifts;

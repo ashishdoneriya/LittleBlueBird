@@ -1,0 +1,10 @@
+/newevent/Christmas
+
+app.js says to look at -> four: 'partials/events/newevent.html'
+
+There's a Save button at the top of the page that calls this fn: savecircle()
+
+savecircle() is defined here: app-CircleModule.js...
+	
+  $rootScope.savecircle = function(circle, expdate) {..
+  

@@ -311,7 +311,9 @@ angular.module('CircleModule', [])
                  creatorId:$rootScope.user.id},
                  function() {
                    if(inserting) {
+                     $rootScope.user.circles.reverse();
                      $rootScope.user.circles.push($rootScope.circle);
+                     $rootScope.user.circles.reverse();
                      circle.id = $rootScope.circle.id;
                      // since we are inserting, we have participants that need to be added to the event
                      for(var i=0; i < circle.participants.receivers.length; i++) {

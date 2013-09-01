@@ -301,8 +301,7 @@ angular.module('CircleModule', [])
     console.log("app-CircleModule: $rootScope.savecircle:  circle.expirationdate.getTime() = "+circle.expirationdate.getTime());
     console.log("app-CircleModule: trying to save this circle...");
     console.log(circle);
-    console.log("app-CircleModule: and these participants...");
-    console.log(circle.participants);
+    console.log("app-CircleModule: and these participants...", circle.participants);
     
     var inserting = !angular.isDefined(circle.id)
     
@@ -328,7 +327,16 @@ angular.module('CircleModule', [])
                                          adder:$rootScope.user.fullname}
                                          ); // CircleParticipant.save
                      }
-                     $rootScope.circle.participants = circle.participants;
+                     // more YUCK - if you want to see the list of participants on the next page, event.html, you have to add all
+                     // participants to the 'both' array...
+                     if(!angular.isDefined($rootScope.circle.participants))
+                       $rootScope.circle.participants = {both: []};
+                     for(var i=0; i < circle.participants.receivers.length; ++i) {
+                       $rootScope.circle.participants.both.push(circle.participants.receivers[i]);
+                     }  
+                     for(var i=0; i < circle.participants.givers.length; ++i) {
+                       $rootScope.circle.participants.both.push(circle.participants.givers[i]);
+                     }  
                    } 
                    else {
                      // else, we are updating, circle.id IS defined so update the circle in $rootScope.user.circles

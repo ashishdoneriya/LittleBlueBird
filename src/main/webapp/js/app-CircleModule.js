@@ -354,6 +354,19 @@ angular.module('CircleModule', [])
     $rootScope.currentevent();
   }
   
+  
+  $rootScope.setEventFilter = function(crit) {
+    $rootScope.eventfilter = crit;
+  }
+  
+  
+  $rootScope.eventDateFilter = function(circle) {
+    console.log("eventDateFilter");
+    if($rootScope.eventfilter=='all') return true;
+    else if($rootScope.eventfilter=='current') return !circle.isExpired;
+    else if($rootScope.eventfilter=='past') return circle.isExpired;
+  }
+  
     
   // 2/12/13
   // We pass in circle here because this function is used for new circles where there is no circle id yet

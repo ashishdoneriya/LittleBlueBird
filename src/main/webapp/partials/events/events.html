@@ -121,13 +121,40 @@ list contains only one person: YOU -->
 	    
         </div>
       </div> <!-- end table w200 margbottom0 -->
+      <div class="tablerow w200">
+        <div class="tablecell w200 white font14 center padtop10">
+	        <div class="btn-group">
+	          <span ng-show="eventfilter=='current'">
+		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('current');" class="btn btn-mini" disabled="true">Current</a>
+	          </span>
+	          <span ng-hide="eventfilter=='current'">
+		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('current');" class="btn btn-mini btn-primary">Current</a>
+	          </span>
+	          
+	          <span ng-show="eventfilter=='past'">
+		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('past');" class="btn btn-mini" disabled="true">Past</a>
+	          </span>
+	          <span ng-hide="eventfilter=='past'">
+		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('past');" class="btn btn-mini btn-primary">Past</a>
+	          </span>
+	          
+	          <span ng-show="eventfilter=='all'">
+		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('all');" class="btn btn-mini" disabled="true"> All </a>
+	          </span>
+	          
+	          <span ng-hide="eventfilter=='all'">
+		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('all');" class="btn btn-mini btn-primary"> All </a>
+	          </span>
+	        </div>
+        </div>
+      </div>
     </div>
     
   </div>
 </div> <!-- header row -->
 
 
-<div ng-repeat="event in user.circles">
+<div ng-repeat="event in user.circles | filter: eventDateFilter" ng-cloak">
   <div class="tablerow w200">
    
       <a ng-href="event/{{event.id}}">

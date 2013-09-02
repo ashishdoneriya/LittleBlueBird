@@ -14,15 +14,8 @@ angular.module('User', ['ngResource']).
                   
                     
       User.addfriend = function(user, friend) {
-        var alreadyfriends = false;
-        for(var i=0; i < user.friends.length; ++i) {
-          if(user.friends[i].id == friend.id) {
-            alreadyfriends = true;
-            break;
-          }
-        }
-        console.log('WOO HOO!  alreadyfriends=', alreadyfriends);
-        if(!alreadyfriends) User.save({userId:user.id, lbbfriends:[friend]}, function() {user.friends.push(friend);});
+        if(!User.alreadyfriends(user, friend)) 
+          User.save({userId:user.id, lbbfriends:[friend]}, function() {user.friends.push(friend);});
       }
       
       

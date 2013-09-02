@@ -19,6 +19,26 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
                       find: {method:'GET', isArray:false}, 
                       save: {method:'POST'}
                     });
+                    
+      
+      // cut-n-paste from User.js in the mobile side
+      User.alreadyfriends = function(usera, userb) {
+        for(var i=0; i < usera.friends.length; ++i) {
+          if(usera.friends[i].id == userb.id) {
+            return true;
+          }
+        }
+        return false;
+      }
+      
+
+      // not meant to save to the db, just to the user's list of friends
+      User.addfriend = function(usera, userb) {
+        if(usera.id == userb.id) return; // you can't be friend of yourself
+        if(!User.alreadyfriends(usera, userb))
+          usera.friends.push(userb);
+      }
+      
 
       return User;
   }).

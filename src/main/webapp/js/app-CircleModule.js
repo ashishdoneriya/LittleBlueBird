@@ -1,5 +1,5 @@
 
-angular.module('CircleModule', [])
+angular.module('CircleModule', ['UserModule'])
 .factory('Circle', function($resource) {
       var Circle = $resource('/gf/rest/circles/:circleId', {circleId:'@circleId', circleType:'@circleType', name:'@name', expirationdate:'@expirationdate', creatorId:'@creatorId', participants:'@participants', datedeleted:'@datedeleted'}, 
                     {
@@ -81,7 +81,7 @@ angular.module('CircleModule', [])
     })
     
   })
-.run(function($rootScope, $location, Circle, CircleParticipant, Reminder, UserSearch, Gift, Reminder) {
+.run(function($rootScope, $location, Circle, CircleParticipant, Reminder, UserSearch, Gift, Reminder, User) {
 
   // define $rootScope functions here to make them globally available
   
@@ -320,12 +320,19 @@ angular.module('CircleModule', [])
                      circle.id = $rootScope.circle.id;
                      // since we are inserting, we have participants that need to be added to the event
                      for(var i=0; i < circle.participants.receivers.length; i++) {
-                       CircleParticipant.save({circleId:$rootScope.circle.id, inviterId:$rootScope.user.id, userId:circle.participants.receivers[i].id, 
+                       // check if they're friends already and pre-emptively add if they are not.
+                       // If there's a problem on the db side, we can remove in the fail function
+                       User.addfriend($rootScope.user, circle.participants.receivers[i]);
+                       var cp = CircleParticipant.save({circleId:$rootScope.circle.id, inviterId:$rootScope.user.id, userId:circle.participants.receivers[i].id, 
                                          participationLevel:'Receiver', who:circle.participants.receivers[i].fullname, email:circle.participants.receivers[i].email, circle:circle.name, 
-                                         adder:$rootScope.user.fullname}
-                                         ); // CircleParticipant.save
+                                         adder:$rootScope.user.fullname},
+                                         function() {
+                                           
+                                         }
+                                ); // CircleParticipant.save
                      }
                      for(var i=0; i < circle.participants.givers.length; i++) {
+                       User.addfriend($rootScope.user, circle.participants.givers[i]);
                        CircleParticipant.save({circleId:$rootScope.circle.id, inviterId:$rootScope.user.id, userId:circle.participants.givers[i].id, 
                                          participationLevel:'Giver', who:circle.participants.givers[i].fullname, email:circle.participants.givers[i].email, circle:circle.name, 
                                          adder:$rootScope.user.fullname}
@@ -476,11 +483,13 @@ angular.module('CircleModule', [])
 		          var p = circle.participants.receivers[i];
 		          p.isReceiver = true;
 		          circle.participants.both.push(p);
+		          User.addfriend($rootScope.user, p);
 		        }
 		        for(var i=0; i < circle.participants.givers.length; i++) {
 		          var p = circle.participants.givers[i];
 		          p.isGiver = true;
 		          circle.participants.both.push(p);
+		          User.addfriend($rootScope.user, p);
 		        }
                 console.log("$rootScope.combineReceiversAndGiversIntoBoth:  circle.participants.both.....");
                 console.log(circle.participants.both);

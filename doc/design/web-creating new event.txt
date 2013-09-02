@@ -1,4 +1,6 @@
-/newevent/Christmas
+events.html contains a bunch of links to create the various types of events.
+
+Look at the link to create a Christmas event:  /newevent/Christmas.  There is no js function associated with this link.
 
 app.js says to look at -> four: 'partials/events/newevent.html'
 

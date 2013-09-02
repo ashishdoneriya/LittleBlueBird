@@ -8,7 +8,8 @@ angular.module('CircleModule', [])
                       expiredEvents: {method:'GET', isArray:true},
                       save: {method:'POST'}
                     });
-      console.log("CircleModule:  created Circle factory");              
+      console.log("CircleModule:  created Circle factory");   
+      
       return Circle;
   })
 .factory('CircleParticipant', function($resource) {
@@ -53,7 +54,7 @@ angular.module('CircleModule', [])
     return EventHelper; 
                 
   })
-.run(function($rootScope, $location, EventHelper) {
+.run(function($rootScope, $location, EventHelper, Circle) {
   
     // See events.html:  #/newevent/Christmas,Birthday,etc
     // This event is fired all the time, so make sure the url contains 'newevent' to proceed
@@ -71,8 +72,10 @@ angular.module('CircleModule', [])
       }
       else if($location.url().indexOf('editevent') != -1) {
         $rootScope.title = "Edit Event";
-        $rootScope.thecircle = angular.copy($rootScope.circle);
+        console.log('app-CircleModule.js:routeChangeStart: trying to copy: $rootScope.circle', $rootScope.circle);
+        $rootScope.thecircle = angular.copy($rootScope.circle); // infinite recursive loop here:  circle.participants.both[0].circles.participants.both[0]...
         $rootScope.expdate = $rootScope.thecircle.dateStr;
+        console.log('app-CircleModule.js:routeChangeStart: $rootScope.thecircle.dateStr=', $rootScope.thecircle.dateStr);
       }
     
     })
@@ -310,8 +313,9 @@ angular.module('CircleModule', [])
                  creatorId:$rootScope.user.id},
                  function() {
                    if(inserting) {
+                     var savedcircle = angular.copy($rootScope.circle)
                      $rootScope.user.circles.reverse();
-                     $rootScope.user.circles.push($rootScope.circle);
+                     $rootScope.user.circles.push(savedcircle);
                      $rootScope.user.circles.reverse();
                      circle.id = $rootScope.circle.id;
                      // since we are inserting, we have participants that need to be added to the event
@@ -330,13 +334,16 @@ angular.module('CircleModule', [])
                      // more YUCK - if you want to see the list of participants on the next page, event.html, you have to add all
                      // participants to the 'both' array...
                      if(!angular.isDefined($rootScope.circle.participants))
-                       $rootScope.circle.participants = {both: []};
+                       $rootScope.circle.participants = {both: [], receivers: [], givers: []};
                      for(var i=0; i < circle.participants.receivers.length; ++i) {
+                       $rootScope.circle.participants.receivers.push(circle.participants.receivers[i]);
                        $rootScope.circle.participants.both.push(circle.participants.receivers[i]);
                      }  
                      for(var i=0; i < circle.participants.givers.length; ++i) {
+                       $rootScope.circle.participants.givers.push(circle.participants.givers[i]);
                        $rootScope.circle.participants.both.push(circle.participants.givers[i]);
                      }  
+                     console.log('just saved: $rootScope.circle: ', $rootScope.circle);
                    } 
                    else {
                      // else, we are updating, circle.id IS defined so update the circle in $rootScope.user.circles

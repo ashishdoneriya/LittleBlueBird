@@ -29,7 +29,13 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
   // 4/10/13: See also event.html - we list everyone in the event and their names are links.  When the user comes here from event.html, we have to construct the 'showUser' from a showUser id
   if(angular.isDefined($route.current.params.showUserId)) {
   
-    var queryparams = {recipientId:$route.current.params.showUserId, viewerId:$cookieStore.get("user")};
+    
+    var queryparams = {recipientId:$route.current.params.showUserId};
+    if(angular.isDefined($rootScope.user))
+      queryparams.viewerId = $rootScope.user.id;
+    else if($cookieStore.get("user")!=null)
+      queryparams.viewerId = $cookieStore.get("user");
+    // and what if neither of these is true? not handled here !  2013-09-02
 
 
     // 4/10/13: See also event.html - we list everyone in the event and their names are links.  
@@ -41,6 +47,9 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
       queryparams.circleId = $rootScope.circle.id;
     }
     
+    // you need a viewerId to figure out how the wishlist should look.  but we won't have a viewerId
+    // in posts to fb.  We have to get the viewerId from the fb user's info.  See routeChangeStart in app.js
+    // You'll see:  $rootScope.Facebook.getMe()
     console.log("Gift2Ctrl: queryparams...  look for viewerId");
     console.log(queryparams);
     

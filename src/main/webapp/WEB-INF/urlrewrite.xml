@@ -137,6 +137,12 @@
 
 
    <rule match-type="wildcard">
+     <from>*/support</from>
+     <to>index.html</to>
+   </rule>
+
+
+   <rule match-type="wildcard">
      <from>*/welcome</from>
      <to>index.html</to>
    </rule>

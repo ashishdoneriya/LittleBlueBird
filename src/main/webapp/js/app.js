@@ -35,6 +35,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       .when('/register', {templates: {layout: 'home', one: 'partials/register.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       .when('/reminders', {templates: {layout: 'layout.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/state', {templates: {layout: 'foo',               menu: 'partials/foo/menu.html', body:'partials/foo/foo.html'}})
+      .when('/support', {templates: {layout: 'support', four:'partials/navbar-nli.html'}})
       .when('/test', {templates: {layout: 'layout-nli.html', one: 'partials/test.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       .when('/welcome', {templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}})

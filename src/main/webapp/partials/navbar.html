@@ -6,10 +6,10 @@
       <a class="brand" ng-href="home">LittleBlueBird</a>
       <ul class="nav">
         <li ng-class="navstate('classE')">
-          <a href="welcome" ng-click="activenav='classE'">Welcome</a>
+          <a href="welcome" ng-click="activenav='classE'">Getting Started</a>
         </li>
         <li ng-class="navstate('classC')">
-          <a href="me" ng-click="activenav='classC'">Me</a>
+          <a href="me" ng-click="activenav='classC'">My Wish List</a>
         </li>
         <li ng-class="navstate('classD')">
           <a href="mailto:info@littlebluebird.com">Contact Us</a>
@@ -27,8 +27,7 @@
     <li class="dropdown">
       <a class="dropdown-toggle" data-toggle="dropdown">{{user.fullname}} <b class="caret"></b></a>
       <ul class="dropdown-menu">
-        <li><a class="font12" ng-href="mywishlist">My Wish List</a></li>
-        <li><a class="font12" ng-href="accountinfo">Account Info</a></li>
+        <li><a class="font12" ng-href="accountinfo">My Account</a></li>
         <li class="divider"></li>
         <li><a class="font12" ng-href="home" ng-click="logout()">Logout</a></li>
       </ul>

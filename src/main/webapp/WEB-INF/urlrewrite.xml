@@ -131,6 +131,12 @@
 
 
    <rule match-type="wildcard">
+     <from>*/privacy</from>
+     <to>index.html</to>
+   </rule>
+
+
+   <rule match-type="wildcard">
      <from>*/register</from>
      <to>index.html</to>
    </rule>

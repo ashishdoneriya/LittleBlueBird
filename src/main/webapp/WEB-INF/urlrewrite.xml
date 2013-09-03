@@ -67,13 +67,19 @@
      <from>*/login</from>
      <to>index.html</to>
    </rule>
+   
+
+
+   <rule match-type="wildcard">
+     <from>*/marketing</from>
+     <to>index.html</to>
+   </rule>
+   
 
    <rule match-type="wildcard">
      <from>*/me</from>
      <to>index.html</to>
    </rule>
-
-
 
 
 

@@ -28,6 +28,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       // get rid of /login route
       .when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       .when('/managepeople/', {templates: {layout: 'layout.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/marketing', {templates: {layout: 'support', one:'partials/marketing.html', four:'partials/navbar-nli.html'}})
       .when('/me', {templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/myaccount/me.html', five:'partials/navbar.html'}})
       .when('/mywishlist', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
       .when('/newevent/:type', {templates: {layout: 'layout.html', four: 'partials/events/newevent.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})

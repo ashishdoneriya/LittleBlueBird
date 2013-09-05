@@ -55,7 +55,19 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
   })
   .run(function($window, $route, $rootScope, $cookieStore, $location, facebookConnect, $timeout, User, FacebookUser){    
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){
-        console.log("FINAL ROUTECHANGESTART FUNCTION ----------------------------");    
+        console.log("FINAL ROUTECHANGESTART FUNCTION ----------------------------");   
+        
+        // Allow anonymous access and do NOT assume the FB user is the person behind the keyboard
+        // If we are going to any of these pages, we do NOT want to see if someone is logged in to FB
+        var nonsecure =  ['emailit', 'register', 'marketing', 'privacy', 'support'];
+        var allowAnonymousAccess = false;
+        for(var i=0; i < nonsecure.length; ++i) {
+          if($location.url().indexOf(nonsecure[i]) != -1) {
+            allowAnonymousAccess = true;
+            break;
+          }
+        }
+        
         
         console.log("routeChangeStart:  newRoute...............");
         console.log(newRoute);
@@ -84,7 +96,6 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
           }
         }
               
-        //if (!newRoute || !newRoute) return;
         if(!newRoute) return;
         
         $rootScope.currentlocation = "/gf" + $location.path();
@@ -94,24 +105,29 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
           $cookieStore.put("window.location.search", s); 
           $window.location.search = '';
         }
-    
+        
+        // 2013-09-04:  We need to determine if there is a 'current user' regardless of whether the URL allows anonymous access
+        
+            
         // Rule:  
-        //      First see if $rootScope.user is defined
+        //		9/4/13  If $rootScope.user exists OR the requested page allows anonymous access, let the user through
         //      (3/12/13) If not, see if there is a "user" cookie in the cookieStore - points to current user id
-        //      (3/12/13) If there is not "user" cookie, then see if someone is logged in to FB => that is the user we'll assume is using LBB
-        // 		If someone is logged in to FB, we need to see if they're responding to an app request
-        //		If there is no FB user, then we'll check the $cookieStore
+        //      (9/4/13) If there is no "user" cookie, we are going to see someone is logged in to FB.
+        //				If a FB user can be identified, we will assume THAT is the person behind the keyboard
+        //				We need to figure out if this FB user is responding to an app request.
         
         
-        // Applying the rule above: First see if $rootScope.user is defined
-        if(angular.isDefined($rootScope.user)) {
-          console.log("routeChangeStart:  $rootScope.user defined");
+        
+        if(angular.isDefined($rootScope.user) || allowAnonymousAccess) {
+          console.log('CONDITION 1111111');
           $rootScope.templates = newRoute.templates;
           $rootScope.layoutController = newRoute.controller;
-        } // if(angular.isDefined($rootScope.user))
+        }
         
         // 2013-03-12:  next - check for "user" cookie
+        // 2013-09-04:  Strictly speaking, we don't have to check 'allowAnonymousAccess' We know it's false because the 'if' block above didn't get called.
         else if(angular.isDefined($cookieStore.get("user"))) {
+          console.log('CONDITION 2222222222');
           $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){console.log("FOUND user from $cookieStore.get('user') BEFORE we checked Facebook");console.log($rootScope.user);});
           $rootScope.templates = newRoute.templates;
           $rootScope.layoutController = newRoute.controller;
@@ -126,9 +142,13 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
           
         } // if: $cookieStore.get("user") exists
         
+        // 2013-09-03 We can DEFINITELY get this far - when the user is a first-timer
         // 2013-03-12 Not sure if this will ever get called now that we have the else-if above.  app-LoginCtrl:$scope.login() and app-FacebookModule:$rootScope.initfbuser()
         // both set "user" cookies.  So I don't think this will ever get called.
         else { // $rootScope.user is undefined
+        
+          console.log('CONDITION 3333333333');
+          
           // Applying the rule above: see if the user is logged in to FB
           var p2 = $rootScope.Facebook.status();
           p2.then(
@@ -207,7 +227,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
                     
                     function(){ // fail function of $rootScope.users = FacebookUser.save()
                       // TODO Do something more here.  This is just a silent failure.
-                      console.log("$rootScope.users = FacebookUser.save(): woops! got the fail function!");
+                      console.log("$rootScope.users = FacebookUser.save(): woops! got the fail function!");                      
                     } // fail function of $rootScope.users = FacebookUser.save()
                   ); // $rootScope.users = FacebookUser.save()
                 } // function inside of $rootScope.Facebook.getMe()
@@ -220,6 +240,9 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
               // So is there a user in the $cookieStore?
               // Yes $cookieStore user: This is an LBB user => allow entry
               // 3/12/13 TODO fix this.  This is backwards.  We first check for "user" cookie, THEN check for fbuser if no $rootScope.user is found.  Search on "3/12/13" and you'll see.
+           
+              // 2013-09-03 WHY ARE WE DOING THIS? WE'VE ALREADY CHECKED THE COOKIE STORE ABOVE. WE ARE HERE BECAUSE THERE IS NO 'USER' COOKIE IN THE COOKIE STORE
+              /********************************************
               if(angular.isDefined($cookieStore.get("user"))) {
                 console.log("routeChangeStart:  Yes $cookieStore user: This is an LBB user => allow entry");
                 $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){console.log("FOUND user from $cookieStore.get('user')...");console.log($rootScope.user);});
@@ -235,6 +258,13 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
                 
                 $rootScope.layoutController = newRoute.controller;
               } // else { // No $cookieStore user: No one is logged in => person has to login or register (WHAT ABOUT VIEW AS GUEST?)
+              *************************************************/
+	          
+	          // TODO MAJOR Fix this hack - On 2013-03-20, it wasn't obvious why I was being sent back to the /login page.  A search of for 'login' and '/login'
+              // didn't turn up this line below, which I have since changed to redirect to the 'home' layout
+              
+              $rootScope.templates = {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'};
+              $rootScope.layoutController = newRoute.controller;
               
             } // function(fbresponse) { // called if user is not logged in or has not authorized the app
           
@@ -251,7 +281,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       console.log(newRoute);
     } )
   })
-  .run(function($rootScope, $location, dimAdjuster, UserSearch) {
+  .run(function($rootScope, $location, dimAdjuster, UserSearch, Gift) {
     $rootScope.menuitems = ['me', 'friends', 'events'];
     $rootScope.activeitem = 'me';
 

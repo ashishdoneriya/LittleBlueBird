@@ -1,19 +1,21 @@
 
+<span ng-show="circle != null">
 
-<div class="table pad0 marg0">
-  <div class="tablerow">
-    <div class="tablecell">
+<div class="row">
+  <div class="span4">
             <span ng-show="editcirclename=='true'">
               <form novalidate class="form-inline margbottom0">
                 <input type="text" name="name" ng-model="circle.name"><a class="btn btn-small" ng-click="editcirclename='';updatecirclename()">OK</a><a class="btn btn-small" ng-click="editcirclename=''">Cancel</a>
               </form>
             </span>
             <span ng-hide="editcirclename=='true'">
-              {{circle.name}}
+              <a ng-href="event/{{circle.id}}" class="whitelink"><i class="icon-chevron-left icon-white"></i>{{circle.name}}</a>
             </span>
-            <span ng-show="circle != null && editcirclename != 'true'"><a class="icon-pencil" ng-click="editcirclename='true'"></a></span>
-    </div>
-    <div class="tablecell">
+            
+            <!-- Take out the "edit" pencil for now that let's you change the name of the event - not a bad idea but maybe cluttering up the page -->
+            <!-- span ng-show="circle != null && editcirclename != 'true'"><a class="icon-pencil" ng-click="editcirclename='true'"></a></span -->
+  </div>
+  <div class="span2">
           <span ng-show="editcircledate=='true'">
             <form novalidate class="form-inline pull-right">
               <input class="input-small" date-picker="expdate" name="expdate" ng-model="expdate" type="text" ng-required="true"></input>
@@ -23,7 +25,11 @@
           <span ng-hide="editcircledate=='true'" class="pull-right">
             {{circle.date | date:'EEE MMM d, yyyy'}}
           </span>          
-          <span ng-show="circle != null && editcircledate != 'true'" class="pull-right"><a class="icon-calendar" ng-click="begineditcircledate(expdate);editcircledate='true'"></a></span>
-    </div>
+          
+          <!-- Take out the "calendar" icon that let's you change the date of the event - not a bad idea but maybe cluttering up the page -->
+          <!-- span ng-show="circle != null && editcircledate != 'true'" class="pull-right"><a class="icon-calendar" ng-click="begineditcircledate(expdate);editcircledate='true'"></a></span -->
   </div>
 </div>
+
+</span>
+

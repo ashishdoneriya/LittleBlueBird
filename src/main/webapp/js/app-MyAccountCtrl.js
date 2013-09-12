@@ -18,10 +18,12 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, $timeout, Us
   }
   
   
+  /************
   $scope.togglepersonalinfo = function() {
     if(!angular.isDefined($scope.personalinfo) || !$scope.personalinfo) $scope.personalinfo = true;
     else $scope.personalinfo = false;
   }
+  ***************/
   
   
   $scope.togglebio = function() {
@@ -32,10 +34,20 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, $timeout, Us
   
   $scope.savePersonalInfo = function(user) {
     //console.log("$scope.savePersonalInfo(): took out success guts -----------------------------");
-    $rootScope.user = User.save({userId:user.id, fullname:user.fullname, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirthStr, profilepic:user.profilepic}, 
+    var saveduser = User.save({userId:user.id, fullname:user.fullname, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirthStr, profilepic:user.profilepic}, 
                                   function() {
                                     if(user.dateOfBirth == 0) { user.dateOfBirth = ''; } 
                                     $scope.cssPersonalInfoSaved = 'transition1';
+                                    console.log('saveduser:', saveduser);
+                                    $rootScope.user.fullname = saveduser.fullname;
+                                    $rootScope.user.first = saveduser.first;
+                                    $rootScope.user.last = saveduser.last;
+                                    $rootScope.user.username = saveduser.username;
+                                    $rootScope.user.email = saveduser.email;
+                                    $rootScope.user.bio = saveduser.bio;
+                                    $rootScope.user.profilepic = saveduser.profilepic;
+                                    $rootScope.user.profilepicUrl = saveduser.profilepicUrl; //not sure why I have a profilepic AND profilepicUrl
+                                    
                                     $timeout(function() {$scope.cssPersonalInfoSaved = 'transition2'}, 100)
                                   },
                                   function() {alert("Uh oh - had a problem updating your profile");}
@@ -78,7 +90,9 @@ function EmailPrefsCtrl($rootScope, $scope, $timeout, User) {
     $rootScope.user.notifyondeletegift = $scope.usercopy.notifyondeletegift;
     $rootScope.user.notifyoneditgift = $scope.usercopy.notifyoneditgift;
     $rootScope.user.notifyonreturngift = $scope.usercopy.notifyonreturngift;
-    $rootScope.user = User.save({userId:$rootScope.user.id, notifyonaddtoevent:$rootScope.user.notifyonaddtoevent, notifyondeletegift:$rootScope.user.notifyondeletegift, notifyoneditgift:$rootScope.user.notifyoneditgift, notifyonreturngift:$rootScope.user.notifyonreturngift}, 
+    
+    // don't need the return value here
+    User.save({userId:$rootScope.user.id, notifyonaddtoevent:$rootScope.user.notifyonaddtoevent, notifyondeletegift:$rootScope.user.notifyondeletegift, notifyoneditgift:$rootScope.user.notifyoneditgift, notifyonreturngift:$rootScope.user.notifyonreturngift}, 
                                   function() {
                                     $scope.cssEmailPrefsSaved = 'transition1';
                                     $timeout(function() {$scope.cssEmailPrefsSaved = 'transition2'}, 100)

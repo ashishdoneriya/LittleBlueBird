@@ -1,25 +1,17 @@
 
 <div ng-controller="EventCtrl">
-<div class="table w500">
-  <div class="tablerow">
-    <div class="tablecell w500 roundedtop bgbluegradient white">
-    
-      <div class="table w500 margbottom0">
-        <div class="tablerow">
-          <div class="tablecell pad5 pull-left font24">
-            {{circle.name}}
-          </div>
-          <div class="tablecell pad5 pull-right">
-            {{circle.date | date:'MMM d, yyyy'}}
-		    <a ng-href="editevent" class="btn btn-mini" title="Edit Event"><i class="icon-edit font14"></i></a>
-          </div>
-        </div>
-      </div>
-    
-        
+
+<div class="row">
+  <div class="span6 roundedtop bgbluegradient white pad10">
+    <div class="row">
+      <div class="span4 font24">{{circle.name}}</div>
+      <div class="span2 align-right font14">
+          {{circle.date | date:'MMM d, yyyy'}}
+		  <a ng-href="editevent" class="btn btn-mini" title="Edit Event"><i class="icon-edit font14"></i></a>
+	  </div>
     </div>
   </div>
-
+</div>
 
 
 <!-- see app-EventCtrl.js, routeChangeSuccess - that's where we combine givers and receivers -->
@@ -27,59 +19,52 @@
 
   <span ng-show="p.isReceiver">
   <a ng-href="giftlist/{{p.id}}/{{circle.id}}" title="see {{p.fullname}}'s wish list">
-  <div class="tablerow">  <!-- participant row -->
-    <div class="{{isLastRow('tablecell w480 list pad10 font16', $index, circle.participants.both.length)}}">
-      <div class="table w480 marg0">
-      
-        <div class="tablerow">
-          <!-- this cell only holds the profile pic  -->
-          <div class="tablecell w60">
+  <div class="row">  <!-- participant row -->
+    <div class="{{isLastRow('span6 list pad10 font16', $index, circle.participants.both.length)}}">
+      <div class="row">
+        <div class="span1">
+        
             <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
               <div style="margin-top:{{p.profilepicmargintop50}};margin-left:{{p.profilepicmarginleft50}}">
                 <img height="{{p.profilepicadjustedheight50}}" width="{{p.profilepicadjustedwidth50}}" ng-src="{{p.profilepicUrl}}"/>
               </div>
             </div>
-          </div>
-        
-          <div class="tablecell w425">
-            {{p.fullname}} <span class="pull-right font12 txtblack"><span ng-show="circle.receiverLimit != -1">Honoree </span> <i class="icon-chevron-right"></i></span>
-          </div>
+            
         </div>
-  
+        
+        <div class="span5 font20">{{p.fullname}} <span class="pull-right font12 txtblack"><span ng-show="circle.receiverLimit != -1">Honoree </span> <i class="icon-chevron-right"></i></span></div>
+        
       </div>
     </div>
   </div>
   </a>
-  </span>    
-      
-      
+  </span> 
+
+  
+  
   <span ng-show="p.isGiver">
-  <div class="tablerow">
-    <div class="{{isLastRow('tablecell w480 list pad10 font16', $index, circle.participants.both.length)}}">
-      <div class="table w480 marg0">
-      
-        <div class="tablerow">
-          <!-- this cell only holds the profile pic  -->
-          <div class="tablecell w60">
+  <div class="row">  <!-- participant row -->
+    <div class="{{isLastRow('span6 list pad10 font16', $index, circle.participants.both.length)}}">
+      <div class="row">
+        <div class="span1">
+        
             <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
               <div style="margin-top:{{p.profilepicmargintop50}};margin-left:{{p.profilepicmarginleft50}}">
                 <img height="{{p.profilepicadjustedheight50}}" width="{{p.profilepicadjustedwidth50}}" ng-src="{{p.profilepicUrl}}"/>
               </div>
             </div>
-          </div>
-        
-          <div class="tablecell w425">
-            {{p.fullname}} <span class="pull-right font12 txtblack">Guest</span>
-          </div>
+            
         </div>
-  
+        
+        <div class="span5 font20">{{p.fullname}} <span class="pull-right font12 txtblack">Guest</span></div>
+        
       </div>
     </div>
   </div>
   </span> 
+  
       
 </div>
 
 
-</div>
 </div>

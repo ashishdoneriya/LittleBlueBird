@@ -8,9 +8,9 @@
 	
 	<div class="modal-body">
 	
-          <div class="row giftadd marg0">
-            <div class="span7">
-              <div class="row margleft_35">
+          <div class="row giftadd margleft_35">
+            <div class="span6">
+              <div class="row">
                 <div class="span4">
 	              <div class="row">
 	                <div class="span1">Item</div>
@@ -30,14 +30,14 @@
                 </div>
                 
               <span ng-show="needToSpecifyWhoTheGiftIsFor">
-                <div class="span3">
-                  <div class="row margleft_35">
-                    <div class="span3">
+                <div class="span2">
+                  <div class="row">
+                    <div class="span2">
                       This item is for<br/>(check all that apply)
                     </div>
                   </div>
-                  <div class="row margleft_35">
-                    <div class="span3">
+                  <div class="row">
+                    <div class="span2">
                       <div ng-repeat="receiver in newgift.recipients">
                         <input type="checkbox" ng-model="receiver.checked"> {{receiver.fullname}}
                       </div>
@@ -54,7 +54,7 @@
 	</div> <!-- modal-body -->
 	
 	<div class="modal-footer">	
-              <div class="row margleft_35 pull-right">
+              <div class="row pull-right">
                     <div class="span2">
                       <div ng-show="addGiftForm.$invalid">
                         <button ng-disabled="true" class="btn btn-primary" id="invalidform">Add Item</button>

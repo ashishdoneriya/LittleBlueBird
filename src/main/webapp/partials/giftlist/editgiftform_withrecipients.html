@@ -1,13 +1,13 @@
 
-                <div class="span7" ng-controller="GiftCtrl">
+                <div ng-controller="GiftCtrl">
 
 
 <form novalidate name="giftForm">
               
-              <div class="row margleft_35">
+              <div class="row">
                 <div class="span4">
 	              <div class="row">
-	                <div class="span4">with recipients
+	                <div class="span4">
                       <input type="hidden" name="giftId" ng-model="gift.id" />
                       <input type="hidden" name="senderId" ng-model="gift.sender" />
                       <input type="hidden" name="senderName" ng-model="gift.sender_name" />
@@ -22,12 +22,12 @@
 	              </div>
                 </div>
                 <div class="span3">
-                  <div class="row margleft_35">
+                  <div class="row">
                     <div class="span3">
                       This item is for<br/>(check all that apply)
                     </div>
                   </div>
-                  <div class="row margleft_35">
+                  <div class="row">
                     <div class="span3">
                       <div ng-repeat="receiver in gift.possiblerecipients">
                         <input type="checkbox" ng-model="receiver.checked"> {{receiver.fullname}}
@@ -38,7 +38,7 @@
                   
                 </div>
               </div>
-              <div class="row margleft_35">
+              <div class="row">
                     <div class="span1">
                       <button class="btn" ng-click="canceleditgift(gift)">Cancel</button>
                     </div>

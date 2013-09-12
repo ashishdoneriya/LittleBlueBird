@@ -60,100 +60,17 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
 }])
 .factory('facebookFriends', function() {
   return new function() {
-    this.getfriends = function(offset, limit, fail, success) {
+    this.getfriends = function(offset, limit, success, fail) {
       var url = '/me/friends?offset='+offset+'&limit='+limit;
-      console.log("facebookFriends.getfriends():  url="+url);
+      console.log("facebookFriends.getfriends(): 3333333333333 url="+url);
       FB.api(url, success);
+    };
+    // FB breaking change: limit=0 no longer returns all friends -> https://developers.facebook.com/roadmap/#q4_2013
+    this.get10Friends = function(success, fail) {
+      return this.getfriends(0, 10, success, fail);
     }
   }
-}).run(function($rootScope, $window, $cookieStore, $location, facebookConnect, AppRequest, UserSearch, User) {
-    
-    $rootScope.acceptAppRequest = function($window, facebookConnect) {
-      
-      var facebookreqids = [];
-      console.log(facebookreqids);
-      
-      console.log("$cookieStore.get(window.location.search) = "+$cookieStore.get("window.location.search"));
-      
-      if($cookieStore.get("window.location.search")==null) {
-        console.log("$rootScope.acceptAppRequest:  RETURN EARLY:  cookieStore.get(window.location.search) is null");
-        return;
-      }
-      
-      var parms = $cookieStore.get("window.location.search").split("&")
-      
-      console.log("TRY SET $window.location.search = ''");
-      $window.location.search = '';
-      
-      if(parms.length > 0) {
-        for(var i=0; i < parms.length; i++) {
-          if(parms[i].split("=").length > 1 && (parms[i].split("=")[0] == 'request_ids' || parms[i].split("=")[0] == '?request_ids')) {
-            fbreqids_csv = parms[i].split("=")[1].split("%2C")
-            for(var j=0; j < fbreqids_csv.length; j++) {
-              facebookreqids.push(fbreqids_csv[j]);
-            }  
-          }
-        }
-      }  
-  
-      for(var k=0; k < facebookreqids.length; k++) {
-        console.log("facebookreqids["+k+"] = "+facebookreqids[k]);
-      }
-    
-      if(facebookreqids.length > 0) {
-        deleterequests = function(res) {
-          console.log("app.js:  about to delete app requests.  res = ...");
-          var fbid = res.authResponse.userID;
-          console.log(res);
-          for(var i=0; i < facebookreqids.length; i++) {
-            var reqid_plus_fbid = facebookreqids[i]+'_'+fbid;
-            console.log("app.js: deleting app request: "+reqid_plus_fbid);
-            facebookConnect.deleteAppRequest(reqid_plus_fbid);
-          }
-          
-          // get the user info of the person who just accepted the app request
-          // and write this to the db
-          FB.api('/me', function(meresponse) {
-            $rootScope.fbuser = angular.copy(meresponse);
-            console.log("app.js:  meresponse..."); // will have: name, email, first_name, last_name, id, and other stuff
-            console.log(meresponse);
-            // queries person table for everyone that has either facebook id or email
-            records = AppRequestAccepted.save({facebookId:meresponse.id, email:meresponse.email, name:meresponse.name, fbreqids:fbreqids_csv}, 
-              function() {
-                // 'records' should always have at least one element because fbinvite() will write a record with the given facebook id if no facebook id is found
-                if(records.length == 1) { 
-                  $rootScope.user = angular.copy(records[0]);
-                  $rootScope.showUser = angular.copy(records[0]); 
-                  console.log("$rootScope.acceptAppRequest:  $rootScope.user = angular.copy(records[0]); ----------------------------------");
-                  console.log("$rootScope.acceptAppRequest:  EMIT USERCHANGE ----------------------------------");
-                  console.log("$rootScope.acceptAppRequest:  SET USERID COOKIE $rootScope.user.id="+$rootScope.user.id+"  ----------------------------------");
-                  console.log("$rootScope.acceptAppRequest:  $rootScope.user .....................");
-                  console.log($rootScope.user);
-                  $cookieStore.put("user", $rootScope.user.id);
-                  $cookieStore.put("showUser", $rootScope.showUser.id);
-                  //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting
-                  console.log("$rootScope.acceptAppRequest:  GO EXPLICITLY TO MYWISHLIST PAGE");
-                  $location.url('mywishlist');
-                }
-                else if(records.length > 1) {
-                  // go to the "who are you" page
-                  User.multipleUsers = records;
-                  $location.url('whoareyou');
-                }
-              },
-              function() {alert("Couldn't get user id (error 111)");});
-          });
-          
-        }
-        notauthorized = function(res) { console.log("app.js: FB: not authorized"); }
-        unknown = function(res) { console.log("app.js: FB: unknown"); }
-        facebookConnect.getLoginStatus(deleterequests, notauthorized, unknown);
-      }
-      
-      $cookieStore.remove("window.location.search");
-      
-    } // end $rootScope.acceptAppRequest()
-    
+}).run(function($rootScope, $window, $cookieStore, $location, facebookConnect, facebookFriends, AppRequest, UserSearch, User, FacebookServerSide) {
     
     // 3/12/13 This function will actually log the user out of Facebook - not sure if this really what we want to do.
     // Other sites don't behave this way, even when you login via fb.
@@ -175,70 +92,24 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
       });
     }
     
+        
     $rootScope.fbinviteasfriend = function() { $rootScope.fbinvite(false, ''); }
     
     $rootScope.fbinviteasgiver = function() { $rootScope.fbinvite(true, 'Giver'); }
     
     $rootScope.fbinviteasreceiver = function() { $rootScope.fbinvite(true, 'Receiver'); }
 
-    
-    // This isn't meant to be called from a page, it's meant to be called by 1 of the 3 functions above
     $rootScope.fbinvite = function(includeinevent, participationlevel) {
-      FB.ui({method: 'apprequests', message: 'Check out LittleBlueBird.  You can post your Christmas and birthday lists on it.  It\'s totally awesome!  No more emailing lists back and forth.  No more getting two of something.'}, 
-            function callback(appresponse) {
-              // appresponse.to:  an array of fb id's
-              // appresponse.request:  the request id returned by fb
-              console.log("$rootScope.fbinvite:  appresponse...");
-              console.log(appresponse);
-              console.log("$rootScope.fbinvite:  $rootScope.user.id="+$rootScope.user.id);
-              
-              FB.api('/me/friends', function(friendresponse) {
-                if(friendresponse.data) {
-                  console.log("FB.api(/me/friends):  friendresponse.data...");
-                  //console.log(friendresponse.data);
-                  // loop through all facebook id's to figure out the names that go with the facebook id's of people that just got app requests
-                  var apprequests = [];
-                  
-                  for(var i=0; i < appresponse.to.length; i++) {
-                    for(var j=0; j < friendresponse.data.length; j++) {
-                      if(appresponse.to[i] == friendresponse.data[j].id) {
-                        apprequests.push({parentId:$rootScope.user.id, fbreqid:appresponse.request, facebookId:appresponse.to[i], name:friendresponse.data[j].name});
-                        console.log("FOUND FRIEND NAME: fbid="+appresponse.to[i]+", name="+friendresponse.data[j].name+", fbreqid="+appresponse.request);
-                        break;
-                      }
-                    }
-                  }
-                  
-                  var circlestuff = {};
-                  if(includeinevent) {
-                    circlestuff.circleId = $rootScope.circle.id;
-                    circlestuff.participationlevel = participationlevel;
-                  }
-                  
-                  console.log("WRITING THESE AppRequests...");
-                  console.log(apprequests);
-                  var stuff = AppRequest.save({requests:apprequests, circlestuff:circlestuff},
-                          function() {
-                            console.log("$rootScope.fbinvite() ------------------------------");
-                            console.log(stuff);
-                            $rootScope.user.friends = stuff.friends;
-                            $rootScope.$emit("friends"); 
-                            
-                            if(angular.isDefined($rootScope.circle) && angular.isDefined(stuff.participants)) {
-                              $rootScope.circle.participants = stuff.participants;
-                            }
-                            
-                            //$rootScope.$apply();
-                          });
-                  
-                } else {
-                  console.log("FB.api(/me/friends):  ERROR: friendresponse...");
-                  console.log(friendresponse);
-                }
-              });
-              
-            });
-    }   
+      
+      console.log('$rootScope.fbinvite(): THIS WHOLE FUNCTION HAS BEEN COMMENTED OUT');
+      // this works - sends a private message
+      //FB.ui({app_id:'136122483829', method:'send', link:'http://www.littlebluebird.com/gf/index.html', message:'dude this is awesome'})
+      
+    }
+    
+    $rootScope.sendFacebookMessage = function(person) {
+      FB.ui({to:person.facebookId, method:'send', link:'http://www.littlebluebird.com/gf/'})
+    }
     
     
     $rootScope.registerWithFacebook = function() {
@@ -305,7 +176,25 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                       console.log("$rootScope.initfbuser():  $rootScope.user="+$rootScope.user);
                       if(alreadymergedaccount) {
                         console.log("app-FacebookModule:  this is already a merged account, so going now to mywishlist");
-                        $location.url('me');
+					
+										    
+					    
+					    //get access token and pass to the server; get all friends on the server not the client
+					    // so I can make a call like this on the server:
+					    // 		https://graph.facebook.com/569956369/friends?limit=0&offset=0&access_token=CAAAAH7GIRHUBAEJqVt3iB3Lut0BkFoSMFW0gM32LNpZATLoe140CTMAUe3QSxK1qnficW9wr9ZApT4xG1CUgaiuMoL3e7zoxV8jZAfDulYGD8czWpZAxB8aLIP5f4TFkajsJDf5OaRnpHOPXqmdO3bpagMJnNnM3ho8PgXBixF3exAUrr3vfXG4TnC8xZBHzcIDTV1p05oAZDZD&__after_id=100005734893581%22
+			            FB.getLoginStatus(function(response) {
+			              console.log("access token:", response.authResponse.accessToken);
+			              $rootScope.peopleToFollow = FacebookServerSide.friends({accessToken:response.authResponse.accessToken, facebookId:user.id, userId:$rootScope.user.id, queryType:'peopleToFollow'},
+			                          function() {console.log("FacebookServerSide SUCCESS: $rootScope.peopleToFollow", $rootScope.peopleToFollow)},
+			                          function() {console.log("FacebookServerSide FAIL: $rootScope.peopleToFollow -------------------------")});
+			                          
+			              $rootScope.peopleToInvite = FacebookServerSide.friends({accessToken:response.authResponse.accessToken, facebookId:user.id, userId:$rootScope.user.id, queryType:'peopleToInvite'},
+			                          function() {console.log("FacebookServerSide SUCCESS: $rootScope.peopleToInvite", $rootScope.peopleToInvite)},
+			                          function() {console.log("FacebookServerSide FAIL: $rootScope.peopleToInvite --------------------")});
+			            });
+					    
+					      
+                        $location.url('me'); // TODO invalid url as of 2013-09-09
                       } 
                       else { // ...but in the beginning, this is what will happen - no record in our person table contains this facebookId
                         if($rootScope.users.length == 0) {
@@ -316,17 +205,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                                                  $rootScope.showUser = angular.copy($rootScope.user);
                                                  $cookieStore.put("user", $rootScope.user.id);
                                                  $cookieStore.put("showUser", $rootScope.showUser.id);
-                                                 console.log("just created an LBB account, check $rootScope.user...");
-                                                 console.log($rootScope.user);
-                                                 
-                                                 //console.log("$rootScope.initfbuser:  $rootScope.$emit(\"userchange\")");
-                                                 //$rootScope.$emit("userchange"); 
-                                                 
-                                                 //console.log("$rootScope.initfbuser:  $rootScope.$broadcast(\"userchange\")");
-                                                 //$rootScope.$broadcast("userchange");   
-                                                                                        
-                                                 //$rootScope.$emit("mywishlist");  // commented out on 11/30/12 - experimenting
-                                                 console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+                                                 console.log("just created an LBB account, check $rootScope.user", $rootScope.user);
                                                  $location.url('welcome');
                                                }
                                              );
@@ -345,6 +224,8 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                           console.log($rootScope.users[0].profilepicUrl != placeholderPic);
                                                          
                           var pic = $rootScope.users[0].profilepicUrl != placeholderPic ? $rootScope.users[0].profilepicUrl : "http://graph.facebook.com/"+$rootScope.fbuser.id+"/picture?type=large";
+                          
+                          // TODO WHY ARE WE DOING THIS ????
                           var uagain = User.save({userId:$rootScope.user.id, facebookId:$rootScope.fbuser.id, profilepic:pic}, 
                                        function() {
                                          $rootScope.user = angular.copy(uagain); 
@@ -368,4 +249,9 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
     }
     
 
-  });
+  })
+	.run(function($rootScope) {
+	  
+	    $rootScope.$on('$routeChangeStart', function(scope, newRoute){ 
+	    })   
+	});

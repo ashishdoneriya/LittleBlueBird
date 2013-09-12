@@ -64,6 +64,7 @@ object RestService extends RestHelper with LbbLogger {
     // gifts...
     case Get("rest" :: "gifts" :: AsLong(giftId) :: _, _) => debug("RestService.serve:  999999999"); findGift(giftId)
     case Get("rest" :: "gifts" :: _, _) => debug("RestService.serve:  AAAAAAAAA"); findGifts
+    case Get("rest" :: "FacebookServerSide" :: accessToken :: facebookId :: userId :: queryType :: _, _) => getFBFriends(accessToken, facebookId, userId, queryType)
   }
   
   serve {
@@ -122,6 +123,44 @@ object RestService extends RestHelper with LbbLogger {
     case Post(_, _) => debug("RestService.serve:  case Post(_, _): S.uri="+S.uri); JsonResponse("Post(_, _)  S.uri="+S.uri)
     
     //case _ => debug("RestService.serve:  666666666"); debugRequest 
+  }
+  
+  
+  /**
+   * I'm making this method do double duty because I didn't feel like creating ANOTHER service on the client side.
+   * So I just made up another parameter called 'queryType' and I either set the value to 'peopleToFollow' or 'peopleToInvite'
+   */
+  def getFBFriends(accessToken:String, facebookId:String, userId:String, queryType:String) = {
+    // 2013-09-10: You can't use limit=0 to get all friends anymore.  See https://developers.facebook.com/roadmap/#q4_2013
+    val url = "https://graph.facebook.com/"+facebookId+"/friends?limit=500&offset=0&access_token="+accessToken+"&__after_id=100005734893581%22"
+    val json = io.Source.fromURL(url).mkString
+    
+    if(queryType.equals("peopleToFollow")) {
+	    val peopleToFollow = SearchHelper.notFollowingTheseFBFriends(userId, json)
+	    Util.toJsonResponse(peopleToFollow)
+    }
+    else if(queryType.equals("peopleToInvite")) {
+	    val peopleToInvite = SearchHelper.peopleToInvite(userId, json)
+	    val jsonobj = peopleToInvite.map(kv => {	 
+	      
+	      val matched = (kv.get("id"), kv.get("name")) match {
+	        case (Some(id:String), Some(name:String)) => {
+	          val list = List(JField("facebookId", JString(id)), JField("fullname", JString(name)), JField("profilepicUrl", JString("http://graph.facebook.com/"+id+"/picture?type=square")))
+	          val jobj:JValue = JObject(list)
+	          jobj
+	        }
+	        case _ => JsonAST.JNull
+	      }
+	      
+	      matched 
+	      
+	    })
+	    val ddd = jsonobj.filter(jjj => jjj != JsonAST.JNull)
+	    val eee:JArray = JArray(ddd.toList)
+	    JsonResponse(eee)
+    }
+    else BadResponse()
+    
   }
   
   

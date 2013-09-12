@@ -63,6 +63,13 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
                        });
       return FacebookUser;
   }).
+  factory('FacebookServerSide', function($resource){
+      var FacebookServerSide = $resource('/gf/rest/FacebookServerSide/:accessToken/:facebookId/:userId/:queryType', {accessToken:'@accessToken', facebookId:'@facebookId', userId:'@userId', queryType:'@queryType'}, 
+                       {
+                         friends: {method:'GET', isArray:true}
+                       });
+      return FacebookServerSide;
+  }).
   factory('MergeUsers', function($resource){
       var MergeUsers = $resource('/gf/rest/mergeusers/:userId/:facebookId/:email', {userId:'@userId', facebookId:'@facebookId', email:'@email'}, 
                        {
@@ -83,16 +90,6 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
                      });
                      
       return Reminder;
-  }).
-  factory('Gift', function($resource) {
-      var Gift = $resource('/gf/rest/gifts/:giftId/:updater', {giftId:'@giftId', updater:'@updater', viewerId:'@viewerId', recipientId:'@recipientId', recipients:'@recipients', circleId:'@circleId', description:'@description', url:'@url', addedBy:'@addedBy', status:'@status', senderId:'@senderId', senderName:'@senderName', reallyWants:'@reallyWants', deleted:'@deleted', urlAff:'@urlAff', affiliateId:'@affiliateId', receivedate:'@receivedate'}, 
-                    {
-                      query: {method:'GET', isArray:true}, 
-                      delete: {method:'DELETE'},
-                      save: {method:'POST'},
-                    });
-
-      return Gift;
   }).
   factory('Email', function($resource) {
       var Email = $resource('/gf/rest/email', {to:'@to', from:'@from', subject:'@subject', message:'@message', type:'@type', user:'@user'}, 
@@ -132,6 +129,19 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
     
     return obj;
   })
+	.run(function($location, $cookieStore, $rootScope, User) {
+	  
+	    // See events.html:  #/newevent/Christmas,Birthday,etc
+	    // This event is fired all the time, so make sure the url contains 'newevent' to proceed
+	    $rootScope.$on('$routeChangeStart', function(scope, newRoute){ 
+	        if($location.url().indexOf('accountinfo') != -1) {
+	            if(angular.isDefined($rootScope.user)) $rootScope.usercopy = angular.copy($rootScope.user);
+	            else if($cookieStore.get("user") != null) {
+	                $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){$rootScope.usercopy = angular.copy($rootScope.user);});
+	            }
+	        }
+	    })   
+	})
   .directive('btnEditCircle', function(){
       return {
         scope: false,

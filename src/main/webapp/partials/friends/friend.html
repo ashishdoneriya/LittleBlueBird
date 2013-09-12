@@ -1,40 +1,17 @@
 
-<div class="table w200 margbottom0">
-          <div class="tablerow w200">
-           
-            <span ng-show="friendeditmode=='true'">
-            <div class="tablecell w30">
-                    <span ng-show="deletethisfriend=='true'">
-                      <img src="img/delete-prompt-vertical.gif" ng-click="$event.preventDefault();$event.stopPropagation();deletethisfriend='false'"/>
-                    </span>
-                    <span ng-hide="deletethisfriend=='true'">
-                      <img src="img/delete-prompt-horizontal.gif" ng-click="$event.preventDefault();$event.stopPropagation();deletethisfriend='true'"/>
-                    </span>
-            </div>
-            </span>
-            
-            <div class="tablecell w50 padtop5 padbottom5">
-                  <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
-                    <div style="margin-top:{{friend.profilepicmargintop50}};margin-left:{{friend.profilepicmarginleft50}}">
-                        <img height="{{friend.profilepicadjustedheight50}}" width="{{friend.profilepicadjustedwidth50}}" ng-src="{{friend.profilepicUrl}}"/>
-                    </div>
-                  </div>
-            </div>
-            
-            <div class="tablecell w75 padleft5 padtop5 align-middle">
-              {{friend.fullname}} <span class="font10" title="{{friend.fullname}} has not accepted the app request yet">{{friend.appRequestStatus}}</span>
-            </div>
-            
-            <div class="tablecell w45 align-middle">
-              <span class="pull-right">
-              
-                <span ng-show="friendeditmode=='true'">
-                  <span ng-show="deletethisfriend=='true'">
-                    <button class="btn btn-mini btn-danger" title="will not unfriend on Facebook" ng-click="removefriend($event, friend)">Delete</button>
-                  </span>
-                </span>
-                
-              </span>
-            </div>
-          </div>
+<div class="row">
+  
+  <div class="span2 font14">
+      {{friend.fullname}}
+    
+    
+      <span class="pull-right">
+      
+        <span ng-show="friendeditmode=='true'">
+            <button class="btn btn-mini btn-danger" title="will not unfriend on Facebook" ng-click="removefriend($event, friend)">Delete</button>
+        </span>
+        
+      </span>
+  </div>
+  
 </div>

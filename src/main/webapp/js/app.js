@@ -5,45 +5,45 @@ if (typeof console == "undefined") var console = { log: function() {} };
 else if (!debugging || typeof console.log == "undefined") console.log = function() {};
 
 
-var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', 'FacebookModule']).
+var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule', 'datetime', 'FacebookModule']).
   config(function($routeProvider, $locationProvider, $rootScopeProvider, $cookieStoreProvider){
     
     
     $routeProvider
-      .when('/accountinfo', {templates: {layout: 'accountinfo', four: 'partials/myaccount/accountinfo.html', five:'partials/navbar.html'}})
-      .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/circles', {templates: {layout: 'layout.html', four: 'partials/circledetails.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/currentevent', {templates: {layout: 'layout.html', four: 'partials/events/event.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/editevent', {templates: {layout: 'layout.html', four: 'partials/events/newevent.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
-      .when('/email', {templates: {layout: 'layout.html', four: 'partials/email.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/accountinfo', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/myaccount/accountinfo.html', five:'partials/navbar.html'}})
+      .when('/addfacebookfriends', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/friends/addfacebookfriends.html', five:'partials/navbar.html'}})
+      .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
+      .when('/circles', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/circledetails.html', five:'partials/navbar.html'}})
+      .when('/currentevent', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/events/event.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/editevent', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/events/newevent.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/email', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/email.html', five:'partials/navbar.html'}})
       .when('/emailit', {templates: {layout: 'home', one: 'partials/emailMyUsernameAndPassword.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
-      .when('/emailprefs', {templates: {layout: 'layout.html', four: 'partials/myaccount/emailprefs.html', five:'partials/navbar.html'}})
-      .when('/event/:circleId', {templates: {layout: 'layout.html', four: 'partials/events/event.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/emailprefs', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/myaccount/emailprefs.html', five:'partials/navbar.html'}})
+      .when('/event/:circleId', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/events/event.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/events', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/foo/events', {templates: {layout: 'foo.html', four: 'partials/events/whatareevents.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/foo/friends', {templates: {layout: 'foo.html', four: 'partials/friends/whatarefriends.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
-      .when('/fbfriends', {templates: {layout: 'layout.html', four: 'partials/fbfriends.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
-      .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
+      .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
       .when('/home', {templates: {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       // get rid of /login route
       .when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
-      .when('/managepeople/', {templates: {layout: 'layout.html', four: 'partials/managepeople.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/managepeople/', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/managepeople.html', five:'partials/navbar.html'}})
       .when('/marketing', {templates: {layout: 'support', one:'partials/marketing.html', four:'partials/navbar-nli.html'}})
-      .when('/me', {templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/myaccount/me.html', five:'partials/navbar.html'}})
-      .when('/mywishlist', {templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      .when('/newevent/:type', {templates: {layout: 'layout.html', four: 'partials/events/newevent.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
-      .when('/personalinfo', {templates: {layout: 'layout.html', four: 'partials/myaccount/personalinfo.html', five:'partials/navbar.html'}})
+      .when('/newevent/:type', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/events/newevent.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      .when('/peopleToInvite', {templates: {layout: 'layout2', four: 'partials/friends/peopleToInvite.html', five:'partials/navbar.html'}})
+      .when('/personalinfo', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/myaccount/personalinfo.html', five:'partials/navbar.html'}})
       .when('/privacy', {templates: {layout: 'support', one:'partials/privacy.html', four:'partials/navbar-nli.html'}})
       .when('/register', {templates: {layout: 'home', one: 'partials/register.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
-      .when('/reminders', {templates: {layout: 'layout.html', four: 'partials/reminders.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/reminders', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/reminders.html', five:'partials/navbar.html'}})
       .when('/state', {templates: {layout: 'foo',               menu: 'partials/foo/menu.html', body:'partials/foo/foo.html'}})
       .when('/support', {templates: {layout: 'support', one:'partials/support.html', four:'partials/navbar-nli.html'}})
       .when('/test', {templates: {layout: 'layout-nli.html', one: 'partials/test.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
-      .when('/welcome', {templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .when('/welcome', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/welcome.html', five:'partials/navbar.html'}})
       .when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}})
       .when('/', {templates: {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
-      .otherwise({redirectTo: '/welcome', templates: {layout: 'layout.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', four: 'partials/welcome.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
-      //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', four: 'partials/giftlist.html', five:'partials/navbar.html', six:'partials/profilepic.html'}})
+      .otherwise({redirectTo: '/welcome', templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/welcome.html', five:'partials/navbar.html'}})
+      //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
       ;
       
       
@@ -68,10 +68,9 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
           }
         }
         
-        
+        /**********************************
         console.log("routeChangeStart:  newRoute...............");
         console.log(newRoute);
-        
         console.log($window.navigator);
         console.log("$window.navigator.appName = ...");
         console.log($window.navigator.appName);
@@ -82,6 +81,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
         console.log($window.navigator.userAgent);
         console.log("$window.location = ...");
         console.log($window.location);
+        **********************************/
         
         // 2013-05-29: IE9 does serve up the home page, but FB login is messed up - not sure why
         // 2013-06-03 SCREW IT FOR NOW - NO IE
@@ -105,9 +105,6 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
           $cookieStore.put("window.location.search", s); 
           $window.location.search = '';
         }
-        
-        // 2013-09-04:  We need to determine if there is a 'current user' regardless of whether the URL allows anonymous access
-        
             
         // Rule:  
         //		9/4/13  If $rootScope.user exists OR the requested page allows anonymous access, let the user through
@@ -119,7 +116,6 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
         
         
         if(angular.isDefined($rootScope.user) || allowAnonymousAccess) {
-          console.log('CONDITION 1111111');
           $rootScope.templates = newRoute.templates;
           $rootScope.layoutController = newRoute.controller;
         }
@@ -127,7 +123,6 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
         // 2013-03-12:  next - check for "user" cookie
         // 2013-09-04:  Strictly speaking, we don't have to check 'allowAnonymousAccess' We know it's false because the 'if' block above didn't get called.
         else if(angular.isDefined($cookieStore.get("user"))) {
-          console.log('CONDITION 2222222222');
           $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){console.log("FOUND user from $cookieStore.get('user') BEFORE we checked Facebook");console.log($rootScope.user);});
           $rootScope.templates = newRoute.templates;
           $rootScope.layoutController = newRoute.controller;
@@ -146,8 +141,6 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
         // 2013-03-12 Not sure if this will ever get called now that we have the else-if above.  app-LoginCtrl:$scope.login() and app-FacebookModule:$rootScope.initfbuser()
         // both set "user" cookies.  So I don't think this will ever get called.
         else { // $rootScope.user is undefined
-        
-          console.log('CONDITION 3333333333');
           
           // Applying the rule above: see if the user is logged in to FB
           var p2 = $rootScope.Facebook.status();
@@ -315,6 +308,18 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
       if(lastrow) return style + ' lastrow'; 
       else return style;
     }
+    
+    // 2013-09-06:  Figures out if the row is the first row or the last row AND figures out if the row is a selected row !
+    $rootScope.styleRow = function(style, index, size, thing) {
+      firstrow = index == 0;
+      lastrow = index == size-1;
+      if(firstrow) thestyle = style + ' firstrow'; 
+      else if(lastrow) thestyle = style + ' lastrow'; 
+      else thestyle = style;
+      if(angular.isDefined(thing.selected) && thing.selected==true)
+        thestyle = thestyle + ' selected';
+      return thestyle;
+    }
   
     // returns the selected or not-selected style of a person's row
     $rootScope.selectedOrNotStyle = function(style, index, size, person) {
@@ -325,6 +330,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
     
     
     $rootScope.friendwishlist = function(friend) {
+      /**************************
       $rootScope.showUser = friend;
       console.log("app.js: viewerId:$rootScope.user.id="+$rootScope.user.id);
       $rootScope.gifts = Gift.query({recipientId:friend.id, viewerId:$rootScope.user.id}, 
@@ -338,6 +344,8 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'datetime', '
                               //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting
                             }, 
                             function() {alert("Hmmm... Had a problem getting "+friend.first+"'s list\n  Try again  (error code 501)");});
+       *******************/
+       console.log("app.js: $rootScope.friendwishlist() EVERYTHING COMMENTED OUT. IT'S ALL HANDLED BY app-GiftModule:routeChangeStart now");
     }
     
     
@@ -583,53 +591,6 @@ function menuctrl($rootScope, $scope, $location, $route) {
   
 }
 
-function fooctrl($rootScope, $scope, $location, $route, UserSearch, facebookConnect) {
-  console.log("fooctrl: fooid="+$route.current.params.fooid);
-  
-  $scope.fooid = $route.current.params.fooid;
-  $scope.barid = $route.current.params.barid;
-  
-  $rootScope.$on("change", function(event){
-    $scope.fooid = $route.current.params.fooid;
-    console.log("fooctrl: $rootScope.$on() DETECTED CHANGE: $route.current.params.fooid="+$route.current.params.fooid);
-	console.log($route);
-  });
-  
-}
-
-function barctrl($rootScope, $scope, $location, $route, $cookieStore) {
-
-  console.log("barctrl: $route.current.params.fooid="+$route.current.params.fooid+", $route.current.params.barid="+$route.current.params.barid);
-  
-  $scope.fooid = $route.current.params.fooid;
-  $scope.barid = $route.current.params.barid;
-  
-  $rootScope.$on("change", function(event){
-    $scope.fooid = $route.current.params.fooid;
-    $scope.barid = $route.current.params.barid;
-    console.log("barctrl: $rootScope.$on() DETECTED CHANGE: $route.current.params.fooid="+$route.current.params.fooid);
-	console.log("barctrl: $rootScope.$on() DETECTED CHANGE: $route.current.params.barid="+$route.current.params.barid);
-	console.log($route);
-  });
-}
-
-function bazctrl($rootScope, $scope, $location, $route) {
-  console.log("bazctrl: fooid="+$route.current.params.fooid+", barid="+$route.current.params.barid+", bazid="+$route.current.params.bazid);
-  
-  $scope.fooid = $route.current.params.fooid;
-  $scope.barid = $route.current.params.barid;
-  $scope.bazid = $route.current.params.bazid;
-  
-  $rootScope.$on("change", function(event){
-    $scope.fooid = $route.current.params.fooid;
-    $scope.barid = $route.current.params.barid;
-    $scope.bazid = $route.current.params.bazid;
-    console.log("bazctrl: $rootScope.$on() DETECTED CHANGE: $route.current.params.fooid="+$route.current.params.fooid);
-	console.log("bazctrl: $rootScope.$on() DETECTED CHANGE: $route.current.params.barid="+$route.current.params.barid);
-    console.log("bazctrl: $rootScope.$on() DETECTED CHANGE: $route.current.params.bazid="+$route.current.params.bazid);
-	console.log($route);
-  });
-}
 
 function FBCtrl($rootScope, $scope) {
  // see test.html

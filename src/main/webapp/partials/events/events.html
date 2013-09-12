@@ -66,100 +66,77 @@ list contains only one person: YOU -->
   </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<div class="row">
+  <div class="span6 bgbluegradient font24 white rounded pad10">
           
+      <div class="row">
+          <div class="span4">EventsY</div>
+          <div class="span2">
+			      <span class="pull-right">
+			        <div class="btn-group">
+				      <a class="btn btn-mini btn-primary dropdown-toggle font14 white" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
+				      <ul class="dropdown-menu font12 align-left">
+				        <!-- See app-CircleModule:run():routeChangeStart that references this page -->
+				        <li><a ng-href="newevent/Christmas">Christmas</a></li>
+				        <li><a ng-href="newevent/Birthday">Birthday</a></li>
+				        <li><a ng-href="newevent/Anniversary">Anniversary</a></li>
+				        <li><a ng-href="newevent/Mothers Day">Mothers Day</a></li>
+				        <li><a ng-href="newevent/Fathers Day">Fathers Day</a></li>
+				        <li><a ng-href="newevent/Valentines Day">Valentines Day</a></li>
+				        <li><a ng-href="newevent/Graduation">Graduation</a></li>
+				        <li><a ng-href="newevent/Baby Shower">Baby Shower</a></li>
+				        <li><a ng-href="newevent/Other">Other</a></li>
+				      </ul>
+				    </div>
+			      </span>
+			      
+			      <span ng-show="circleeditmode=='true'">
+			        <span class="pull-right"><a class="btn btn-mini" ng-click="circleeditmode='false'">Done</a></span>
+			      </span>
+			      <span ng-hide="circleeditmode=='true'">
+			        <span class="pull-right"><a class="btn btn-mini btn-primary" ng-click="circleeditmode='true'">&nbsp;Edit&nbsp;&nbsp;</a></span>
+			      </span>
+          </div>
+      </div>
+          
+      
+      
+	</div>
+  </div>
 
-<div class="table w200 margbottom0">
 
-<div class="tablerow w200"> <!-- header row -->
-  <div class="tablecell w200 roundedtop bgbluegradient pad5">
-    <div class="table w200 margbottom0">
-      <div class="tablerow w200">
-        <div class="tablecell w200 white font14 center">
-          <span ng-show="circleeditmode=='true'">
-            <span class="pull-left"><a class="btn btn-mini" ng-click="circleeditmode='false'">Done</a></span>
-          </span>
-          <span ng-hide="circleeditmode=='true'">
-            <span class="pull-left"><a class="btn btn-mini btn-primary" ng-click="circleeditmode='true'">&nbsp;Edit&nbsp;&nbsp;</a></span>
-          </span>
-        
-          Events
-	    
-          <span class="pull-right">
-            <div class="btn-group">
-		      <a class="btn btn-mini btn-primary dropdown-toggle font14 white" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
-		      <ul class="dropdown-menu font12 align-left">
-		        <!-- See app-CircleModule:run():routeChangeStart that references this page -->
-		        <li><a ng-href="newevent/Christmas">Christmas</a></li>
-		        <li><a ng-href="newevent/Birthday">Birthday</a></li>
-		        <li><a ng-href="newevent/Anniversary">Anniversary</a></li>
-		        <li><a ng-href="newevent/Mothers Day">Mothers Day</a></li>
-		        <li><a ng-href="newevent/Fathers Day">Fathers Day</a></li>
-		        <li><a ng-href="newevent/Valentines Day">Valentines Day</a></li>
-		        <li><a ng-href="newevent/Graduation">Graduation</a></li>
-		        <li><a ng-href="newevent/Baby Shower">Baby Shower</a></li>
-		        <li><a ng-href="newevent/Other">Other</a></li>
-		      </ul>
-		    </div>
-	      </span>
-	    
-        </div>
-      </div> <!-- end table w200 margbottom0 -->
-      <div class="tablerow w200">
-        <div class="tablecell w200 white font14 center padtop10">
+<div class="row">
+  <div class="span6 padtop10 padbottom10">
 	        <div class="btn-group">
 	          <span ng-show="eventfilter=='current'">
-		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('current');" class="btn btn-mini" disabled="true">Current</a>
+		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('current');" class="btn" disabled="true">Current</a>
 	          </span>
 	          <span ng-hide="eventfilter=='current'">
-		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('current');" class="btn btn-mini btn-primary">Current</a>
+		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('current');" class="btn btn-primary">Current</a>
 	          </span>
 	          
 	          <span ng-show="eventfilter=='past'">
-		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('past');" class="btn btn-mini" disabled="true">Past</a>
+		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('past');" class="btn" disabled="true">Past</a>
 	          </span>
 	          <span ng-hide="eventfilter=='past'">
-		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('past');" class="btn btn-mini btn-primary">Past</a>
+		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('past');" class="btn btn-primary">Past</a>
 	          </span>
 	          
 	          <span ng-show="eventfilter=='all'">
-		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('all');" class="btn btn-mini" disabled="true"> All </a>
+		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('all');" class="btn" disabled="true"> All </a>
 	          </span>
 	          
 	          <span ng-hide="eventfilter=='all'">
-		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('all');" class="btn btn-mini btn-primary"> All </a>
+		          <a ng-href="{{currentlocation}}" ng-click="setEventFilter('all');" class="btn btn-primary"> All </a>
 	          </span>
 	        </div>
-        </div>
-      </div>
-    </div>
-    
   </div>
-</div> <!-- header row -->
+</div>
 
 
-<div ng-repeat="event in user.circles | filter: eventDateFilter" ng-cloak">
-  <div class="tablerow w200">
-   
-      <a ng-href="event/{{event.id}}">
-        <div class="{{isLastRow('tablecell w200 list pad5 font14', $index, user.circles.length)}}">
-        
+<div class="row" ng-repeat="event in user.circles | filter: eventDateFilter" ng-cloak">
+  <a ng-href="event/{{event.id}}">
+    <div class="{{styleRow('span6 list pad10 font18', $index, user.circles.length, event)}}">
         
             <span ng-show="circleeditmode=='true'">
                   <span ng-show="deletethisevent=='true'">
@@ -180,34 +157,30 @@ list contains only one person: YOU -->
               <button class="btn btn-mini btn-danger" title="delete this event" ng-click="confirmDeleteEvent($event, event);$parent.deleteEventModal=true;">Delete</button>
             </span>
             <span ng-hide="deletethisevent=='true'">
-              <span class="pull-right font12 txtgray">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
+              <span class="pull-right txtgray">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
             </span>
           </span>
                 
           <span ng-hide="circleeditmode=='true'">
-            <span class="pull-right font12 txtgray">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
+            <span class="pull-right txtgray">{{event.date | date:'MMM d, yyyy'}} <i class="icon-chevron-right"></i></span>
           </span>
-                  
-     
-                    
-        </div>
-      </a>
-    
-  </div>
+  
+    </div>
+  </a>
 </div>
 
 
+
 <span ng-show="user.circles.length==0">
-<div class="tablerow w200">
-  <div class="tablecell w200 roundedbottom pad5 bgwhite">
-    <P>You don't belong to any events yet</P>
-    <P>Create events for each gift-giving occasion</P>
-    <P>Add your friends and family to these events so you can see their wish lists, and they can see yours</P>
+<div class="row">
+  <div class="span6 list firstrow rounded pad10 bgwhite">
+    <P class="font16">You don't belong to any events yet</P>
+    <P class="font16">Create events for each gift-giving occasion</P>
+    <P class="font16">Add your friends and family to these events so you can see their wish lists, and they can see yours</P>
   </div>
 </div>
 </span>
 
 
 
-</div>
 </div>

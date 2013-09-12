@@ -5,24 +5,24 @@ Instead, this page has JUST the username/password fields needed to login to LBB 
 <div ng-controller="LoginCtrl">   
 	  <form novalidate>
 	    <div class="row">
-	      <div class="span2 padleft30">
+	      <div class="span3">
 		    <input type="text" title="username" placeholder="Username" ng-model="username"  class="span2 font16"/> 
           </div>
         </div>
 	    <div class="row">
-	      <div class="span2 padleft30">
+	      <div class="span3">
 		    <input type="password" title="password" placeholder="Password" ng-model="password" class="span2 font16"/>
 	      </div>
         </div>
 	    <div class="row">
-	      <div class="span2">
-		    <a class="btn btn-primary span2 padleft0 padright0" ng-click="login()">Login</a>
+	      <div class="span3">
+		    <a class="btn btn-primary" ng-click="login()">Login</a>
 	      </div>
         </div>
 	  </form>
 	  <div class="row">
-	    <div class="span2 padleft30">
-	      <a ng-href="emailit">Forgot your login?</a> | <a ng-href="register">Register</a>
+	    <div class="span3">
+	      <a ng-href="emailit" style="color:#0000ff">Forgot your login?</a> | <a ng-href="register" style="color:#0000ff">Register</a>
         </div>
       </div>
         

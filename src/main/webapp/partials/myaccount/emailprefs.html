@@ -3,17 +3,17 @@
 
 
 <div class="row">
-  <div class="span5 box pad10 bgwhite margtop10">
+  <div class="span6 box pad10 bgwhite margtop10">
   
     <div class="row">
       <a ng-href="{{currentlocation}}" ng-click="toggleemailprefs()">
-      <div class="span5 pad0">
+      <div class="span6">
         <span class="font16">Email Preferences</span>
         
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             
             <!-- http://jsfiddle.net/maccman/E9cnL/ -->
-            <span class="font16 bold"><span ng-class="cssEmailPrefsSaved">Save Successful</span></span>
+            <span class="font16 bold"><span ng-class="cssEmailPrefsSaved">Saved</span></span>
         
         
         <span class="pull-right">
@@ -30,7 +30,7 @@
     
     <span ng-show="emailprefs">
     <div class="row">
-      <div class="span5 padtop10">
+      <div class="span6">
 		<P><input type="checkbox" ng-checked="usercopy.notifyonaddtoevent=='true'" ng-model="usercopy.notifyonaddtoevent"/> Notify me when someone adds me to an event</P>
 		<P><input type="checkbox" ng-checked="usercopy.notifyondeletegift=='true'" ng-model="usercopy.notifyondeletegift"/> Notify me when someone deletes a gift I have bought</P>
 		<P><input type="checkbox" ng-checked="usercopy.notifyoneditgift=='true'" ng-model="usercopy.notifyoneditgift"/> Notify me when someone changes the description of a gift I have bought</P>
@@ -39,12 +39,12 @@
     </div>
 		    
     <div class="row">
-      <div class="span5">
-        <span class="pull-right">
-            <button class="btn btn-primary span1" ng-click="updateemailprefs()">Save</button>
-	        <button ng-click="resetuser()" class="btn span1 pull-right">Reset</button>
-        </span>
-      </div>
+        <div class="span6">
+              <span class="pull-right">
+		          <a class="btn btn-primary span1 pull-right" ng-href="{{currentlocation}}" ng-click="updateemailprefs();">Save</a>
+		          <button ng-click="resetuser()" class="btn span1 pull-right">Reset</button>
+		      </span>
+        </div>
     </div>
     </span> <!-- ng-show="emailprefs" -->
     

@@ -10,6 +10,9 @@ import java.util.Date
 import org.joda.time.DateTime
 import java.security.MessageDigest
 import java.math.BigInteger
+import net.liftweb.json.JsonParser
+import net.liftweb.json.JsonAST.JObject
+import scala.collection.immutable.List
 
 object Util extends LbbLogger {
   
@@ -33,6 +36,46 @@ object Util extends LbbLogger {
   // still active.  Only after noon will LBB tell you the event has passed.  MINIMAL IMPACT - Who is really going to be checking on
   // an event before noon the following day?  I doubt that anyone even checks the event after it's passed.
   def dateIsPassed(date:Long, now:DateTime) = new DateTime(date + 86400000) isBefore(now)
+  
+  
+  /**
+   * 2013-09-10  This method takes json data of friends returned by FB and converts it to a
+   * csv list of facebook id's suitable for querying the person table
+   */
+  def facebookFriendsToCSV(json:String) = {
+      
+    val iterableMap = makeListOfMaps(json)
+    val temp = for(val2 <- iterableMap) yield {
+        val2.get("id")
+    }
+    
+    //val list = facebookIds.getOrElse(List())
+    val xxx = temp.map(mmm => {
+      val www = mmm.getOrElse("")
+      "'"+www+"'"
+    })
+    val vvv = xxx.filter(ddd => !ddd.equals("''"))
+    vvv.mkString(", ")
+  }
+  
+  
+  def makeListOfMaps(json:String) = {
+      
+    val jvalOption = JsonParser.parseOpt(json)
+    
+    val facebookIds = for(jobj <- jvalOption; if(jobj.isInstanceOf[JObject])) yield {
+      val jobject = jobj.asInstanceOf[JObject]
+      val temp = for(value <- jobject.values; if(value._1.equals("data")); if(value._2.isInstanceOf[List[Map[String, Any]]])) yield {
+        value._2.asInstanceOf[List[Map[String, String]]]
+      }
+      val flat = temp.flatten
+      flat
+    }
+    
+    val fff = facebookIds.getOrElse(List())
+    println("fff = "+fff)
+    fff
+  }
   
   
   def hashPass(s:String) = {

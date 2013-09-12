@@ -1,37 +1,26 @@
 
 
-<div class="table">
-  <div class="tablerow">
-    <div class="h30 bgbluegradient padleft5 padtop5 rounded">
-      
-      <!-- 2013-06-09 took this from accountinfo.html because that page is properly "squaring" profile pics -->
-      <div class="table h30">
-        <div class="tablerow h30">
-          
-          <div class="w150 h30">
-		      <div style="width:150px; height:150px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
-		        <div style="margin-top:{{user.profilepicmargintop}};margin-left:{{user.profilepicmarginleft}}">
-		            <img height="{{user.profilepicadjustedheight}}" width="{{user.profilepicadjustedwidth}}" ng-src="{{user.profilepicUrl}}"/>
-		        </div>
-		      </div>
-          </div>
-          <div class="w200 h30 padleft170 margtop_25">
-            <span class="font24 white">{{user.fullname}}</span>
-          </div>
-          
-        </div>
-      </div>
-      <!-- 2013-06-09 end of what I took from accountinfo.html -->
-      
-      <div class="font14 padleft170 margtop_55 h100 scroll">{{user.bio}}</div>
-    </div>
-  </div>
-  
-  
-  <div class="tablerow">
-    <div class="margtop100">
-      <div ng-include src="'partials/giftlist.html'"></div>
-    </div>
+
+<div class="row">
+  <div class="span2 pad5 box bgwhite">
+
+		<div class="row">
+		  <div class="span1">
+		  
+		              <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
+		                <div style="margin-top:{{user.profilepicmargintop50}};margin-left:{{user.profilepicmarginleft50}}">
+		                   <img height="{{user.profilepicadjustedheight50}}" width="{{user.profilepicadjustedwidth50}}" ng-src="{{user.profilepicUrl}}"/>
+		                </div>
+		              </div>
+					                      
+		  </div>
+		  <div class="span1 margleft_10">
+		    <div class="row"><div class="span2"><b>{{user.fullname}}</b></div></div>
+		    <div class="row"><div class="span2"><a ng-href="giftlist/{{user.id}}">My Wish List</a></div></div>
+		    <div class="row"><div class="span2"><a ng-href="accountinfo">My Account</a></div></div>
+		  </div>
+		</div>
+
+
   </div>
 </div>
-

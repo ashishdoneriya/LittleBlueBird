@@ -4,63 +4,38 @@
 
 
 <div class="row">
-  <div class="span5 box pad10 bgwhite">
-  
-    <div class="row">
-      <a ng-href="{{currentlocation}}" ng-click="togglepersonalinfo()">
-      <div class="span5 pad0">
-        <span class="font16">Personal Info</span>
-        
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            
-            <!-- http://jsfiddle.net/maccman/E9cnL/ -->
-            <span class="font16 bold"><span ng-class="cssPersonalInfoSaved">Save Successful</span></span>
-        
-        
-        <span class="pull-right">
-          <span ng-hide="personalinfo">
-            <i class="icon-chevron-down"/>
-          </span>
-          <span ng-show="personalinfo">
-            <i class="icon-chevron-up"/>
-          </span>
-        </span>
-      </div>
-      </a>
-    </div>
+  <div class="span6 box pad10 bgwhite">
     
-    
-    <span ng-show="personalinfo">
-    <span ng-show="usercopy.facebookId == null">
     <form novalidate name="regForm" class="padtop10 margbottom0"> <!-- form contains 3 rows -->
-      <div class="row"> <!-- first row displays inputs on the left and the profile pic on the right -->
-        <div class="span2">
-		    <div class="row">
-		      <div class="span2">
-		        <input class="w140" maxlength="140" value="" type="text" name="fullname" ng-model="usercopy.fullname" placeholder="Name" title="Name" required />
-		        <span ng-show="regForm.fullname.$pristine">*</span>
-		        <span ng-show="regForm.fullname.$dirty">
-		          <span ng-show="regForm.fullname.$error.required"><img src="img/red_x.png" id="fullnamerequired" title="Name is required"></span>
-		        </span>
-		      </div>
-		      <input class="input-small" maxlength="140" value="" type="hidden" name="id" ng-model="usercopy.id" />
-		    </div>
-		    
-		    <div class="row">
-		      <div class="span2">
-		        <input class="w140" maxlength="140" value="" name="email" type="email" ng-model="usercopy.email" placeholder="Email" title="Email" required>
-		        <span ng-show="regForm.email.$pristine">*</span>
+    
+      <div class="row">
+        <div class="span4">
+	        <input class="span3" maxlength="140" value="" type="text" name="fullname" ng-model="usercopy.fullname" placeholder="Name" title="Name" required />
+	        <span ng-show="regForm.fullname.$dirty">
+	          <span ng-show="regForm.fullname.$error.required"><img src="img/red_x.png" id="fullnamerequired" title="Name is required"></span>
+	        </span>
+		    <input class="input-small" maxlength="140" value="" type="hidden" name="id" ng-model="usercopy.id" />
+         
+            <!-- http://jsfiddle.net/maccman/E9cnL/ -->
+            <span class="font16 bold"><span ng-class="cssPersonalInfoSaved">Saved</span></span>
+        </div>
+      </div>
+    
+    
+      <div class="row">
+        <div class="span4">
+		        <input class="span3" maxlength="140" value="" name="email" type="email" ng-model="usercopy.email" placeholder="Email" title="Email" required>
 		        <span ng-show="regForm.email.$dirty">
 		          <span ng-show="regForm.email.$error.required"><img src="img/red_x.png" id="emailrequired" title="Email is required"></span>
 		          <span ng-show="regForm.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
 		        </span>
-		      </div>
-		    </div>  
-		    
-			<div class="row">
-		      <div class="span2">
-		        <input class="w140" maxlength="140" value="" name="username" type="text" ng-model="usercopy.username" ng-change="isUsernameUnique(usercopy, regForm)" placeholder="Username" title="Username" required />
-			    <span ng-show="regForm.username.$pristine">*</span>
+        </div>
+      </div>
+    
+    
+      <div class="row">
+        <div class="span4">
+		        <input class="span3" maxlength="140" value="" name="username" type="text" ng-model="usercopy.username" ng-change="isUsernameUnique(usercopy, regForm)" placeholder="Username" title="Username" required />
 			    <span ng-show="regForm.username.$dirty">
 			      <span ng-show="regForm.username.$error.required">
 			        <img src="img/red_x.png" id="invalidusername" title="Username is required">
@@ -71,49 +46,53 @@
 	                </span>
 	              </span>
 			    </span>
-			  </div>
-			</div>
-			
-		    <div class="row">
-		      <div class="span2">
-		        <input class="w140" type="text" ng-model="usercopy.dateOfBirthStr" name="dateOfBirth" ng-pattern="/^(\d{1,2})/(\d{1,2})/(\d{4})$/" placeholder="Birthday" title="Birthday" />
+        </div>
+      </div>
+    
+    
+    
+      <div class="row">
+        <div class="span4">
+		        <input class="span3" type="text" ng-model="usercopy.dateOfBirthStr" name="dateOfBirth" ng-pattern="/^(\d{1,2})/(\d{1,2})/(\d{4})$/" placeholder="Birthday (optional)" title="Birthday" />
 		        <span ng-show="regForm.dateOfBirth.$dirty">
 		          <span ng-show="regForm.dateOfBirth.$error.pattern">
 		            <img src="img/red_x.png" id="invaliddobb" title="Enter Birthday as MM/dd/yyyy">
 		          </span>
 		        </span>
-		      </div>
-		    </div>
-        
-        </div>
-        
-        <div class="span3 margtop_10">
-          <div style="width:150px; height:150px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;float:right">
-            <div style="margin-top:{{usercopy.profilepicmargintop}};margin-left:{{usercopy.profilepicmarginleft}}">
-                <img height="{{usercopy.profilepicadjustedheight}}" width="{{usercopy.profilepicadjustedwidth}}" ng-src="{{usercopy.profilepicUrl}}"/>
-            </div>
-          </div>
         </div>
       </div>
-      
-      <!-- 2nd row is just for the profile pic url field -->
+    
+    
+    
       <div class="row">
-        <div class="span5">
-        
-		            <input class="w425" maxlength="1028" value="" type="url" ng-model="usercopy.profilepic" name="profilepic" ng-validate="url" placeholder="Profile Pic" title="Profile Pic" />
-		            <span ng-show="regForm.profilepic.$pristine">&nbsp;&nbsp;</span>
+        <div class="span6">
+		            <input class="span6" maxlength="1028" value="" type="url" ng-model="usercopy.profilepicUrl" name="profilepic" ng-validate="url" placeholder="Profile Pic" title="Profile Pic" />
 		            <span ng-show="regForm.profilepic.$dirty">
 		              <span ng-show="regForm.profilepic.$error.url">
 		                <img src="img/red_x.png" id="invalidprofilepic" title="URL is invalid">
 		              </span>
 		            </span> 
-		    
         </div>
       </div>
+             
+             
+      <div class="row">
+        <div class="span6">
+          <span class="font16">About Me, Stuff I like, etc</span>
+        </div>
+      </div>
+             
+             
+      <div class="row">
+        <div class="span6">
+          <textarea class="span6" rows="10" ng-model="usercopy.bio" cols="80"></textarea>
+        </div>
+      </div>
+    
       
       <!-- 3rd row is the Save/Cancel button row -->
       <div class="row">
-        <div class="span5">
+        <div class="span6">
               <span class="pull-right">
 		        <div ng-show="regForm.$invalid" >
 		          <a ng-disabled="true" class="btn span1 pull-right" id="invalidform" title="Not Ready Yet" data-content="The form isn't ready to submit yet.  You still have fields to fix and complete.">Save</a>
@@ -121,51 +100,15 @@
 		        </div>    
 		      
 		        <div ng-show="regForm.$valid" >
-		          <button class="btn btn-primary span1 pull-right" ng-click="savePersonalInfo(usercopy);">Save</button>
+		          <a class="btn btn-primary span1 pull-right" ng-href="{{currentlocation}}" ng-click="savePersonalInfo(usercopy);">Save</a>
 		          <button ng-click="resetuser()" class="btn span1 pull-right">Reset</button>
 		        </div>
 		      </span>
         </div>
       </div>
-             
+      
             
     </form>
-    </span> <!-- ng-show usercopy.facebookId == null -->
-    
-    <!-- This is for Facebook users - shows their personal info as labels, not inputs -->
-    <span ng-hide="usercopy.facebookId == null">
-    <div class="row">
-      <div class="span5">Your personal information is stored on Facebook</div>
-    </div>
-    <div class="row">
-      <div class="span3">
-	    <div class="row">
-	      <div class="span1">Name:</div>
-	      <div class="span2">{{usercopy.fullname}}</div>
-	    </div>
-	    <div class="row">
-	      <div class="span1">Email:</div>
-	      <div class="span2">{{usercopy.email}}</div>
-	    </div>
-	    <div class="row">
-	      <div class="span1">Birthday:</div>
-	      <div class="span2">{{usercopy.dateOfBirthStr}}</div>
-	    </div>
-	    <div class="row">
-	      <div class="span3 pad30"><a class="btn btn-primary" ng-href="http://www.facebook.com" target="fb">Facebook</a></div>
-	    </div>
-      </div>
-      <div class="span2">
-          <div style="width:150px; height:150px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
-            <div style="margin-top:{{usercopy.profilepicmargintop}};margin-left:{{usercopy.profilepicmarginleft}}">
-                <img height="{{usercopy.profilepicadjustedheight}}" width="{{usercopy.profilepicadjustedwidth}}" ng-src="{{usercopy.profilepicUrl}}"/>
-            </div>
-          </div>
-      </div>
-    </div>
-    </span> <!-- ng-hide usercopy.facebookId == null -->
-    
-    </span> <!-- ng-show="personalinfo" -->
     
     
   </div>
@@ -173,53 +116,13 @@
 
 
 
-
-
 <div class="row">
-  <div class="span5 box pad10 bgwhite margtop10">
-  
-    <div class="row">
-      <a ng-href="{{currentlocation}}" ng-click="togglebio()">
-      <div class="span5 pad0">
-        <span class="font16">Bio</span>
-        
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            
-            <!-- http://jsfiddle.net/maccman/E9cnL/ -->
-            <span class="font16 bold"><span ng-class="cssBioSaved">Save Successful</span></span>
-        
-        
-        <span class="pull-right">
-          <span ng-hide="bio">
-            <i class="icon-chevron-down"/>
-          </span>
-          <span ng-show="bio">
-            <i class="icon-chevron-up"/>
-          </span>
-        </span>
-      </div>
-      </a>
-    </div>
-    
-    <span ng-show="bio">
-    <form novalidate name="bioForm" class="padtop10 margbottom0">  
-    <div class="row">
-      <div class="span5">
-        <textarea class="span5" rows="10" ng-model="usercopy.bio" cols="80"></textarea>
-      </div>
-    </div>
-		    
-    <div class="row">
-      <div class="span5 pull-right">
-        <span class="pull-right">
-          <button class="btn btn-primary span1 pull-right" ng-click="saveBio(usercopy)">Save</button>
-          <button ng-click="resetuser()" class="btn span1 pull-right">Reset</button>
-        </span>
-      </div>
-    </div>
-    </form>
-    </span> <!-- ng-show="bio" -->
-    
+  <div class="span2 offset4">
+	  <div style="width:150px; height:150px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;margin-top:-450px;">
+	    <div style="margin-top:{{usercopy.profilepicmargintop}};margin-left:{{usercopy.profilepicmarginleft}}">
+	        <img height="{{usercopy.profilepicadjustedheight}}" width="{{usercopy.profilepicadjustedwidth}}" ng-src="{{usercopy.profilepicUrl}}"/>
+	    </div>
+	  </div>
   </div>
 </div>
 

@@ -32,7 +32,8 @@
       <script src="js/app-CircleCtrl.js"></script>  
       <script src="js/app-EventCtrl.js"></script>   
       <script src="js/app-ReminderCtrl.js"></script>   
-      <script src="js/app-FriendCtrl.js"></script>  
+      <script src="js/app-FriendCtrl.js"></script> 
+      <script src="js/app-GiftModule.js"></script>   
       <script src="js/app-UserModule.js"></script>  
       <script src="js/app-FacebookModule.js"></script>  
       <script src="js/app-CircleModule.js"></script>    
@@ -362,38 +363,50 @@
     
     
     
-    
-    <script type="text/ng-template" id="accountinfo">
+    <!-- Originally created for /peopleToInvite.  I wanted a page with more space horizontally to display thumbnails of fb friends
+    So I copied layout.html and removed the column on the right  2013-09-12 -->
+    <script type="text/ng-template" id="layout2"> 
     <div ng-include src="templates.five">
     </div>
-
-    <div class="container2 w750 height100pc">
-      <div class="minheight100pc w750 bgebf3f7"><!-- This one wants to be 100% height -->
-      <div style="padding-top:50px;margin-left:auto;margin-right:auto;width:7y0px;">
-
-            <div class="table_space5 container2 bgebf3f7">
-              <div class="tablerow"> <!-- one big row -->
     
-                <div class="tablecell w725 align-top"> <!-- 2nd main col -->
-                  <div class="tablerow"><div class="tablecell w725"><div ng-include src="templates.four"></div></div></div>
-                </div> <!-- end of 2nd main col -->
-    
-              </div>  <!-- one big row -->
-            </div>
-            
-      </div> 
-      </div> 
+    <div class="container">
+	    <div class="row margtop60">
+	      <div class="span2">
+	        <div class="row"><div class="span2"><div ng-include src="'partials/myaccount/me.html'"></div></div></div>
+	      </div>
+	      <div class="span10">
+	        <div class="row"><div class="span10"><div ng-include src="templates.four"></div></div></div>
+	      </div>
+	    </div>
     </div>
     </script>
     
     
     
     
-    
     <script type="text/ng-template" id="layout.html"> 
-    
     <div ng-include src="templates.five">
     </div>
+    
+    <div class="container">
+	    <div class="row margtop60 margbottom60">
+	      <div class="span2">
+	        <div class="row"><div class="span2"><div ng-include src="'partials/myaccount/me.html'"></div></div></div>
+	        <div class="row"><div class="span2 margtop10"><div ng-include src="templates.two"></div></div></div>
+	      </div>
+	      <div class="span6"><div ng-include src="templates.four"></div></div>
+	      <div class="span3"><div class="margleft10" ng-include src="templates.one"></div></div>
+	    </div>
+    </div>     
+    <div ng-include src="'partials/navbar-bottom.html'"></div>
+    </script>
+    
+    
+    
+    <!-- This used to be layout.html but I'm essentially taking it 'offline' by renaming it.  
+     layout.html is now (2013-09-07) more "event focused" with events in the body at the top of the page -->
+    <script type="text/ng-template" id="layout-2012"> 
+    <div ng-include src="templates.five"></div>
     
     <div class="container2 w750 height100pc">
       <div class="minheight100pc bgebf3f7"><!-- This one wants to be 100% height -->
@@ -414,13 +427,14 @@
     
               </div>  <!-- one big row -->
             </div>
-            
 
       
       </div> 
       </div> 
     </div>  
     </script>
+    
+    
     
     
     <!-- 2013-05-29: this is where you go if you try to access the site from IE.  See app.js routeChangeStart - that's where we check the browser and send the user to this template if it's IE -->

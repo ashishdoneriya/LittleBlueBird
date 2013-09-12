@@ -1,39 +1,43 @@
 <div ng-controller="NewEventCtrl">
 <form novalidate name="circleForm" class="margbottom0">
-<div class="table">
 
-  
-  <div class="tablerow w480">
-    <div class="tablecell w480 rounded font16 white bgbluegradient pad5">
-      {{title}}
-      <span class="pull-right">
+<div class="row">
+  <div class="span6 bgbluegradient roundedtop white pad10">
+    <div class="row">
+      <div class="span4 font24 padtop5">{{title}}</div>
+      <div class="span2 pull-right">
+      
           <div ng-show="circleForm.name.$error.required || circleForm.expdate.$error.required">
             <div class="btn-group pull-right">
-              <a ng-disabled="true" class="btn btn-primary btn-mini" id="invalidform">Save</a>
-              <a ng-href="" class="btn btn-mini" ng-click="cancelcirclechanges();addmethod='';search='';">Cancel</a>
+              <a ng-disabled="true" class="btn btn-primary" id="invalidform">Save</a>
+              <a ng-href="" class="btn" ng-click="cancelcirclechanges();addmethod='';search='';">Cancel</a>
             </div>
           </div>    
           
           <div ng-hide="circleForm.name.$error.required || circleForm.expdate.$error.required">
             <div class="btn-group pull-right">
-              <a ng-href="" class="btn btn-primary btn-mini" ng-click="savecircle(thecircle, expdate);showRegister=false;search='';">Save</a>
-              <a ng-href="" class="btn btn-mini" ng-click="cancelcirclechanges();addmethod='';search='';">Cancel</a>
+              <a ng-href="" class="btn btn-primary" ng-click="savecircle(thecircle, expdate);showRegister=false;search='';">Save</a>
+              <a ng-href="" class="btn" ng-click="cancelcirclechanges();addmethod='';search='';">Cancel</a>
             </div>
           </div>   
-      </span>
+      
+      
+      </div>
     </div>
   </div>
+</div>
+
+
+<!-- EVERYTHING GOES IN THIS 'lastrow' -->
+<div class="row">
+  <div class="span6 roundedbottom bgwhite pad10">
   
-  <div class="tablerow w480">
-    <div class="tablecell w480 padtop10">
-      <input class="w480 largefield" maxlength="140" value="" type="text" name="name" ng-model="thecircle.name" ng-required="true" placeholder="Event Name" title="Event Name" />
-	  <input class="w150 largefield" date-picker="expdate" name="expdate" ng-model="expdate" type="text" placeholder="Event Date" title="Event Date" ng-required="true"></input>
-	  <input maxlength="140" value="" type="hidden" name="name" ng-model="thecircle.id" /> 
+    <div class="row">
+      <div class="span4"><input class="span4 largefield" maxlength="140" value="" type="text" name="name" ng-model="thecircle.name" ng-required="true" placeholder="Event Name" title="Event Name" /></div>
+      <div class="span2"><input class="span2 largefield" date-picker="expdate" name="expdate" ng-model="expdate" type="text" placeholder="Event Date" title="Event Date" ng-required="true"></input></div>
     </div>
-  </div>
   
-  
-  
+
   <!----------------------------------------------------------------------------
   THIS NEXT ROW HAS A LOT OF STUFF IN IT: AN EMBEDDED TABLE WITH 1 ROW AND
   2 COLUMNS.  THE FIRST COLUMN DISPLAYS 
@@ -44,32 +48,27 @@
   ADDING PEOPLE FROM OTHER EVENTS.  IT'S ALSO WHERE WE DISPLAY A REGISTRATION FORM
   IF THE USER IS CREATING ACCOUNTS ON THE FLY AND THEN ADDING THEM TO THE EVENT.
     ---------------------------------------------------------------------------->
-  <div class="tablerow w480">
-    <div class="tablecell500">
-      <div class="table">
-        <div class="tablerow">
-        
-	      <!-- ------------------------------------------------- -->
-		  <!-- BEGIN: Column showing Participants/Honorees       -->
-		  <!--         and then Givers                           -->
-		  <!-- ------------------------------------------------- -->
-          <div class="tablecell">
-          
-          
-		    <!-- ------------------------------------ -->
-		    <!-- BEGIN: Participants/Honorees section -->
-		    <!-- ------------------------------------ -->
-            <div class="table">
-            
-              <div class="tablerow"> <!-- header row -->
-	            <div class="tablecell roundedtop bgbluegradient pad5 white">
+    <div class="row">
+    
+    
+      <!-- ------------------------------------------------- -->
+	  <!-- BEGIN: Column showing Participants/Honorees       -->
+	  <!--         and then Givers                           -->
+	  <!-- ------------------------------------------------- -->
+      <div class="span3">
+      
+	      <!-- ------------------------------------ -->
+	      <!-- BEGIN: Participants/Honorees section -->
+	      <!-- ------------------------------------ -->
+          <div class="row">
+            <div class="span3 roundedtop bgbluegradient pad5 white">
   	              <span ng-show="thecircle.receiverLimit == -1">Participants</span>
 	              <span ng-show="thecircle.receiverLimit == 1">Honoree</span>
 	              <span ng-show="thecircle.receiverLimit > 1">Honorees</span>
-	          
+	              
 	              <span ng-show="canaddreceiver(thecircle)">
                     <div class="btn-group pull-right">
-	                  <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown">+</a>
+	                  <a class="btn btn-mini font14 bold dropdown-toggle" data-toggle="dropdown">+</a>
 			          <ul class="dropdown-menu">
 			            <li><a ng-href="{{currentlocation}}" ng-click="addmyselfasreceiver(thecircle)">Add myself</a></li>
 			            <li><a ng-href="{{currentlocation}}" ng-click="beginAddingByName('Receiver');">Add by name/email</a></li>
@@ -83,173 +82,113 @@
 	                  <button class="btn btn-mini font14 bold" ng-disabled="true">+</button>
 	                </div>
 	              </span>
-	            </div>
-              </div> <!-- header row -->
-	      
-              <span ng-repeat="participant in thecircle.participants.receivers">
-              <div class="tablerow">
-	            <div class="{{isLastRow('tablecell w250 list pad5', $index, thecircle.participants.receivers.length)}}">
-	              <a ng-href="{{currentlocation}}" class="align-bottom" ng-click="removereceiver($index, thecircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
-	            </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="span3 roundedbottom pad5">
+              <div ng-repeat="participant in thecircle.participants.receivers" class="pad5">
+                <a ng-href="{{currentlocation}}" class="align-bottom" ng-click="removereceiver($index, thecircle, participant)"><i class="icon-remove"></i></a><span class="font16">{{participant.fullname}}</span>
               </div>
-              </span>
-	          
-	   
-              <span ng-show="thecircle.participants.receivers == 0">
-              <div class="tablerow">
-	            <div class="tablecell roundedbottom pad5 bgwhite">
+              
+              <div ng-show="thecircle.participants.receivers == 0">
 		          <span ng-show="thecircle.receiverLimit == -1">Add Participants to this event, including yourself.  That's how you see everyone's wish list.</span>
 			      <span ng-show="thecircle.receiverLimit == 1">Add the Honoree.  That's how you see his/her wish list.</span>
 			      <span ng-show="thecircle.receiverLimit > 1">Add the Honorees to this event.  That's how you see their wish lists.</span>
-	            </div>
               </div>
-              </span>
-            
+              
             </div>
-		    <!-- ------------------------------------ -->
-		    <!-- END: Participants/Honorees section   -->
-		    <!-- ------------------------------------ -->
-		    
-	        <!-- ------------------------------------------------------- -->
-	        <!-- BEGIN: Guests section (for those events that have them) -->
-	        <!-- ------------------------------------------------------- -->
-	        <span ng-show="thecircle.receiverLimit != -1">
-	        <div class="table">
-	          <div class="tablerow">
-	            <div class="tablecell w250 roundedtop bgbluegradient pad5 white">Guests
-                  <div class="btn-group pull-right">
+          </div>
+      
+	      <!-- ------------------------------------ -->
+	      <!-- END: Participants/Honorees section   -->
+	      <!-- ------------------------------------ -->
+      
+      
+      
+	      <!-- ------------------------------------------------------- -->
+	      <!-- BEGIN: Guests section (for those events that have them) -->
+	      <!-- ------------------------------------------------------- -->
+	      <span ng-show="thecircle.receiverLimit != -1">
+	      
+          <div class="row">
+            <div class="span3 roundedtop bgbluegradient pad5 white margtop10">
+                Guests
+	            
+                <div class="btn-group pull-right">
 	                <a class="btn btn-mini  font14 bold dropdown-toggle" data-toggle="dropdown" href="#">+</a>
 			        <ul class="dropdown-menu">
 			          <li><a ng-href="{{currentlocation}}" ng-click="addmyselfasgiver(thecircle)">Add myself</a></li>
 			          <li><a ng-href="{{currentlocation}}" ng-click="beginAddingByName('Giver');">Add by name/email</a></li>
 			          <span ng-hide="user.circles.length == 0"><li><a ng-href="{{currentlocation}}" ng-click="beginAddingFromAnotherEvent('Giver');">Add from another event</a></li></span>
                     </ul>	
-	              </div>
-	            </div>
-	          </div>
+	            </div>  
+            </div>
+          </div>
 	      
-	          <span ng-repeat="participant in thecircle.participants.givers">
-	            <div class="tablerow w250">
-	              <div class="{{isLastRow('tablecell w250 list pad5', $index, thecircle.participants.givers.length)}}">
-	                <a ng-href="{{currentlocation}}" class="align-bottom" ng-click="removegiver($index, thecircle, participant)"><i class="icon-remove"></i></a><span class="font12">{{participant.fullname}}</span>
-	              </div>
-	            </div>
-		      </span>
-	   
-	   
+          
+          <div class="row">
+            <div class="span3 roundedbottom pad5">
+	       
+	          <div ng-repeat="participant in thecircle.participants.givers">
+                  <a ng-href="{{currentlocation}}" class="align-bottom" ng-click="removegiver($index, thecircle, participant)"><i class="icon-remove"></i></a><span class="font16">{{participant.fullname}}</span>
+              </div>
+              
 	          <span ng-show="thecircle.participants.givers == 0">
-	            <div class="tablerow w250">
-	              <div class="tablecell w250 roundedbottom pad5 bgwhite">
-			          Add Guests to this event so they can view the Honoree(s) wish list.  Don't forget yourself if you are also a Guest.
-	              </div>
-	            </div>
+			      Add Guests to this event so they can view the Honoree(s) wish list.  Don't forget yourself if you are also a Guest.
 	          </span>
-	        </div>
-	        </span> <!-- ng-show="thecircle.receiverLimit != -1" -->
-	        <!-- ----------------------------------------------------- -->
-	        <!-- END: Guests section (for those events that have them) -->
-	        <!-- ----------------------------------------------------- -->
-          
-          
+	          
+            </div>
           </div>
-          <!-- ------------------------------------------------- -->
-	      <!-- END: Column showing Participants/Honorees         -->
-	      <!--         and then Givers                           -->
-	      <!-- ------------------------------------------------- -->
-        
-        
-        
-          <!-- ------------------------------------------------- -->
-	      <!-- BEGIN: Column where we add people to the event    -->
-          <!-- ------------------------------------------------- -->
-          <div class="tablecell w245 padleft10">
-
-	        <div ng-show="addmethod=='byname'">
+	      
+	      </span>
+	      <!-- ------------------------------------------------------- -->
+	      <!-- END: Guests section (for those events that have them)   -->
+	      <!-- ------------------------------------------------------- -->
+      
+      
+      </div>
+      <!-- ------------------------------------------------- -->
+	  <!-- END: Column showing Participants/Honorees         -->
+	  <!--         and then Givers                           -->
+	  <!-- ------------------------------------------------- -->
+      
+      
+      <!-- ------------------------------------------------- -->
+      <!-- BEGIN: Column where we add people to the event    -->
+      <!-- ------------------------------------------------- -->
+      <div class="span3">
+      
+	      <span ng-show="addmethod=='byname'">
 	          <div ng-include src="'partials/friends/search.html'"></div>
-	        </div> <!-- end of div: addmethod='byname' -->
-	 
-	 
-	 
-	        <div ng-show="addmethod=='emailnewuser'">
-	          <div ng-include src="'partials/friends/invite.html'"></div>
-	        </div>   <!-- div ng-show="addmethod=='emailnewuser'" -->
-	 
-	 
-	        
-	        <div ng-show="addmethod=='fromanotherevent'">
-		      <div class="tablerow w245">
-			    <div class="tablecell w245 roundedtop bgbluegradient pad5 white">Add from another Event</div>
-			  </div>
-			      
-			  <div ng-repeat="c in circlecopies">
-			  <div class="tablerow w245">
-                <div class="{{isLastRow('tablecell w245 list pad5', $index, circlecopies.length)}}">
-			      <a ng-href="{{currentlocation}}" ng-click="selectEventToAddFrom(c);" style="text-decoration:none;">
-	                {{c.name}}<span class="pull-right"><i class="icon-chevron-right"></i></span>
-	              </a>
-			    </div>
-			  </div>
-			  </div>
-	        </div> <!-- end of div: addmethod='fromanotherevent' -->
-
-
-
-
-	        <div ng-show="addmethod=='fromspecificevent'">
-	          <!-- When you're on 'fromanotherevent', and you click an event, the chosen event is displayed here -->
-	      
-			  <div class="tablerow w245">
-			    <div class="tablecell w245 roundedtop bgbluegradient pad5 white">
-			      Add from {{sourceEvent.name}}
-		          <a ng-href="{{currentlocation}}" class="btn btn-primary btn-mini pull-right" ng-click="selectAllParticipants(sourceEvent.participants.both);">Select All</a>
-			    </div>
-			  </div>
-			
-			  <div ng-repeat="person in sourceEvent.participants.both">
-		      <div class="tablerow w245" ng-click="clicklbbuser($index, person, sourceEvent.participants.both)">
-		        <div class="{{selectedOrNotStyle('tablecell w245 list pad5', $index, peoplesearchresults.length, person)}}">
-		          <img height=50 width=50 ng-src="{{person.profilepicUrl}}" />
-		          {{person.first}} {{person.last}}
-		        </div>
-		      </div>
-		      </div>
-		    
-		      <div class="tablerow w245">
-		        <div class="tablecell w245 listfooter pad5">
-		          <span class="pull-right">
-		            <a ng-href="{{currentlocation}}" class="btn btn-primary btn-mini" ng-click="addSelectedPeople(thecircle);">Done</a>
-		            &nbsp;
-		            <a ng-href="{{currentlocation}}" class="btn btn-mini" ng-click="back('fromanotherevent');">Cancel</a>
-		          </span>
-		        </div>
-		      </div>
-	      
-	        </div> <!-- end of div: addmethod='fromspecificevent' -->
-
-
-          </div>
-          <!-- ------------------------------------------------- -->
-	      <!-- END: Column where we add people to the event      -->
-          <!-- ------------------------------------------------- -->
-        
-        </div>
-      </div> 
+	      </span> <!-- end of div: addmethod='byname' -->
+      
+      
+      </div>
+      <!-- ------------------------------------------------- -->
+      <!-- END: Column where we add people to the event      -->
+      <!-- ------------------------------------------------- -->
+      
+      
     </div>
+  <!----------------------------------------------------------------------------
+  THIS NEXT ROW HAS A LOT OF STUFF IN IT: AN EMBEDDED TABLE WITH 1 ROW AND
+  2 COLUMNS.  THE FIRST COLUMN DISPLAYS 
+  THE LIST OF GIVERS AND RECEIVERS, EACH IN THEIR OWN SECTION.  THE SECOND COLUMN
+  IS ONLY DISPLAYED WHEN THE USER IS ADDING PEOPLE TO AN EVENT.  THIS SECOND COLUMN
+  IS WHERE THE SEARCH BOX AND SEARCH RESULT WILL APPEAR IF THE USER IS SEARCHING
+  BY NAME.  IT'S ALSO WHERE WE DISPLAY ALL THE USER'S CIRCLES WHEN THE USER IS
+  ADDING PEOPLE FROM OTHER EVENTS.  IT'S ALSO WHERE WE DISPLAY A REGISTRATION FORM
+  IF THE USER IS CREATING ACCOUNTS ON THE FLY AND THEN ADDING THEM TO THE EVENT.
+    ---------------------------------------------------------------------------->
+  
+  
+  
   </div>
-  <!--------------------------------------------------------------------------
-  THIS IS THE END OF THE ROW THAT HAS A LOT OF STUFF IN IT
-  ---------------------------------------------------------------------------->
-  
-  
-	      
-  
-  <!-- DON'T FORGET: When you save the new event, add current user as $rootScope.thecircle.creatorId
-    Why? Because when you refresh the browser, $rootScope.user is undefined in the routeChangeStart event of app-CircleModule 
-   -->
-  
-  
-  
-  
 </div>
+<!-- EVERYTHING GOES IN THIS 'lastrow' -->
+    
+    
+
 </form> 
 </div>

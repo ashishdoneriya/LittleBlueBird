@@ -1,42 +1,43 @@
 
-                <div class="span7" ng-controller="GiftCtrl">
+                <div ng-controller="GiftCtrl">
 
 
 <form novalidate name="giftForm">
               
-              <div class="row margleft_35">
-                <div class="span4">
-	              <div class="row">
-	                <div class="span4">without recipients
+<div class="row">
+  <div class="span6">
+  
                       <input type="hidden" name="giftId" ng-model="gift.id" />
                       <input type="hidden" name="senderId" ng-model="gift.sender" />
                       <input type="hidden" name="senderName" ng-model="gift.sender_name" />
                       <input type="hidden" name="addedBy" ng-model="gift.addedBy" />
                       <input type="hidden" name="circle" ng-model="gift.circle" />
                       
-	                  <textarea class="span4" rows="5" ng-model="gift.description" cols="80" placeholder="Item" title="Item" required></textarea>
-	                </div>
-	              </div>
-	              <div class="row">
-	                <div class="span4"><input class="span4" type="URL" name="url" ng-model="gift.url" placeholder="URL (incl http://)" title="URL (incl http://)" /></div>
-	              </div>
-                </div>
-              </div>
-              <div class="row margleft_35">
-                    <div class="span1">
-                      <button class="btn" ng-click="canceleditgift(gift)">Cancel</button>
-                    </div>
-                    <div class="span4">
-                      <div ng-show="giftForm.$invalid">
-                        <a ng-disabled="true" class="btn" id="invalidform">Save</a>
-                      </div>    
-          
-                      <div ng-hide="giftForm.$invalid">
-                        <button class="btn btn-primary" ng-click="gift.editing=false;updategift($index, gift);">Save</button>
-                      </div>
-                    </div>
-              </div>
-
+	                  <textarea class="span6" rows="5" ng-model="gift.description" cols="80" placeholder="Item" title="Item" required></textarea>
+  </div>
+</div>
+              
+<div class="row">
+  <div class="span6">
+    <input class="span6" type="URL" name="url" ng-model="gift.url" placeholder="URL (incl http://)" title="URL (incl http://)" />
+  </div>
+</div>
+              
+<div class="row">
+  <div class="span6">
+    <a class="btn" ng-click="canceleditgift(gift)">Cancel</a>
+    
+    <span ng-show="giftForm.$invalid">
+                <a ng-disabled="true" class="btn" id="invalidform">Save</a>
+    </span>    
+  
+    <span ng-hide="giftForm.$invalid">
+                <button class="btn btn-primary" ng-click="gift.editing=false;updategift($index, gift);">Save</button>
+    </span>
+  </div>
+</div>
+              
+              
 </form>
 
 

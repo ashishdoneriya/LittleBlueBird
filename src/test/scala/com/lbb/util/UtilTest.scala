@@ -1,27 +1,31 @@
 package com.lbb.util
-import org.scalatest.junit.AssertionsForJUnit
-import org.scalatest.FunSuite
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
-import javax.swing.ImageIcon
+
 import java.net.URL
-import net.liftweb.db.StandardDBVendor
-import net.liftweb.mapper.Schemifier
-import net.liftweb.mapper.DB
-import com.lbb.entity.Circle
-import com.lbb.entity.Gift
-import com.lbb.entity.AuditLog
-import com.lbb.entity.Friend
-import net.liftweb.util.Props
-import com.lbb.entity.Reminder
-import net.liftweb.db.DefaultConnectionIdentifier
-import com.lbb.entity.CircleParticipant
-import com.lbb.entity.Recipient
-import net.liftweb.common.Box
-import com.lbb.entity.User
-import java.util.Date
-import java.util.GregorianCalendar
+
 import org.joda.time.DateTime
+import org.junit.runner.RunWith
+import org.scalatest.FunSuite
+import org.scalatest.junit.AssertionsForJUnit
+import org.scalatest.junit.JUnitRunner
+
+import com.lbb.entity.AuditLog
+import com.lbb.entity.Circle
+import com.lbb.entity.CircleParticipant
+import com.lbb.entity.Friend
+import com.lbb.entity.Gift
+import com.lbb.entity.Recipient
+import com.lbb.entity.Reminder
+import com.lbb.entity.User
+
+import javax.swing.ImageIcon
+import net.liftweb.common.Box
+import net.liftweb.db.DefaultConnectionIdentifier
+import net.liftweb.db.StandardDBVendor
+import net.liftweb.json.JsonAST.JObject
+import net.liftweb.json.JsonParser
+import net.liftweb.mapper.DB
+import net.liftweb.mapper.Schemifier
+import net.liftweb.util.Props
 
 @RunWith(classOf[JUnitRunner])
 class UtilTest extends FunSuite with AssertionsForJUnit with LbbLogger {
@@ -68,6 +72,23 @@ class UtilTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     val act = Util.hashPass("123")
     assert(exp===act)
   }
+  
+  
+  test("parse json") {
+    val json = "{\"data\":[{\"name\":\"Eric Moore\",\"id\":\"7913493\"},{\"name\":\"Becky Harbert Dunklau\",\"id\":\"16801180\"},{\"name\":\"Brandon Dunklau\",\"id\":\"16804186\"},{\"name\":\"David Landers\",\"id\":\"16834125\"},{\"name\":\"Rebecca O'Bier Davis\",\"id\":\"18807150\"},{\"name\":\"Leslie Sookma Rortvedt\",\"id\":\"18811063\"},{\"name\":\"Mary Karavatakis\",\"id\":\"100000444159168\"},{\"name\":\"Troy Nelson\",\"id\":\"100000492467918\"},{\"name\":\"Ivan Pugh\",\"id\":\"100000501133257\"},{\"name\":\"Philip Holamon\",\"id\":\"100000531982506\"},{\"name\":\"Jennie Flowers Tatum\",\"id\":\"100000623048420\"},{\"name\":\"Erik Hansen\",\"id\":\"100000681082643\"},{\"name\":\"Lucy Nicole Collins\",\"id\":\"100000795588383\"},{\"name\":\"Shelly Rogers Bradshaw\",\"id\":\"100000808958118\"},{\"name\":\"Doug Dunklau\",\"id\":\"100000922568062\"},{\"name\":\"Keith \u0166eeple\",\"id\":\"100001061123342\"},{\"name\":\"Byron Ford\",\"id\":\"100001163737541\"},{\"name\":\"Marian Ashwill\",\"id\":\"100001308005599\"},{\"name\":\"Kristin Shockley Green\",\"id\":\"100001460589842\"},{\"name\":\"Neil Clark\",\"id\":\"100001597951066\"},{\"name\":\"Chris Quillin\",\"id\":\"100002350468813\"},{\"name\":\"Joe Shankles\",\"id\":\"100003818634080\"},{\"name\":\"Tara Andreason Cloutman\",\"id\":\"100003824026203\"},{\"name\":\"Joe Battista\",\"id\":\"100003921956806\"},{\"name\":\"Chris Curry\",\"id\":\"100004117389265\"},{\"name\":\"Stacy Wilson\",\"id\":\"100004233605659\"},{\"name\":\"Nancy Phillips\",\"id\":\"100004642742766\"},{\"name\":\"Angie Fields Zumwalt\",\"id\":\"100005734893581\"}],\"paging\":{\"next\":\"https:\\/\\/graph.facebook.com\\/569956369\\/friends?limit=0&offset=0&access_token=CAAAAH7GIRHUBANmfZBJWNcBlEf4DAnbHZBjxT55cKnsZBmroKDGm8s395ZCLguktEw8sqZB6BUzIyAcXGRB2Vy4muhqbXgbDAfIqVJ9NLkXWKZBUpTMwLWZBEpSzcU5btKBtIPMDDoCnL6xsZCjJZAtdOEuokkI64qxvz7LKSYvHMcRc85vVykIJI99QubfBHiFSKZAQATBL953QZDZD&__after_id=100005734893581\"}}"
+    val expectedCSV = "'7913493', '16801180', '16804186', '16834125', '18807150', '18811063', '100000444159168', '100000492467918', '100000501133257', '100000531982506', '100000623048420', '100000681082643', '100000795588383', '100000808958118', '100000922568062', '100001061123342', '100001163737541', '100001308005599', '100001460589842', '100001597951066', '100002350468813', '100003818634080', '100003824026203', '100003921956806', '100004117389265', '100004233605659', '100004642742766', '100005734893581'"
+    val csvIds = Util.facebookFriendsToCSV(json)  
+    assert(expectedCSV === csvIds)
+  }
+  
+  
+  test("make map from json") {
+    val json = "{\"data\":[{\"name\":\"Eric Moore\",\"id\":\"7913493\"},{\"name\":\"Becky Harbert Dunklau\",\"id\":\"16801180\"},{\"name\":\"Brandon Dunklau\",\"id\":\"16804186\"},e\":\"David Landers\",\"id\":\"16834125\"},{\"name\":\"Rebecca O'Bier Davis\",\"id\":\"18807150\"},\"paging\":{\"next\":\"https:\\/\\/graph.facebook.com\\/569956369\\/friends?limit=0&offset=0&access_token=CAAAAH7GIRHUBANmfZBJWNcBlEf4DAnbHZBjxT55cKnsZBmroKDGm8s395ZCLguktEw8sqZB6BUzIyAcXGRB2Vy4muhqbXgbDAfIqVJ9NLkXWKZBUpTMwLWZBEpSzcU5btKBtIPMDDoCnL6xsZCjJZAtdOEuokkI64qxvz7LKSYvHMcRc85vVykIJI99QubfBHiFSKZAQATBL953QZDZD&__after_id=100005734893581\"}}"
+    val objs = Util.makeListOfMaps(json)  
+    objs.map(ooo => ooo.get("id"))
+    println(objs)
+  }
+  
   
   
   // testing the 'no profile pic' image

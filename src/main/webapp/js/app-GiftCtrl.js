@@ -25,67 +25,10 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
   }
   
   
-  // to recreate the giftlist if the user hits refresh or if the user comes to this page via a link FB or wherever
-  // 4/10/13: See also event.html - we list everyone in the event and their names are links.  When the user comes here from event.html, we have to construct the 'showUser' from a showUser id
-  if(angular.isDefined($route.current.params.showUserId)) {
-  
-    
-    var queryparams = {recipientId:$route.current.params.showUserId};
-    if(angular.isDefined($rootScope.user))
-      queryparams.viewerId = $rootScope.user.id;
-    else if($cookieStore.get("user")!=null)
-      queryparams.viewerId = $cookieStore.get("user");
-    // and what if neither of these is true? not handled here !  2013-09-02
-
-
-    // 4/10/13: See also event.html - we list everyone in the event and their names are links.  
-    // When the user comes here from event.html, we have to construct the 'showUser' from a showUser id
-    $rootScope.showUser = User.find({userId:$route.current.params.showUserId}, function() {$cookieStore.put("showUser", $rootScope.showUser.id)});
-
-
-    if(angular.isDefined($route.current.params.circleId)) {
-      queryparams.circleId = $rootScope.circle.id;
-    }
-    
-    // you need a viewerId to figure out how the wishlist should look.  but we won't have a viewerId
-    // in posts to fb.  We have to get the viewerId from the fb user's info.  See routeChangeStart in app.js
-    // You'll see:  $rootScope.Facebook.getMe()
-    console.log("Gift2Ctrl: queryparams...  look for viewerId");
-    console.log(queryparams);
-    
-    $rootScope.gifts = Gift.query(queryparams, 
-                            function() { 
-                              Circle.gifts = $rootScope.gifts; 
-                              console.log("$rootScope.gifts.length = "+$rootScope.gifts.length);
-                              console.log($rootScope.gifts);
-                              $rootScope.gifts.ready = true;
-                              $rootScope.gifts.mylist = $rootScope.user.id == $route.current.params.showUserId; 
-                              //$rootScope.$emit("circlechange");   // commented out on 11/30/12 - experimenting
-                            }, 
-                            function() {alert("Hmmm... Had a problem getting this person's list\n  Try again  (error code 301)");});
-                            
-  }
-  else if(($location.url()=='/mywishlist' || $location.url()=='/me') && $cookieStore.get("user")!=null) {
-    
-    $rootScope.gifts = Gift.query({viewerId:$cookieStore.get("user")}, 
-                            function() { 
-                              Circle.gifts = $rootScope.gifts; 
-                              Circle.gifts.mylist=true;
-                              delete $rootScope.circle;
-                              console.log($rootScope.circle);
-                              $rootScope.gifts.ready = true;
-                              $rootScope.showUser = $rootScope.user;
-                              //$rootScope.$emit("circlechange");   // commented out on 11/30/12 - experimenting
-                              //$rootScope.$emit("userchange");  // commented out on 11/30/12 - experimenting
-                            }, 
-                            function() {alert("Hmmm... Had a problem getting "+$rootScope.user.fullname+"'s list\n  Try again  (error code 302)");});
-  }
   
   
   // BEGIN: Check for facebook request id in url.  If it's there, delete it.  The logged in user is the person
   // who received the request.  This is pretty nice clean up of request id's.
-  
-  //$scope.acceptAppRequest($window, facebookConnect);
   
   // END: Cleaning up facebook request id's.  This may end up getting moved somewhere else, but it's a nice demonstration
   // of how you delete app requests once they've been accepted.

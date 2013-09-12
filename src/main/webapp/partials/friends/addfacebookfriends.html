@@ -1,0 +1,55 @@
+<!-- Displays all of your FB friends (that you aren't already friends with on LBB)
+The purpose: To give the user a way of selecting which friends to send a message to (to tell them about LBB)
+
+ -->
+ 
+<div ng-controller="FriendCtrl">
+
+  <div class="row">
+    <div class="span3 font14 bold">
+      Invite your Facebook friends to LittleBlueBird.  They'll thank you for it.
+    </div>
+  </div>
+ 
+
+  <div class="row">
+    <div class="span2 offset1 align-right">
+      <a class="btn btn-mini btn-primary" ng-href="peopleToInvite">See More...</a>
+    </div>
+  </div>
+
+
+
+  <div class="row" ng-repeat="fb in peopleToInvite | limitTo: 3">
+    <a ng-href="{{currentlocation}}" ng-click="sendFacebookMessage(fb)">
+      <div class="{{styleRow('span3 pad5 list', $index, peopleToInvite.length, fb)}}">
+		<div class="row">
+		  <div class="span1"><img ng-src="{{fb.profilepicUrl}}" /></div>
+		  <div class="span2">{{fb.fullname}}</div>
+		</div>
+      </div>
+    </a>
+  </div>
+
+
+
+<span ng-show="peopleToFollow.length > 0">
+  <div class="row margtop20"><div class="span3 font14 bold">Look who else is on LittleBlueBird...</div></div>
+
+  <div class="row" ng-repeat="fb in peopleToFollow">
+    <a ng-href="{{currentlocation}}" ng-click="sendFacebookMessage(fb)">
+      <div class="{{styleRow('span3 pad5 list', $index, peopleToFollow.length, fb)}}">
+		<div class="row">
+		  <div class="span1">
+		      <img ng-src="http://graph.facebook.com/{{fb.facebookId}}/picture?type=square"/>
+		  </div>
+		  <div class="span2">{{fb.fullname}}</div>
+		</div>
+      </div>
+    </a>
+  </div>
+</span>
+
+
+</div>
+

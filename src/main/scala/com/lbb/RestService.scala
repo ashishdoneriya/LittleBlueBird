@@ -53,7 +53,6 @@ object RestService extends RestHelper with LbbLogger {
   
   serve {
     case JsonPost("rest" :: "apprequest" :: _, (json, req)) => saveAppRequests
-    case JsonPost("rest" :: "facebookusers" :: facebookId :: email :: name :: _, (json, req)) => handleFacebookUser(facebookId, email, name)
     case JsonPost("rest" :: "mergeusers" :: AsLong(userId) :: facebookId :: email :: _, _) => mergeUsers(userId, facebookId, email)
     case Delete("rest" :: "friend" :: AsLong(userId) :: AsLong(friendId) :: _, _) => deleteFriend(userId, friendId)
   }
@@ -302,90 +301,6 @@ object RestService extends RestHelper with LbbLogger {
     val r = JsonResponse(stuff)
     debug("saveAppRequests: JsonResponse(stuff)=" + r.toString())
     r
-    
-  }
-  
-  
-  /**
-   * This method has to figure out if it's responding to an app request or not.
-   * If it's responding to an app request, there's the possibility that we will have to merge user records
-   * If we're not responding to an app request, we know we won't have to merge user records
-   * Merging user records comes into play when:
-   *   one person invites another person 
-   *   and that other person happens to already be an LBB user
-   *   and that other person hasn't logged in via FB yet
-   *  
-   */
-  def handleFacebookUser(facebookId:String, email:String, name:String) = { 
-    println("handleFacebookUser() ---------------------------")
-    
-    // see if we're handling an app request or not
-    S.param("fbreqids") match {
-      case Full(fbreqids) => {
-        // We are processing an app request.  Accept it.
-        val facebookRequestIds = fbreqids.split(",")
-        val apprequests = AppRequest.findAll(By(AppRequest.facebookId, facebookId), ByList(AppRequest.fbreqid, facebookRequestIds))
-        apprequests.foreach(ar => {
-          ar.acceptdate(new Date())
-          ar.save
-        })
-      } // case Full(fbreqids)
-      
-      case _ => // This is not in response to an app request - dont' do anything       
-
-    } // S.param("fbreqids") match
-
-    
-    val emailrecords = User.findAll(By(User.email, email)) // 0, 1 or many
-    val facebookrecords = User.findAll(By(User.facebookId, facebookId)) // can only be 0 or 1
-    val hasboth = User.findAll(By(User.email, email), By(User.facebookId, facebookId)) // can only be 0 or 1
-    
-    val returnusers = (emailrecords, facebookrecords, hasboth) match {
-      case (_, _, u::us) => {
-        // LOVE THIS CASE because we don't have to do anything to the person table.  The record we're looking for already has the right email and facebook id
-        hasboth
-      }
-      case(Nil, Nil, _) => {
-        // no record of any kind for this person yet, so create one
-        val newuser = User.create(name, facebookId).email(email)
-        newuser.save
-        Emailer.notifyWelcomeFacebookUser(newuser)
-        List(newuser)
-      }
-      case(e::es, f::fs, _) if(es.size==0 && fs.size==0) => {
-        // THIS IS THE MERGE CASE.  We have one record with email, and another with facebook id.  But notice they are not the same record because
-        // if they were, the first case would have been executed.  So we have to merge f in with e and then delete f.
-        val mergeduser = User.merge(e, f)
-        List(mergeduser)
-      }
-      case(e::es, _, _) if(es.size==0) => {
-        // We only have one person record with email.  Also, we know facebookrecords is empty because if it had one element, then either the first case 
-        // or the third case would have been executed
-        // So FB has passed us a facebook id.  Update the existing record's facebook id and profile pic.
-        e.facebookId(facebookId).profilepic("http://graph.facebook.com/"+facebookId+"/picture?type=large")
-        e.save
-        List(e)
-      }
-      case(e::es, _, _) => {
-        // case WHO ARE YOU?  We have several records with this email, none having facebook id
-        // We return the whole list 'emailrecords' and let the client direct the user to the "who are you" page
-        emailrecords
-      }
-      case(_, f::fs, _) => {
-        // We already had a record with facebook id but no email.  THIS COULD POTENTIALLY CAUSE A SECOND PERSON RECORD TO BE CREATED IF THE PERSON ALREADY EXISTS IN LBB UNDER ANOTHER EMAIL.
-        f.email(email).save
-        // We know we should send a welcome email in this case because prior to this call, the person record didn't have an email address.
-        // Records with facebook id's but no email address are created by friends when app requests are sent.  If we make it to this case,
-        // it means the person that was invited is now responding - hence welcome email
-        Emailer.notifyWelcomeFacebookUser(f)
-        List(f)
-      }
-      
-      
-    } // (emailrecords, facebookrecords, hasboth)
-
-    debug("handleFacebookUser(): end ---------------------------");
-    Util.toJsonResponse(returnusers)
     
   }
 

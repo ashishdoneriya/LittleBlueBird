@@ -32,24 +32,6 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
           console.log("this.getLoginStatus: NNNNNNNNNNNNNNNNNNNNNNNN");
         }
         
-        this.deleteAppRequest = function(requestId) {
-          console.log("this.deleteAppRequest:  BEGIN:  requestId="+requestId+",  FB="+FB);
-          FB.getLoginStatus(function(response) {
-            if(response.status == 'connected') {
-              console.log("this.deleteAppRequest:  connected...");
-              FB.api(requestId, 'delete', function(resp2) {
-                console.log("this.deleteAppRequest:  resp2...");
-                console.log(resp2);
-              });
-            }
-            else  {
-              console.log("this.deleteAppRequest:  not connected...");
-            }
-            
-          });
-          
-        }
-        
         this.logout = function(response) {
           console.log("this.logout = function(response) ----------------");
           
@@ -154,6 +136,22 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
       console.log("$rootScope.initfbuser...");
       console.log($rootScope.fbuser);
       
+      var fbLoginStatus = function() {
+	    //get access token and pass to the server; get all friends on the server not the client
+	    // so I can make a call like this on the server:
+	    // 		https://graph.facebook.com/569956369/friends?limit=0&offset=0&access_token=CAAAAH7GIRHUBAEJqVt3iB3Lut0BkFoSMFW0gM32LNpZATLoe140CTMAUe3QSxK1qnficW9wr9ZApT4xG1CUgaiuMoL3e7zoxV8jZAfDulYGD8czWpZAxB8aLIP5f4TFkajsJDf5OaRnpHOPXqmdO3bpagMJnNnM3ho8PgXBixF3exAUrr3vfXG4TnC8xZBHzcIDTV1p05oAZDZD&__after_id=100005734893581%22
+	    FB.getLoginStatus(function(response) {
+	      console.log("access token:", response.authResponse.accessToken);
+	       var peopleToFollow = FacebookServerSide.friends({accessToken:response.authResponse.accessToken, facebookId:user.id, userId:$rootScope.user.id, queryType:'peopleToFollow'},
+	                  function() {$rootScope.user.peopleToFollow = peopleToFollow; console.log("FacebookServerSide SUCCESS: $rootScope.user.peopleToFollow", $rootScope.user.peopleToFollow)},
+	                  function() {console.log("FacebookServerSide FAIL: $rootScope.peopleToFollow -------------------------")});
+	                  
+	       var peopleToInvite = FacebookServerSide.friends({accessToken:response.authResponse.accessToken, facebookId:user.id, userId:$rootScope.user.id, queryType:'peopleToInvite'},
+	                  function() {$rootScope.user.peopleToInvite = peopleToInvite; console.log("FacebookServerSide SUCCESS: $rootScope.user.peopleToInvite", $rootScope.user.peopleToInvite)},
+	                  function() {console.log("FacebookServerSide FAIL: $rootScope.peopleToInvite --------------------")});
+	    });
+      }
+      
       // could get more than one person back - parent + children
       // So this method allows for the fact that the user may have an LBB account that has not yet
       // been "merged" with the FB account.  That's why we're querying by email and not fb id: because person.facebook_id
@@ -177,22 +175,12 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                       if(alreadymergedaccount) {
                         console.log("app-FacebookModule:  this is already a merged account, so going now to mywishlist");
 					
-										    
 					    
 					    //get access token and pass to the server; get all friends on the server not the client
 					    // so I can make a call like this on the server:
 					    // 		https://graph.facebook.com/569956369/friends?limit=0&offset=0&access_token=CAAAAH7GIRHUBAEJqVt3iB3Lut0BkFoSMFW0gM32LNpZATLoe140CTMAUe3QSxK1qnficW9wr9ZApT4xG1CUgaiuMoL3e7zoxV8jZAfDulYGD8czWpZAxB8aLIP5f4TFkajsJDf5OaRnpHOPXqmdO3bpagMJnNnM3ho8PgXBixF3exAUrr3vfXG4TnC8xZBHzcIDTV1p05oAZDZD&__after_id=100005734893581%22
-			            FB.getLoginStatus(function(response) {
-			              console.log("access token:", response.authResponse.accessToken);
-			              $rootScope.peopleToFollow = FacebookServerSide.friends({accessToken:response.authResponse.accessToken, facebookId:user.id, userId:$rootScope.user.id, queryType:'peopleToFollow'},
-			                          function() {console.log("FacebookServerSide SUCCESS: $rootScope.peopleToFollow", $rootScope.peopleToFollow)},
-			                          function() {console.log("FacebookServerSide FAIL: $rootScope.peopleToFollow -------------------------")});
-			                          
-			              $rootScope.peopleToInvite = FacebookServerSide.friends({accessToken:response.authResponse.accessToken, facebookId:user.id, userId:$rootScope.user.id, queryType:'peopleToInvite'},
-			                          function() {console.log("FacebookServerSide SUCCESS: $rootScope.peopleToInvite", $rootScope.peopleToInvite)},
-			                          function() {console.log("FacebookServerSide FAIL: $rootScope.peopleToInvite --------------------")});
-			            });
-					    
+			            fbLoginStatus();
+			            
 					      
                         $location.url('me'); // TODO invalid url as of 2013-09-09
                       } 
@@ -209,6 +197,11 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                                                  $location.url('welcome');
                                                }
                                              );
+                                             
+                                             
+						    fbLoginStatus();
+                                             
+                                             
                         }
                         else if($rootScope.users.length == 1) {  // easy... we found exactly one person with this email - set the facebookid
                           $rootScope.users[0].facebookId = $rootScope.fbuser.id;
@@ -227,14 +220,21 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                           
                           // TODO WHY ARE WE DOING THIS ????
                           var uagain = User.save({userId:$rootScope.user.id, facebookId:$rootScope.fbuser.id, profilepic:pic}, 
-                                       function() {
-                                         $rootScope.user = angular.copy(uagain); 
-                                         $rootScope.showUser = angular.copy(uagain);
-									     //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting                                       
-									     //$rootScope.$emit("mywishlist"); // commented out on 11/30/12 - experimenting
-                                         console.log("444444444444444444444444444444444444444");
-									     $location.url('mywishlist');});
-                                       }
+	                                       function() {
+	                                         $rootScope.user = angular.copy(uagain); 
+	                                         $rootScope.showUser = angular.copy(uagain);
+										     //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting                                       
+										     //$rootScope.$emit("mywishlist"); // commented out on 11/30/12 - experimenting
+	                                         console.log("444444444444444444444444444444444444444");
+										     $location.url('mywishlist');
+										   });
+										   
+							
+						    fbLoginStatus();
+                                             
+										   
+										   
+                        }
                         else if($rootScope.users.length > 1) {
                           // And if we happen to find several people all with the same email address and no FB id,
                           // we have to ask the user "who are you" and display all the people that have this email address

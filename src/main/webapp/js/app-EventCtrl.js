@@ -5,6 +5,7 @@ function NewEventCtrl($rootScope, $scope) {
     $rootScope.addmethod = addmethod;
   }
   
+  // TODO duplicated code! Why is this same code also in app-FriendCtrl.js ?
   $scope.clicklbbuser = function(index, person, people) {
     if(angular.isDefined(person.selected)) {
       delete person.selected;

@@ -16,17 +16,6 @@
         </div>
         <div class="row">
           <div class="span2 padleft30">
-            <input class="span2 font16" maxlength="140" value="" name="email" type="email" ng-model="newuser.email" placeholder="Email" title="Email" required>
-          </div>
-          <div class="span1 w20">
-            <span ng-show="regForm.email.$dirty">
-              <span ng-show="regForm.email.$error.required"><img src="img/red_x.png" id="emailrequired" title="Email is required"></span>
-              <span ng-show="regForm.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
-            </span>
-          </div>
-        </div>  
-        <div class="row">
-          <div class="span2 padleft30">
             <input class="span2 font16" maxlength="140" value="" name="username" type="text" ng-model="newuser.username" ng-change="isUsernameUnique(newuser, regForm)" placeholder="Username" title="Username" required />
           </div>
           <div class="span1 w20">
@@ -44,6 +33,32 @@
         </div>
         <div class="row">
           <div class="span2 padleft30">
+            <input class="span2 font16" maxlength="140" value="" name="email" type="email" ng-model="newuser.email" placeholder="Email" title="Email" required>
+          </div>
+          <div class="span1 w20">
+            <span ng-show="regForm.email.$dirty">
+              <span ng-show="regForm.email.$error.required"><img src="img/red_x.png" id="emailrequired" title="Email is required"></span>
+              <span ng-show="regForm.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
+            </span>
+          </div>
+        </div>  
+        <div class="row">
+          <div class="span2 padleft30">
+            <input class="span2 font16" maxlength="140" value="" name="emailAgain" type="email" ng-model="newuser.emailAgain" placeholder="Email (again)" title="Email (again)" required>
+          </div>
+          <div class="span1 w20">
+            <span ng-show="regForm.emailAgain.$dirty">
+              <span ng-show="regForm.emailAgain.$error.required">
+                <img src="img/red_x.png" id="invalidemailagain" title="Enter email twice">
+              </span>
+              <span ng-show="newuser.emailAgain != newuser.email && !regForm.emailAgain.$error.required">
+                <img src="img/red_x.png" id="emailsdontmatch" title="Emails don't match">
+              </span>
+            </span> 
+          </div>
+        </div>  
+        <div class="row">
+          <div class="span2 padleft30">
             <input class="span2 font16" ng-model="newuser.password" type="password" name="password" value="*******" placeholder="Password" title="Password" required />
           </div>
           <div class="span1 w20">
@@ -54,35 +69,16 @@
             </span>
           </div>
         </div>
-        <div class="row">
-          <div class="span2 padleft30">
-            <input class="span2 font16" ng-model="newuser.passwordAgain" type="password" name="passwordAgain" value="*******" placeholder="Retype Password" title="Retype Password" required />
-          </div>
-          <div class="span1 w20">
-            <span ng-show="regForm.passwordAgain.$dirty">
-              <span ng-show="regForm.passwordAgain.$error.required">
-                <img src="img/red_x.png" id="invalidpassagain" title="Enter password twice">
-              </span>
-              <span ng-show="newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required">
-                <img src="img/red_x.png" id="passwordsdontmatch" title="Passwords don't match">
-              </span>
-            </span> 
-          </div>
-        </div>
-          
-
-
-
 
 
 
         <div class="row">
           <div class="span1"> 
-            <span ng-show="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
+            <span ng-show="regForm.$invalid || (newuser.emailAgain != newuser.email && !regForm.emailAgain.$error.required)" >
               <a ng-disabled="true" class="btn span1 padleft0 padright0" id="invalidform" title="Not Ready Yet">Sign Up</a>
             </span>    
           
-            <span ng-hide="regForm.$invalid || (newuser.passwordAgain != newuser.password && !regForm.passwordAgain.$error.required)" >
+            <span ng-hide="regForm.$invalid || (newuser.emailAgain != newuser.email && !regForm.emailAgain.$error.required)" >
               <a href="#" class="btn btn-primary span1 padleft0 padright0" ng-click="save(newuser)">Sign Up</a>
             </span>
           </div>  

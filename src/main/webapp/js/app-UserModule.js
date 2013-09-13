@@ -56,13 +56,6 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
                        });
       return AppRequest;
   }).
-  factory('FacebookUser', function($resource){
-      var FacebookUser = $resource('/gf/rest/facebookusers/:facebookId/:email/:name', {facebookId:'@facebookId', email:'@email', name:'@name', fbreqids:'@fbreqids'}, 
-                       {
-                         save: {method:'POST', isArray:true}
-                       });
-      return FacebookUser;
-  }).
   factory('FacebookServerSide', function($resource){
       var FacebookServerSide = $resource('/gf/rest/FacebookServerSide/:accessToken/:facebookId/:userId/:queryType', {accessToken:'@accessToken', facebookId:'@facebookId', userId:'@userId', queryType:'@queryType'}, 
                        {
@@ -269,10 +262,9 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
     
     // 3/12/13
     $rootScope.logout = function() {
-      Logout.logout({});   
-      delete $rootScope.user;
+      Logout.logout({}, function() {delete $rootScope.user;});   
       $cookieStore.remove("user");
-      console.log("app-UserModule: $rootScope.logout() -------------------------------");                                      
+      console.log("app-UserModule: $rootScope.logout() 44444444444444 -----------------------------");                                      
     }
 
   });

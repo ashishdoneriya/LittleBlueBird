@@ -1,3 +1,9 @@
+<!-- 
+2013-09-12  This page was copied and adapted from search-to-add-participants.html.  
+I ran into problems with that page when I tried to use it to also
+add friends.  I realized that the js func I call when I click someone's name is not the same when I'm adding them
+to a circle as it is when I'm trying to make them a friend.
+ -->
 
 <div class="row">
   <div class="span3">
@@ -29,8 +35,8 @@
 	          
     <div ng-repeat="person in peoplesearchresults | filter:search">
 	    <span ng-hide="person.hide">
-		  <div class="row" ng-click="addparticipant($index, person, thecircle, participationLevel)">
-		    <div class="{{isLastRow('span3 list', $index, peoplesearchresults.length)}}">
+		  <div class="row" ng-click="clicklbbuser($index, person, peoplesearchresults)">
+		    <div class="{{styleRow('span3 list', $index, peoplesearchresults.length, person)}}">
 			  <div class="row">
 			    <div class="span1">
 

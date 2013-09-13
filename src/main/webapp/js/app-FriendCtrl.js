@@ -26,6 +26,7 @@ function FriendCtrl($scope, $rootScope, User, Friend) {
                                 );
   }
   
+  // TODO duplicated code! Why is this same code also in app-EventCtrl.js ?
   // don't let the user friend himself
   $scope.clicklbbuser = function(index, person, people) {
     if(angular.isDefined(person.selected)) {

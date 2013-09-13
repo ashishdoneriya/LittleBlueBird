@@ -53,14 +53,15 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
   .run(function($rootScope, Facebook) {
     $rootScope.Facebook = Facebook;
   })
-  .run(function($window, $route, $rootScope, $cookieStore, $location, facebookConnect, $timeout, User, FacebookUser){    
+  .run(function($window, $route, $rootScope, $cookieStore, $location, facebookConnect, $timeout, User, FacebookServerSide){    
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){
         console.log("FINAL ROUTECHANGESTART FUNCTION ----------------------------");   
         
         // Allow anonymous access and do NOT assume the FB user is the person behind the keyboard
         // If we are going to any of these pages, we do NOT want to see if someone is logged in to FB
-        var nonsecure =  ['emailit', 'register', 'marketing', 'privacy', 'support'];
-        var allowAnonymousAccess = false;
+        var nonsecure =  ['home', 'emailit', 'register', 'marketing', 'privacy', 'support'];
+        var allowAnonymousAccess = $location.url() == '/';
+        console.log("location.url(): ", $location.url());
         for(var i=0; i < nonsecure.length; ++i) {
           if($location.url().indexOf(nonsecure[i]) != -1) {
             allowAnonymousAccess = true;
@@ -123,7 +124,26 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         // 2013-03-12:  next - check for "user" cookie
         // 2013-09-04:  Strictly speaking, we don't have to check 'allowAnonymousAccess' We know it's false because the 'if' block above didn't get called.
         else if(angular.isDefined($cookieStore.get("user"))) {
-          $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){console.log("FOUND user from $cookieStore.get('user') BEFORE we checked Facebook");console.log($rootScope.user);});
+          $rootScope.user = User.find({userId:$cookieStore.get("user")}, 
+                              function(){
+                                  console.log("FOUND user from $cookieStore.get('user') BEFORE we checked Facebook");console.log($rootScope.user);
+						          if($rootScope.user.facebookId != null) {
+							  	      //get access token and pass to the server; get all friends on the server not the client
+								      // so I can make a call like this on the server:
+								      // 		https://graph.facebook.com/569956369/friends?limit=0&offset=0&access_token=CAAAAH7GIRHUBAEJqVt3iB3Lut0BkFoSMFW0gM32LNpZATLoe140CTMAUe3QSxK1qnficW9wr9ZApT4xG1CUgaiuMoL3e7zoxV8jZAfDulYGD8czWpZAxB8aLIP5f4TFkajsJDf5OaRnpHOPXqmdO3bpagMJnNnM3ho8PgXBixF3exAUrr3vfXG4TnC8xZBHzcIDTV1p05oAZDZD&__after_id=100005734893581%22
+								      FB.getLoginStatus(function(response) {
+							    	      console.log("access token:", response.authResponse.accessToken);
+								          var peopleToFollow = FacebookServerSide.friends({accessToken:response.authResponse.accessToken, facebookId:$rootScope.user.facebookId, userId:$rootScope.user.id, queryType:'peopleToFollow'},
+								                  function() {$rootScope.user.peopleToFollow = peopleToFollow; console.log("FacebookServerSide SUCCESS: $rootScope.user.peopleToFollow", $rootScope.user.peopleToFollow)},
+								                  function() {console.log("FacebookServerSide FAIL: $rootScope.peopleToFollow -------------------------")});
+								                  
+								         var peopleToInvite = FacebookServerSide.friends({accessToken:response.authResponse.accessToken, facebookId:$rootScope.user.facebookId, userId:$rootScope.user.id, queryType:'peopleToInvite'},
+								                  function() {$rootScope.user.peopleToInvite = peopleToInvite; console.log("FacebookServerSide SUCCESS: $rootScope.user.peopleToInvite", $rootScope.user.peopleToInvite)},
+								                  function() {console.log("FacebookServerSide FAIL: $rootScope.peopleToInvite --------------------")});
+								      });
+						          }
+                              }
+                            );
           $rootScope.templates = newRoute.templates;
           $rootScope.layoutController = newRoute.controller;
           
@@ -134,135 +154,15 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
             $rootScope.showUser = angular.copy($rootScope.user);
             $cookieStore.put("showUser", $rootScope.showUser.id);
           }
+						          
+          
           
         } // if: $cookieStore.get("user") exists
         
         // 2013-09-03 We can DEFINITELY get this far - when the user is a first-timer
         // 2013-03-12 Not sure if this will ever get called now that we have the else-if above.  app-LoginCtrl:$scope.login() and app-FacebookModule:$rootScope.initfbuser()
         // both set "user" cookies.  So I don't think this will ever get called.
-        else { // $rootScope.user is undefined
-          
-          // Applying the rule above: see if the user is logged in to FB
-          var p2 = $rootScope.Facebook.status();
-          p2.then(
-            function(fbresponse) { // called if user is logged in and has authorized the app
-              // Yes: we have someone logged in to FB.
-              
-              // Get facebook request id's.  If there are any, it means user is responding to an app request.  We need to mark the app request as accepted.
-              fbreqids_csv = [];
-              
-              // Applying the rule above: If someone is logged in to FB, we need to see if they're responding to an app request
-	          if($cookieStore.get("window.location.search")==undefined || $cookieStore.get("window.location.search").indexOf("request_ids")==-1) {
-	            // no special handling required.  The user is not coming to us from an app request
-	          }
-	          else {  // SPECIAL HANDLING REQUIRED HERE: The user is responding to a app request on FB.  First get the facebook request id(s)...
-	            var parms = $cookieStore.get("window.location.search").split("&")
-                var facebookreqids = [];
-		        if(parms.length > 0) {
-		          for(var i=0; i < parms.length; i++) {
-		            if(parms[i].split("=").length > 1 && (parms[i].split("=")[0] == 'request_ids' || parms[i].split("=")[0] == '?request_ids')) {
-		              fbreqids_csv = parms[i].split("=")[1].split("%2C")
-		              for(var j=0; j < fbreqids_csv.length; j++) {
-		                facebookreqids.push(fbreqids_csv[j]);
-		              }  
-		            }      
-		          }
-		        } // if(parms.length > 0)
-                     
-                if(facebookreqids.length > 0) {
-                  var fbid = fbresponse.authResponse.userID;
-                  for(var i=0; i < facebookreqids.length; i++) {
-                    var reqid_plus_fbid = facebookreqids[i]+'_'+fbid;
-                    $rootScope.Facebook.deleteAppRequest(reqid_plus_fbid);
-                  } // for(var i=0; i < facebookreqids.length; i++)
-                        
-                } // if(facebookreqids.length > 0)
-		                
-	          } // SPECIAL HANDLING REQUIRED HERE: The user is responding to a app request on FB.  First get the facebook request id(s)...
-                      
-              
-              
-              // Does this person match anyone in the LBB database?
-              $rootScope.Facebook.getMe(
-                function(meresponse) { // function inside of $rootScope.Facebook.getMe()
-                  var fbuserparms = {facebookId:meresponse.id, email:meresponse.email, name:meresponse.name};
-                  if(fbreqids_csv != []) fbuserparms.fbreqids = fbreqids_csv;
-                  
-                  console.log("routeChangeStart:  $rootScope.Facebook.getMe():  FacebookUser...");
-                  console.log(FacebookUser);
-                  
-                  $rootScope.fbuser = angular.copy(meresponse);
-                  
-                  $rootScope.users = FacebookUser.save(fbuserparms,
-                    function(){ // success function of $rootScope.users = FacebookUser.save()
-                      console.log("$rootScope.users.................");
-                      console.log($rootScope.users);
-                      if($rootScope.users.length == 1) {
-                        $rootScope.user = angular.copy($rootScope.users[0]);
-                        $rootScope.showUser = angular.copy($rootScope.users[0]);
-                        $rootScope.templates = newRoute.templates;
-                        $rootScope.layoutController = newRoute.controller;
-                      } // if($rootScope.users.length == 1)
-                      else if($rootScope.users.length > 1) {
-                        // who are you? you have an email that is shared with multiple people
-                        // Applying the rule above: If someone is logged in to FB, we need to see if they're responding to an app request. HOW DO YOU DO THIS FOR PEOPLE THAT SHARE EMAILS?
-                        $rootScope.sharedemail = meresponse.email;
-                        $rootScope.user = {fullname:meresponse.name, email:meresponse.email, facebookId:meresponse.id};
-                        console.log("WATCH FOR /whoareyou:  $rootScope.users = FacebookUser.save(): $rootScope.user = ..."); 
-                        console.log($rootScope.user);
-                        $rootScope.templates = {layout: 'layout-whoareyou.html', one: 'partials/login.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'};
-                        $rootScope.layoutController = newRoute.controller;
-                      } // else if($rootScope.users.length > 1)
-                      
-                      // We don't handle the length==0 case because RestService.handleFacebookUser always returns a list with at least one user in it.
-                      
-                    }, // success function of $rootScope.users = FacebookUser.save()
-                    
-                    function(){ // fail function of $rootScope.users = FacebookUser.save()
-                      // TODO Do something more here.  This is just a silent failure.
-                      console.log("$rootScope.users = FacebookUser.save(): woops! got the fail function!");                      
-                    } // fail function of $rootScope.users = FacebookUser.save()
-                  ); // $rootScope.users = FacebookUser.save()
-                } // function inside of $rootScope.Facebook.getMe()
-              ); // $rootScope.Facebook.getMe()
-              
-            }, // function(fbresponse) { // called if user is logged in and has authorized the app
-          
-            function(fbresponse) { // called if user is not logged in or has not authorized the app
-              // No: no one is logged in to FB, or has not authorized the app
-              // So is there a user in the $cookieStore?
-              // Yes $cookieStore user: This is an LBB user => allow entry
-              // 3/12/13 TODO fix this.  This is backwards.  We first check for "user" cookie, THEN check for fbuser if no $rootScope.user is found.  Search on "3/12/13" and you'll see.
-           
-              // 2013-09-03 WHY ARE WE DOING THIS? WE'VE ALREADY CHECKED THE COOKIE STORE ABOVE. WE ARE HERE BECAUSE THERE IS NO 'USER' COOKIE IN THE COOKIE STORE
-              /********************************************
-              if(angular.isDefined($cookieStore.get("user"))) {
-                console.log("routeChangeStart:  Yes $cookieStore user: This is an LBB user => allow entry");
-                $rootScope.user = User.find({userId:$cookieStore.get("user")}, function(){console.log("FOUND user from $cookieStore.get('user')...");console.log($rootScope.user);});
-                $rootScope.templates = newRoute.templates;
-                $rootScope.layoutController = newRoute.controller;
-              }
-              else { // No $cookieStore user: No one is logged in => person has to login or register (WHAT ABOUT VIEW AS GUEST?)
-                console.log("routeChangeStart:  No $cookieStore user: No one is logged in");
-                
-                // TODO MAJOR Fix this hack - On 2013-03-20, it wasn't obvious why I was being sent back to the /login page.  A search of for 'login' and '/login'
-                // didn't turn up this line below, which I have since changed to redirect to the 'home' layout
-                $rootScope.templates = {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'};
-                
-                $rootScope.layoutController = newRoute.controller;
-              } // else { // No $cookieStore user: No one is logged in => person has to login or register (WHAT ABOUT VIEW AS GUEST?)
-              *************************************************/
-	          
-	          // TODO MAJOR Fix this hack - On 2013-03-20, it wasn't obvious why I was being sent back to the /login page.  A search of for 'login' and '/login'
-              // didn't turn up this line below, which I have since changed to redirect to the 'home' layout
-              
-              $rootScope.templates = {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'};
-              $rootScope.layoutController = newRoute.controller;
-              
-            } // function(fbresponse) { // called if user is not logged in or has not authorized the app
-          
-          ); // p2.then();        
-        } // else { // $rootScope.user is undefined
+       
         
         
     }); // $rootScope.$on('$routeChangeStart', function(scope, newRoute){

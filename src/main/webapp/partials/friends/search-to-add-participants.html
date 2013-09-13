@@ -1,0 +1,57 @@
+<!-- 
+2013-09-12  This page used to called just search.html.  But ran into problems when I tried to use this page to also
+add friends.  I realized that the js func I call when I click someone's name is not the same when I'm adding them
+to a circle as it is when I'm trying to make them a friend.
+ -->
+
+<div class="row">
+  <div class="span3">
+      <input search-users type="text" class="span2 search-query" ng-model="search" placeholder="Search" title="Search by name/email" />
+  </div>
+</div>
+
+<span ng-show="search != '' && usersearch=='loaded' && addmethod != 'emailnewuser'">
+    
+    <span ng-show="noonefound">
+		<div class="row">
+		  <div class="span3 roundedtop bgbluegradient white padtop5 padbottom5"> &nbsp;&nbsp;Found...</div>
+		</div>
+		<div class="row">
+		  <div class="span3 roundedbottom padtop5 padbottom5">
+		      <P>No one found matching "{{search}}"</P>
+		      <p><a ng-href="{{currentlocation}}" ng-click="emailnewuser();">Invite by Email <i class="icon-chevron-right"></i></a></p>
+		  </div>
+		</div>
+    </span>
+    
+    <span ng-show="peoplesearchresults.length > 0">
+        <div class="row">
+		  <div class="span3 roundedtop bgbluegradient white padtop5 padbottom5"> &nbsp;&nbsp;Found...</div>
+        </div> 
+    </span>
+    
+    
+	          
+    <div ng-repeat="person in peoplesearchresults | filter:search">
+	    <span ng-hide="person.hide">
+		  <div class="row" ng-click="addparticipant($index, person, thecircle, participationLevel)">
+		    <div class="{{isLastRow('span3 list', $index, peoplesearchresults.length)}}">
+			  <div class="row">
+			    <div class="span1">
+
+                  <div style="width:50px; height:50px; overflow:hidden;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;">
+                    <div style="margin-top:{{person.profilepicmargintop50}};margin-left:{{person.profilepicmarginleft50}}">
+                      <img height="{{person.profilepicadjustedheight50}}" width="{{person.profilepicadjustedwidth50}}" ng-src="{{person.profilepicUrl}}"/>
+                    </div>
+                  </div>
+
+			    </div>
+			    <div class="span2 font14">{{person.fullname}}</div>
+	          </div>
+	        </div>
+	      </div>
+        </span>  <!-- span ng-hide="person.hide" -->
+    </div>
+    
+    
+</span>			  

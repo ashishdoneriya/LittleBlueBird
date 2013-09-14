@@ -57,9 +57,11 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){
         console.log("FINAL ROUTECHANGESTART FUNCTION ----------------------------");   
         
+        console.log("newRoute:", newRoute);
+        
         // Allow anonymous access and do NOT assume the FB user is the person behind the keyboard
         // If we are going to any of these pages, we do NOT want to see if someone is logged in to FB
-        var nonsecure =  ['home', 'emailit', 'register', 'marketing', 'privacy', 'support'];
+        var nonsecure =  ['home', 'emailit', 'register', 'marketing', 'privacy', 'support', 'whoareyou'];
         var allowAnonymousAccess = $location.url() == '/';
         console.log("location.url(): ", $location.url());
         for(var i=0; i < nonsecure.length; ++i) {
@@ -117,6 +119,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         
         
         if(angular.isDefined($rootScope.user) || allowAnonymousAccess) {
+          console.log('WE ARE IN THE ROOTSCOPE.USER BLOCK');
           $rootScope.templates = newRoute.templates;
           $rootScope.layoutController = newRoute.controller;
         }
@@ -124,6 +127,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         // 2013-03-12:  next - check for "user" cookie
         // 2013-09-04:  Strictly speaking, we don't have to check 'allowAnonymousAccess' We know it's false because the 'if' block above didn't get called.
         else if(angular.isDefined($cookieStore.get("user"))) {
+          console.log('WE ARE IN THE COOKIESTORE USER BLOCK');
           $rootScope.user = User.find({userId:$cookieStore.get("user")}, 
                               function(){
                                   console.log("FOUND user from $cookieStore.get('user') BEFORE we checked Facebook");console.log($rootScope.user);
@@ -144,6 +148,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
 						          }
                               }
                             );
+              
           $rootScope.templates = newRoute.templates;
           $rootScope.layoutController = newRoute.controller;
           
@@ -155,13 +160,17 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
             $cookieStore.put("showUser", $rootScope.showUser.id);
           }
 						          
-          
-          
-        } // if: $cookieStore.get("user") exists
+        } // else if: $cookieStore.get("user") exists
         
         // 2013-09-03 We can DEFINITELY get this far - when the user is a first-timer
         // 2013-03-12 Not sure if this will ever get called now that we have the else-if above.  app-LoginCtrl:$scope.login() and app-FacebookModule:$rootScope.initfbuser()
         // both set "user" cookies.  So I don't think this will ever get called.
+        else {
+          console.log("NO USER: location.url()=",$location.url());     
+          $rootScope.proceedTo = angular.copy($location.url()); // after the user logs in, they will proceed to this url
+          console.log('SET PROCEED TO: ', $rootScope.proceedTo);
+          $location.url('/');
+        }
        
         
         

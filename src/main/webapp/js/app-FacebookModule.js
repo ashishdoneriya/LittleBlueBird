@@ -181,20 +181,28 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
 					    // 		https://graph.facebook.com/569956369/friends?limit=0&offset=0&access_token=CAAAAH7GIRHUBAEJqVt3iB3Lut0BkFoSMFW0gM32LNpZATLoe140CTMAUe3QSxK1qnficW9wr9ZApT4xG1CUgaiuMoL3e7zoxV8jZAfDulYGD8czWpZAxB8aLIP5f4TFkajsJDf5OaRnpHOPXqmdO3bpagMJnNnM3ho8PgXBixF3exAUrr3vfXG4TnC8xZBHzcIDTV1p05oAZDZD&__after_id=100005734893581%22
 			            fbLoginStatus();
 			            
-					      
-                        $location.url('me'); // TODO invalid url as of 2013-09-09
+					    if(angular.isDefined($rootScope.proceedTo)) {
+					        $location.url($rootScope.proceedTo);
+					        delete $rootScope.proceedTo;
+					    }  
+					    else $location.url('giftlist/'+$rootScope.user.id);
                       } 
                       else { // ...but in the beginning, this is what will happen - no record in our person table contains this facebookId
                         if($rootScope.users.length == 0) {
-                           // need to create account for this person in LBB
+                            // need to create account for this person in LBB
                                                        
-                           $rootScope.user = User.save({login:true, fullname:$rootScope.fbuser.first_name+' '+$rootScope.fbuser.last_name, first:$rootScope.fbuser.first_name, last:$rootScope.fbuser.last_name, username:$rootScope.fbuser.email, email:$rootScope.fbuser.email, password:$rootScope.fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+$rootScope.fbuser.id+'/picture?type=large', facebookId:$rootScope.fbuser.id}, 
+                            $rootScope.user = User.save({login:true, fullname:$rootScope.fbuser.first_name+' '+$rootScope.fbuser.last_name, first:$rootScope.fbuser.first_name, last:$rootScope.fbuser.last_name, username:$rootScope.fbuser.email, email:$rootScope.fbuser.email, password:$rootScope.fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+$rootScope.fbuser.id+'/picture?type=large', facebookId:$rootScope.fbuser.id}, 
                                                function() { 
                                                  $rootScope.showUser = angular.copy($rootScope.user);
                                                  $cookieStore.put("user", $rootScope.user.id);
                                                  $cookieStore.put("showUser", $rootScope.showUser.id);
                                                  console.log("just created an LBB account, check $rootScope.user", $rootScope.user);
-                                                 $location.url('welcome');
+			            
+											     if(angular.isDefined($rootScope.proceedTo)) {
+											        $location.url($rootScope.proceedTo);
+											        delete $rootScope.proceedTo;
+											     }
+											     else $location.url('welcome');
                                                }
                                              );
                                              
@@ -226,7 +234,11 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
 										     //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting                                       
 										     //$rootScope.$emit("mywishlist"); // commented out on 11/30/12 - experimenting
 	                                         console.log("444444444444444444444444444444444444444");
-										     $location.url('mywishlist');
+										     if(angular.isDefined($rootScope.proceedTo)) {
+										        $location.url($rootScope.proceedTo);
+										        delete $rootScope.proceedTo;
+										     }
+										     else $location.url('mywishlist');
 										   });
 										   
 							
@@ -240,6 +252,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                           // we have to ask the user "who are you" and display all the people that have this email address
                           // "Why are you asking me?"... "What is a 'merged' account?"...  "Why do I need to 'merge' my accounts?"...
                           // These are all things we have to explain to the user on the mergeaccount page
+										     
                           $location.url('/whoareyou'); 
                         }
                       }

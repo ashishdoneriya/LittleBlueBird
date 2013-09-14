@@ -23,6 +23,7 @@ function NewEventCtrl($rootScope, $scope) {
     console.log($rootScope.selectedpeople);
   }
   
+  
   // 2/12/13
   $scope.selectAllParticipants = function(people) {
     delete $rootScope.selectedpeople;

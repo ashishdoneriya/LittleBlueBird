@@ -160,6 +160,33 @@ angular.module('CircleModule', ['UserModule'])
   }
   
   
+  // when you're creating a new user and then immediately adding them to the circle
+  $rootScope.addparticipant2 = function(person, circle, participationLevel) {
+    console.log('addparticipant2 -----------------------------------------------------');
+
+    // If participationLevel is 'Receiver', we have to check 'circle' and make sure we haven't reached the receiver limit.
+    if(participationLevel == 'Receiver') {
+      if(circle.participants.receivers.length == circle.receiverLimit) circle.participants.givers.push(person);
+      else circle.participants.receivers.push(person);
+    }
+    else {
+      circle.participants.givers.push(person);
+    }
+    
+    // NO - DON'T ADD IMMEDIATELY - what if the user wants to cancel ?  Add participants in savecircle()
+    // if the circle already exists, add the participant to the db immediately
+    /************************
+    if(angular.isDefined(circle.id)) {
+      console.log("$scope.addparticipant:  $rootScope.user.id="+$rootScope.user.id);
+      var newcp = CircleParticipant.save({circleId:circle.id, inviterId:$rootScope.user.id, userId:person.id, participationLevel:$rootScope.participationLevel,
+                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:circle.name, 
+                                         adder:$rootScope.user.fullname},
+                                         function() {circle.reminders = Reminder.query({circleId:circle.id})});
+    }
+    *************************/
+  }
+  
+  
   // also referenced from events.html
   $rootScope.makeActive = function(index, circle) {
     console.log("CircleModule: rootScope.makeActive() ----------------------------");
@@ -282,13 +309,52 @@ angular.module('CircleModule', ['UserModule'])
   
   // add all the participants in the 'fromcircle' to the 'tocircle'
   $rootScope.addparticipants = function(fromcircle, tocircle) {
+    console.log('app-CircleModule:  addparticipants -----------------------------------------');
+    
+    // loop through everyone you're about to copy and see if they are already in the 'to' circle
     for(var i=0; i < fromcircle.participants.receivers.length; i++) {
+      fromcircle.participants.receivers[i].exists = false;
+      for(var j=0; j < tocircle.participants.receivers.length; j++) {
+        if(fromcircle.participants.receivers[i].id == tocircle.participants.receivers[j].id) {
+          fromcircle.participants.receivers[i].exists = true;
+          break;
+        }
+      }
+      for(var j=0; j < tocircle.participants.givers.length; j++) {
+        if(fromcircle.participants.receivers[i].id == tocircle.participants.givers[j].id) {
+          fromcircle.participants.receivers[i].exists = true;
+          break;
+        }
+      }
+    }
+    
+    for(var i=0; i < fromcircle.participants.givers.length; i++) {
+      fromcircle.participants.givers[i].exists = false;
+      for(var j=0; j < tocircle.participants.receivers.length; j++) {
+        if(fromcircle.participants.givers[i].id == tocircle.participants.receivers[j].id) {
+          fromcircle.participants.givers[i].exists = true;
+          break;
+        }
+      }
+      for(var j=0; j < tocircle.participants.givers.length; j++) {
+        if(fromcircle.participants.givers[i].id == tocircle.participants.givers[j].id) {
+          fromcircle.participants.givers[i].exists = true;
+          break;
+        }
+      }
+    }
+    
+    
+    for(var i=0; i < fromcircle.participants.receivers.length; i++) {    
+      if(fromcircle.participants.receivers[i].exists) continue;
       var hasLimit = angular.isDefined(tocircle.receiverLimit) && tocircle.receiverLimit != -1;
       if(hasLimit && tocircle.participants.receivers.length == tocircle.receiverLimit)
         tocircle.participants.givers.push(fromcircle.participants.receivers[i]);
       else tocircle.participants.receivers.push(fromcircle.participants.receivers[i]);
     }
-    for(var i=0; i < fromcircle.participants.givers.length; i++) {
+    
+    for(var i=0; i < fromcircle.participants.givers.length; i++) {   
+      if(fromcircle.participants.givers[i].exists) continue; 
       if(!angular.isDefined(tocircle.receiverLimit) || tocircle.receiverLimit == -1)
         tocircle.participants.receivers.push(fromcircle.participants.givers[i]);
       else
@@ -317,9 +383,20 @@ angular.module('CircleModule', ['UserModule'])
                      $rootScope.user.circles.reverse();
                      $rootScope.user.circles.push(savedcircle);
                      $rootScope.user.circles.reverse();
-                     circle.id = $rootScope.circle.id;
-                     // since we are inserting, we have participants that need to be added to the event
-                     for(var i=0; i < circle.participants.receivers.length; i++) {
+                     circle.id = $rootScope.circle.id; // what is this for?
+                   } 
+                   else {
+                     // else, we are updating, circle.id IS defined so update the circle in $rootScope.user.circles
+                     for(var i=0; i < $rootScope.user.circles.length; i++) {
+                       if($rootScope.user.circles[i].id == $rootScope.circle.id) {
+                         $rootScope.user.circles.splice(i, 1, $rootScope.circle);
+                       }
+                     }
+                   } // else
+                   
+                   console.log('CHECK circle.participants:', circle.participants);
+                   
+                   for(var i=0; i < circle.participants.receivers.length; i++) {
                        // check if they're friends already and pre-emptively add if they are not.
                        // If there's a problem on the db side, we can remove in the fail function
                        User.addfriend($rootScope.user, circle.participants.receivers[i]);
@@ -330,38 +407,40 @@ angular.module('CircleModule', ['UserModule'])
                                            
                                          }
                                 ); // CircleParticipant.save
-                     }
-                     for(var i=0; i < circle.participants.givers.length; i++) {
+                   }
+                   for(var i=0; i < circle.participants.givers.length; i++) {
                        User.addfriend($rootScope.user, circle.participants.givers[i]);
                        CircleParticipant.save({circleId:$rootScope.circle.id, inviterId:$rootScope.user.id, userId:circle.participants.givers[i].id, 
                                          participationLevel:'Giver', who:circle.participants.givers[i].fullname, email:circle.participants.givers[i].email, circle:circle.name, 
                                          adder:$rootScope.user.fullname}
                                          ); // CircleParticipant.save
-                     }
-                     // more YUCK - if you want to see the list of participants on the next page, event.html, you have to add all
-                     // participants to the 'both' array...
-                     if(!angular.isDefined($rootScope.circle.participants))
+                   }
+                   
+                   
+                   console.log('NOW LOOK AT $rootScope.circle.participants:', $rootScope.circle.participants);
+                     
+                   // more YUCK - if you want to see the list of participants on the next page, event.html, you have to add all
+                   // participants to the 'both' array...
+                   if(!angular.isDefined($rootScope.circle.participants))
                        $rootScope.circle.participants = {both: [], receivers: [], givers: []};
-                     for(var i=0; i < circle.participants.receivers.length; ++i) {
+                   for(var i=0; i < circle.participants.receivers.length; ++i) {
+                       circle.participants.receivers[i].isReceiver = true;
                        $rootScope.circle.participants.receivers.push(circle.participants.receivers[i]);
                        $rootScope.circle.participants.both.push(circle.participants.receivers[i]);
-                     }  
-                     for(var i=0; i < circle.participants.givers.length; ++i) {
+                   }  
+                   for(var i=0; i < circle.participants.givers.length; ++i) {
+                       circle.participants.receivers[i].isGiver = true;
                        $rootScope.circle.participants.givers.push(circle.participants.givers[i]);
                        $rootScope.circle.participants.both.push(circle.participants.givers[i]);
-                     }  
-                     console.log('just saved: $rootScope.circle: ', $rootScope.circle);
-                   } 
-                   else {
-                     // else, we are updating, circle.id IS defined so update the circle in $rootScope.user.circles
-                     for(var i=0; i < $rootScope.user.circles.length; i++) {
-                       if($rootScope.user.circles[i].id == $rootScope.circle.id) {
-                         $rootScope.user.circles.splice(i, 1, $rootScope.circle);
-                       }
-                     }
-                     $rootScope.combineReceiversAndGiversIntoBoth($rootScope.circle);
                    }  
-                 } 
+                     
+                   console.log('AND AFTER COMBINING INTO BOTH $rootScope.circle.participants:', $rootScope.circle.participants);
+                     
+                   console.log('just saved: $rootScope.circle: ', $rootScope.circle);
+                   
+                     
+                 } // end success func
+                  
                );
     console.log("app-CircleModule: $rootScope.savecircle:  end" );
     
@@ -454,6 +533,13 @@ angular.module('CircleModule', ['UserModule'])
   
   $rootScope.beginAddingFromAnotherEvent = function(participationLevel) {
     $rootScope.circlecopies = angular.copy($rootScope.user.circles);
+    // remove the current circle because there's no point in including it
+    for(var i=0; i < $rootScope.circlecopies.length; i++) {
+      if($rootScope.circlecopies[i].id == $rootScope.circle.id) {
+        $rootScope.circlecopies.splice(i, 1);
+        break;
+      }
+    }
     $rootScope.addmethod='fromanotherevent';
     $rootScope.participationLevel = participationLevel;
     console.log("app-CircleModule: rootScope.beginAddingFromAnotherEvent --------------------------------------");
@@ -468,9 +554,9 @@ angular.module('CircleModule', ['UserModule'])
     var ppp = CircleParticipant.query({circleId:circle.id}, 
             function() {
                 circle.participants = ppp;
-                console.log("$rootScope.combineReceiversAndGiversIntoBoth:  circle.participants.....");
+                console.log("$rootScope.combineReceiversAndGiversIntoBoth:  circle.participants:", circle.participants);
                 console.log(circle.participants);
-                console.log("$rootScope.combineReceiversAndGiversIntoBoth:  circle.participants.receivers.....");
+                console.log("$rootScope.combineReceiversAndGiversIntoBoth:  circle.participants.receivers:", circle.participants.receivers);
                 console.log(circle.participants.receivers);
                 
                 // THIS IS KINDA DUMB...

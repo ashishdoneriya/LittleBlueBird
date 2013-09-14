@@ -260,6 +260,20 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
                                 );
     }
     
+    
+    // 2013-09-13 modeled after $rootScope.createonthefly() above
+    $rootScope.createFriendOnTheFly = function(newuser) {
+      console.log('CREATE FRIEND ON THE FLY ---------------------------------------');
+      anewuser = User.save({fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
+                                  function() {
+                                    $rootScope.user.friends.push(anewuser);
+                                    $rootScope.addmethod = 'byname'; 
+                                    $rootScope.usersearch = ''; 
+                                    $rootScope.search = '';
+                                  } // end success function
+                                );
+    }
+    
     // 3/12/13
     $rootScope.logout = function() {
       Logout.logout({}, function() {delete $rootScope.user;});   

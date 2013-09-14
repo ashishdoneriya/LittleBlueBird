@@ -163,6 +163,47 @@
 	          <div ng-include src="'partials/friends/search-to-add-participants.html'"></div>
 	      </span> <!-- end of div: addmethod='byname' -->
       
+		          
+		  <div ng-show="addmethod=='emailnewuser'">
+		    <div ng-include src="'partials/friends/invite-participant.html'"></div>
+		  </div>   <!-- div ng-show="addmethod=='emailnewuser'" -->
+		  
+		  
+		  
+	      <div ng-show="addmethod=='fromanotherevent'">
+			      <div class="row">
+                    <div class="span3 rounded bgbluegradient white padtop5 padbottom5">&nbsp;&nbsp;Add from another Event</div>
+			      </div>
+			      <div class="row">
+			        <div class="span3">
+				      <!-- option a -->
+				      <ul ng-repeat="c in circlecopies" ng-class="'nav nav-pills nav-stacked marg0 bgwhite'">
+				        <li ng-class="activeOrNot(c)">
+				          <a ng-click="toggleCircle(c);showParticipants(c);">
+	                        <span class="caret margleft_5 margtop5"></span>&nbsp;<b>{{c.name}}</b>
+	                      </a>
+	                      <span ng-show="c.show">
+	                        <div>
+	                          <div class="row margbottom5 margleft0">
+	                            <div class="offset2 span1"><div class="margleft_35"><a ng-click="addparticipants(c, thecircle);">Select All</a></div></div>
+	                          </div>
+				              <div class="row margbottom5 margleft0 highlight-box-white" ng-repeat="receiver in c.participants.receivers" ng-click="addparticipant2(receiver, thecircle, 'Receiver')">
+				                <div class="span1 marg0"><img height=50 width=50 ng-src="{{receiver.profilepicUrl}}" /></div>
+				                <div class="span2 marg0 font14">{{receiver.first}} {{receiver.last}}</div>
+				              </div>
+				              <div class="row margbottom5 margleft0 highlight-box-white" ng-repeat="giver in c.participants.givers" ng-click="addparticipant2(giver, thecircle, 'Giver')">
+				                <div class="span1 marg0"><img height=50 width=50 ng-src="{{giver.profilepicUrl}}" /></div>
+				                <div class="span2 marg0 font14">{{giver.first}} {{giver.last}}</div>
+				              </div>
+				            </div>
+				          </span> 
+					    </li>
+					  </ul>
+			        </div>
+			      </div>
+	      </div> <!-- end of div: addmethod='fromanotherevent' -->
+		  
+		  
       
       </div>
       <!-- ------------------------------------------------- -->

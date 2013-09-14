@@ -48,36 +48,6 @@ function ManagePeopleCtrl($rootScope, $scope, CircleParticipant, Reminder, UserS
   $scope.addgiver = function(person) {
     $scope.addparticipant(-1, person, 'Giver');
   }
-    
-  $scope.addparticipant = function(index, person, participationlevel) {
-    var level = participationlevel;
-    if(participationlevel == 'Giver') {
-      $rootScope.circle.participants.givers.push(person);
-      level = 'Giver';
-    }
-    else if($scope.canaddreceiver($rootScope.circle)) {
-      $rootScope.circle.participants.receivers.push(person);
-      level = 'Receiver';
-    }
-    else {
-      $rootScope.circle.participants.givers.push(person);
-      level = 'Giver';
-    }
-    
-    if(index != -1) {
-      console.log("index = "+index);
-      $scope.people[index].hide = true;
-    }
-    
-    // if the circle already exists, add the participant to the db immediately
-    if(angular.isDefined($rootScope.circle.id)) {
-      console.log("$scope.addparticipant:  $rootScope.user.id="+$rootScope.user.id);
-      var newcp = CircleParticipant.save({circleId:$rootScope.circle.id, inviterId:$rootScope.user.id, userId:person.id, participationLevel:level,
-                                         who:person.fullname, notifyonaddtoevent:person.notifyonaddtoevent, email:person.email, circle:$rootScope.circle.name, 
-                                         adder:$rootScope.user.fullname},
-                                         function() {$rootScope.circle.reminders = Reminder.query({circleId:$rootScope.circle.id})});
-    }
-  }
   
   $scope.canaddreceiver = function(circle) {
     var isdefined = angular.isDefined(circle) && angular.isDefined(circle.receiverLimit) && angular.isDefined(circle.participants.receivers)
@@ -144,14 +114,6 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
                     );
     };
     
-  
-  // TODO add reminder
-  $scope.addmyselfasgiver = function(circle) {
-    $scope.participationlevel = 'Giver'
-    $scope.addparticipant2($rootScope.user, circle)
-    //circle.participants.givers.push($rootScope.user);
-  }
-    
     
   $scope.addparticipant = function(index, person, circle, participationlevel) {
     if(!angular.isDefined(circle.participants))
@@ -174,10 +136,13 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
     }
   }
   
+  /******************************* 2013-09-13
   // when you're creating a new user and then immediately adding them to the circle
   $scope.addparticipant2 = function(person, circle) {
+    console.log('addparticipant2 -----------------------------------------------------');
     $scope.addparticipant(-1, person, circle);
   }
+  *******************************/
 
   
   $scope.newcircleFunction = function(thetype, limit) {
@@ -240,6 +205,7 @@ function AddCircleCtrl($rootScope, $scope, Circle, CircleParticipant, UserSearch
   
   // add all the participants in the 'fromcircle' to the 'tocircle'
   $scope.addparticipants = function(fromcircle, tocircle) {
+    console.log('app-CircleCtrl:  addparticipants -----------------------------------------');
     for(var i=0; i < fromcircle.participants.receivers.length; i++) {
       var hasLimit = angular.isDefined(tocircle.receiverLimit) && tocircle.receiverLimit != -1;
       if(hasLimit && tocircle.participants.receivers.length == tocircle.receiverLimit)

@@ -50,7 +50,8 @@ angular.module('GiftModule', ['UserModule']).
 		    // You'll see:  $rootScope.Facebook.getMe()
 		    console.log("app-GiftModule: queryparams...  look for viewerId", queryparams);
 		    
-		    $rootScope.gifts = Gift.query(queryparams, 
+		    if(angular.isDefined($rootScope.user) && angular.isDefined(queryparams.viewerId))
+		        $rootScope.gifts = Gift.query(queryparams, 
 		                            function() { 
 		                              Circle.gifts = $rootScope.gifts; 
 		                              console.log("app-GiftModule: $rootScope.gifts.length = "+$rootScope.gifts.length);

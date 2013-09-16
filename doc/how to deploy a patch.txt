@@ -1,0 +1,44 @@
+
+MODIFY web.xml - It contains this <servlet> tag which needs to be COMPLETELY REMOVED for tomcat deployments:
+
+<!-- FOR JETTY ONLY - REMOVE WHEN DEPLOYING TO TOMCAT -->
+<servlet>
+    <!-- Override init parameter to avoid nasty -->
+    <!-- file locking issue on windows.         -->
+    <servlet-name>default</servlet-name>
+    <init-param>
+        <param-name>useFileMappedBuffer</param-name>
+        <param-value>false</param-value>
+    </init-param>
+</servlet>
+
+After deployment, you'll just Ctrl-Z to put it back
+
+
+Launch FileZilla - you will deploy by ftp-ing files.  It's just as easy as creating a war file
+
+Connect to:  bdunklau@s156.eatj.com  (standard password)
+
+
+
+.class files are here:   C:\Users\bdunklau\LittleBlueBird\target\scala-2.9.1\classes\
+
+FTP them over to here:   /webapps/gf/WEB-INF/classes
+
+
+
+FTP these files: C:\Users\bdunklau\LittleBlueBird\src\main\webapp\
+over to here:    /webapps/gf
+
+
+
+Edit the hosts file:  Before you can go to the tomcat manager app, you have to edit C:\Windows\System32\drivers\etc\hosts
+Comment out the 127.0.0.1 line with a #
+
+
+
+Now go to the tomcat manager app:  http://www.littlebluebird.com/manager/html
+username:  manager or admin should both work
+standard pass
+
+Reload the /gf app

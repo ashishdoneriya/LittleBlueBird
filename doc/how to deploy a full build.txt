@@ -1,0 +1,8 @@
+
+run the 'package' command
+
+It will build a .war file and tell you where it built it to.
+
+Rename the .war file as gf.war
+
+Make a copy also if you want to be able to roll back/redeploy this version later

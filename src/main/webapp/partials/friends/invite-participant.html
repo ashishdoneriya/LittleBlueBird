@@ -1,39 +1,31 @@
 
-	          <div class="table w245" ng-form="emailnewuserform">
-		        <div class="tablerow w245 roundedtop">
-			      <div class="tablecell w245 roundedtop bgbluegradient pad5 white">Invite by Email</div>
-			    </div>
-		        <div class="tablerow w245">
-  			      <div class="tablecell w245 bgwhite sideborders_009dcb padleft5 padtop5">
-			        <input class="w200" maxlength="140" value="" type="text" name="fullname" placeholder="Name" title="Name" ng-model="newuser.fullname"  ng-required="true" />
-                    <span ng-show="emailnewuserform.fullname.$dirty">
-                      <span ng-show="emailnewuserform.fullname.$error.required"><img src="img/red_x.png" id="fullnamerequired" title="Name is required"></span>
-                    </span>
-			      </div>
-			    </div>
-		        <div class="tablerow w245">
-			      <div class="tablecell w245 bgwhite sideborders_009dcb padleft5">
-                    <input class="w200" maxlength="140" value="" type="email" name="email" placeholder="Email" title="Email" ng-model="newuser.email" ng-required="true">
-                    <span ng-show="emailnewuserform.email.$dirty">
-                      <span ng-show="emailnewuserform.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
-                      <span ng-show="emailnewuserform.email.$error.required"><img src="img/red_x.png" id="emailinvalid" title="Email is required"></span>
-                    </span>
-			      </div>
-			    </div>
-			    
-		        <div class="tablerow w245">
-			      <div class="tablecell w245 bgwhite sideborders_009dcb padleft5">
+<div ng-form="emailnewuserform">
+
+  <div class="row">
+    <div class="span3 rounded bgbluegradient white padtop5 padbottom5">&nbsp;&nbsp;Invite by Email</div>
+  </div>
+  <div class="row margtop5">
+    <div class="span3">
+			        <input class="span3" maxlength="140" value="" type="text" name="fullname" placeholder="Name" title="Name" ng-model="newuser.fullname"  ng-required="true" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="span3">
+                    <input class="span3" maxlength="140" value="" type="email" name="email" placeholder="Email" title="Email" ng-model="newuser.email" ng-required="true">
+    </div>
+  </div>
+  <div class="row">
+    <div class="span3">
 			        <a ng-href="{{currentlocation}}" ng-click="howtoinvitechild='true'">My child doesn't have email <i class="icon-chevron-right"></i></a>
 			        <span ng-show="howtoinvitechild=='true'">
 			          <P>Just enter <i>your</i> email address instead.  You will get an email from us saying you have created an account for your child  
 			          <a ng-href="{{currentlocation}}" ng-click="howtoinvitechild='false'">hide</a>
 			          </P>
 			        </span>
-			      </div>
-			    </div>
-			    
-		        <div class="tablerow w245">
-		          <div class="tablecell w245 listfooter pad5 roundedbottom">
+    </div>
+  </div>
+  <div class="row">
+    <div class="span3">
 		            <span class="pull-right">
                       <div ng-hide="validateEmailInvitation(newuser)" >
 		                <a ng-href="{{currentlocation}}" ng-disabled="true" class="btn btn-primary btn-mini" title="Not ready to save yet">Save</a>
@@ -46,6 +38,7 @@
 		                <a ng-href="{{currentlocation}}" class="btn btn-mini" ng-click="resetInviteByEmailForm(emailnewuserform);back('byname')">Cancel</a>
 		              </div>
 		            </span>
-		          </div>
-			    </div>
-	          </div>
+    </div>
+  </div> 
+  
+</div> 

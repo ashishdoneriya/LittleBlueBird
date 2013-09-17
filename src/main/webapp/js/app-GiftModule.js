@@ -37,7 +37,11 @@ angular.module('GiftModule', ['UserModule']).
 		
 		    // 4/10/13: See also event.html - we list everyone in the event and their names are links.  
 		    // When the user comes here from event.html, we have to construct the 'showUser' from a showUser id
-		    $rootScope.showUser = User.find({userId:newRoute.params.showUserId}, function() {$cookieStore.put("showUser", $rootScope.showUser.id)});
+		    $rootScope.showUser = User.find({userId:newRoute.params.showUserId}, 
+		            function() {
+		                $cookieStore.put("showUser", $rootScope.showUser.id)
+		                console.log('CHECK ROOTSCOPE.SHOWUSER:', $rootScope.showUser);   
+		            });
 		
 		
 		    if(angular.isDefined(newRoute.params.circleId)) {

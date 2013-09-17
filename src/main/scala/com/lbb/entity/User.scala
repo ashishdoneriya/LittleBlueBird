@@ -727,7 +727,12 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany with NOO
   
   // 2/26/13
   private def loopIdx(first:String, idx:Integer, list:List[String]):String = {
-    if(list.indexOf(first+idx) == -1) first+idx // we found it
+    if(list.indexOf(first+idx) == -1) {
+      // we found it
+      // When the index happens to be 0, don't stick a 0 on the end.  Just let the username be the same as the firstname.
+      if(idx == 0) first
+      else first+idx
+    }
     else loopIdx(first, idx+1, list) // recurse - keep looking
   }
 

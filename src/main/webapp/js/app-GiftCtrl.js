@@ -126,9 +126,15 @@ function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $r
 function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, Gift, User, GiftEditor) { 
 
 
-  $scope.surprisePopover = function(idx, gift) {
+  // Took this out on 2013-09-15.  See "Name is undefined when hovering over Shhh icon.docx"
+  // This is the function that makes the cool little bootstrap popover/modal thing that tells the
+  // user not to say anything about a particular gift because the recipient doesn't know anything
+  // about it.  I discovered that the 'showUser, regardless of whether I used $rootScope.showUser or tried to 
+  // pass in $rootScope.showUser as a third 'person' argument
+  $scope.surprisePopover = function(gift, fullname) {
+    console.log('$scope.surprisePopover: CHECK fullname: ', fullname);
     var cnt = '<table border="0" width="100%">'
-             + '<tr><td>Don\'t tell '+$rootScope.showUser.first+' about this item<P>'+gift.addedByName+' added it as a surprise</P></td></tr>'
+             + '<tr><td>Don\'t tell '+fullname+' about this item<P>'+gift.addedByName+' added it as a surprise</P></td></tr>'
              +'</table>';
     return {title:'Shhh !', content:cnt, placement:'right'}
   }

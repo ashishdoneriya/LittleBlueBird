@@ -3,7 +3,7 @@
         xmlns:gap   = "http://phonegap.com/ns/1.0"
         id          = "com.littlebluebird.phonegap.facebook"
         versionCode = "10"
-        version     = "0.1.1">
+        version     = "0.1.2">
  
     <name>LittleBlueBird</name>
  

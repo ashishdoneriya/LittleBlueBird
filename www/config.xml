@@ -54,6 +54,7 @@
     <preference name="disable-cursor" value="false" /> <!-- blackberry: prevents a mouse-icon/cursor from being displayed on the app -->
     <preference name="android-minSdkVersion" value="7" /> <!-- android: MIN SDK version supported on the target device. MAX version is blank by default. -->
     <preference name="android-installLocation" value="auto" /> <!-- android: app install location. 'auto' will choose. 'internalOnly' is device memory. 'preferExternal' is SDCard. -->
+    <preference name="load-url-timeout" value="60000" />
 
     <!--  see: http://phonegap.com/blog/build/new-apple-app-store-submittal-rules/  -->
     <!-- Define app splash screen for each platform. -->

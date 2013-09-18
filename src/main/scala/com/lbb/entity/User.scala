@@ -3,30 +3,36 @@ package com.lbb.entity
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
+
 import scala.math.BigInt.int2bigInt
 import scala.math.BigInt.long2bigInt
 import scala.xml.NodeSeq
 import scala.xml.Text
+
 import org.joda.time.DateMidnight
 import org.joda.time.Years
+
 import com.lbb.gui.MappedDateExtended
 import com.lbb.gui.MappedEmailExtended
 import com.lbb.gui.MappedTextareaExtended
 import com.lbb.util.LbbLogger
+import com.lbb.util.NOOPDateChangeListener
 import com.lbb.util.Util
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
+
 import javax.swing.ImageIcon
-import net.liftweb.common.Box.box2Iterable
 import net.liftweb.common.Box
+import net.liftweb.common.Box.box2Iterable
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
+import net.liftweb.http.JsonResponse
+import net.liftweb.http.S
 import net.liftweb.http.js.JE.JsArray
+import net.liftweb.http.js.JsExp
 import net.liftweb.http.js.JsExp.intToJsExp
 import net.liftweb.http.js.JsExp.jValueToJsExp
 import net.liftweb.http.js.JsExp.strToJsExp
-import net.liftweb.http.js.JsExp
-import net.liftweb.http.JsonResponse
-import net.liftweb.http.S
+import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonAST.JArray
 import net.liftweb.json.JsonAST.JBool
 import net.liftweb.json.JsonAST.JField
@@ -34,8 +40,6 @@ import net.liftweb.json.JsonAST.JInt
 import net.liftweb.json.JsonAST.JObject
 import net.liftweb.json.JsonAST.JString
 import net.liftweb.json.JsonAST.JValue
-import net.liftweb.json.JsonAST
-import net.liftweb.mapper.MappedField.mapToType
 import net.liftweb.mapper.By
 import net.liftweb.mapper.ByList
 import net.liftweb.mapper.Cmp
@@ -45,14 +49,14 @@ import net.liftweb.mapper.LongKeyedMapper
 import net.liftweb.mapper.LongKeyedMetaMapper
 import net.liftweb.mapper.ManyToMany
 import net.liftweb.mapper.MappedBoolean
+import net.liftweb.mapper.MappedField.mapToType
 import net.liftweb.mapper.MappedInt
 import net.liftweb.mapper.MappedLongForeignKey
 import net.liftweb.mapper.MappedLongIndex
 import net.liftweb.mapper.MappedString
 import net.liftweb.mapper.OprEnum
-import net.liftweb.util.FieldError
-import com.lbb.util.NOOPDateChangeListener
 import net.liftweb.mapper.UniqueIndex
+import net.liftweb.util.FieldError
 
 
 /**
@@ -216,6 +220,11 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany with NOO
   // Trying to use the db tables I have - not worry about migrating to some new version of tables.
   object password extends MappedString(this, 140) {
     override def displayName = "Password"
+    override def asJs = {
+      val sup = super.asJs
+      debug("User.password: super.asJs = "+sup)
+      List(("password", JsonAST.JNull))
+    }
   }
   
   object facebookId extends MappedString(this, 140) {

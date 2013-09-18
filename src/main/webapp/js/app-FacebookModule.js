@@ -171,7 +171,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                           $cookieStore.put("showUser", $rootScope.showUser.id);
                         }
                       }
-                      console.log("$rootScope.initfbuser():  $rootScope.user="+$rootScope.user);
+                      console.log("$rootScope.initfbuser():  $rootScope.user=", $rootScope.user);
                       if(alreadymergedaccount) {
                         console.log("app-FacebookModule:  this is already a merged account, so going now to mywishlist");
 					

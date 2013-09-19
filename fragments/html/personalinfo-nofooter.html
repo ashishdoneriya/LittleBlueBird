@@ -7,23 +7,12 @@
 	</div><!-- /header -->
 
 	<div data-role="content">
-	  	  
-      <span ng-show="user.facebookId!=null">
-        <P><b>Name: </b>{{user.fullname}}</P>
-        <P><b>Email: </b>{{user.email}}</P>
-        <P><b>Username: </b>{{user.username}}</P>
-      
-        <P>You logged in using your Facebook account, so if you want to change any of this personal info, that's where you need to go.</P>
-        <P><a href="http://www.facebook.com" data-role="button">Go to Facebook</a></P>
-	  </span>
 	  
-      <span ng-hide="user.facebookId!=null">
-      
 		<form novalidate name="personalinfoForm">
-		    <fieldset data-role="fieldcontain">
+		    <fieldset>
 		      <P>
 		        <label for="userId" class="ui-hidden-accessible">ID:</label>
-    		    <input id="userId" name="userId" type="hidden" ng-model="user.id" placeholder="ID" />
+    		    <input id="userId" name="userId" type="hidden" ng-model="user.id" placeholder="ID" /> <!-- submitting the form in the traditional sense, so do we really need this hidden field?  The id value is contained in the user object -->
     		  </P>
 		      <P>
 		        <label for="name" class="ui-hidden-accessible">Name:</label>
@@ -39,10 +28,10 @@
     		  </P>
 		      <P>
 		        <span ng-hide="personalinfoForm.$invalid">
-		          <a ng-href="#welcome" ng-click="saveuser(user)" data-role="button" data-theme="b">Register</a>
+		          <a ng-href="#welcome" ng-click="saveuser(user)" data-role="button" data-theme="b"><span ng-show="user.id==null">Register</span><span ng-hide="user.id==null">Save</span></a>
 		        </span>
 		        <span ng-show="personalinfoForm.$invalid">
-		          <button disabled="" data-role="button" data-theme="b">Register</button>
+		          <button disabled="" data-role="button" data-theme="b"><span ng-show="user.id==null">Register</span><span ng-hide="user.id==null">Save</span></button>
 		        </span>
     		  </P>
     		</fieldset>
@@ -54,7 +43,6 @@
             </span>
 		</form>	
 		
-	  </span>
 	  
 	</div><!-- /content -->
 

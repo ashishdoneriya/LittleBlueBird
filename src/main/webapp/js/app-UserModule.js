@@ -42,6 +42,16 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
 
       return User;
   }).
+  factory('Password', function($resource) {
+      var Password = $resource('/gf/rest/password/:userId/:currentpassword/:newpassword', {userId:'@userId',  
+                                                 currentpassword:'@currentpassword', newpassword:'@newpassword'}, 
+                    {
+                      check: {method:'GET', isArray:false},
+                      save: {method:'POST', isArray:true}
+                    });
+                    
+      return Password;
+  }).
   factory('Friend', function($resource) {
       var Friend = $resource('/gf/rest/friend/:userId/:friendId', {userId:'@userId', friendId:'@friendId'},
                     {

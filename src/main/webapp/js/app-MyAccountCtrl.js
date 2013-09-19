@@ -1,5 +1,5 @@
 
-function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, $timeout, User ) {
+function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, $timeout, User, Password ) {
   
   console.log("MyAccountCtrl called");
   
@@ -8,6 +8,7 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, $timeout, Us
   
   // 3.17.13
   $scope.cssPersonalInfoSaved = 'transition0';
+  $scope.cssPasswordSaved = 'transition0';
   $scope.cssBioSaved = 'transition0';
   
     
@@ -15,6 +16,13 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, $timeout, Us
   $scope.resetuser = function() {
       $rootScope.usercopy = angular.copy($rootScope.user);
       angular.resetForm($scope, 'regForm', $rootScope.usercopy); 
+  }
+  
+  $scope.resetPasswordForm = function(form) {
+    $rootScope.usercopy.password = '';
+    $rootScope.usercopy.newpassword = '';
+    $rootScope.usercopy.newpasswordAgain = '';
+    form.$setPristine();
   }
   
   
@@ -30,6 +38,37 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, $timeout, Us
     if(!angular.isDefined($scope.bio) || !$scope.bio) $scope.bio = true;
     else $scope.bio = false;
   }
+  
+  
+  // 2013-09-18
+  $scope.changePassword = function(user) {
+      console.log('CHANGE PASSWORD:', user);
+      var res = Password.save({userId: user.id, currentpassword: user.password, newpassword: user.newpassword},
+                      function() {console.log('res:', res);$timeout(function() {$scope.cssPasswordSaved = 'transition2'}, 100)},
+                      function() {console.log('res:', res);alert('Uh oh - Problem on our end. Could not change your password.');});
+    
+  }
+  
+  
+  
+  // 2013-09-18 Copied from user.js on the mobile side.  Don't enable the submit button if the current password isn't even correct
+  $scope.validatePassword = function(form, currentpassword) {
+     
+      console.log('$scope.validatePassword AT LEAST WE MADE IT THIS FAR ------------------------------------ ');
+      checkUsers = Password.check({userId:$rootScope.user.id, currentpassword: currentpassword}, 
+                                        function() {
+                                          if(checkUsers.length == 0) { form.password.$invalid = 'true'; }
+                                          else { form.password.$invalid = 'false'; }
+                                          console.log('form: ', form);
+                                          console.log('form.password: ', form.password);
+                                        },
+                                        function() {
+                                          form.password.$invalid = 'true';
+                                          console.log('form: ', form);
+                                          console.log('form.password: ', form.password);
+                                        });
+  }
+  
   
   
   $scope.savePersonalInfo = function(user) {

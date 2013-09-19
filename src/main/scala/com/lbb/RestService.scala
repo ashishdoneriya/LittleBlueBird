@@ -108,8 +108,8 @@ object RestService extends RestHelper with LbbLogger {
     case JsonPost("rest" :: "gifts" :: _ :: Nil, (json, req)) => debug("RestService.serve:  insertGift"); debug(json); insertGift
     case JsonPost("rest" :: "users" :: AsLong(userId) :: _, (json, req)) => debug("RestService.serve:  4.5 4.5 4.5 4.5 "); debug(json); updateUser(userId)
     case JsonPost("rest" :: "users" :: Nil, (json, req)) => debug("RestService.serve:  4444444444444444"); debug(json); insertUser
-    case JsonPost("rest" :: "password" :: AsLong(userId) :: currentpass :: newpass :: _, (json, req)) => resetPass(userId, currentpass, newpass) // 2013-08-01 mobile only at this time
-    case Get("rest" :: "password" :: AsLong(userId) :: currentpass :: Nil, _) => checkPass(userId, currentpass) // 2013-08-01 mobile only at this time
+    case JsonPost("rest" :: "password" :: AsLong(userId) :: currentpass :: newpass :: _, (json, req)) => changePassword(userId, currentpass, newpass) // 2013-08-01 mobile only at this time
+    case Get("rest" :: "password" :: AsLong(userId) :: currentpass :: _, _) => checkPass(userId, currentpass) // 2013-08-01 mobile only at this time
   }
   
   serve {
@@ -621,7 +621,7 @@ object RestService extends RestHelper with LbbLogger {
   }
   
   // 2013-08-01 mobile only at this time
-  def resetPass(id:Long, currentpass:String, newpass:String) = (User.findByKey(id)) match {
+  def changePassword(id:Long, currentpass:String, newpass:String) = (User.findByKey(id)) match {
     case (Full(user)) if(user.password.equals(currentpass)) => {
       user.password(newpass);
       user.save match {

@@ -777,6 +777,12 @@ object User extends User with LongKeyedMetaMapper[User] {
     User.findAll(ByList(User.facebookId, l)) 
   }
   
+  // use this when updating a user's password.  We pass in the current password to make sure it is correct
+  // before updating to the new password
+  def findByIdPassword(userId:Long, password:String) = {
+    User.findAll(By(User.id, userId), By(User.password, password))
+  }
+  
   // pain in the ass:  delete may belong to circles, may have a wish list, probably has friends
   // you have to look at every table that has delete.id as a key and you have to update those
   // records with keep.id

@@ -66,12 +66,13 @@
     
       <div class="row">
         <div class="span6">
-		            <input class="span6" maxlength="1028" value="" type="url" ng-model="usercopy.profilepicUrl" name="profilepic" ng-validate="url" placeholder="Profile Pic" title="Profile Pic" />
-		            <span ng-show="regForm.profilepic.$dirty">
+                    <span ng-show="regForm.profilepic.$dirty">
 		              <span ng-show="regForm.profilepic.$error.url">
 		                <img src="img/red_x.png" id="invalidprofilepic" title="URL is invalid">
 		              </span>
 		            </span> 
+		            <input class="span6" maxlength="1028" value="" type="url" ng-model="usercopy.profilepicUrl" name="profilepic" ng-validate="url" placeholder="Profile Pic" title="Profile Pic" />
+		            
         </div>
       </div>
              
@@ -96,12 +97,12 @@
               <span class="pull-right">
 		        <div ng-show="regForm.$invalid" >
 		          <a ng-disabled="true" class="btn span1 pull-right" id="invalidform" title="Not Ready Yet" data-content="The form isn't ready to submit yet.  You still have fields to fix and complete.">Save</a>
-		          <button ng-click="resetuser()" class="btn span1 pull-right">Reset</button>
+		          <button ng-click="resetuser('regForm')" class="btn span1 pull-right">Reset</button>
 		        </div>    
 		      
 		        <div ng-show="regForm.$valid" >
 		          <a class="btn btn-primary span1 pull-right" ng-href="{{currentlocation}}" ng-click="savePersonalInfo(usercopy);">Save</a>
-		          <button ng-click="resetuser()" class="btn span1 pull-right">Reset</button>
+		          <button ng-click="resetuser('regForm')" class="btn span1 pull-right">Reset</button>
 		        </div>
 		      </span>
         </div>

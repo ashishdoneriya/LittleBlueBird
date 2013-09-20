@@ -12,6 +12,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
     $routeProvider
       .when('/accountinfo', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/myaccount/accountinfo.html', five:'partials/navbar.html'}})
       .when('/addfacebookfriends', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/friends/addfacebookfriends.html', five:'partials/navbar.html'}})
+      .when('/beta', {templates: {layout: 'layout3', two: 'partials/beta.html', four:'partials/navbar-nli.html'}})
       .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
       .when('/circles', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/circledetails.html', five:'partials/navbar.html'}})
       .when('/currentevent', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/events/event.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
@@ -40,7 +41,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
       .when('/support', {templates: {layout: 'support', one:'partials/support.html', four:'partials/navbar-nli.html'}})
       .when('/test', {templates: {layout: 'layout-nli.html', one: 'partials/test.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       .when('/welcome', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/welcome.html', five:'partials/navbar.html'}})
-      .when('/whoareyou', {templates: {layout: 'layout-whoareyou.html', two: 'partials/whoareyou.html', four:'partials/navbar.html'}})
+      .when('/whoareyou', {templates: {layout: 'layout3', two: 'partials/whoareyou.html', four:'partials/navbar.html'}})
       .when('/', {templates: {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       .otherwise({redirectTo: '/welcome', templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/welcome.html', five:'partials/navbar.html'}})
       //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
@@ -61,7 +62,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         
         // Allow anonymous access and do NOT assume the FB user is the person behind the keyboard
         // If we are going to any of these pages, we do NOT want to see if someone is logged in to FB
-        var nonsecure =  ['home', 'emailit', 'register', 'marketing', 'privacy', 'support', 'whoareyou'];
+        var nonsecure =  ['home', 'emailit', 'register', 'marketing', 'privacy', 'support', 'whoareyou', 'beta', 'download'];
         var allowAnonymousAccess = $location.url() == '/';
         console.log("location.url(): ", $location.url());
         for(var i=0; i < nonsecure.length; ++i) {

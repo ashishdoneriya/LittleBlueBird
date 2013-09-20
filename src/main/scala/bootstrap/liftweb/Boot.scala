@@ -68,7 +68,7 @@ class Boot extends LbbLogger {
     // to make the container serve a collection of files...
     LiftRules.liftRequest.append{
         case Req("css" :: _, _, _) => false
-        case Req("demo" :: _, _, _) => false
+        case Req("download" :: _, _, _) => false
         case Req("font" :: _, _, _) => false
         case Req("img" :: _, _, _) => false
         case Req("js" :: _, _, _) => false

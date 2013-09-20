@@ -283,7 +283,7 @@
 	    <li><a href="#friends" ng-click="friends();setfootermenu('friends')" data-transition="slide">Friends</a></li>
 	  </ul>
 	  
-	  <P><a ng-href="#scanresults" ng-click="scan()" data-role="button" data-theme="b">Scan !</a></P>
+	  <P><a ng-href="#scanresults" ng-click="scan()" data-role="button" data-theme="b">Barcode Scanner</a></P>
 	  </span>
 	
 	
@@ -521,6 +521,7 @@
 		        </ul>
 		      </div>
 		      
+	          <P><a data-role="button" ng-href="#share" data-theme="b" data-rel="dialog" data-transition="pop">Share</a></P>
 		      
 		  </span>
 		  <!-- span ng-hide="mayberecipients.length > 0" -->
@@ -3133,6 +3134,67 @@ click on any of their names to see their list and the item that was just added -
 
 
 </div>
+
+<div id="share" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Share</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	
+      
+	<P><a data-role="button" ng-href="#sharewishlist" data-theme="b" data-rel="dialog" data-transition="pop">Share Wish List</a></P>
+      
+	<P><a data-role="button" ng-href="#sharelittlebluebird" data-theme="b" data-rel="dialog" data-transition="pop">Share LittleBlueBird</a></P>
+	
+		  
+	</div><!-- /content -->
+
+</div>
+	
+
+<div id="sharewishlist" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Share</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	
+	<h3>Share Wish List</h3>
+	
+      
+	<P><a data-role="button" ng-href="#sharewishlistonfacebook" data-theme="b" data-rel="dialog" data-transition="pop">Share on Facebook</a></P>
+      
+	<P><a data-role="button" ng-href="#sharewishlistoveremail" data-theme="b" data-rel="dialog" data-transition="pop">Share by Email</a></P>
+	
+		  
+	</div><!-- /content -->
+
+</div>
+	
+
+<div id="sharelittlebluebird" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Share</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	
+	<h3>Share LittleBlueBird</h3>
+	
+      
+	<P><a data-role="button" ng-href="#sharelittlebluebirdonfacebook" data-theme="b" data-rel="dialog" data-transition="pop">Share on Facebook</a></P>
+      
+	<P><a data-role="button" ng-href="#sharelittlebluebirdoveremail" data-theme="b" data-rel="dialog" data-transition="pop">Share by Email</a></P>
+	
+		  
+	</div><!-- /content -->
+
+</div>
+	
     <script>
         document.addEventListener('deviceready', 
             function() {

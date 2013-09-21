@@ -12,7 +12,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
     $routeProvider
       .when('/accountinfo', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/myaccount/accountinfo.html', five:'partials/navbar.html'}})
       .when('/addfacebookfriends', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/friends/addfacebookfriends.html', five:'partials/navbar.html'}})
-      .when('/beta', {templates: {layout: 'layout3', two: 'partials/beta.html', four:'partials/navbar-nli.html'}})
+      .when('/beta', {templates: {layout: 'layout3', two: 'partials/beta.html', four:'partials/navbar-beta.html'}})
       .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
       .when('/circles', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/circledetails.html', five:'partials/navbar.html'}})
       .when('/currentevent', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/events/event.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})

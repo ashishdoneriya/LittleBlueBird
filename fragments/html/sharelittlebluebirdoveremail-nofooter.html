@@ -1,0 +1,42 @@
+
+
+<div id="sharelittlebluebirdoveremail" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Share</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	
+	    <h3>Share LittleBlueBird</h3>
+	
+	    <form novalidate name="shareForm1">
+          <p>
+		    <label for="sharename1" class="ui-hidden-accessible">Name:</label>
+            <input id="sharename1" name="sharename1" type="text" ng-model="sharename1" placeholder="Name" required/>
+	      </p>
+	  
+          <p>
+		    <label for="shareemail1" class="ui-hidden-accessible">Email:</label>
+            <input id="shareemail1" name="shareemail1" type="email" ng-model="shareemail1" placeholder="Email" required/>
+	      </p>
+	      
+	      <!--
+	      <P>
+	          <a ng-href="#" ng-click="seeform(shareForm1)" data-role="button" data-theme="b">see form</a>
+		  </P>
+		  -->
+		  
+		  
+	      <P>
+	        <span ng-hide="shareForm1.$invalid">
+	          <a ng-href="#wishlist" ng-click="invite(newparticipant, circle, participationLevel)" data-role="button" data-theme="b">Invite</a>
+	        </span>
+	        <span ng-show="shareForm1.$invalid">
+	          <button disabled="" data-role="button" data-theme="b">Invite</button>
+	        </span>
+		  </P>
+	    </form>
+	
+		  
+	</div><!-- /content -->

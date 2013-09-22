@@ -23,13 +23,18 @@
 	  </span>
 	
 	  <span ng-show="logingood">
-	  <ul data-role="listview" data-inset="true" class="ui-icon-alt">
-	    <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" data-transition="slide">My Wish List</a></li>
-	    <li><a href="#events" ng-click="events();setfootermenu('events')" data-transition="slide">Events</a></li>
-	    <li><a href="#friends" ng-click="friends();setfootermenu('friends')" data-transition="slide">Friends</a></li>
-	  </ul>
+		  <ul data-role="listview" data-inset="true" class="ui-icon-alt">
+		    <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" data-transition="slide">My Wish List</a></li>
+		    <li><a href="#events" ng-click="events();setfootermenu('events')" data-transition="slide">Events</a></li>
+		    <li><a href="#friends" ng-click="friends();setfootermenu('friends')" data-transition="slide">Friends</a></li>
+		  </ul>
 	  
-	  <P><a ng-href="#scanresults" ng-click="scan()" data-role="button" data-theme="b">Barcode Scanner</a></P>
+	  	  <P><a ng-href="#scanresults" ng-click="scan()" data-role="button" data-theme="b">Barcode Scanner</a></P>
+		
+		  <span ng-show="testing">
+		      <p><a href="#test" data-role="button" data-theme="b">test</a> </p>
+		  </span>
+
 	  </span>
 	
 	

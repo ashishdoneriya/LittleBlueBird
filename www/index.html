@@ -129,10 +129,6 @@
 		<p><a href="#lbblogin" data-role="button" data-theme="b">Login via LittleBlueBird</a> </p>	
 		<p><a href="#register" data-role="button" data-theme="b" ng-click="initNewUser()">Register</a> </p>	
 		<p><a href="#forgot" data-role="button" data-theme="b">Forgot User/Pass?</a> </p>	
-		
-		<span ng-show="testing">
-		<p><a href="#test" data-role="button" data-theme="b">test</a> </p>
-		</span>
 			
 	</div><!-- /content -->
 
@@ -277,13 +273,18 @@
 	  </span>
 	
 	  <span ng-show="logingood">
-	  <ul data-role="listview" data-inset="true" class="ui-icon-alt">
-	    <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" data-transition="slide">My Wish List</a></li>
-	    <li><a href="#events" ng-click="events();setfootermenu('events')" data-transition="slide">Events</a></li>
-	    <li><a href="#friends" ng-click="friends();setfootermenu('friends')" data-transition="slide">Friends</a></li>
-	  </ul>
+		  <ul data-role="listview" data-inset="true" class="ui-icon-alt">
+		    <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" data-transition="slide">My Wish List</a></li>
+		    <li><a href="#events" ng-click="events();setfootermenu('events')" data-transition="slide">Events</a></li>
+		    <li><a href="#friends" ng-click="friends();setfootermenu('friends')" data-transition="slide">Friends</a></li>
+		  </ul>
 	  
-	  <P><a ng-href="#scanresults" ng-click="scan()" data-role="button" data-theme="b">Barcode Scanner</a></P>
+	  	  <P><a ng-href="#scanresults" ng-click="scan()" data-role="button" data-theme="b">Barcode Scanner</a></P>
+		
+		  <span ng-show="testing">
+		      <p><a href="#test" data-role="button" data-theme="b">test</a> </p>
+		  </span>
+
 	  </span>
 	
 	
@@ -2070,6 +2071,22 @@
 
 	<div data-role="content">
 	  	  
+	  	  
+		  <ul data-role="listview" data-inset="true" class="ui-icon-alt">
+		    <li><a href="#test" ng-click="shareAppViaFacebookMessage()" data-transition="slide">Share the App (Message)</a></li>
+		    <li><a href="#test" ng-click="shareAppViaTimeline()" data-transition="slide">Share the App (Timeline)</a></li>
+		    <!-- li><a href="#testPostWishlistToTimeline" data-transition="slide">Post Wish List to Timeline</a></li -->
+		  </ul>
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  <!-- Share LBB:  send a FB message with link to LBB -->
+	  
+	  
+	  <!-- Share LBB:  send a FB message with link to LBB -->
 	    
 	  
 	</div><!-- /content -->

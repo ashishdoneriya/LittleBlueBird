@@ -31,7 +31,7 @@
   // and found the one above.  This fn was modeled after $rootScope.sendFacebookMessage in app-FacebookModule.js
   // The difference here is that the function doesn't assume anyone on the 'to' line
   $scope.shareAppViaFacebookMessage = function() {
-      FB.ui({method:'send', link:'http://www.littlebluebird.com/gf/'})
+      FB.ui({to:'7913493', method:'send', link:'http://www.littlebluebird.com/gf/'})
   }
   
   // make the share message customizable ???

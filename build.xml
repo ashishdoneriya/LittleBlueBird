@@ -226,6 +226,8 @@
 		     <fileset file="fragments/html/sharewishlistoveremail-nofooter.html" />
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
+		  
+		  
 		 
 	</target>
 	

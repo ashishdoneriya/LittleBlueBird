@@ -1,3 +1,18 @@
+// 2013-09-23 just stuck this here - being lazy
+
+var source = new EventSource('/serversentevents');
+  
+// 2013-09-23 just stuck this here - being lazy
+function sseCtrl($scope) {
+ 
+  $scope.items = [];
+ 
+  source.addEventListener('right', function(e) {
+    $scope.$apply(function() {
+      $scope.items.push(e.data);
+    });
+  },false);
+}
 
 
 function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Email, facebookConnect) { 

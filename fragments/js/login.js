@@ -31,7 +31,7 @@
   // and found the one above.  This fn was modeled after $rootScope.sendFacebookMessage in app-FacebookModule.js
   // The difference here is that the function doesn't assume anyone on the 'to' line
   $scope.shareAppViaFacebookMessage = function() {
-      FB.ui({app_id: '136122483829', to:'7913493', method:'send', link:'http://www.littlebluebird.com/gf/'}, function(response) {alert(response);})
+      FB.ui({method:'send', link:'http://www.littlebluebird.com/gf/'});
   }
   
   // make the share message customizable ???
@@ -60,10 +60,12 @@
   // can also supply a "to" argument with value of someone's facebook id whose wall/timeline you want to post on
   // but beware, that person may not allow that.  This fn modeled after $rootScope.fbsharelist in 
   // app-FacebookModule.js
-  $scope.fbsharelist = function(showUser) {
+  $scope.fbsharelist = function(user, showUser) {
+    var someones = user.id==showUser.id ? "my" : showUser.fullname+"'s"
+    var msg = "I just updated "+someones+" wish list. Check it out on LittleBlueBird.com [FREE for all subscribers]"
     FB.ui({
         method:'feed',
-        name:'I\'ve updated my wish list. Check it out on LittleBlueBird.com [FREE for all subscribers]',
+        name:msg,
         caption:'Give what THEY want - Get what YOU want',
         description:'This is the site my friends and family use to keep track of everyone\'s wish list',
         link:'http://www.littlebluebird.com/gf/giftlist/'+showUser.id+'/',

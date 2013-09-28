@@ -303,7 +303,7 @@
 	     <fileset file="fragments/js/gift.js" />
 		 <fileset file="fragments/js/nav.js" />
 		 <fileset file="fragments/js/barcode.js" />
-		 <!--  fileset file="fragments/js/test.js" / --> <!-- not for production -->
+		 <fileset file="fragments/js/test.js" /> <!-- not for production -->
 	     <fileset file="fragments/js/bottom.js" />
 	  </concat>
 	</target>

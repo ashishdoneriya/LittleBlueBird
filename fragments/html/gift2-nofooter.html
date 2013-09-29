@@ -9,14 +9,6 @@
 	  <form style="margin-top:-20px;">
 		  <fieldset data-role="fieldcontain">
             <input type="hidden" name="giftId" ng-model="currentgift.id" />
-		    <p>
-		        <label for="description" class="ui-hidden-accessible">Description:</label>
-    		    <textarea id="description" cols="40" rows="8" name="description" type="text" ng-model="currentgift.description" placeholder="Description"></textarea>
-		    </p>
-		    <p>
-		        <label for="url" class="ui-hidden-accessible">URL:</label>
-    		    <input id="url" name="url" type="text" ng-model="currentgift.url" placeholder="URL" />
-		    </p>
 		    
 		    <!-- No need to list recipients if the event is a single-recipient event -->
     		<span ng-hide="circle.receiverLimit == 1">
@@ -28,7 +20,17 @@
                 <li>{{commasep(currentgift.recipients)}}</li>
               </ul>
 		    </p>
+            <P>&nbsp;</P>
 		    </span>
+		    
+		    <p>
+		        <label for="description" class="ui-hidden-accessible">Description:</label>
+    		    <textarea id="description" cols="40" rows="8" name="description" type="text" ng-model="currentgift.description" placeholder="Description"></textarea>
+		    </p>
+		    <p>
+		        <label for="url" class="ui-hidden-accessible">URL:</label>
+    		    <input id="url" name="url" type="text" ng-model="currentgift.url" placeholder="URL" />
+		    </p>
 		    
       
 		    <div class="ui-grid-a">

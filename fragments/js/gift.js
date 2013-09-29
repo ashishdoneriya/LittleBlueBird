@@ -6,7 +6,8 @@
     delete $scope.currentgift;
     if(angular.isDefined($scope.circle)) {
       $scope.currentgift = {addedBy:$rootScope.user.id, circle:$scope.circle};
-      $scope.currentgift.recipients = angular.copy($scope.circle.participants.receivers);
+      // A good default choice for 'recipients': whoever's list you're looking at at the moment     
+      $scope.currentgift.recipients = [angular.copy($scope.showUser)];
     }
     else {
       $scope.currentgift = {addedBy:$rootScope.user.id};

@@ -22,6 +22,10 @@
        <param name="APP_NAME" value="LittleBlueBird" />
     </gap:plugin>
     
+    <gap:url-scheme role="None">
+      <scheme>littlebluebird</scheme>
+    </gap:url-scheme>
+    
     <plugin name="SplashScreen" value="CDVSplashScreen" />
     
     <!--

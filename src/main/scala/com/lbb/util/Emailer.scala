@@ -54,13 +54,14 @@ object Emailer extends LbbLogger {
             createEmail(<div>
                           {items.head.first.is}, 
                           <p>&nbsp;</p>
+                          <p>Your username is:  {items.head.username.is}</p> 
                           <p>Your password is:  {items.head.password.is}</p> 
                         </div>)
           }
           case items if(items.size > 1) => { 
             createEmail(<div>
                          This email address is shared by several users.  Names and passwords are below... 
-                         {for(i <- items) yield { <p>{i.first.is}: {i.password.is}</p>}}
+                         {for(i <- items) yield { <p>{i.first.is} {i.last.is}: {i.username.is}/{i.password.is}</p>}}
                        </div>)
           }
         }
@@ -193,9 +194,10 @@ object Emailer extends LbbLogger {
     
   }
   
-  def creatEventComingUpEmail(person:User, circle:Circle) = createEmail(<div>
+  private def creatEventComingUpEmail(person:User, circle:Circle, link:String) = createEmail(<div>
               {person.first.is} {person.last.is},
               <P>Just a reminder, {circle.name.is} is {circle.daysaway} days away</P>
+              <P><a href={link}>Go To This Event</a></P>
               </div>)
   
   def notifyEventComingUp(personId:Long, circle:Circle) = {
@@ -204,7 +206,8 @@ object Emailer extends LbbLogger {
     // reminder was scheduled
     for(person <- User.findByKey(personId); 
         if(person.email.is!=null && !person.email.is.trim.equals(""))) {
-      val msg = creatEventComingUpEmail(person, circle)
+      val link = "http://www.littlebluebird.com/gf/event/"+circle.id
+      val msg = creatEventComingUpEmail(person, circle, link)
       val e = Email(person.email.is, "info@littlebluebird.com", "LittleBlueBird.com", circle.name+" Reminder from LittleBlueBird.com", msg, Nil, Nil)
       Emailer.send(e)
     }

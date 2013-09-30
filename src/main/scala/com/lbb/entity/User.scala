@@ -222,7 +222,7 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany with NOO
     override def displayName = "Password"
     override def asJs = {
       val sup = super.asJs
-      debug("User.password: super.asJs = "+sup)
+      //debug("User.password: super.asJs = "+sup)
       List(("password", JsonAST.JNull))
     }
   }

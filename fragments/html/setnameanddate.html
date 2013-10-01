@@ -53,8 +53,8 @@
 	
 	
 	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
-	  <a ng-href="#scanresults" data-role="button" ng-click="scan()" class="ui-btn-left">Scan</a>
-	  <a ng-href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-right" data-iconpos="notext">Menu</a>	
+	  <a ng-href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-left" data-iconpos="notext">Menu</a>	
+	  <a ng-href="#scanresults" data-role="button" ng-click="scan()" class="ui-btn-right">Scan</a>
 		
       <h4>LittleBlueBird.com</h4>
       <div data-role="navbar">
@@ -66,23 +66,29 @@
       </div><!-- /navbar -->
     </div><!-- /footer -->
     
-    <div data-role="panel" id="mypanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
-        <h4>My Account</h4>
-        <ul data-role="listview" data-theme="a">
-	        <li data-icon="false"><a style="margin-left:10px;" href="#personalinfo" data-mini="true">Personal Info</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#passwordreset" data-mini="true">Password Reset</a></li>
-	        <li data-icon="false"><a style="margin-left:10px;" href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+    <div data-role="panel" id="mypanel" data-position="left" data-display="overlay" data-theme="a" data-position-fixed="true">
+        <ul data-role="listview" data-theme="c" data-inset="true" >
+            <li>My Account</li>
+	        <li><a href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <li><a href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
+	        <li><a href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li><a href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
 		
 		    <span ng-show="testing">
-		    <li data-icon="false"><a style="margin-left:10px;" href="#test">test</a></li>
+		    <li><a href="#test">test</a></li>
 		    </span>
 		    
         </ul>
         
-        <h4>Contact Us</h4>
-        <ul data-role="listview" data-theme="a">
-	        <li data-icon="false"><a style="margin-left:10px;" href="#contactus" data-mini="true">Email</a></li>
+        <ul data-role="listview" data-theme="c" data-inset="true" >
+            <li>Share LittleBlueBird</li>
+	        <li><a href="#" ng-click="shareAppViaTimeline()" data-mini="true">Facebook</a></li>
+	        <li><a href="#sharelittlebluebirdoveremail" data-mini="true">Email</a></li>
+        </ul>
+        
+        <ul data-role="listview" data-theme="c" data-inset="true" >
+            <li>Contact Us</li>
+	        <li><a href="#contactus" data-mini="true">Email</a></li>
         </ul>
     </div><!-- /panel -->
 

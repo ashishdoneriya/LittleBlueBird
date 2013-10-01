@@ -7,7 +7,40 @@
       $scope.loading = true;
       $scope.maybepeople = User.query({email:newparticipant.email},
               function() {
-                if($scope.maybepeople.length == 1 && User.alreadyfriends($scope.maybepeople[0], $rootScope.user)) {
+              
+                // You tried to add someone to your event by entering their name/email.  This name/email wasn't found
+                // in the LBB database...  2013-09-30
+                if($scope.maybepeople.length == 0) {
+                 
+                   // so the first thing we do is create an account for this person...
+                  
+                   // This User.save call was taken from friend.js:  $scope.searchforfriend 2013-09-30
+                   anewuser = User.save({fullname:newparticipant.name, email:newparticipant.email, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname},
+                       function() {
+                               
+                           // upon successful save of the new person's account, add this new person to the circle
+                           console.log("$scope.addparticipant(anewuser, circle, participationLevel);");
+                           $scope.addparticipant(anewuser, circle, participationLevel);
+                       
+                       
+                           // also make this new person a friend of the current user
+                           User.save({userId:$rootScope.user.id, username:$rootScope.user.username, lbbfriends:[anewuser]},
+                                     function(){ 
+                                         // ...and assuming the update of the current user was ok, add the newfriend to the user's list of friends
+                                         $rootScope.user.friends.push(anewuser); 
+                                         
+                                     } // end success fn
+                                     
+                           ); // User.save
+                           
+                       } // end success fn
+                       
+                   ); // anewuser = User.save()
+                  
+                  
+                } // if($scope.maybepeople.length == 0)
+                
+                else if($scope.maybepeople.length == 1 && User.alreadyfriends($scope.maybepeople[0], $rootScope.user)) {
                   $scope.selectthisparticipant($scope.maybepeople[0], participationLevel, false)
                 }
                 else {
@@ -34,8 +67,7 @@
   }
   
   
-  // not worrying yet about whether the person is a giver or receiver, assume receiver  2013-08-09
-  // We DO know thought that if circle.receiverLimit = -1, that the person will be added as a receiver
+  // 2013-09-30
   $scope.addparticipant = function(person, circle, participationLevel) {
   
     var parms = {user:person, circle:circle, inviter:$rootScope.user, saveParticipant:true, 
@@ -195,18 +227,22 @@
   }
   
   
-  refreshParticipants = function() {                     
+  refreshParticipants = function() { 
+            console.log('refreshParticipants CALLED -------------------------------------------------');  
+                   
         jQuery("#receiverview").hide();
           setTimeout(function(){
             jQuery("#receiverview").listview("refresh");
             jQuery("#receiverview").show();
-         },0);
+            console.log('REFRESHED receiverview -------------------------------------------------');
+         },25);
 		                             
         jQuery("#giverview").hide();
           setTimeout(function(){
             jQuery("#giverview").listview("refresh");
             jQuery("#giverview").show();
-         },0);
+            console.log('REFRESHED giverview -------------------------------------------------');
+         },25);
   }
   
   

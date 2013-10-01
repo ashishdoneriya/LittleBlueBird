@@ -17,6 +17,7 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
 
   $scope.footermenu = '';
   $scope.eventfilter = 'current';
+  $scope.share1 = {message: 'Check out LittleBlueBird - it\'s Awesome!'};
   
   
   $scope.logout = function() {
@@ -42,62 +43,6 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
       }, 
       { scope: "email" }
     );
-  }
-  
-  
-  // no reason for this to be here other than I was looking for an FB function to copy
-  // and found the one above.  This fn was modeled after $rootScope.sendFacebookMessage in app-FacebookModule.js
-  // The difference here is that the function doesn't assume anyone on the 'to' line
-  $scope.shareAppViaFacebookMessage = function() {
-      FB.ui({method:'send', link:'http://www.littlebluebird.com/gf/'});
-  }
-  
-  // make the share message customizable ???
-  $scope.shareAppViaTimeline = function() {
-    FB.ui({
-        method:'feed',
-        name:'Check out LittleBlueBird.com [FREE for all subscribers]',
-        caption:'Give what THEY want - Get what YOU want',
-        description:'This is the site my friends and family use to keep track of everyone\'s wish list.  There\'s also a mobile version with a barcode scanner so you can point, scan, add items to your wish list.',
-        link:'http://www.littlebluebird.com/gf/',
-        picture:'http://www.littlebluebird.com/gf/img/logo-whitebackground.gif',
-        //actions: [{name:'actions:name?', link:'http://www.littlebluebird.com/foo/'}],
-        user_message_prompt:'user message prompt?'},
-      function(response) {
-        if(response && response.post_id) {
-          console.log('$scope.fbsharelist():  post was successful');
-        }
-        else {
-          console.log('$scope.fbsharelist():  post was not published');
-        }
-    });
-  }
-    
-    
-  // no reason for this to be here other than I was looking for an FB function to copy and found the one above.  
-  // can also supply a "to" argument with value of someone's facebook id whose wall/timeline you want to post on
-  // but beware, that person may not allow that.  This fn modeled after $rootScope.fbsharelist in 
-  // app-FacebookModule.js
-  $scope.fbsharelist = function(user, showUser) {
-    var someones = user.id==showUser.id ? "my" : showUser.fullname+"'s"
-    var msg = "I just updated "+someones+" wish list. Check it out on LittleBlueBird.com [FREE for all subscribers]"
-    FB.ui({
-        method:'feed',
-        name:msg,
-        caption:'Give what THEY want - Get what YOU want',
-        description:'This is the site my friends and family use to keep track of everyone\'s wish list',
-        link:'http://www.littlebluebird.com/gf/giftlist/'+showUser.id+'/',
-        picture:'http://www.littlebluebird.com/gf/img/logo-whitebackground.gif',
-        //actions: [{name:'actions:name?', link:'http://www.littlebluebird.com/foo/'}],
-        user_message_prompt:'user message prompt?'},
-      function(response) {
-        if(response && response.post_id) {
-          console.log('$scope.fbsharelist():  post was successful');
-        }
-        else {
-          console.log('$scope.fbsharelist():  post was not published');
-        }
-    });
   }
   
 
@@ -425,7 +370,40 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
       $scope.loading = true;
       $scope.maybepeople = User.query({email:newparticipant.email},
               function() {
-                if($scope.maybepeople.length == 1 && User.alreadyfriends($scope.maybepeople[0], $rootScope.user)) {
+              
+                // You tried to add someone to your event by entering their name/email.  This name/email wasn't found
+                // in the LBB database...  2013-09-30
+                if($scope.maybepeople.length == 0) {
+                 
+                   // so the first thing we do is create an account for this person...
+                  
+                   // This User.save call was taken from friend.js:  $scope.searchforfriend 2013-09-30
+                   anewuser = User.save({fullname:newparticipant.name, email:newparticipant.email, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname},
+                       function() {
+                               
+                           // upon successful save of the new person's account, add this new person to the circle
+                           console.log("$scope.addparticipant(anewuser, circle, participationLevel);");
+                           $scope.addparticipant(anewuser, circle, participationLevel);
+                       
+                       
+                           // also make this new person a friend of the current user
+                           User.save({userId:$rootScope.user.id, username:$rootScope.user.username, lbbfriends:[anewuser]},
+                                     function(){ 
+                                         // ...and assuming the update of the current user was ok, add the newfriend to the user's list of friends
+                                         $rootScope.user.friends.push(anewuser); 
+                                         
+                                     } // end success fn
+                                     
+                           ); // User.save
+                           
+                       } // end success fn
+                       
+                   ); // anewuser = User.save()
+                  
+                  
+                } // if($scope.maybepeople.length == 0)
+                
+                else if($scope.maybepeople.length == 1 && User.alreadyfriends($scope.maybepeople[0], $rootScope.user)) {
                   $scope.selectthisparticipant($scope.maybepeople[0], participationLevel, false)
                 }
                 else {
@@ -452,8 +430,7 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
   }
   
   
-  // not worrying yet about whether the person is a giver or receiver, assume receiver  2013-08-09
-  // We DO know thought that if circle.receiverLimit = -1, that the person will be added as a receiver
+  // 2013-09-30
   $scope.addparticipant = function(person, circle, participationLevel) {
   
     var parms = {user:person, circle:circle, inviter:$rootScope.user, saveParticipant:true, 
@@ -613,18 +590,22 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
   }
   
   
-  refreshParticipants = function() {                     
+  refreshParticipants = function() { 
+            console.log('refreshParticipants CALLED -------------------------------------------------');  
+                   
         jQuery("#receiverview").hide();
           setTimeout(function(){
             jQuery("#receiverview").listview("refresh");
             jQuery("#receiverview").show();
-         },0);
+            console.log('REFRESHED receiverview -------------------------------------------------');
+         },25);
 		                             
         jQuery("#giverview").hide();
           setTimeout(function(){
             jQuery("#giverview").listview("refresh");
             jQuery("#giverview").show();
-         },0);
+            console.log('REFRESHED giverview -------------------------------------------------');
+         },25);
   }
   
   
@@ -1468,6 +1449,85 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
   }
   
   
+
+// 2013-09-30  send an email to whoever you want via this function
+// See sharelittlebluebirdoveremail-nofooter.html
+$scope.shareLittleBlueBirdOverEmail = function(share) {
+  
+  
+}
+
+
+$scope.doesEmailExistAlready = function(email) {
+
+  // you want to know if the person is already an LBB user
+  // alert the user because who wants to receive an invitation to something you're already a part of
+  
+  $scope.userExistsAlready = User.query({email:email},
+              function() {
+              },
+              function() {}
+  );
+  
+}
+
+  
+  
+  // COULD NOT GET THIS TO WORK ON IPHONE  2013-09-25
+  // This fn was modeled after $rootScope.sendFacebookMessage in app-FacebookModule.js
+  // The difference here is that the function doesn't assume anyone on the 'to' line
+  $scope.shareAppViaFacebookMessage = function() {
+      FB.ui({method:'send', link:'http://www.littlebluebird.com/gf/'});
+  }
+  
+  
+  // This is actually sharing the website, not the app.  Once the app is in the app store, should change this to send people to the app store/google play
+  // make the share message customizable ???
+  $scope.shareAppViaTimeline = function() {
+    FB.ui({
+        method:'feed',
+        name:'Check out LittleBlueBird.com [FREE for all subscribers]',
+        caption:'Give what THEY want - Get what YOU want',
+        description:'This is the site my friends and family use to keep track of everyone\'s wish list.  There\'s also a mobile version with a barcode scanner so you can point, scan, add items to your wish list.',
+        link:'http://www.littlebluebird.com/gf/',
+        picture:'http://www.littlebluebird.com/gf/img/logo-whitebackground.gif',
+        //actions: [{name:'actions:name?', link:'http://www.littlebluebird.com/foo/'}],
+        user_message_prompt:'user message prompt?'},
+      function(response) {
+        if(response && response.post_id) {
+          console.log('$scope.fbsharelist():  post was successful');
+        }
+        else {
+          console.log('$scope.fbsharelist():  post was not published');
+        }
+    });
+  }
+    
+    
+  // can also supply a "to" argument with value of someone's facebook id whose wall/timeline you want to post on
+  // but beware, that person may not allow that.  This fn modeled after $rootScope.fbsharelist in 
+  // app-FacebookModule.js
+  $scope.fbsharelist = function(user, showUser) {
+    var someones = user.id==showUser.id ? "my" : showUser.fullname+"'s"
+    var msg = "I just updated "+someones+" wish list. Check it out on LittleBlueBird.com [FREE for all subscribers]"
+    FB.ui({
+        method:'feed',
+        name:msg,
+        caption:'Give what THEY want - Get what YOU want',
+        description:'This is the site my friends and family use to keep track of everyone\'s wish list',
+        link:'http://www.littlebluebird.com/gf/giftlist/'+showUser.id+'/',
+        picture:'http://www.littlebluebird.com/gf/img/logo-whitebackground.gif',
+        //actions: [{name:'actions:name?', link:'http://www.littlebluebird.com/foo/'}],
+        user_message_prompt:'user message prompt?'},
+      function(response) {
+        if(response && response.post_id) {
+          console.log('$scope.fbsharelist():  post was successful');
+        }
+        else {
+          console.log('$scope.fbsharelist():  post was not published');
+        }
+    });
+  }
   
 }];
 

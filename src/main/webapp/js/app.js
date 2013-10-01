@@ -99,6 +99,17 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
             return;
           }
         }
+        /**************
+        // PUT THIS IN ONCE YOU KNOW WHAT THE URL IS TO LBB IN THE APP STORE
+        var appStoreURL = "xxxxxxxxxxxxxxx";
+        else if(navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i)) {
+          // http://stackoverflow.com/questions/13044805/how-to-check-if-an-app-is-installed-from-a-web-page-on-an-iphone
+          // Replace the link below with the link to LittleBlueBird in the app store
+          // Use this if you have to figure out what the LBB link is: https://linkmaker.itunes.apple.com/us/
+          setTimeout(function () { window.location = appStoreURL; }, 25);
+          window.location = "littlebluebird://";
+        }
+        **************/
               
         if(!newRoute) return;
         

@@ -206,14 +206,18 @@
 		     <fileset file="fragments/html/addfromthisevent-nofooter.html" />
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
+		  
+		  <concat destfile="fragments/html/sharelittlebluebird.html"
+		          force="yes">
+		     <fileset file="fragments/html/sharelittlebluebird-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
 
-		  <!-- 
 		  <concat destfile="fragments/html/sharelittlebluebirdoveremail.html"
 		          force="yes">
 		     <fileset file="fragments/html/sharelittlebluebirdoveremail-nofooter.html" />
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
-		  -->
 
 		  <concat destfile="fragments/html/sharewishlistoveremail.html"
 		          force="yes">
@@ -276,9 +280,9 @@
 	     <fileset file="fragments/html/share.html" />
 	     <fileset file="fragments/html/sharewishlist.html" />
 	     <fileset file="fragments/html/sharelittlebluebird.html" />
+	     <fileset file="fragments/html/sharelittlebluebirdoveremail.html" />
 	     <!-- 
 	     <fileset file="fragments/html/sharewishlistoveremail.html" />
-	     <fileset file="fragments/html/sharelittlebluebirdoveremail.html" />
 	      -->
 	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
@@ -296,6 +300,7 @@
 	     <fileset file="fragments/js/gift.js" />
 		 <fileset file="fragments/js/nav.js" />
 		 <fileset file="fragments/js/barcode.js" />
+		 <fileset file="fragments/js/share.js" />
 		 <!--  fileset file="fragments/js/test.js" / --> <!-- not for production -->
 	     <fileset file="fragments/js/bottom.js" />
 	  </concat>

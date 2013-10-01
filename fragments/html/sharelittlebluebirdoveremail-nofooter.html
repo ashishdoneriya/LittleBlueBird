@@ -13,12 +13,21 @@
 	    <form novalidate name="shareForm1">
           <p>
 		    <label for="sharename1" class="ui-hidden-accessible">Name:</label>
-            <input id="sharename1" name="sharename1" type="text" ng-model="sharename1" placeholder="Name" required/>
+            <input id="sharename1" name="sharename1" type="text" ng-model="share1.name" placeholder="Name" required/>
 	      </p>
 	  
           <p>
 		    <label for="shareemail1" class="ui-hidden-accessible">Email:</label>
-            <input id="shareemail1" name="shareemail1" type="email" ng-model="shareemail1" placeholder="Email" required/>
+            <input id="shareemail1" name="shareemail1" type="email" ng-model="share1.email" placeholder="Email" ng-change="doesEmailExistAlready(share1.email)" required/>
+	      </p>
+	      
+	      <span ng-show="userExistsAlready.length > 0">
+	          <P>This person is already a member of LittleBlueBird</P>
+	      </span>
+	  
+          <p>
+		    <label for="sharemessage1" class="ui-hidden-accessible">Message:</label>
+            <textarea id="sharemessage1" name="sharemessage1" type="text" ng-model="share1.message" placeholder="Message" required></textarea>
 	      </p>
 	      
 	      <!--
@@ -29,10 +38,10 @@
 		  
 		  
 	      <P>
-	        <span ng-hide="shareForm1.$invalid">
-	          <a ng-href="#wishlist" ng-click="invite(newparticipant, circle, participationLevel)" data-role="button" data-theme="b">Invite</a>
+	        <span ng-hide="shareForm1.$invalid || userExistsAlready.length > 0">
+	          <a ng-href="#wishlist" ng-click="shareLittleBlueBirdOverEmail(share1)" data-role="button" data-theme="b">Invite</a>
 	        </span>
-	        <span ng-show="shareForm1.$invalid">
+	        <span ng-show="shareForm1.$invalid || userExistsAlready.length > 0">
 	          <button disabled="" data-role="button" data-theme="b">Invite</button>
 	        </span>
 		  </P>

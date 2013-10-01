@@ -55,7 +55,7 @@ angular.module('Circle', ['ngResource', 'CircleParticipant'])
 		                                           
             console.log('parms.people[i]: ', parms.people[i]);
 		    CircleParticipant.save({circleId:circle.id, inviterId:inviter.id, userId:people[i].id, participationLevel:level,
-		                                         who:inviter.fullname, notifyonaddtoevent:people[i].notifyonaddtoevent, email:people[i].email, circle:circle.name, adder:inviter.fullname},
+		                                         who:parms.people[i].fullname, notifyonaddtoevent:people[i].notifyonaddtoevent, email:people[i].email, circle:circle.name, adder:inviter.fullname},
 		                                         function() {
 		                                           // don't mess with reminders right now
 		                                           // YOU CAN'T REFER TO LOOP VARIABLES HERE BECAUSE THIS IS A CALLBACK FN

@@ -17,3 +17,4 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
 
   $scope.footermenu = '';
   $scope.eventfilter = 'current';
+  $scope.share1 = {message: 'Check out LittleBlueBird - it\'s Awesome!'};

@@ -30,7 +30,8 @@
   // 2013-07-19 copied from app-LoginCtrl.js
   $scope.emailIt = function(email) {
     console.log(Email);
-    Email.send({type:'passwordrecovery', to:email, from:'info@littlebluebird.com', subject:'Password Recovery', message:'Your password is...'}, 
+    // 'to' will be determined on the server
+    Email.send({type:'passwordrecovery', email:email, from:'info@littlebluebird.com', subject:'Password Recovery', message:'Your password is...'}, 
       function() {alert("User/Pass has been sent.  Check your email.");}, 
       function() {alert("Email not found: "+email+"\n\nContact us at info@littlebluebird.com for help");});
   }

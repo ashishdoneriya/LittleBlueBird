@@ -48,8 +48,8 @@ object Emailer extends LbbLogger {
   
   def createRecoverPasswordMessage = (S.param("type"), S.param("message")) match {
       case (Full("passwordrecovery"), _) => {
-        User.findAll(By(User.email, S.param("to").getOrElse("none"))) match {
-          case Nil => throw new RuntimeException("Email address not found: "+S.param("to").getOrElse("none"))
+        User.findAll(By(User.email, S.param("email").getOrElse("none"))) match {
+          case Nil => throw new RuntimeException("Email address not found: "+S.param("email").getOrElse("none"))
           case items if(items.size == 1) => { 
             createEmail(<div>
                           {items.head.first.is}, 
@@ -103,13 +103,25 @@ object Emailer extends LbbLogger {
     Emailer.send(e)
   }
   
-  def createAddedToCircleEmail(who:String, circle:String, adder:String) = 
+  def createShareLittleBlueBird(to:String, from:String, message:String) = 
+    createEmail(<div>{to},
+                <P>{from} wants to share <a href="http://www.littlebluebird.com" target="lbb">LittleBlueBird.com</a> with you.</P>
+                <P>{message}</P></div>)
+                
+  def notifyShareLittleBluebird(to:String, email:String, from:String, message:String) = {
+    val msg = createShareLittleBlueBird(to, from, message)
+    val e = Email(email, "info@littlebluebird.com", "LittleBlueBird.com", from+" shared LittleBlueBird.com with you", msg, Nil, Nil)
+    Emailer.send(e)
+  }
+  
+  def createAddedToCircleEmail(who:String, circle:String, linkToEvent:String, adder:String) = 
      createEmail(<div>{who},
-              <P>{adder} just included you in the event {circle} at <a href="http://www.littlebluebird.com" target="lbb">LittleBlueBird.com</a></P>
+              <P>{adder} just added you to <a href={linkToEvent}>{circle}</a> at LittleBlueBird.com</P>
             </div>)
   
-  def notifyAddedToCircle(who:String, email:String, circle:String, adder:String) = {
-    val msg = createAddedToCircleEmail(who,circle,adder)
+  def notifyAddedToCircle(who:String, email:String, circle:String, circleId:Long, adder:String) = {
+    val linkToEvent = "http://www.littlebluebird.com/gf/event"+circleId
+    val msg = createAddedToCircleEmail(who,circle, linkToEvent, adder)
     val e = Email(email, "info@littlebluebird.com", "LittleBlueBird.com", adder+" added you to the "+circle+" event at LittleBlueBird.com", msg, Nil, Nil)
     Emailer.send(e)
   }
@@ -224,29 +236,6 @@ object Emailer extends LbbLogger {
   }
   
   
-//  val fromemail = "info@littlebluebird.com"
-//    
-//  val fromname = "LittleBlueBird.com"
-//    
-//  private def send(e:Email) {
-//    Mailer.sendMail(From(e.fromemail), Subject(e.subject),
-//      (PlainMailBodyType(e.message) :: To(e.to) :: ReplyTo(e.fromemail) :: Nil) : _*)
-//  }
-//  
-//  // TODO add the little blue bird to all emails
-//  def welcome(to:User) = {
-//    val msg = to.first.is+", Welcome to LittleBlueBird.com  username: "+to.username.is
-//    val e = Email(to.email.is, fromemail, fromname, "Welcome to LittleBlueBird.com", msg, Nil, Nil)
-//    send(e)
-//  }
-//  
-//  // TODO add email link to the inviter
-//  def invitedby(to:User, inv:User) = {
-//    val msg = to.first.is+", Welcome to LittleBlueBird.com  username: "+to.username.is+"  password: "+to.password.is+" You were invited by "+inv.first.is+" "+inv.last.is
-//    val e = Email(to.email.is, fromemail, fromname, inv.first.is+" "+inv.last.is+" added you to LittleBlueBird.com", msg, Nil, Nil)
-//    send(e)
-//  }
-//  
   // TODO need link to accept/decline?
   def addedtocircle(to:User, add:User, c:Circle) = {
 //    val msg = to.first.is+", "+add.first.is+" "+add.last.is+" just invited you to the "+c.name.is+" event"
@@ -259,21 +248,5 @@ object Emailer extends LbbLogger {
 //    val e = Email(to.email.is, fromemail, fromname, "Problem adding "+problem.first.is+" "+problem.last.is+" to the "+c.name.is+" event on LittleBlueBird.com", msg, Nil, Nil)
 //    send(e)
   }
-//  
-//  // TODO add link to circle
-//  def giftdeleted(to:User, u:User, g:Gift) = {
-//    val msg = to.first.is+", "+u.first.is+" "+u.last.is+" just deleted an item that you bought: "+g.description.is
-//    val e = Email(to.email.is, fromemail, fromname, "A gift you bought has just been DELETED on LittleBlueBird.com", msg, Nil, Nil)
-//    send(e)
-//  }
-//  
-//  // TODO add link to circle
-//  // TODO say how many days away
-//  // TODO say when next reminder is
-//  def eventisnear(to:User, c:Circle) = {
-//    val msg = to.first.is+", "+c.name.is+" is approaching"
-//    val e = Email(to.email.is, fromemail, fromname, to.first.is+", "+c.name.is+" is approaching", msg, Nil, Nil)
-//    send(e)
-//  }
   
 }

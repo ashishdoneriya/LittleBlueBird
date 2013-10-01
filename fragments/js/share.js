@@ -3,8 +3,18 @@
 // 2013-09-30  send an email to whoever you want via this function
 // See sharelittlebluebirdoveremail-nofooter.html
 $scope.shareLittleBlueBirdOverEmail = function(share) {
+  Email.send({to: share.name, email: share.email, from: $rootScope.user.fullname, message: share.message, type: 'sharelbb'});
   
+  if($scope.userExistsAlready.length == 0) {
   
+      // This User.save() call is similar to what you'll find in friend.js and event.js.  See $scope.invite() and  $scope.searchforfriend()  2013-09-30
+      // The difference is in the success fn's.  Here, we don't really need to do anything like make the newuser and currentuser friends or add the
+      // newuser to an event.
+      anewuser = User.save({fullname:share.name, email:share.email, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname},
+          function() {} // success fn
+      ); // anewuser = User.save()
+  
+  } // if($scope.userExistsAlready.length == 0)
 }
 
 
@@ -14,8 +24,7 @@ $scope.doesEmailExistAlready = function(email) {
   // alert the user because who wants to receive an invitation to something you're already a part of
   
   $scope.userExistsAlready = User.query({email:email},
-              function() {
-              },
+              function() {},
               function() {}
   );
   

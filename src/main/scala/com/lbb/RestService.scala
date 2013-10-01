@@ -375,8 +375,9 @@ object RestService extends RestHelper with LbbLogger {
   def email = {
     println("email: begin")
     S.param("type") match {
-      case Full(s) if(s.equals("passwordrecovery")) => sendPasswordRecoveryEmail
-      case Full(s) if(s.equals("welcome")) => sendWelcomeEmail
+      case Full("passwordrecovery") => sendPasswordRecoveryEmail
+      case Full("welcome") => sendWelcomeEmail
+      case Full("sharelbb") => share
       case _ => { warn("email:  BadResponse()"); BadResponse() }
     }
   }
@@ -414,7 +415,7 @@ object RestService extends RestHelper with LbbLogger {
       println("sendPasswordRecoveryEmail: begin");
       val message = Emailer.createRecoverPasswordMessage
     
-      val email = Email(S.param("to").getOrElse("info@littlebluebird.com"),
+      val email = Email(S.param("email").getOrElse("info@littlebluebird.com"),
                         S.param("from").getOrElse("info@littlebluebird.com"),          
                         S.param("fromname").getOrElse("LittleBlueBird.com"),          
                         S.param("subject").getOrElse("Password Recovery"),          
@@ -466,7 +467,7 @@ object RestService extends RestHelper with LbbLogger {
         email <- S.param("email"); 
         circle <- S.param("circle");
         notifyonaddtoevent <- S.param("notifyonaddtoevent");
-        adder <- S.param("adder"); if(notifyonaddtoevent.equals("true") && saved)) Emailer.notifyAddedToCircle(who, email, circle, adder)
+        adder <- S.param("adder"); if(notifyonaddtoevent.equals("true") && saved)) Emailer.notifyAddedToCircle(who, email, circle, circleId, adder)
     
     JsonResponse("")
   }
@@ -477,6 +478,17 @@ object RestService extends RestHelper with LbbLogger {
       val cps = CircleParticipant.findAll(By(CircleParticipant.circle, circleId), By(CircleParticipant.person, userId))
       cps.foreach(_.delete_!)
     }
+    JsonResponse("")
+  }
+  
+  def share = {
+    debug("share: S.param(\"to\")="+S.param("to"));
+    debug("share: S.param(\"email\")="+S.param("email"));
+    debug("share: S.param(\"from\")="+S.param("from"));
+    debug("share: S.param(\"message\")="+S.param("message"));
+    for(to <- S.param("to"); email <- S.param("email"); from <- S.param("from"); message <- S.param("message"))
+      Emailer.notifyShareLittleBluebird(to, email, from, message)
+    
     JsonResponse("")
   }
   

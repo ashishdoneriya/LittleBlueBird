@@ -120,7 +120,7 @@ object Emailer extends LbbLogger {
             </div>)
   
   def notifyAddedToCircle(who:String, email:String, circle:String, circleId:Long, adder:String) = {
-    val linkToEvent = "http://www.littlebluebird.com/gf/event"+circleId
+    val linkToEvent = "http://www.littlebluebird.com/gf/event/"+circleId
     val msg = createAddedToCircleEmail(who,circle, linkToEvent, adder)
     val e = Email(email, "info@littlebluebird.com", "LittleBlueBird.com", adder+" added you to the "+circle+" event at LittleBlueBird.com", msg, Nil, Nil)
     Emailer.send(e)

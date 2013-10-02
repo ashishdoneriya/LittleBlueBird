@@ -48,7 +48,15 @@ function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Em
                                            $cookieStore.put("user", $rootScope.user.id);
                                            $cookieStore.put("showUser", $rootScope.showUser.id);
                                            console.log("scope.login:  go to 'welcome'");
-                                           $location.url('welcome'); 
+                                           
+                                           // Now see if there was a 'proceedTo' url that the user was trying to go to before being redirected to the login page...
+                                           // See app-FacebookModule.js.  We also check for this variable there.
+										   if(angular.isDefined($rootScope.proceedTo)) {
+										       $location.url($rootScope.proceedTo);
+										       delete $rootScope.proceedTo;
+										   }
+                                           else
+                                               $location.url('welcome'); 
                                           }, 
                                function() {$scope.loginfail=true;}  );
                                

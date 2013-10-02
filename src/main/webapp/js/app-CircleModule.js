@@ -60,6 +60,8 @@ angular.module('CircleModule', ['UserModule'])
     // This event is fired all the time, so make sure the url contains 'newevent' to proceed
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){ 
     
+      console.log("app-CircleModule.js:  $location.url() = ", $location.url());
+    
       // This is what we do when we are creating a new event.  See events.html
       if ($location.url().indexOf('newevent') != -1) {
         console.log("app-CircleModule:run():routeChangeStart:  This is our 'new event' function.  newRoute = .....");
@@ -76,6 +78,9 @@ angular.module('CircleModule', ['UserModule'])
         $rootScope.thecircle = angular.copy($rootScope.circle); // infinite recursive loop here:  circle.participants.both[0].circles.participants.both[0]...
         $rootScope.expdate = $rootScope.thecircle.dateStr;
         console.log('app-CircleModule.js:routeChangeStart: $rootScope.thecircle.dateStr=', $rootScope.thecircle.dateStr);
+      }
+      else if($location.url().indexOf('/event/') != -1) {
+        $rootScope.determineCurrentCircle(newRoute);
       }
     
     })
@@ -590,17 +595,30 @@ angular.module('CircleModule', ['UserModule'])
     if(!newRoute)
       return;
     
-    console.log("xxxxxxxxxxxxxxxxxxxxxx");
     if(angular.isDefined(newRoute.params.circleId)) {
-        for(var i=0; i < $rootScope.user.circles.length; i++) {
-          if($rootScope.user.circles[i].id == newRoute.params.circleId) {
-            $rootScope.circle = $rootScope.user.circles[i];
-            $rootScope.combineReceiversAndGiversIntoBoth($rootScope.circle)
-		    console.log("rootScope.circle = ....");
-		    console.log($rootScope.circle);
-            
-          } // if($rootScope.user.circles[i].id == newRoute.params.circleId)
-        } // for(var i=0; i < $rootScope.user.circles.length; i++)
+
+        // If a user object exists, we don't have to query the db for the circle
+        if(angular.isDefined($rootScope.user)) {
+	        for(var i=0; i < $rootScope.user.circles.length; i++) {
+	          if($rootScope.user.circles[i].id == newRoute.params.circleId) {
+	            $rootScope.circle = $rootScope.user.circles[i];
+	            $rootScope.combineReceiversAndGiversIntoBoth($rootScope.circle);
+			    console.log("rootScope.circle = ....");
+			    console.log($rootScope.circle);
+	            
+	          } // if($rootScope.user.circles[i].id == newRoute.params.circleId)
+	        } // for(var i=0; i < $rootScope.user.circles.length; i++)
+        }
+        
+        // If user object doesn't exist, we DO have to query the db
+        else {
+            console.log('NO USER OBJECT - QUERYING FOR CIRCLE '+newRoute.params.circleId);
+            $rootScope.circle = Circle.query({circleId:newRoute.params.circleId}, 
+                function() {$rootScope.combineReceiversAndGiversIntoBoth($rootScope.circle);}, 
+                function() {alert("Could not find Event");}
+            );
+        }
+
     } // if(angular.isDefined(newRoute.params.circleId))
   }
     

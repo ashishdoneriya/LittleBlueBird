@@ -115,13 +115,15 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         
         $rootScope.currentlocation = "/gf" + $location.path();
         
+        // 2013-10-01 Don't think we need this anymore.  I think it was related to FB app requests which they deactivated for everything but games.
         if($window.location.search != '') {
           var s = $window.location.search;
           $cookieStore.put("window.location.search", s); 
           $window.location.search = '';
         }
+        
             
-        // Rule:  
+        // Rule:  NOT SURE IF THIS IS TOTALLY ACCURATE ANYMORE  2013-10-01
         //		9/4/13  If $rootScope.user exists OR the requested page allows anonymous access, let the user through
         //      (3/12/13) If not, see if there is a "user" cookie in the cookieStore - points to current user id
         //      (9/4/13) If there is no "user" cookie, we are going to see someone is logged in to FB.
@@ -183,8 +185,6 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
           console.log('SET PROCEED TO: ', $rootScope.proceedTo);
           $location.url('/');
         }
-       
-        
         
     }); // $rootScope.$on('$routeChangeStart', function(scope, newRoute){
     

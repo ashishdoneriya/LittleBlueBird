@@ -54,13 +54,20 @@ angular.module('Circle', ['ngResource', 'CircleParticipant'])
 		    else parms.circle.participants.receivers.push(people[i]);
 		                                           
             console.log('parms.people[i]: ', parms.people[i]);
-		    CircleParticipant.save({circleId:circle.id, inviterId:inviter.id, userId:people[i].id, participationLevel:level,
-		                                         who:parms.people[i].fullname, notifyonaddtoevent:people[i].notifyonaddtoevent, email:people[i].email, circle:circle.name, adder:inviter.fullname},
-		                                         function() {
-		                                           // don't mess with reminders right now
-		                                           // YOU CAN'T REFER TO LOOP VARIABLES HERE BECAUSE THIS IS A CALLBACK FN
-		                                           successFn();
-		                                         });
+		    CircleParticipant.save({circleId:circle.id, 
+		                            inviterId:inviter.id, 
+		                            userId:people[i].id, 
+		                            participationLevel:level,
+		                            who:parms.people[i].fullname, 
+		                            notifyonaddtoevent:people[i].notifyonaddtoevent, 
+		                            email:people[i].email, 
+		                            circle:circle.name, 
+		                            adder:inviter.fullname},
+                                 function() {
+                                   // don't mess with reminders right now
+                                   // YOU CAN'T REFER TO LOOP VARIABLES HERE BECAUSE THIS IS A CALLBACK FN
+                                   successFn();
+                                 });
             
           }
         }
@@ -78,13 +85,11 @@ angular.module('Circle', ['ngResource', 'CircleParticipant'])
         var saveParticipant = parms.saveParticipant;
         var onSuccessfulParticipantSave = parms.onSuccessfulParticipantSave;
         
-        console.log("Circle.addParticipant:  begin");
         
         circle = Circle.initParticipants(circle);
         if(Circle.alreadyParticipating(circle, newparticipant))
           return circle;
           
-        console.log("Circle.addParticipant:  111111111");
         
         if(angular.isDefined(userisparticipant)) {
 		    if(userisparticipant=='true') {
@@ -92,32 +97,34 @@ angular.module('Circle', ['ngResource', 'CircleParticipant'])
 		      else if(userishonoree=='false') {circle.participants.givers.push(newparticipant); level = 'Giver';}
 		      else  {circle.participants.receivers.push(newparticipant); level = 'Receiver';}
 		    }
-        console.log("Circle.addParticipant:  22222222");
 		}
 		else if(!angular.isDefined(level)) {
 		    // when the newparticipant isn't explicitly classified as either Giver or Receiver, assume Receiver.  If we've reached the limit on Receivers
 		    // then make the newparticipant a Giver
 		    if(Circle.receiverLimitReached(circle))  {circle.participants.givers.push(newparticipant); level = 'Giver';}
 		    else  {circle.participants.receivers.push(newparticipant); level = 'Receiver';}
-        console.log("Circle.addParticipant:  3333333333");
 		}
 		else if(level == 'Receiver') circle.participants.receivers.push(newparticipant);
 		else circle.participants.givers.push(newparticipant);
 		
-        console.log("Circle.addParticipant:  44444444444");
         
 		if(angular.isDefined(saveParticipant) && saveParticipant) {
 				    
-		    CircleParticipant.save({circleId:circle.id, inviterId:inviter.id, userId:newparticipant.id, participationLevel:level,
-		                                         who:inviter.fullname, notifyonaddtoevent:newparticipant.notifyonaddtoevent, email:newparticipant.email, circle:circle.name, adder:inviter.fullname},
-		                                         function() {
-		                                           circle.reminders = Reminder.query({circleId:circle.id});
-		                                           onSuccessfulParticipantSave();
-        console.log("Circle.addParticipant:  5555555555555555");
-		                                         });
+		    CircleParticipant.save({circleId:circle.id, 
+		                            inviterId:inviter.id, 
+		                            userId:newparticipant.id, 
+		                            participationLevel:level,
+		                            who:newparticipant.fullname, 
+		                            notifyonaddtoevent:newparticipant.notifyonaddtoevent, 
+		                            email:newparticipant.email, 
+		                            circle:circle.name, 
+		                            adder:inviter.fullname},
+                                 function() {
+                                   circle.reminders = Reminder.query({circleId:circle.id});
+                                   onSuccessfulParticipantSave();
+                                 });
 		}
 		
-        console.log("Circle.addParticipant:  circle.participants:", circle.participants);
 	    return circle;
       }
       

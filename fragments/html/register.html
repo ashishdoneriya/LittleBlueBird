@@ -17,6 +17,10 @@
     		    <input id="email" name="email" type="email" ng-model="newuser.email" placeholder="Email" required/>
     		  </P>
 		      <P>
+		        <label for="emailagain" class="ui-hidden-accessible">Email (again):</label>
+    		    <input id="emailagain" name="emailagain" type="email" ng-model="newuser.emailagain" placeholder="Email (again)" required/>
+    		  </P>
+		      <P>
 		        <label for="username" class="ui-hidden-accessible">Username:</label>
     		    <input id="username" name="username" type="text" ng-model="newuser.username" placeholder="Username" ng-change="isUsernameUnique(newuser, regForm)"  required/>
     		  </P>
@@ -24,20 +28,16 @@
 		        <label for="password" class="ui-hidden-accessible">Password:</label>
     		    <input id="password" name="password" type="password" ng-model="newuser.password" placeholder="Password" required/>
     		  </P>
-		      <P>
-		        <label for="passagain" class="ui-hidden-accessible">Password (again):</label>
-    		    <input id="passagain" name="passagain" type="password" ng-model="newuser.passagain" placeholder="Password (again)" required/>
-    		  </P>
     		  
     		  <!-- P>
 		          <a ng-href="#" ng-click="seeform(regForm)" data-role="button" data-theme="b">see form</a>
 		      </P -->
 		      
 		      <P>
-		        <span ng-hide="regForm.$invalid || (newuser.passagain != newuser.password && !regForm.passagain.$error.required) || (regForm.username.$dirty && regForm.username.$error.taken)">
+		        <span ng-hide="regForm.$invalid || (newuser.emailagain != newuser.email && !regForm.emailagain.$error.required) || (regForm.username.$dirty && regForm.username.$error.taken)">
 		          <a ng-href="#welcome" ng-click="register(newuser)" data-role="button" data-theme="b">Register</a>
 		        </span>
-		        <span ng-show="regForm.$invalid || (newuser.passagain != newuser.password && !regForm.passagain.$error.required) || (regForm.username.$dirty && regForm.username.$error.taken)">
+		        <span ng-show="regForm.$invalid || (newuser.emailagain != newuser.email && !regForm.emailagain.$error.required) || (regForm.username.$dirty && regForm.username.$error.taken)">
 		          <button disabled="" ng-click="register(newuser)" data-role="button" data-theme="b">Register</button>
 		        </span>
     		  </P>

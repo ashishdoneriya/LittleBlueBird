@@ -1,71 +1,73 @@
 
-<div class="span7 marg5" ng-controller="GiftCtrl">
-<form novalidate name="buygiftForm"> 
-  <div class="row">     
-    
-    <div class="span5">
-                
-                  <!-- btn toolbar 1 -->
-                  <span ng-show="gift.url != undefined && gift.url != ''">
-                  <div class="btn-toolbar">
-                    <div class="btn-group">
-                      <a ng-href="{{currentlocation}}" class="btn btn-mini btn-success" ng-click="gift.buying=false;buygift($index, gift, recdate);">Reserve</a>
-                      <a class="btn btn-mini" ng-click="gift.buying=false">Cancel</a>
-                    </div>
-                    <div class="btn-group">
-                      <a ng-href="{{gift.url}}" target="new" class="btn btn-mini btn-success" ng-click="gift.buying=false;buygift($index, gift);">View/Buy Online</a>
-                    </div>
-                  </div> <!-- end btn toolbar 1 -->
-                  </span>
-                
-                  <!-- btn toolbar 2 -->
-                  <span ng-hide="gift.url != undefined && gift.url != ''">
-                  <div class="btn-toolbar">
-                    <div class="btn-group">
-                      <a ng-href="{{currentlocation}}" class="btn btn-mini btn-success" ng-click="gift.buying=false;buygift($index, gift, recdate);">Reserve</a>
-                      <a class="btn btn-mini" ng-click="gift.buying=false">Cancel</a>
-                    </div>
-                    <div class="btn-group">
-                      <a class="btn btn-mini" ng-disabled="true" title="No link was provided for this item.  Search for this item on Amazon.com">View/Buy Online</a>
-                    </div>
-                  </div> <!-- end btn toolbar 2 -->
-                  </span>
-                  
-    </div>
-        
-  </div>
-  <div class="row">     
-    <div class="span4 bold font14">
-        <a ng-href="{{gift.affiliateUrl}}" 
-           target="item" 
-           ui-jq="popover" 
-           ui-options="popoverOptions($index, gift)">
-          {{gift.description}}
-        </a>
-    </div>   
-  </div>
-  
-  <div class="row">  
-    <div class="spantiny">To:</div>
-    <div class="span3">
-      {{gift.recipients[0].first}} <span ng-repeat="recipient in gift.recipients.slice(1)"> and {{recipient.first}}</span>
-    </div>  
-    <div class="span2">Give on (date)</div>
-  </div>
-  
-  <div class="row"> 
-    <div class="spantiny padtop5">
-      <input type="hidden" ng-model="gift.id" />
-      <input type="hidden" ng-model="gift.senderId" />
-      From:
-    </div>
-    <div class="span3">
-      <input type="text" ng-model="gift.senderName" />
-    </div>
-    <div class="span2">
-      <input class="input-small" date-picker="recdate" name="recdate" ng-model="recdate" type="text"></input>
-    </div>
-  </div>
-  
-</form>
+<div class="row">   
+	<div class="span6" ng-controller="GiftCtrl">
+			<form novalidate name="buygiftForm"> 
+			  <div class="row">     
+			    
+			    <div class="span5">
+			                
+			                  <!-- btn toolbar 1 -->
+			                  <span ng-show="gift.url != undefined && gift.url != ''">
+			                  <div class="btn-toolbar">
+			                    <div class="btn-group">
+			                      <a ng-href="{{currentlocation}}" class="btn btn-mini btn-success" ng-click="gift.buying=false;buygift($index, gift, recdate);">Reserve</a>
+			                      <a class="btn btn-mini" ng-click="gift.buying=false">Cancel</a>
+			                    </div>
+			                    <div class="btn-group">
+			                      <a ng-href="{{gift.url}}" target="new" class="btn btn-mini btn-success" ng-click="gift.buying=false;buygift($index, gift);">View/Buy Online</a>
+			                    </div>
+			                  </div> <!-- end btn toolbar 1 -->
+			                  </span>
+			                
+			                  <!-- btn toolbar 2 -->
+			                  <span ng-hide="gift.url != undefined && gift.url != ''">
+			                  <div class="btn-toolbar">
+			                    <div class="btn-group">
+			                      <a ng-href="{{currentlocation}}" class="btn btn-mini btn-success" ng-click="gift.buying=false;buygift($index, gift, recdate);">Reserve</a>
+			                      <a class="btn btn-mini" ng-click="gift.buying=false">Cancel</a>
+			                    </div>
+			                    <div class="btn-group">
+			                      <a class="btn btn-mini" ng-disabled="true" title="No link was provided for this item.  Search for this item on Amazon.com">View/Buy Online</a>
+			                    </div>
+			                  </div> <!-- end btn toolbar 2 -->
+			                  </span>
+			                  
+			    </div>
+			        
+			  </div>
+			  <div class="row">     
+			    <div class="span4 bold font14">
+			        <a ng-href="{{gift.affiliateUrl}}" 
+			           target="item" 
+			           ui-jq="popover" 
+			           ui-options="popoverOptions($index, gift)">
+			          {{gift.description}}
+			        </a>
+			    </div>   
+			  </div>
+			  
+			  <div class="row">  
+			    <div class="spantiny">To:</div>
+			    <div class="span3">
+			      {{gift.recipients[0].first}} <span ng-repeat="recipient in gift.recipients.slice(1)"> and {{recipient.first}}</span>
+			    </div>  
+			    <div class="span2">Give on (date)</div>
+			  </div>
+			  
+			  <div class="row"> 
+			    <div class="spantiny padtop5">
+			      <input type="hidden" ng-model="gift.id" />
+			      <input type="hidden" ng-model="gift.senderId" />
+			      From:
+			    </div>
+			    <div class="span3">
+			      <input type="text" ng-model="gift.senderName" />
+			    </div>
+			    <div class="span2">
+			      <input class="input-small" date-picker="recdate" name="recdate" ng-model="recdate" type="text"></input>
+			    </div>
+			  </div>
+			  
+			</form>
+	</div>
 </div>

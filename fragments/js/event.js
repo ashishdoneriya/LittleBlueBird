@@ -191,7 +191,7 @@
          
       if(isnewperson) {
         // copied/adapted from $rootScope.createonthefly() in app-UserModule.js 2013-08-05
-        anewuser = User.save({fullname:newparticipant.name, email:newparticipant.email, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
+        anewuser = User.save({fullname:person.name, email:person.email, creatorId:$rootScope.user.id, creatorName:$rootScope.user.fullname}, 
                                   function() {
                                     if(participationLevel == 'Receiver') $scope.circle.participants.receivers.push(anewuser);
                                     else $scope.circle.participants.givers.push(anewuser);
@@ -203,7 +203,8 @@
 									                                     who:anewuser.fullname, notifyonaddtoevent:anewuser.notifyonaddtoevent, email:anewuser.email, circle:$scope.circle.name, 
 									                                     adder:$rootScope.user.fullname},
 									                                     function() {
-									                                       $scope.circle.reminders = Reminder.query({circleId:$scope.circle.id})
+									                                       //$scope.circle.reminders = Reminder.query({circleId:$scope.circle.id})
+									                                       // do we really need to bring the reminders back to the client? 2013-10-03
 									                                     }
 									                                    );
 									}

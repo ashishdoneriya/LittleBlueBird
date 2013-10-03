@@ -1288,17 +1288,15 @@
 	  <P>Invite people to this event</P>
 	  
 	  <span ng-show="user.friends.length > 0">
-	  <a ng-href="#addbysearching" data-role="button" data-icon="arrow-r" data-iconpos="right">Search</a>
+	      <a ng-href="#addbysearching" data-role="button" data-icon="arrow-r" data-iconpos="right">Search</a>
 	  </span>
 	  
-	  <!-- Should be able to invite by email any time.  But if you have friends or circles, then we are going to show you a button to get there.
-	  If you don't have any friends or circles, then we will just show you that form here on this page 2013-08-08 -->
-	  <span ng-show="user.friends.length > 0 || user.circles.length > 0">
+
 	  <a ng-href="#invitebyemail" data-role="button" data-icon="arrow-r" data-iconpos="right">Invite By Email</a>
-	  </span>
+
 	  
 	  <span ng-show="user.circles.length > 1">
-	  <a ng-href="#addfromanotherevent" ng-click="refreshOtherEventsList()" data-role="button" data-icon="arrow-r" data-iconpos="right">Invite From Another Event</a>
+          <a ng-href="#addfromanotherevent" ng-click="refreshOtherEventsList()" data-role="button" data-icon="arrow-r" data-iconpos="right">Invite From Another Event</a>
 	  </span>
 	  	  	  
 	  

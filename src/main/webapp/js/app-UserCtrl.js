@@ -1,4 +1,11 @@
 
+function AskMobileCtrl($rootScope, $scope) {
+  $scope.mobileanswer = function(yn) {
+    $rootScope.askmobile = yn;
+  }
+}
+
+
 function ProfilePicCtrl($rootScope, $cookieStore, User) {
   console.log("ProfilePicCtrl --------------------");
   

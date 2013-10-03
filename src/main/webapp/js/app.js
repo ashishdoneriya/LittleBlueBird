@@ -12,6 +12,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
     $routeProvider
       .when('/accountinfo', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/myaccount/accountinfo.html', five:'partials/navbar.html'}})
       .when('/addfacebookfriends', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/friends/addfacebookfriends.html', five:'partials/navbar.html'}})
+      .when('/askmobile', {templates: {layout: 'layout3', two: 'partials/askmobile.html', four:'partials/navbar-nli.html'}})
       .when('/beta', {templates: {layout: 'layout3', two: 'partials/beta.html', four:'partials/navbar-beta.html'}})
       .when('/buy/:circleId/:showUserId/:giftId', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
       .when('/circles', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/circledetails.html', five:'partials/navbar.html'}})
@@ -62,7 +63,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         
         // Allow anonymous access and do NOT assume the FB user is the person behind the keyboard
         // If we are going to any of these pages, we do NOT want to see if someone is logged in to FB
-        var nonsecure =  ['home', 'emailit', 'register', 'marketing', 'privacy', 'support', 'whoareyou', 'beta', 'download'];
+        var nonsecure =  ['home', 'emailit', 'register', 'marketing', 'privacy', 'support', 'whoareyou', 'beta', 'download', 'askmobile'];
         var allowAnonymousAccess = $location.url() == '/';
         console.log("location.url(): ", $location.url());
         for(var i=0; i < nonsecure.length; ++i) {
@@ -99,17 +100,13 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
             return;
           }
         }
-        /**************
+        /**************/
         // PUT THIS IN ONCE YOU KNOW WHAT THE URL IS TO LBB IN THE APP STORE
-        var appStoreURL = "xxxxxxxxxxxxxxx";
+        // If viewing from iPhone/iPad, give the user the option of launching the mobile app or standard web presentation
         else if(navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i)) {
-          // http://stackoverflow.com/questions/13044805/how-to-check-if-an-app-is-installed-from-a-web-page-on-an-iphone
-          // Replace the link below with the link to LittleBlueBird in the app store
-          // Use this if you have to figure out what the LBB link is: https://linkmaker.itunes.apple.com/us/
-          setTimeout(function () { window.location = appStoreURL; }, 25);
-          window.location = "littlebluebird://";
+            $rootScope.xxxModalShown = true;
         }
-        **************/
+        /**************/
               
         if(!newRoute) return;
         

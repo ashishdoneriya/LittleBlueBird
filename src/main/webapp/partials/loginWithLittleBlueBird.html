@@ -2,7 +2,62 @@
 Instead, this page has JUST the username/password fields needed to login to LBB -->
 
 
-<div ng-controller="LoginCtrl">   
+
+
+
+
+
+<div ng-controller="LoginCtrl">  
+
+
+
+
+
+
+    
+
+
+  <div ui-modal class="fade" ng-model="xxxModalShown" style="width:700px;margin-left:-350px;keyboard: false;backdrop: 'static'">
+	<div class="modal-header bgbluegradient white">
+	  <button class="close padtop5" data-dismiss="modal" ng-click="showModal(false)"><i class="icon-remove"></i></button>
+	  <h3>&nbsp;</h3>
+	</div>
+	
+	<div class="modal-body2 font64">
+	
+	    <div class="row">
+	      <div class="span10 margleft35 margtop20" style="width:680px;line-height:normal;">Launch LittleBlueBird app on your mobile device?</div>
+	    </div>
+	
+	</div> <!-- modal-body -->
+	
+	<div class="modal-footer">	
+              <div class="row">
+                    <div class="span4 pull-left">
+                      <button class="span3 font48 btn btn-large btn-primary" ng-click="showModal(false);mobileanswer('yes');"> OK </button>
+                    </div>
+                    <div class="span4 pull-right">
+                      <button class="span4 font48 btn btn-large" ng-click="showModal(false);mobileanswer('no');">No Thanks</button>
+                    </div>
+              </div>
+	
+	</div> <!-- modal-footer -->
+	
+  </div>
+
+<!-- Button to trigger modal - just for testing
+<a ng-href="{{currentlocation}}" class="btn btn-primary pull-right font18" title="Add an item to this wish list" ng-click="xxxModalShown = !xxxModalShown;">get the app!</a>
+<a ng-href="{{currentlocation}}" class="btn btn-primary pull-right font18" title="Add an item to this wish list" ng-click="showModal(true)">ng-click</a>
+ -->
+
+
+
+
+    
+
+
+
+ 
 	  <form novalidate>
 	    <div class="row">
 	      <div class="span3">

@@ -15,11 +15,31 @@ function sseCtrl($scope) {
 }
 
 
-function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Email, facebookConnect) { 
+function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Email, facebookConnect, $window, $timeout) { 
 
     $scope.fbuser = {}
     $scope.error = null;
     $rootScope.loginoption = '';
+    
+  $scope.showModal = function(tf) {
+    $rootScope.xxxModalShown = tf;
+    console.log('$rootScope.xxxModalShown = ', $rootScope.xxxModalShown);
+  }
+  
+  $scope.mobileanswer = function(yn) {
+    if(yn == 'yes') {
+  
+      // LBB IS NOT -> https://itunes.apple.com/us/app/nfl-pro-2014-ultimate-football/id518244464?mt=8&uo=4
+      var appStoreURL = "https://itunes.apple.com/us/app/nfl-pro-2014-ultimate-football/id518244464?mt=8&uo=4";
+      
+      // http://stackoverflow.com/questions/13044805/how-to-check-if-an-app-is-installed-from-a-web-page-on-an-iphone
+      // Replace the link below with the link to LittleBlueBird in the app store
+      // Use this if you have to figure out what the LBB link is: https://linkmaker.itunes.apple.com/us/
+      setTimeout(function () { window.location = appStoreURL; }, 25);
+      window.location = "littlebluebird://";
+    }
+    else if(yn == 'no') {}
+  }
     
   $scope.loginhelpbox = function(showhide) {
     console.log("scope.loginhelpbox, using rootScope -----------------------------");

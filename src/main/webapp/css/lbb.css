@@ -146,6 +146,8 @@ body { height:100%; }
 .font28 { font-size:28px; }
 .font36 { font-size:36px; }
 .font48 { font-size:48px; }
+.font64 { font-size:64px; }
+.font72 { font-size:72px; }
 
 .giftadd {
   background-color: #ffffff;
@@ -338,6 +340,7 @@ input.largefield::-webkit-input-placeholder {padding-top:5px;}
 .margleft20 { margin-left:20px; }
 .margleft30 { margin-left:30px; }
 .margleft35 { margin-left:35px; }
+.margleft50 { margin-left:50px; }
 .margleft175 { margin-left:175px; }
 
 
@@ -363,6 +366,8 @@ input.largefield::-webkit-input-placeholder {padding-top:5px;}
 .minheight100 {min-height:100px;}
 
 .minheight100pc {min-height:100%;}
+
+.modal-body2 {min-height:300px;}
 
 .normal { font-weight:normal; }
 

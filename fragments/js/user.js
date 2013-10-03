@@ -29,13 +29,27 @@
                         $rootScope.showUser = angular.copy($rootScope.users[0]);
                         $scope.logingood = true; // don't forget this or else welcome page isn't going to show you anything
                     }
+                    else refreshWhoAreYouList();
+                    
+                    delete $scope.loggingin;
+                    
                 }, // success
                 function() {
                     alert('Woops! Facebook login is not working right now.  Contact us at info@littlebluebird.com if this problem persists.')
                     delete $rootScope.users;
                     delete $rootScope.user;
+                    delete $scope.loggingin;
                 } // fail
             ); // FacebookUser.findOrCreate
+  }
+  
+  
+  refreshWhoAreYouList = function() {
+        jQuery("#whoareyouview").hide();
+          setTimeout(function(){
+            jQuery("#whoareyouview").listview("refresh");
+            jQuery("#whoareyouview").show();
+         },0);
   }
   
   

@@ -253,36 +253,48 @@
 <div id="welcome" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
-		<h1><span ng-show="user!=null">{{user.fullname}}</span><span ng-hide="user!=null">Who Are You?</span></h1>
+		<h1>
+		  <span ng-show="user!=null">{{user.fullname}}</span>
+		  <span ng-show="users.length > 1">Who Are You?</span> <!-- If you login via FB AND your email address is shared AND your FB ID is not in the LBB db yet, you should see this message -->
+		</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
 	
-	  <span ng-show="users.length > 1">
-	    <P>Your Facebook email address: {{fbuser.email}} is associated with these LittleBlueBird users.</P>
-		<P>Which one of these people is you?</P>
-		
-	      <div jquery-mobile-tpl>
-		    <ul id="whoareyouview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
-		      <li ng-repeat="u in users">
-		        <a href="#welcome" ng-click="mergeaccount(u)">
-		          I am {{u.fullname}}
-		        </a>
-		      </li>
-		    </ul>
-		  </div>
+	  <span ng-show="loggingin">
+	    Loading...
 	  </span>
 	
-	  <span ng-show="logingood">
-		  <ul data-role="listview" data-inset="true" class="ui-icon-alt">
-		    <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" data-transition="slide">My Wish List</a></li>
-		    <li><a href="#events" ng-click="events();setfootermenu('events')" data-transition="slide">Events</a></li>
-		    <li><a href="#friends" ng-click="friends();setfootermenu('friends')" data-transition="slide">Friends</a></li>
-		  </ul>
+	
+	  <span ng-hide="loggingin">
 	  
-	  	  <P><a ng-href="#scanresults" ng-click="scan()" data-role="button" data-theme="b">Barcode Scanner</a></P>
-
-	  </span>
+		  <span ng-show="users.length > 1">
+		    <P>Your Facebook email address: {{fbuser.email}} is associated with these LittleBlueBird users.</P>
+			<P>Which one of these people is you?</P>
+			
+		      <div jquery-mobile-tpl>
+			    <ul id="whoareyouview" data-role="listview" data-inset="true" class="ui-icon-alt" repeat-done="" ng-cloak>
+			      <li ng-repeat="u in users">
+			        <a href="#welcome" ng-click="mergeaccount(u)">
+			          I am {{u.fullname}}
+			        </a>
+			      </li>
+			    </ul>
+			  </div>
+		  </span>
+		
+		  <span ng-show="logingood">
+			  <ul data-role="listview" data-inset="true" class="ui-icon-alt">
+			    <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" data-transition="slide">My Wish List</a></li>
+			    <li><a href="#events" ng-click="events();setfootermenu('events')" data-transition="slide">Events</a></li>
+			    <li><a href="#friends" ng-click="friends();setfootermenu('friends')" data-transition="slide">Friends</a></li>
+			  </ul>
+		  
+		  	  <P><a ng-href="#scanresults" ng-click="scan()" data-role="button" data-theme="b">Barcode Scanner</a></P>
+	
+		  </span>
+		  
+	  </span> <!-- span ng-hide="loggingin" -->
 	
 	
 	</div><!-- /content -->

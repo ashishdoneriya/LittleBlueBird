@@ -31,6 +31,9 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
   $scope.fblogin = function() {
     FB.login(
       function(response) {
+        
+        $scope.loggingin = true;
+        
         if (response.authResponse) {
           FB.api('/me', function(fbuser) {
             tryToFindUserFromFBLogin(fbuser);
@@ -38,6 +41,7 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
           });
         } 
         else {
+          delete $scope.loggingin;
           alert('woops!  could not log you in');
         }
       }, 
@@ -58,17 +62,22 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
 
   // 2013-07-19 copied from app-LoginCtrl.js, but there the method is just called login
   $scope.lbblogin = function() {
+    $scope.loggingin = true;
+  
     if(!angular.isDefined($scope.username) || !angular.isDefined($scope.password)) {
       return;
     }
       
     $rootScope.user = User.find({username:$scope.username, password:$scope.password}, 
                                function() {$scope.logingood=true; 
+                                           delete $scope.loggingin;
                                            if($rootScope.user.dateOfBirth == 0) { $rootScope.user.dateOfBirth = ''; }
                                            $rootScope.showUser = $rootScope.user; 
                                            //console.log(JSON.stringify($rootScope.user)); 
                                           }, 
-                               function() {$scope.logingood=false; alert('Wrong user/pass');}  );
+                               function() {$scope.logingood=false;
+                                           delete $scope.loggingin; 
+                                           alert('Wrong user/pass');}  );
                                
     delete $scope.password;
   }
@@ -102,13 +111,27 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
                         $rootScope.showUser = angular.copy($rootScope.users[0]);
                         $scope.logingood = true; // don't forget this or else welcome page isn't going to show you anything
                     }
+                    else refreshWhoAreYouList();
+                    
+                    delete $scope.loggingin;
+                    
                 }, // success
                 function() {
                     alert('Woops! Facebook login is not working right now.  Contact us at info@littlebluebird.com if this problem persists.')
                     delete $rootScope.users;
                     delete $rootScope.user;
+                    delete $scope.loggingin;
                 } // fail
             ); // FacebookUser.findOrCreate
+  }
+  
+  
+  refreshWhoAreYouList = function() {
+        jQuery("#whoareyouview").hide();
+          setTimeout(function(){
+            jQuery("#whoareyouview").listview("refresh");
+            jQuery("#whoareyouview").show();
+         },0);
   }
   
   

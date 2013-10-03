@@ -855,6 +855,26 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
     else if($scope.eventfilter=='current') return !circle.isExpired;
     else if($scope.eventfilter=='past') return circle.isExpired;
   }
+
+
+  // as long as the passed-in circle is not the same as the current circle, we will return true
+  // or if there is no 'current' circle
+  // but if the current circle is the same as the passed-in circle, this fn will return false
+  // This is useful when adding people from one event to another event (addfromanotherevent-nofooter.html)
+  // If you want to add people to event B from some other event, don't present B as a possible event to copy from - that's just dumb 2013-10-03
+  $scope.differentEventFilter = function(circle) {
+    if(!angular.isDefined($scope.circle))
+      return true;
+    return circle.id != $scope.circle.id;
+  }
+
+
+  
+  $scope.eventDateFilter = function(circle) {
+    if($scope.eventfilter=='all') return true;
+    else if($scope.eventfilter=='current') return !circle.isExpired;
+    else if($scope.eventfilter=='past') return circle.isExpired;
+  }
   
   
   // participants are either circle.participants.givers or circle.participants.receivers (see #participants)

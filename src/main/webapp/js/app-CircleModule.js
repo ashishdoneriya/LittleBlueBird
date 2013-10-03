@@ -539,8 +539,9 @@ angular.module('CircleModule', ['UserModule'])
   $rootScope.beginAddingFromAnotherEvent = function(participationLevel) {
     $rootScope.circlecopies = angular.copy($rootScope.user.circles);
     // remove the current circle because there's no point in including it
+    console.log('CHECK $rootScope.circle.id=', $rootScope.circle.id);
     for(var i=0; i < $rootScope.circlecopies.length; i++) {
-      if($rootScope.circlecopies[i].id == $rootScope.circle.id) {
+      if(angular.isDefined($rootScope.circle) && $rootScope.circlecopies[i].id == $rootScope.circle.id) {
         $rootScope.circlecopies.splice(i, 1);
         break;
       }

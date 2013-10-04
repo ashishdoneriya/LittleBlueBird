@@ -146,6 +146,18 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
     return {title:'Changed Your Mind?', content:cnt, placement:'right'}
   }
   
+  
+  // 2013-10-04 copied from user.js on the mobile side - needed to list multiple recipients in viewitem.html when they exist
+  $scope.commasep = function(people) {
+    if(!angular.isDefined(people)) return "";
+    var names = [];
+    for(var i=0; i < people.length; ++i) {
+      names.push(people[i].fullname);
+    }
+    return names.join(" and ");
+  }
+  
+  
   $rootScope.$on("circlechange", function(event) {
     $rootScope.gifts = Circle.gifts;
     //console.log("GiftCtrl:  notified of 'circlechange'...  $rootScope.gifts=...");

@@ -37,12 +37,16 @@
 			  </div>
 			  <div class="row">     
 			    <div class="span4 bold font14">
-			        <a ng-href="{{gift.affiliateUrl}}" 
-			           target="item" 
-			           ui-jq="popover" 
-			           ui-options="popoverOptions($index, gift)">
-			          {{gift.description}}
-			        </a>
+			        <span ng-show="gift.affiliateUrl != '' && gift.affiliateUrl != null">
+			          <a ng-href="{{gift.affiliateUrl}}" 
+			             target="item">
+			            {{gift.description}}
+			          </a>
+			        </span>
+			        
+			        <span ng-hide="gift.affiliateUrl != '' && gift.affiliateUrl != null">
+			            {{gift.description}}  <!-- TODO: use the amazon quick linker widget when no link is provided -->
+			        </span>
 			    </div>   
 			  </div>
 			  

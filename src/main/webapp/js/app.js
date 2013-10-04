@@ -103,7 +103,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         /**************/
         // PUT THIS IN ONCE YOU KNOW WHAT THE URL IS TO LBB IN THE APP STORE
         // If viewing from iPhone/iPad, give the user the option of launching the mobile app or standard web presentation
-        else if(navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i)) {
+        else if(navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(Android)/i)) {
             $rootScope.xxxModalShown = true;
         }
         /**************/

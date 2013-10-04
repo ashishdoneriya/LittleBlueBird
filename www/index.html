@@ -3063,6 +3063,23 @@ click on any of their names to see their list and the item that was just added -
 </div>
 <div id="gift2" data-role="page" data-add-back-btn="true">
 
+	<div data-role="panel" id="recipientPanel" data-position="right" data-display="overlay" data-theme="a" data-position-fixed="true">
+		<h3>Select Recipients</h3>
+		
+	    <fieldset data-role="controlgroup">
+		  <span ng-repeat="r in circle.participants.receivers">
+	        <input name="possiblerecipient-{{r.id}}" id="possiblerecipient-{{r.id}}" type="checkbox">
+	        <label for="possiblerecipient-{{r.id}}">{{r.fullname}}</label>
+		  </span>
+	    </fieldset>
+		
+		<div>
+		    <a href="#gift2" ng-click="updateRecipients(circle.participants.receivers, currentgift)" data-rel="close" data-role="button" data-theme="b">Update</a>
+		</div>
+		
+	</div><!-- /panel -->
+
+
 	<div data-role="header" data-theme="b">
 		<h1>Gift</h1>
 	</div><!-- /header -->
@@ -3075,7 +3092,12 @@ click on any of their names to see their list and the item that was just added -
 		    <!-- No need to list recipients if the event is a single-recipient event -->
     		<span ng-hide="circle.receiverLimit == 1">
 		    <p>
-		        <strong>Recipients</strong> <a data-role="button" ng-href="#editrecipients" data-icon="edit" data-theme="b" data-mini="true" class="ui-btn-right" data-rel="dialog" data-transition="pop">Edit</a>
+		        <!-- TODO: get rid of 'editrecipients' pages and the pages it leads to -->
+		        <!-- strong>Recipients</strong> <a data-role="button" ng-href="#editrecipients" data-icon="edit" data-theme="b" data-mini="true" class="ui-btn-right" data-rel="dialog" data-transition="pop">Edit</a -->
+		        
+		        <!-- This is how we're editing recipients now  2013-10-04 -->
+		        <strong>Recipients</strong> <a data-role="button" ng-href="#recipientPanel" ng-click="initRecipientCheckboxes(circle.participants.receivers, currentgift)" data-icon="edit" data-theme="b" data-mini="true" class="ui-btn-right" data-rel="dialog" data-transition="pop">Edit</a>
+		        
 		    </p>
 		    <p>
 		      <ul data-role="listview">

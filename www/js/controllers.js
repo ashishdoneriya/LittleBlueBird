@@ -926,6 +926,33 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
   }
   
   
+  // 2013-10-03  This fn is responsible for setting the initial checked/unchecked state of the checkboxes
+  // in gift2-nofooter.html - the checkboxes in the 'recipientPanel'
+  $scope.initRecipientCheckboxes = function(allreceivers, gift) {
+    console.log('CHECK RECIPIENTS ON NEW GIFTS: ', gift.recipients);
+    for(var i=0; i < allreceivers.length; i++) {
+      
+      // start by turning everything off
+      jQuery("#possiblerecipient-"+allreceivers[i].id).prop('checked',false).checkboxradio('refresh');
+      
+      for(var j=0; j < gift.recipients.length; j++) {
+        if(gift.recipients[j].id == allreceivers[i].id)
+          jQuery("#possiblerecipient-"+allreceivers[i].id).prop('checked',true).checkboxradio('refresh');
+      }
+    }
+  }
+  
+  
+  $scope.updateRecipients = function(allreceivers, gift) {
+    gift.recipients.splice(0, gift.recipients.length);
+    console.log('REMOVED????', gift.recipients);
+    for(var i=0; i < allreceivers.length; i++) {
+        if('checked' == jQuery("#possiblerecipient-"+allreceivers[i].id).attr('checked'))
+          gift.recipients.push(allreceivers[i]);
+    }
+  }
+  
+  
   $scope.beginreserving = function(gift) {
 	jQuery(function(){
 	    jQuery("#givedatepicker").mobiscroll().date({dateOrder:'MM d yyyy', maxDate:new Date(new Date().getFullYear()+3,12,31)});

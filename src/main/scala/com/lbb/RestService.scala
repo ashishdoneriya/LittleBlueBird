@@ -494,8 +494,10 @@ object RestService extends RestHelper with LbbLogger {
   }
   
   def shareWishlist = {
-    for(to <- S.param("to"); email <- S.param("email"); from <- S.param("from"); subject <- S.param("subject"); message <- S.param("message"))
-      Emailer.notifyShareWishlist(to, email, from, subject, message)
+    for(to <- S.param("to"); wishlistId <- S.param("wishlistId"); 
+        email <- S.param("email"); from <- S.param("from"); 
+        subject <- S.param("subject"); whosList <- S.param("whosList"))
+      Emailer.notifyShareWishlist(to, email, from, subject, wishlistId, whosList)
     
     JsonResponse("")
   }
@@ -656,6 +658,7 @@ object RestService extends RestHelper with LbbLogger {
   
   def updateUser(id:Long) = (User.findByKey(id), S.request) match {
     case (Full(user), Full(req)) => {
+      debug("HERE IS THE USER WE FOUND BY QUERYING ON ID="+id+": "+user);
       req.json match {
         case Full(jvalue:JObject) => {
             jvalue.values foreach {kv => (kv._1, kv._2) match {
@@ -697,7 +700,7 @@ object RestService extends RestHelper with LbbLogger {
             
             S.param("login") match {
               case Full("true") => user.login
-              case _ => JsonResponse(user.asJs)
+              case _ => debug("HERE IS THE USER WE ARE RETURNING WITH ID="+id+": "+user); JsonResponse(user.asJs)
             }
             
         } // case Full(jvalue:JObject)

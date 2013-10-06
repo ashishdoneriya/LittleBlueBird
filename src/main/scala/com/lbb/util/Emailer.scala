@@ -114,15 +114,16 @@ object Emailer extends LbbLogger {
     Emailer.send(e)
   }
   
-  def createShareWishlistMessage(to:String, from:String, subject:String, message:String) = 
+  def createShareWishlistMessage(to:String, from:String, subject:String, link:String, listName:String) = 
     createEmail(<div>{to},
-                <P>This message was sent to you by {from}</P>
                 <P>&nbsp;</P>
                 <P>{subject}</P>
-                <P>{message}</P></div>)
+                <P>View <a href={link}>{listName}</a></P></div>)
   
-  def notifyShareWishlist(to:String, email:String, from:String, subject:String, message:String) = {
-    val msg = createShareWishlistMessage(to, from, subject, message)
+  def notifyShareWishlist(to:String, email:String, from:String, subject:String, wishlistId:String, whosList:String) = {
+    val link = "http://www.littlebluebird.com/gf/giftlist/"+wishlistId
+    val listName = whosList + " Wish List"
+    val msg = createShareWishlistMessage(to, from, subject, link, listName)
     val e = Email(email, "info@littlebluebird.com", "LittleBlueBird.com", subject, msg, Nil, Nil)
     Emailer.send(e)
   }

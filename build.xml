@@ -219,9 +219,9 @@
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 
-		  <concat destfile="fragments/html/sharewishlistoveremail.html"
+		  <concat destfile="fragments/html/sharewishlist.html"
 		          force="yes">
-		     <fileset file="fragments/html/sharewishlistoveremail-nofooter.html" />
+		     <fileset file="fragments/html/sharewishlist-nofooter.html" />
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
 		  
@@ -280,9 +280,7 @@
 	     <fileset file="fragments/html/sharewishlist.html" />
 	     <fileset file="fragments/html/sharelittlebluebird.html" />
 	     <fileset file="fragments/html/sharelittlebluebirdoveremail.html" />
-	     <!-- 
-	     <fileset file="fragments/html/sharewishlistoveremail.html" />
-	      -->
+	     <fileset file="fragments/html/sharewishlist.html" />
 	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
 	</target>

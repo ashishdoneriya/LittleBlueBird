@@ -230,6 +230,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                           var uagain = User.save({userId:$rootScope.user.id, facebookId:$rootScope.fbuser.id, profilepic:pic}, 
 	                                       function() {
 	                                         $rootScope.user = angular.copy(uagain); 
+	                                         console.log('HERE IS THE USER:', $rootScope.user);
 	                                         $rootScope.showUser = angular.copy(uagain);
 										     //$rootScope.$emit("userchange"); // commented out on 11/30/12 - experimenting                                       
 										     //$rootScope.$emit("mywishlist"); // commented out on 11/30/12 - experimenting

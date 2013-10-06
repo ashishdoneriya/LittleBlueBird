@@ -557,7 +557,7 @@
 		      </div>
 		      
 		      
-	          <P><a data-role="button" ng-href="#share" data-theme="b" data-transition="slideup">Share</a></P>
+	          <P><a data-role="button" ng-href="#sharewishlist" data-theme="b" data-transition="slideup">Share</a></P>
 	          
 		      
 		  </span>
@@ -3430,25 +3430,6 @@ click on any of their names to see their list and the item that was just added -
 
 </div>
 
-<div id="share" data-role="page" data-add-back-btn="true">
-
-	<div data-role="header" data-theme="b">
-		<h1>Share</h1>
-	</div><!-- /header -->
-
-	<div data-role="content">
-	
-      
-	<P><a data-role="button" ng-href="#sharewishlist" data-theme="b" data-rel="dialog" data-transition="pop">Share Wish List</a></P>
-      
-	<P><a data-role="button" ng-href="#sharelittlebluebird" data-theme="b" data-rel="dialog" data-transition="pop">Share LittleBlueBird</a></P>
-	
-		  
-	</div><!-- /content -->
-
-</div>
-	
-
 <div id="sharewishlist" data-role="page" data-add-back-btn="true">
 
 	<div data-role="header" data-theme="b">
@@ -3457,7 +3438,12 @@ click on any of their names to see their list and the item that was just added -
 
 	<div data-role="content">
 	
-	<h3>Share Wish List</h3>
+	<h3>
+	    Share
+	    <span ng-show="user.id==showUser.id">My</span>
+	    <span ng-hide="user.id==showUser.id">{{showUser.fullname}}'s</span>
+	    Wish List
+	</h3>
 	
 	
 	<P><a data-role="button" ng-href="#sharewishlist" ng-click="fbsharelist(user, showUser)" data-theme="b" data-rel="dialog" data-transition="pop">Share on Facebook</a></P>
@@ -3465,11 +3451,100 @@ click on any of their names to see their list and the item that was just added -
     <!--
 	<P><a data-role="button" ng-href="#sharewishlistoveremail" data-theme="b" data-rel="dialog" data-transition="pop">Share by Email</a></P>
 	-->
+	
+	<h3 style="text-align:center">- or -</h3>
+	<h3>Share by Email</h3>
+	
+	
+	    <form novalidate name="shareWishlistForm2">
+          <p>
+		    <label for="sharename2" class="ui-hidden-accessible">Name:</label>
+            <input id="sharename2" name="sharename2" type="text" ng-model="share2.name" placeholder="Name" required/>
+	      </p>
+	  
+          <p>
+		    <label for="shareemail2" class="ui-hidden-accessible">Email:</label>
+            <input id="shareemail2" name="shareemail2" type="email" ng-model="share2.email" placeholder="Email" required/>
+	      </p>
+	      
+	  
+	      <!-- don't need a message field
+          <p>
+		    <label for="sharemessage2" class="ui-hidden-accessible">Message:</label>
+            <textarea id="sharemessage2" name="sharemessage2" type="text" ng-model="share2.message" placeholder="Message" required></textarea>
+	      </p>
+		  -->
+		  
+	      
+	      <!--
+	      <P>
+	          <a ng-href="#" ng-click="seeform(shareWishlistForm2)" data-role="button" data-theme="b">see form</a>
+		  </P>
+		  -->
+		  
+		  
+	      <P>
+	        <span ng-hide="shareWishlistForm2.$invalid">
+	          <!-- TODO delete this just leaving it till I get stuff transitioned over -->
+	          <!-- a ng-href="#sharelittlebluebirdoveremail" ng-click="shareLittleBlueBirdOverEmail(share2)" data-role="button" data-theme="b">Share</a -->
+	          
+	          <a ng-href="#wishlist" ng-click="shareWishlistOverEmail(share2, user, showUser)" data-role="button" data-theme="b">Share by Email</a>
+	        </span>
+	        <span ng-show="shareWishlistForm2.$invalid">
+	          <button disabled="" data-role="button" data-theme="b">Share by Email</button>
+	        </span>
+		  </P>
+	    </form>
+	
+	
+	
+	
+	
 		  
 	</div><!-- /content -->
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a ng-href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-left" data-iconpos="notext">Menu</a>	
+	  <a ng-href="#scanresults" data-role="button" ng-click="scan()" class="ui-btn-right">Scan</a>
+		
+      <h4>LittleBlueBird.com</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="left" data-display="overlay" data-theme="a" data-position-fixed="true">
+        <ul data-role="listview" data-theme="c" data-inset="true" >
+            <li>My Account</li>
+	        <li><a href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <li><a href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
+	        <li><a href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li><a href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+		
+		    <span ng-show="testing">
+		    <li><a href="#test">test</a></li>
+		    </span>
+		    
+        </ul>
+        
+        <ul data-role="listview" data-theme="c" data-inset="true" >
+            <li>Share LittleBlueBird</li>
+	        <li><a href="#" ng-click="shareAppViaTimeline()" data-mini="true">Facebook</a></li>
+	        <li><a href="#sharelittlebluebirdoveremail" data-mini="true">Email</a></li>
+        </ul>
+        
+        <ul data-role="listview" data-theme="c" data-inset="true" >
+            <li>Contact Us</li>
+	        <li><a href="#contactus" data-mini="true">Email</a></li>
+        </ul>
+    </div><!-- /panel -->
+
 
 </div>
-	
 
 <div id="sharelittlebluebird" data-role="page" data-add-back-btn="true">
 
@@ -3579,6 +3654,122 @@ click on any of their names to see their list and the item that was just added -
 	        </span>
 		  </P>
 	    </form>
+	
+		  
+	</div><!-- /content -->
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a ng-href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-left" data-iconpos="notext">Menu</a>	
+	  <a ng-href="#scanresults" data-role="button" ng-click="scan()" class="ui-btn-right">Scan</a>
+		
+      <h4>LittleBlueBird.com</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="left" data-display="overlay" data-theme="a" data-position-fixed="true">
+        <ul data-role="listview" data-theme="c" data-inset="true" >
+            <li>My Account</li>
+	        <li><a href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <li><a href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
+	        <li><a href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li><a href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+		
+		    <span ng-show="testing">
+		    <li><a href="#test">test</a></li>
+		    </span>
+		    
+        </ul>
+        
+        <ul data-role="listview" data-theme="c" data-inset="true" >
+            <li>Share LittleBlueBird</li>
+	        <li><a href="#" ng-click="shareAppViaTimeline()" data-mini="true">Facebook</a></li>
+	        <li><a href="#sharelittlebluebirdoveremail" data-mini="true">Email</a></li>
+        </ul>
+        
+        <ul data-role="listview" data-theme="c" data-inset="true" >
+            <li>Contact Us</li>
+	        <li><a href="#contactus" data-mini="true">Email</a></li>
+        </ul>
+    </div><!-- /panel -->
+
+
+</div>
+
+<div id="sharewishlist" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Share</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	
+	<h3>
+	    Share
+	    <span ng-show="user.id==showUser.id">My</span>
+	    <span ng-hide="user.id==showUser.id">{{showUser.fullname}}'s</span>
+	    Wish List
+	</h3>
+	
+	
+	<P><a data-role="button" ng-href="#sharewishlist" ng-click="fbsharelist(user, showUser)" data-theme="b" data-rel="dialog" data-transition="pop">Share on Facebook</a></P>
+      
+    <!--
+	<P><a data-role="button" ng-href="#sharewishlistoveremail" data-theme="b" data-rel="dialog" data-transition="pop">Share by Email</a></P>
+	-->
+	
+	<h3 style="text-align:center">- or -</h3>
+	<h3>Share by Email</h3>
+	
+	
+	    <form novalidate name="shareWishlistForm2">
+          <p>
+		    <label for="sharename2" class="ui-hidden-accessible">Name:</label>
+            <input id="sharename2" name="sharename2" type="text" ng-model="share2.name" placeholder="Name" required/>
+	      </p>
+	  
+          <p>
+		    <label for="shareemail2" class="ui-hidden-accessible">Email:</label>
+            <input id="shareemail2" name="shareemail2" type="email" ng-model="share2.email" placeholder="Email" required/>
+	      </p>
+	      
+	  
+	      <!-- don't need a message field
+          <p>
+		    <label for="sharemessage2" class="ui-hidden-accessible">Message:</label>
+            <textarea id="sharemessage2" name="sharemessage2" type="text" ng-model="share2.message" placeholder="Message" required></textarea>
+	      </p>
+		  -->
+		  
+	      
+	      <!--
+	      <P>
+	          <a ng-href="#" ng-click="seeform(shareWishlistForm2)" data-role="button" data-theme="b">see form</a>
+		  </P>
+		  -->
+		  
+		  
+	      <P>
+	        <span ng-hide="shareWishlistForm2.$invalid">
+	          <!-- TODO delete this just leaving it till I get stuff transitioned over -->
+	          <!-- a ng-href="#sharelittlebluebirdoveremail" ng-click="shareLittleBlueBirdOverEmail(share2)" data-role="button" data-theme="b">Share</a -->
+	          
+	          <a ng-href="#wishlist" ng-click="shareWishlistOverEmail(share2, user, showUser)" data-role="button" data-theme="b">Share by Email</a>
+	        </span>
+	        <span ng-show="shareWishlistForm2.$invalid">
+	          <button disabled="" data-role="button" data-theme="b">Share by Email</button>
+	        </span>
+		  </P>
+	    </form>
+	
+	
+	
+	
 	
 		  
 	</div><!-- /content -->

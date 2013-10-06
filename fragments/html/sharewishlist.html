@@ -22,6 +22,9 @@
 	<P><a data-role="button" ng-href="#sharewishlistoveremail" data-theme="b" data-rel="dialog" data-transition="pop">Share by Email</a></P>
 	-->
 	
+	<h3 style="text-align:center">- or -</h3>
+	<h3>Share by Email</h3>
+	
 	
 	    <form novalidate name="shareWishlistForm2">
           <p>
@@ -31,13 +34,17 @@
 	  
           <p>
 		    <label for="shareemail2" class="ui-hidden-accessible">Email:</label>
-            <input id="shareemail2" name="shareemail2" type="email" ng-model="share2.email" placeholder="Email" ng-change="doesEmailExistAlready(share2.email)" required/>
+            <input id="shareemail2" name="shareemail2" type="email" ng-model="share2.email" placeholder="Email" required/>
 	      </p>
+	      
 	  
+	      <!-- don't need a message field
           <p>
 		    <label for="sharemessage2" class="ui-hidden-accessible">Message:</label>
             <textarea id="sharemessage2" name="sharemessage2" type="text" ng-model="share2.message" placeholder="Message" required></textarea>
 	      </p>
+		  -->
+		  
 	      
 	      <!--
 	      <P>
@@ -47,14 +54,14 @@
 		  
 		  
 	      <P>
-	        <span ng-hide="shareWishlistForm2.$invalid || userExistsAlready.length > 0">
+	        <span ng-hide="shareWishlistForm2.$invalid">
 	          <!-- TODO delete this just leaving it till I get stuff transitioned over -->
-	          <!-- a ng-href="#sharelittlebluebirdoveremail" ng-click="shareLittleBlueBirdOverEmail(share2)" data-role="button" data-theme="b">Invite</a -->
+	          <!-- a ng-href="#sharelittlebluebirdoveremail" ng-click="shareLittleBlueBirdOverEmail(share2)" data-role="button" data-theme="b">Share</a -->
 	          
-	          <a ng-href="#sharelittlebluebirdoveremail" ng-click="shareLittleBlueBirdOverEmail(share2)" data-role="button" data-theme="b">Invite</a>
+	          <a ng-href="#wishlist" ng-click="shareWishlistOverEmail(share2, user, showUser)" data-role="button" data-theme="b">Share by Email</a>
 	        </span>
-	        <span ng-show="shareWishlistForm2.$invalid || userExistsAlready.length > 0">
-	          <button disabled="" data-role="button" data-theme="b">Invite</button>
+	        <span ng-show="shareWishlistForm2.$invalid">
+	          <button disabled="" data-role="button" data-theme="b">Share by Email</button>
 	        </span>
 		  </P>
 	    </form>
@@ -65,6 +72,46 @@
 	
 		  
 	</div><!-- /content -->
+	
+	<div data-role="footer" data-id="persistentfooter" data-theme="b" data-position="fixed">
+	  <a ng-href="#mypanel" data-role="button" data-icon="bars" class="ui-btn-left" data-iconpos="notext">Menu</a>	
+	  <a ng-href="#scanresults" data-role="button" ng-click="scan()" class="ui-btn-right">Scan</a>
+		
+      <h4>LittleBlueBird.com</h4>
+      <div data-role="navbar">
+        <ul>
+            <li><a href="#wishlist" ng-click="mywishlist();setfootermenu('wishlist')" ng-class="footermenustyle('wishlist')">Wish List</a></li>
+            <li><a href="#friends" ng-click="friends();setfootermenu('friends')" ng-class="footermenustyle('friends')">Friends</a></li>
+            <li><a href="#events" ng-click="events();setfootermenu('events')" ng-class="footermenustyle('events')">Events</a></li>
+        </ul>
+      </div><!-- /navbar -->
+    </div><!-- /footer -->
+    
+    <div data-role="panel" id="mypanel" data-position="left" data-display="overlay" data-theme="a" data-position-fixed="true">
+        <ul data-role="listview" data-theme="c" data-inset="true" >
+            <li>My Account</li>
+	        <li><a href="#personalinfo" data-mini="true">Personal Info</a></li>
+	        <li><a href="#notifications" ng-click="initNtfy()" data-mini="true">Notifications</a></li>
+	        <li><a href="#passwordreset" data-mini="true">Password Reset</a></li>
+	        <li><a href="#home" ng-click="logout()" data-mini="true">Logout</a></li>
+		
+		    <span ng-show="testing">
+		    <li><a href="#test">test</a></li>
+		    </span>
+		    
+        </ul>
+        
+        <ul data-role="listview" data-theme="c" data-inset="true" >
+            <li>Share LittleBlueBird</li>
+	        <li><a href="#" ng-click="shareAppViaTimeline()" data-mini="true">Facebook</a></li>
+	        <li><a href="#sharelittlebluebirdoveremail" data-mini="true">Email</a></li>
+        </ul>
+        
+        <ul data-role="listview" data-theme="c" data-inset="true" >
+            <li>Contact Us</li>
+	        <li><a href="#contactus" data-mini="true">Email</a></li>
+        </ul>
+    </div><!-- /panel -->
+
 
 </div>
-	

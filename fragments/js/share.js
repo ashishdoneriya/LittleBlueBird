@@ -22,9 +22,15 @@ $scope.shareLittleBlueBirdOverEmail = function(share) {
 
 
 $scope.shareWishlistOverEmail = function(share, user, showUser) {
-  var who = user.id==showUser.id ? "My" : showUser.fullname+"'s"
-  var subject "I want to share "+who+" wish list with you";
-  Email.send({to: share.name, email: share.email, from: $rootScope.user.fullname, subject:, message: share.message, type: 'sharewishlist'});
+  var who = user.id!=showUser.id ? showUser.fullname+"'s" : (user.gender=='male' ? 'his' : 'her');
+  var subject = user.fullname+" has shared "+who+" wish list with you";
+  Email.send({to: share.name, 
+              email: share.email, 
+              from: $rootScope.user.fullname, 
+              subject:subject, 
+              whosList:who,
+              wishlistId:showUser.id, 
+              type: 'sharewishlist'});
 }
 
 

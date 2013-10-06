@@ -1556,6 +1556,14 @@ $scope.shareWishlistOverEmail = function(share, user, showUser) {
 }
 
 
+$scope.resetShareForm = function(form, share) {
+  share.name = '';
+  share.email = '';
+  share.message = '';
+  form.$setPristine();
+} 
+
+
 $scope.doesEmailExistAlready = function(email) {
 
   // you want to know if the person is already an LBB user

@@ -3613,42 +3613,58 @@ click on any of their names to see their list and the item that was just added -
 	
 	    <h3>Share LittleBlueBird</h3>
 	
-	    <form novalidate name="shareForm1">
-          <p>
-		    <label for="sharename1" class="ui-hidden-accessible">Name:</label>
-            <input id="sharename1" name="sharename1" type="text" ng-model="share1.name" placeholder="Who are you sharing with?" required/>
-	      </p>
-	  
-          <p>
-		    <label for="shareemail1" class="ui-hidden-accessible">Email:</label>
-            <input id="shareemail1" name="shareemail1" type="email" ng-model="share1.email" placeholder="What's their email?" ng-change="doesEmailExistAlready(share1.email)" required/>
-	      </p>
-	      
-	      <span ng-show="userExistsAlready.length > 0">
-	          <P>This person is already a member of LittleBlueBird</P>
-	      </span>
-	  
-          <p>
-		    <label for="sharemessage1" class="ui-hidden-accessible">Message:</label>
-            <textarea id="sharemessage1" name="sharemessage1" type="text" ng-model="share1.message" placeholder="Message" required></textarea>
-	      </p>
-	      
-	      <!--
-	      <P>
-	          <a ng-href="#" ng-click="seeform(shareForm1)" data-role="button" data-theme="b">see form</a>
-		  </P>
-		  -->
+		<span ng-hide="lbbshared=='true'">
+		
+		    <form novalidate name="shareForm1">
+	          <p>
+			    <label for="sharename1" class="ui-hidden-accessible">Name:</label>
+	            <input id="sharename1" name="sharename1" type="text" ng-model="share1.name" placeholder="Who are you sharing with?" required/>
+		      </p>
 		  
+	          <p>
+			    <label for="shareemail1" class="ui-hidden-accessible">Email:</label>
+	            <input id="shareemail1" name="shareemail1" type="email" ng-model="share1.email" placeholder="What's their email?" ng-change="doesEmailExistAlready(share1.email)" required/>
+		      </p>
+		      
+		      <span ng-show="userExistsAlready.length > 0">
+		          <P>This person is already a member of LittleBlueBird</P>
+		      </span>
 		  
-	      <P>
-	        <span ng-hide="shareForm1.$invalid || userExistsAlready.length > 0">
-	          <a ng-href="#sharelittlebluebirdoveremail" ng-click="shareLittleBlueBirdOverEmail(share1)" data-role="button" data-theme="b">Share</a>
-	        </span>
-	        <span ng-show="shareForm1.$invalid || userExistsAlready.length > 0">
-	          <button disabled="" data-role="button" data-theme="b">Share</button>
-	        </span>
-		  </P>
-	    </form>
+	          <p>
+			    <label for="sharemessage1" class="ui-hidden-accessible">Message:</label>
+	            <textarea id="sharemessage1" name="sharemessage1" type="text" ng-model="share1.message" placeholder="Message" required></textarea>
+		      </p>
+		      
+		      <!--
+		      <P>
+		          <a ng-href="#" ng-click="seeform(shareForm1)" data-role="button" data-theme="b">see form</a>
+			  </P>
+			  -->
+			  
+			  
+		      <P>
+		        <span ng-hide="shareForm1.$invalid || userExistsAlready.length > 0">
+		          <a ng-href="#sharelittlebluebirdoveremail" ng-click="shareLittleBlueBirdOverEmail(share1);lbbshared='true'" data-role="button" data-theme="b">Share</a>
+		        </span>
+		        <span ng-show="shareForm1.$invalid || userExistsAlready.length > 0">
+		          <button disabled="" data-role="button" data-theme="b">Share</button>
+		        </span>
+			  </P>
+		    </form>
+		</span>
+		    
+		    
+		<span ng-show="lbbshared=='true'">
+		    <P>Ok, you just shared LittleBlueBird with your friend {{share1.name}}</P>
+		
+		    <P>Do you want to share LittleBlueBird with anybody else?</P>
+		    
+		    <div class="ui-grid-a">
+		      <div class="ui-block-a"><a href="#sharelittlebluebirdoveremail" data-role="button" ng-click="lbbshared='false';resetShareForm(shareForm1, share1)" data-theme="b">Yes</a></div>
+              <div class="ui-block-b"><a href="#welcome" data-role="button" data-theme="c" ng-click="lbbshared='false';resetShareForm(shareForm1, share1)">No</a></div>
+    		</div>
+		    
+		</span>
 	
 		  
 	</div><!-- /content -->

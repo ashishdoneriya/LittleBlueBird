@@ -1,0 +1,74 @@
+
+
+<div id="sharewishlist" data-role="page" data-add-back-btn="true">
+
+	<div data-role="header" data-theme="b">
+		<h1>Share</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+	
+	<h3>
+	    Share
+	    <span ng-show="user.id==showUser.id">My</span>
+	    <span ng-hide="user.id==showUser.id">{{showUser.fullname}}'s</span>
+	    Wish List
+	</h3>
+	
+	
+	<P><a data-role="button" ng-href="#sharewishlist" ng-click="fbsharelist(user, showUser)" data-theme="b" data-rel="dialog" data-transition="pop">Share on Facebook</a></P>
+      
+    <!--
+	<P><a data-role="button" ng-href="#sharewishlistoveremail" data-theme="b" data-rel="dialog" data-transition="pop">Share by Email</a></P>
+	-->
+	
+	<h3 style="text-align:center">- or -</h3>
+	<h3>Share by Email</h3>
+	
+	
+	    <form novalidate name="shareWishlistForm2">
+          <p>
+		    <label for="sharename2" class="ui-hidden-accessible">Name:</label>
+            <input id="sharename2" name="sharename2" type="text" ng-model="share2.name" placeholder="Name" required/>
+	      </p>
+	  
+          <p>
+		    <label for="shareemail2" class="ui-hidden-accessible">Email:</label>
+            <input id="shareemail2" name="shareemail2" type="email" ng-model="share2.email" placeholder="Email" required/>
+	      </p>
+	      
+	  
+	      <!-- don't need a message field
+          <p>
+		    <label for="sharemessage2" class="ui-hidden-accessible">Message:</label>
+            <textarea id="sharemessage2" name="sharemessage2" type="text" ng-model="share2.message" placeholder="Message" required></textarea>
+	      </p>
+		  -->
+		  
+	      
+	      <!--
+	      <P>
+	          <a ng-href="#" ng-click="seeform(shareWishlistForm2)" data-role="button" data-theme="b">see form</a>
+		  </P>
+		  -->
+		  
+		  
+	      <P>
+	        <span ng-hide="shareWishlistForm2.$invalid">
+	          <!-- TODO delete this just leaving it till I get stuff transitioned over -->
+	          <!-- a ng-href="#sharelittlebluebirdoveremail" ng-click="shareLittleBlueBirdOverEmail(share2)" data-role="button" data-theme="b">Share</a -->
+	          
+	          <a ng-href="#wishlist" ng-click="shareWishlistOverEmail(share2, user, showUser)" data-role="button" data-theme="b">Share by Email</a>
+	        </span>
+	        <span ng-show="shareWishlistForm2.$invalid">
+	          <button disabled="" data-role="button" data-theme="b">Share by Email</button>
+	        </span>
+		  </P>
+	    </form>
+	
+	
+	
+	
+	
+		  
+	</div><!-- /content -->

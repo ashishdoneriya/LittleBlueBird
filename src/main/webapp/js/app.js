@@ -406,6 +406,7 @@ angular.module('datetime', [])
 
 
 function RegisterCtrl($scope, User, $rootScope, $location, $cookieStore) {
+
   $scope.save = function(newuser) {
     var userwas = $cookieStore.get("user");
     var showuserwas = $cookieStore.get("showUser");
@@ -413,13 +414,16 @@ function RegisterCtrl($scope, User, $rootScope, $location, $cookieStore) {
     $cookieStore.put("showuserwas", showuserwas);
     $cookieStore.remove("user");
     $cookieStore.remove("showUser");
+    /************
     console.log("REMOVED user COOKIE -----------------------");
     console.log("$cookieStore.get(\"userwas\")="+$cookieStore.get("userwas"));
     console.log("$cookieStore.get(\"user\")="+$cookieStore.get("user"));
     console.log("$cookieStore.get(\"showuserwas\")="+$cookieStore.get("showuserwas"));
     console.log("$cookieStore.get(\"showUser\")="+$cookieStore.get("showUser"));
+    **************/
+    console.log('CHECK NEWUSER FOR GENDER:', newuser);
     
-    $rootScope.user = User.save({login:true, fullname:newuser.fullname, first:newuser.first, last:newuser.last, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth}, 
+    $rootScope.user = User.save({login:true, fullname:newuser.fullname, first:newuser.first, last:newuser.last, gender:newuser.gender, username:newuser.username, email:newuser.email, password:newuser.password, bio:newuser.bio, dateOfBirth:newuser.dateOfBirth}, 
                                   function() { 
                                     $rootScope.showUser = $rootScope.user;
                                     $cookieStore.put("user", $rootScope.user.id);

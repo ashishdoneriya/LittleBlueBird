@@ -277,7 +277,6 @@
 	     <fileset file="fragments/html/deleteparticipants.html" />
 	     <fileset file="fragments/html/addremoveparticipants.html" />
 	     <fileset file="fragments/html/addfromthisevent.html" />
-	     <fileset file="fragments/html/share.html" />
 	     <fileset file="fragments/html/sharewishlist.html" />
 	     <fileset file="fragments/html/sharelittlebluebird.html" />
 	     <fileset file="fragments/html/sharelittlebluebirdoveremail.html" />

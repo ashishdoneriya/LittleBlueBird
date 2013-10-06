@@ -5,6 +5,8 @@
 $scope.shareLittleBlueBirdOverEmail = function(share) {
   Email.send({to: share.name, email: share.email, from: $rootScope.user.fullname, message: share.message, type: 'sharelbb'});
   
+  /******************
+  // I don't think we want to create an account just yet - Shouldn't we wait for the person to response and THEN create the account ?
   if($scope.userExistsAlready.length == 0) {
   
       // This User.save() call is similar to what you'll find in friend.js and event.js.  See $scope.invite() and  $scope.searchforfriend()  2013-09-30
@@ -15,6 +17,14 @@ $scope.shareLittleBlueBirdOverEmail = function(share) {
       ); // anewuser = User.save()
   
   } // if($scope.userExistsAlready.length == 0)
+  *********************/
+}
+
+
+$scope.shareWishlistOverEmail = function(share, user, showUser) {
+  var who = user.id==showUser.id ? "My" : showUser.fullname+"'s"
+  var subject "I want to share "+who+" wish list with you";
+  Email.send({to: share.name, email: share.email, from: $rootScope.user.fullname, subject:, message: share.message, type: 'sharewishlist'});
 }
 
 

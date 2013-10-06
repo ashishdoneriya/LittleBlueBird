@@ -69,6 +69,25 @@
             </span>
           </div>
         </div>
+        
+        <div class="row">
+          <div class="span2 padleft30">
+          
+            <select class="span2 font16" ng-model="newuser.gender" name="gender" placeholder="Gender" title="Gender" required>
+                <option value="male">male</option>
+                <option value="female" selected>female</option>
+            </select>
+            
+          </div>
+          <div class="span1 w20">
+            <span ng-show="regForm.gender.$dirty">
+              <span ng-show="regForm.gender.$error.required">
+                <img src="img/red_x.png" id="invalidgender" title="Gender is required">
+              </span>
+            </span>
+          </div>
+        </div>
+        
 
 
 

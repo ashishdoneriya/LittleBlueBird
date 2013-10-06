@@ -197,6 +197,8 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany with NOO
     override def displayName = "Email"
   }  
   
+  object gender extends MappedString(this, 8) {  }  
+  
   object username extends MappedString(this, 140) {
     override def displayName = "Username"
     

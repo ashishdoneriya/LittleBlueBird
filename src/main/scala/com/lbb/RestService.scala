@@ -377,7 +377,8 @@ object RestService extends RestHelper with LbbLogger {
     S.param("type") match {
       case Full("passwordrecovery") => sendPasswordRecoveryEmail
       case Full("welcome") => sendWelcomeEmail
-      case Full("sharelbb") => share
+      case Full("sharelbb") => shareLittleBlueBird
+      case Full("sharewishlist") => shareWishlist
       case _ => { warn("email:  BadResponse()"); BadResponse() }
     }
   }
@@ -481,13 +482,20 @@ object RestService extends RestHelper with LbbLogger {
     JsonResponse("")
   }
   
-  def share = {
+  def shareLittleBlueBird = {
     debug("share: S.param(\"to\")="+S.param("to"));
     debug("share: S.param(\"email\")="+S.param("email"));
     debug("share: S.param(\"from\")="+S.param("from"));
     debug("share: S.param(\"message\")="+S.param("message"));
     for(to <- S.param("to"); email <- S.param("email"); from <- S.param("from"); message <- S.param("message"))
       Emailer.notifyShareLittleBluebird(to, email, from, message)
+    
+    JsonResponse("")
+  }
+  
+  def shareWishlist = {
+    for(to <- S.param("to"); email <- S.param("email"); from <- S.param("from"); subject <- S.param("subject"); message <- S.param("message"))
+      Emailer.notifyShareWishlist(to, email, from, subject, message)
     
     JsonResponse("")
   }
@@ -509,6 +517,7 @@ object RestService extends RestHelper with LbbLogger {
           case ("first", s:String) => user.first(s)
           case ("last", s:String) => user.last(s)
           case ("email", s:String) => user.email(s)
+          case ("gender", s:String) => user.gender(s)
           case ("username", s:String) => user.username(s)
           case ("password", s:String) => user.password(s)
           case ("bio", s:String) => user.bio(s)

@@ -15,26 +15,20 @@
 	    Wish List
 	</h3>
 	
-	
-	<P><a data-role="button" ng-href="#sharewishlist" ng-click="fbsharelist(user, showUser)" data-theme="b" data-rel="dialog" data-transition="pop">Share on Facebook</a></P>
-      
     <!--
 	<P><a data-role="button" ng-href="#sharewishlistoveremail" data-theme="b" data-rel="dialog" data-transition="pop">Share by Email</a></P>
 	-->
-	
-	<h3 style="text-align:center">- or -</h3>
-	<h3>Share by Email</h3>
 	
 	
 	    <form novalidate name="shareWishlistForm2">
           <p>
 		    <label for="sharename2" class="ui-hidden-accessible">Name:</label>
-            <input id="sharename2" name="sharename2" type="text" ng-model="share2.name" placeholder="Name" required/>
+            <input id="sharename2" name="sharename2" type="text" ng-model="share2.name" placeholder="Who are you sharing with?" required/>
 	      </p>
 	  
           <p>
 		    <label for="shareemail2" class="ui-hidden-accessible">Email:</label>
-            <input id="shareemail2" name="shareemail2" type="email" ng-model="share2.email" placeholder="Email" required/>
+            <input id="shareemail2" name="shareemail2" type="email" ng-model="share2.email" placeholder="What's their email?" required/>
 	      </p>
 	      
 	  
@@ -68,6 +62,7 @@
 	
 	
 	
+	    <P><a data-role="button" ng-href="#sharewishlist" ng-click="fbsharelist(user, showUser)" data-theme="b" data-rel="dialog" data-transition="pop">Share on Facebook</a></P>
 	
 	
 		  

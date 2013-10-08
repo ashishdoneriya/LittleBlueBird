@@ -46,6 +46,13 @@ var app = angular.module('project', ['ngResource', 'User', 'Email', 'Gift', 'Cir
                       lookup: {method:'GET', isArray:false}
                     });
       return UPC;
+  }).
+  factory('Version', function($resource) {
+      var Version = $resource('http://www.littlebluebird.com/gf/rest/version', {},
+                    {
+                      query: {method:'GET', isArray:false}
+                    });
+      return Version;
   });
   
   

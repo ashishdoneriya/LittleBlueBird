@@ -1,3 +1,8 @@
+2013-10-07:  Created new table app_version
+	Create manually on the eatj.com database
+
+
+
 2013-02-13:  Made person.username unique on the localhost database...
 2013-07-17:  confirmed this change was also made on eatj.com
 ALTER TABLE `bdunklau`.`person` 

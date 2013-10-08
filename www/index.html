@@ -126,8 +126,8 @@
     <div data-role="header" data-theme="b"><h1>LittleBlueBird</h1></div>
 	
 	<div data-role="content">
-		<p><a href="#welcome" ng-click="fblogin()" data-role="button" data-theme="b">Login via Facebook</a> </p>	
-		<p><a href="#lbblogin" data-role="button" data-theme="b">Login via LittleBlueBird</a> </p>	
+		<p><a href="#welcome" ng-click="fblogin();version()" data-role="button" data-theme="b">Login via Facebook</a> </p>	
+		<p><a href="#lbblogin" ng-click="version()" data-role="button" data-theme="b">Login via LittleBlueBird</a> </p>	
 		<p><a href="#register" data-role="button" data-theme="b" ng-click="initNewUser()">Register</a> </p>	
 		<p><a href="#forgot" data-role="button" data-theme="b">Forgot User/Pass?</a> </p>	
 			
@@ -165,6 +165,15 @@
     		</p>
     	  </fieldset>	
 		</form>		
+		
+		
+		<!-- also on welcome-nofooter.html -->
+		<span ng-show="needupdate==true">
+			<P>
+			    Free Update!  There is a new version of this app in the App Store and Google Play.
+			</P>
+        </span>
+			
 	</div><!-- /content -->
 
 	<div data-role="footer" data-theme="b" data-position="fixed">
@@ -291,6 +300,15 @@
 			  </ul>
 		  
 		  	  <P><a ng-href="#scanresults" ng-click="scan()" data-role="button" data-theme="b">Barcode Scanner</a></P>
+		
+		
+		      <!-- also on lbblogin.html -->
+		      <span ng-show="needupdate==true">
+					<P>
+			          Free Update!  There is a new version of this app in the App Store and Google Play.
+					</P>
+		      </span>
+	
 	
 		  </span>
 		  

@@ -30,6 +30,22 @@
     );
   }
   
+  
+  // 2013-10-06  This is our mobile app update strategy: We call the server and ask it for the current version. 
+  // Then we compare it to the version here.
+  $scope.version = function() {
+    var clientversion = "0.1.7";
+    serverversion = Version.query({}, 
+      function() {
+        console.log('SERVER VERSION: ', serverversion);
+        if(clientversion != serverversion) {
+          $scope.needupdate = true;
+        }
+        else $scope.needupdate = false;
+      }
+    );
+  }
+  
 
   // 2013-07-19 copied from app-LoginCtrl.js
   $scope.emailIt = function(email) {

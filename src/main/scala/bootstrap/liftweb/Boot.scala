@@ -23,6 +23,7 @@ import com.lbb.entity.User
 import net.liftweb.common.Empty
 import net.liftweb.common.Full
 import net.liftweb.http.DocType
+import com.lbb.entity.AppVersion
 import com.lbb.entity.Reminder
 import com.lbb.entity.AuditLog
 import com.lbb.entity.Friend
@@ -94,6 +95,7 @@ class Boot extends LbbLogger {
     // Use Lift's Mapper ORM to populate the database
     // you don't need to use Mapper to use Lift... use
     // any ORM you want
+    Schemifier.schemify(true, Schemifier.infoF _, AppVersion)
     Schemifier.schemify(true, Schemifier.infoF _, User)
     Schemifier.schemify(true, Schemifier.infoF _, Circle)
     Schemifier.schemify(true, Schemifier.infoF _, CircleParticipant)

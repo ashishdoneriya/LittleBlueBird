@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import com.lbb.entity.AppRequest
+import com.lbb.entity.AppVersion
 import com.lbb.entity.AuditLog
 import com.lbb.entity.Circle
 import com.lbb.entity.CircleParticipant
@@ -114,6 +115,7 @@ object RestService extends RestHelper with LbbLogger {
   
   serve {
     case Get("rest" :: "barcode" :: code :: _, _) => debug("rest/barcode/"+code); lookupBarcode(code)
+    case Get("rest" :: "version" :: _, _) => version
     case Get("rest" :: "usersearch" :: _, _) => debug("RestService.serve:  Get: usersearch"); SearchHelper.usersearch
     case JsonPost("rest" :: "circles" :: Nil, (json, req)) => insertCircle
     
@@ -169,6 +171,15 @@ object RestService extends RestHelper with LbbLogger {
     val url = "http://sowacs.appspot.com/AWS/%5Bbdunklau@yahoo.com%5Decs.amazonaws.com/onca/xml?IdType="+barcodeType+"&ItemId="+code+"&SearchIndex="+searchIndex+"&Service=AWSECommerceService&AWSAccessKeyId=056DP6E1ENJTZNSNP602&Operation=ItemLookup&AssociateTag=wwwlittleb040-20"
     val res = io.Source.fromURL(url).mkString
     val f1 = JField("xml", JString(res))
+    val jobj:JsExp = JObject(List(f1))
+    JsonResponse(jobj)
+  }
+  
+  
+  // This is the server-side of our mobile update strategy.  The client-side is in login.js.  See $scope.version() there
+  def version = {
+    val versions = AppVersion.findAll
+    val f1 = JField("version", JString(versions.head.version))
     val jobj:JsExp = JObject(List(f1))
     JsonResponse(jobj)
   }

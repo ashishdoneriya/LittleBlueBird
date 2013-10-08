@@ -12,8 +12,8 @@ else if (!debugging || typeof console.log == "undefined") console.log = function
 
 
 // 2013-07-23  weird syntax needed for minification
-var LbbController = ['$scope', '$timeout', 'Email', '$rootScope', 'User', 'Gift', 'Password', 'FacebookUser', 'MergeUsers', 'Circle', 'CircleParticipant', 'Reminder', 'Friend', 'UPC', // MUST END WITH A COMMA !
-function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUsers, Circle, CircleParticipant, Reminder, Friend, UPC) {
+var LbbController = ['$scope', '$timeout', 'Email', '$rootScope', 'User', 'Gift', 'Password', 'FacebookUser', 'MergeUsers', 'Circle', 'CircleParticipant', 'Reminder', 'Friend', 'UPC', 'Version', // MUST END WITH A COMMA !
+function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser, MergeUsers, Circle, CircleParticipant, Reminder, Friend, UPC, Version) {
 
   $scope.footermenu = '';
   $scope.eventfilter = 'current';
@@ -46,6 +46,22 @@ function($scope, $timeout, Email, $rootScope, User, Gift, Password, FacebookUser
         }
       }, 
       { scope: "email" }
+    );
+  }
+  
+  
+  // 2013-10-06  This is our mobile app update strategy: We call the server and ask it for the current version. 
+  // Then we compare it to the version here.
+  $scope.version = function() {
+    var clientversion = "0.1.7";
+    serverversion = Version.query({}, 
+      function() {
+        console.log('SERVER VERSION: ', serverversion);
+        if(clientversion != serverversion) {
+          $scope.needupdate = true;
+        }
+        else $scope.needupdate = false;
+      }
     );
   }
   

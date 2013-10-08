@@ -2,8 +2,9 @@
 <widget xmlns       = "http://www.w3.org/ns/widgets"
         xmlns:gap   = "http://phonegap.com/ns/1.0"
         id          = "com.littlebluebird.phonegap.facebook"
-        versionCode = "16"
-        version     = "0.1.6">
+        versionCode = "17"
+        version     = "0.1.7">
+        <!-- UPDATE VERSION IN login.js ALSO   !!!!!!! -->
  
     <name>LittleBlueBird</name>
  

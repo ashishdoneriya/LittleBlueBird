@@ -42,6 +42,14 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
 
       return User;
   }).
+  factory('Server', function($resource) { // poll to make sure the server is still there, or else alert the user that the server is offline
+      var Server = $resource('/gf/rest/server', {}, 
+                    {
+                      ping: {method:'GET', isArray:false}
+                    });
+                    
+      return Server;
+  }).
   factory('Password', function($resource) {
       var Password = $resource('/gf/rest/password/:userId/:currentpassword/:newpassword', {userId:'@userId',  
                                                  currentpassword:'@currentpassword', newpassword:'@newpassword'}, 

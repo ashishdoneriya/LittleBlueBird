@@ -16,9 +16,15 @@
         </li>
         <li ng-class="navstate('classD')">
           <a href="support" ng-click="activenav='classD'">Contact Us</a>
-          
         </li>
       </ul>
+      
+      <span ng-controller="PingCtrl" ng-show="ping!=''" class="brand bgblack" ng-cloak>
+          {{ping}}
+          <a ng-href="{{currentlocation}}" ng-click="stopTimer(timerId)">stop {{timerId}}</a>
+          <a ng-href="{{currentlocation}}" ng-click="startTimer()">start</a>
+      </span>
+      
       <ul class="nav pull-right">
         <li><img ng-src="img/logo.gif"/></li>
       </ul>

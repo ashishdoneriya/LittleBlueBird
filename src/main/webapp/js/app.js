@@ -33,6 +33,9 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
       .when('/managepeople/', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/managepeople.html', five:'partials/navbar.html'}})
       .when('/marketing', {templates: {layout: 'support', one:'partials/marketing.html', four:'partials/navbar-nli.html'}})
       .when('/newevent/:type', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/events/newevent.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
+      
+      .when('/offline', {templates: {layout: 'layout3', two: 'partials/offline.html', four:'partials/navbar-nli.html'}})
+      
       .when('/peopleToInvite', {templates: {layout: 'layout2', four: 'partials/friends/peopleToInvite.html', five:'partials/navbar.html'}})
       .when('/personalinfo', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/myaccount/personalinfo.html', five:'partials/navbar.html'}})
       .when('/privacy', {templates: {layout: 'support', one:'partials/privacy.html', four:'partials/navbar-nli.html'}})
@@ -61,9 +64,20 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         
         console.log("newRoute:", newRoute);
         
+        console.log('$rootScope.timerId = ', $rootScope.timerId);
+        clearInterval($rootScope.timerId);
+        
+        
+        
+        //$rootScope.templates = {layout: 'layout3', two: 'partials/offline.html', four:'partials/navbar-nli.html'};
+        //$rootScope.layoutController = newRoute.controller;
+        //return;
+        
+        
+        
         // Allow anonymous access and do NOT assume the FB user is the person behind the keyboard
         // If we are going to any of these pages, we do NOT want to see if someone is logged in to FB
-        var nonsecure =  ['home', 'emailit', 'register', 'marketing', 'privacy', 'support', 'whoareyou', 'beta', 'download', 'askmobile'];
+        var nonsecure =  ['home', 'emailit', 'register', 'marketing', 'privacy', 'support', 'whoareyou', 'beta', 'download', 'askmobile', 'offline'];
         var allowAnonymousAccess = $location.url() == '/';
         console.log("location.url(): ", $location.url());
         for(var i=0; i < nonsecure.length; ++i) {
@@ -290,7 +304,6 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
     };
     
   });
-  
   
 // purpose: to reset a gift's description and url if the user decides to cancel the edit
 app.factory('GiftEditor', function() {

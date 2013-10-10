@@ -23,6 +23,9 @@ class AppVersion extends LongKeyedMapper[AppVersion] with LbbLogger {
   object id extends MappedLongIndex(this)
   
   object version extends MappedString(this, 32)
+  
+  // this is where you store messages about upcoming downtime.  Clients poll every minute or so looking for anything here to display to the user
+  object downmessage extends MappedString(this, 1024)
 }
 
 object AppVersion extends AppVersion with LongKeyedMetaMapper[AppVersion] {

@@ -1,25 +1,51 @@
-// 2013-09-23 just stuck this here - being lazy
 
-var source = new EventSource('/serversentevents');
+// Every page that contains this controller creates its own instantiation.  So you if you don't do anything
+// about the setInterval()'s, you will keep kicking off one setInterval() after another.
+// So in app.js, in the routeChangeStart handler, we always cancel any existing timer.  Notice that the return
+// value of setInterval() is $rootScope.timerId  2013-10-09
+function PingCtrl($rootScope, $scope, Server) {
+  $rootScope.ping = "";
   
-// 2013-09-23 just stuck this here - being lazy
-function sseCtrl($scope) {
- 
-  $scope.items = [];
- 
-  source.addEventListener('right', function(e) {
-    $scope.$apply(function() {
-      $scope.items.push(e.data);
-    });
-  },false);
+  res = Server.ping({}, 
+              function(){ $rootScope.ping=res.downmessage; }, // yes, server is still there
+              function() { $rootScope.ping = "You are offline" } // uh oh, the server is gone!
+          );
+  
+  $rootScope.timerId = setInterval(function(){
+      console.log('pinging...'+new Date());
+      $rootScope.$apply(function() {
+          res = Server.ping({}, 
+              function(){ $rootScope.ping=res.downmessage; }, // yes, server is still there
+              function() { $rootScope.ping = "You are offline" } // uh oh, the server is gone!
+          );
+      });
+  }, 2000);
+  
+  // make this a $rootScope globally available function so it can be called from routeChangeStart in app.js
+  $scope.stopTimer = function(timerId) {
+    clearInterval(timerId);
+  }
+  
+  // make this a $rootScope globally available function so it can be called from routeChangeStart in app.js
+  $scope.startTimer = function() {
+	  $rootScope.timerId = setInterval(function(){
+	      console.log('pinging...'+new Date());
+	      $rootScope.$apply(function() {
+	          res = Server.ping({}, 
+	              function(){ $rootScope.ping=res.downmessage; }, // yes, server is still there
+	              function() { $rootScope.ping = "You are offline" } // uh oh, the server is gone!
+	          );
+	      });
+	  }, 2000);
+  }
 }
 
-
-function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Email, facebookConnect, $window, $timeout) { 
+LoginCtrl = function($rootScope, $cookieStore, $scope, $location, User, Logout, Email, facebookConnect, $window, $timeout) { 
 
     $scope.fbuser = {}
     $scope.error = null;
     $rootScope.loginoption = '';
+    
     
   $scope.showModal = function(tf) {
     $rootScope.xxxModalShown = tf;
@@ -87,4 +113,4 @@ function LoginCtrl($rootScope, $cookieStore, $scope, $location, User, Logout, Em
     Email.send({type:'passwordrecovery', to:email, from:'info@littlebluebird.com', subject:'Password Recovery', message:'Your password is...'}, function() {alert("Your password has been sent to: "+email);}, function() {alert("Email not found: "+email+"\n\nContact us at info@littlebluebird.com for help");});
   }
   
-}
+};

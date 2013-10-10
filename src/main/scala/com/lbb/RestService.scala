@@ -116,6 +116,7 @@ object RestService extends RestHelper with LbbLogger {
   serve {
     case Get("rest" :: "barcode" :: code :: _, _) => debug("rest/barcode/"+code); lookupBarcode(code)
     case Get("rest" :: "version" :: _, _) => version
+    case Get("rest" :: "server" :: _, _) => server
     case Get("rest" :: "usersearch" :: _, _) => debug("RestService.serve:  Get: usersearch"); SearchHelper.usersearch
     case JsonPost("rest" :: "circles" :: Nil, (json, req)) => insertCircle
     
@@ -180,6 +181,15 @@ object RestService extends RestHelper with LbbLogger {
   def version = {
     val versions = AppVersion.findAll
     val f1 = JField("version", JString(versions.head.version))
+    val jobj:JsExp = JObject(List(f1))
+    JsonResponse(jobj)
+  }
+  
+  
+  // 2013-10-08  originally created to be a simple 'ping' function that would tell the client (via polling) that the server is still here
+  def server = {
+    val serverinfo = AppVersion.findAll // we bastardized the app_version table by adding a 'downmessage' column
+    val f1 = JField("downmessage", JString(serverinfo.head.downmessage))
     val jobj:JsExp = JObject(List(f1))
     JsonResponse(jobj)
   }

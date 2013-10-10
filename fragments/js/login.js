@@ -34,11 +34,12 @@
   // 2013-10-06  This is our mobile app update strategy: We call the server and ask it for the current version. 
   // Then we compare it to the version here.
   $scope.version = function() {
-    var clientversion = "0.1.7";
-    serverversion = Version.query({}, 
+    $scope.version = "0.1.7";
+    app_version_row = Version.query({}, 
       function() {
-        console.log('SERVER VERSION: ', serverversion);
-        if(clientversion != serverversion) {
+        $scope.currentversion = app_version_row.version;
+        console.log('SERVER VERSION: ', $scope.currentversion);
+        if($scope.version != $scope.currentversion) {
           $scope.needupdate = true;
         }
         else $scope.needupdate = false;

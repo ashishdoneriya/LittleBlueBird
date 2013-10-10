@@ -224,6 +224,12 @@
 		     <fileset file="fragments/html/sharewishlist-nofooter.html" />
 		     <fileset file="fragments/html/footer.html" />
 		  </concat>
+
+		  <concat destfile="fragments/html/about.html"
+		          force="yes">
+		     <fileset file="fragments/html/about-nofooter.html" />
+		     <fileset file="fragments/html/footer.html" />
+		  </concat>
 		  
 		  
 		 
@@ -281,6 +287,7 @@
 	     <fileset file="fragments/html/sharelittlebluebird.html" />
 	     <fileset file="fragments/html/sharelittlebluebirdoveremail.html" />
 	     <fileset file="fragments/html/sharewishlist.html" />
+	     <fileset file="fragments/html/about.html" />
 	     <fileset file="fragments/html/bottom.html" />
 	  </concat>
 	</target>

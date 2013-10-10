@@ -34,7 +34,7 @@
   // 2013-10-06  This is our mobile app update strategy: We call the server and ask it for the current version. 
   // Then we compare it to the version here.
   $scope.version = function() {
-    $scope.version = "0.1.7";
+    $scope.version = "0.1.8"; // needs to match the version in config.xml <widget> tag
     app_version_row = Version.query({}, 
       function() {
         $scope.currentversion = app_version_row.version;

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget xmlns       = "http://www.w3.org/ns/widgets"
         xmlns:gap   = "http://phonegap.com/ns/1.0"
-        id          = "com.littlebluebird.phonegap.facebook"
+        id          = "com.littlebluebird.LittleBlueBird"
         versionCode = "18"
         version     = "0.1.8">
         <!-- ALSO UPDATE VERSION IN login.js -->
         <!-- ALSO UPDATE APP_VERSION.VERSION IN THE DB -->
+        
+        <!-- NOTE ABOUT id ATTRIBUTE:  https://build.phonegap.com/docs/config-signing-ios  -->
  
     <name>LittleBlueBird</name>
  

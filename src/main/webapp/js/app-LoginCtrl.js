@@ -6,12 +6,15 @@
 function PingCtrl($rootScope, $scope, Server) {
   $rootScope.ping = "";
   
-  /*************
+  // get maint messages right away, don't wait for setInterval to fire
   res = Server.ping({}, 
               function(){ $rootScope.ping=res.downmessage; }, // yes, server is still there
               function() { $rootScope.ping = "You are offline" } // uh oh, the server is gone!
           );
   
+  
+  // 2013-10-14
+  // capture the timerId so that you can cancel it in app.js routeChangeStart.  Otherwise, you'll have multiple instances of this function being called - we only need one
   $rootScope.timerId = setInterval(function(){
       console.log('pinging...'+new Date());
       $rootScope.$apply(function() {
@@ -20,26 +23,8 @@ function PingCtrl($rootScope, $scope, Server) {
               function() { $rootScope.ping = "You are offline" } // uh oh, the server is gone!
           );
       });
-  }, 2000);
+  }, 120000);
   
-  // make this a $rootScope globally available function so it can be called from routeChangeStart in app.js
-  $scope.stopTimer = function(timerId) {
-    clearInterval(timerId);
-  }
-  
-  // make this a $rootScope globally available function so it can be called from routeChangeStart in app.js
-  $scope.startTimer = function() {
-	  $rootScope.timerId = setInterval(function(){
-	      console.log('pinging...'+new Date());
-	      $rootScope.$apply(function() {
-	          res = Server.ping({}, 
-	              function(){ $rootScope.ping=res.downmessage; }, // yes, server is still there
-	              function() { $rootScope.ping = "You are offline" } // uh oh, the server is gone!
-	          );
-	      });
-	  }, 2000);
-  }
-  ******************/
 }
 
 LoginCtrl = function($rootScope, $cookieStore, $scope, $location, User, Logout, Email, facebookConnect, $window, $timeout) { 

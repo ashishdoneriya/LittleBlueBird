@@ -95,6 +95,11 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
     
     
     $rootScope.registerWithFacebook = function() {
+    
+        // don't like this but not sure what to do about it right now - prevent multiple setInterval() instances
+        // We put this same call in app.js routeChangeStart but under some circumstances, like FB login, the routeChangeStart doesn't get called
+        clearInterval($rootScope.timerId);
+    
         facebookConnect.askFacebookForAuthentication(
           function(reason) { // fail
             $rootScope.error = reason;

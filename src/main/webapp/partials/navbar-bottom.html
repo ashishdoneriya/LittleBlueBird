@@ -4,12 +4,25 @@
   <div class="navbar-inner">
     <div class="container">
 
-        <span class="pull-right">
+      
+      
+      
+      <span ng-controller="PingCtrl" ng-hide="ping=='' || ping==null" ng-cloak>
+          <ul class="nav bgsuperlightblue pull-left">
+            <li>
+                <a style="color:#000000;cursor:default;">{{ping}}</a>
+            </li>
+          </ul>
+      </span>
+      
+      
+      
+      <span class="pull-right">
           <ul class="nav">
             <li><a href="privacy">Privacy</a></li>
             <li><a href="mailto:info@littlebluebird.com">Contact Us</a></li>
           </ul>
-        </span>
+      </span>
       
     </div>
   </div>

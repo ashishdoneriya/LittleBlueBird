@@ -71,6 +71,7 @@
 .bggreen { background-color: #00ff00; }
 .bgred { background-color: #ff0000; }
 .bgwhite { background-color: #ffffff; }
+.bgsuperlightblue {background-color: #eeeeff; }
 
 
 
@@ -357,6 +358,7 @@ input.largefield::-webkit-input-placeholder {padding-top:5px;}
 .margtop_5 { margin-top:-5px; }
 .margtop5 { margin-top:5px; }
 .margtop10 { margin-top:10px; }
+.margtop15 { margin-top:15px; }
 .margtop20 { margin-top:20px; }
 .margtop30 { margin-top:30px; }
 .margtop50 { margin-top:50px; }

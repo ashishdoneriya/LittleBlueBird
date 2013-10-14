@@ -65,11 +65,9 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         console.log("newRoute:", newRoute);
         
         
-        // Put this back in once we've figure out how we're going to notify the user of upcoming downtimes
-        // See navbar-nli.html, prior version, that page is where we are going to display the message to the
-        // user that says "log off, the system is going down soon" or whatever
-        //console.log('$rootScope.timerId = ', $rootScope.timerId);
-        //clearInterval($rootScope.timerId);
+        // See PingCtrl - there's a setInterval() call in that controller.  Every time the user clicks somewhere, we have to cancel the current instance
+        // of setInterval() otherwise we will end up with multiple instances all doing the same thing - we only need one.
+        clearInterval($rootScope.timerId);
         
         
         

@@ -711,7 +711,7 @@ object RestService extends RestHelper with LbbLogger {
                     debug("updateUser:  s = '"+s+"'");  user.dateOfBirth(new SimpleDateFormat("MM/dd/yyyy").parse(s.toString())) // not sure about this on yet
                   }
                 }
-                case _ => warn("UNHANDLED key/value pair:  "+kv._1+" = "+kv._2+" ("+kv._2+" is a "+kv._2.getClass.getName+")")
+                case _ => warn("UNHANDLED key/value pair:  "+kv._1+" = "+kv._2)
               } // (kv._1, kv._2) match {
             } // jvalue.values foreach {
             

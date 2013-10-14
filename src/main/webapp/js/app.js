@@ -64,8 +64,12 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         
         console.log("newRoute:", newRoute);
         
-        console.log('$rootScope.timerId = ', $rootScope.timerId);
-        clearInterval($rootScope.timerId);
+        
+        // Put this back in once we've figure out how we're going to notify the user of upcoming downtimes
+        // See navbar-nli.html, prior version, that page is where we are going to display the message to the
+        // user that says "log off, the system is going down soon" or whatever
+        //console.log('$rootScope.timerId = ', $rootScope.timerId);
+        //clearInterval($rootScope.timerId);
         
         
         

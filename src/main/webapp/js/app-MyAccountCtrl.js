@@ -73,7 +73,7 @@ function MyAccountCtrl( $rootScope, $scope, $cookies, $cookieStore, $timeout, Us
   
   $scope.savePersonalInfo = function(user) {
     //console.log("$scope.savePersonalInfo(): took out success guts -----------------------------");
-    var saveduser = User.save({userId:user.id, fullname:user.fullname, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirthStr, profilepic:user.profilepic}, 
+    var saveduser = User.save({userId:user.id, fullname:user.fullname, username:user.username, email:user.email, password:user.password, bio:user.bio, dateOfBirth:user.dateOfBirthStr, profilepic:user.profilepicUrl}, 
                                   function() {
                                     if(user.dateOfBirth == 0) { user.dateOfBirth = ''; } 
                                     $scope.cssPersonalInfoSaved = 'transition1';

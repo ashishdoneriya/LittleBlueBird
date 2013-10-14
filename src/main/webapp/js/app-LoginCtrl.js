@@ -6,6 +6,7 @@
 function PingCtrl($rootScope, $scope, Server) {
   $rootScope.ping = "";
   
+  /*************
   res = Server.ping({}, 
               function(){ $rootScope.ping=res.downmessage; }, // yes, server is still there
               function() { $rootScope.ping = "You are offline" } // uh oh, the server is gone!
@@ -38,6 +39,7 @@ function PingCtrl($rootScope, $scope, Server) {
 	      });
 	  }, 2000);
   }
+  ******************/
 }
 
 LoginCtrl = function($rootScope, $cookieStore, $scope, $location, User, Logout, Email, facebookConnect, $window, $timeout) { 

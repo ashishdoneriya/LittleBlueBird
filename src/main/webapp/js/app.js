@@ -19,7 +19,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
       .when('/currentevent', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/events/event.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/editevent', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/events/newevent.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/email', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/email.html', five:'partials/navbar.html'}})
-      .when('/emailit', {templates: {layout: 'home', one: 'partials/emailMyUsernameAndPassword.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
+      .when('/emailit', {templates: {layout: 'home', one: 'partials/emailMyUsernameAndPassword.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html', five:'partials/carousel.html'}})
       .when('/emailprefs', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/myaccount/emailprefs.html', five:'partials/navbar.html'}})
       .when('/event/:circleId', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/events/event.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/events', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
@@ -27,7 +27,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
       .when('/foo/friends', {templates: {layout: 'foo.html', four: 'partials/friends/whatarefriends.html', one: 'partials/events/events.html', two: 'partials/friends/friends.html', five:'partials/navbar.html'}})
       .when('/giftlist/:showUserId', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
       .when('/giftlist/:showUserId/:circleId', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
-      .when('/home', {templates: {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
+      .when('/home', {templates: {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html', five:'partials/carousel.html'}})
       // get rid of /login route
       .when('/login', {templates: {layout: 'layout-nli.html', one: 'partials/login.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       .when('/managepeople/', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/managepeople.html', five:'partials/navbar.html'}})
@@ -39,14 +39,14 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
       .when('/peopleToInvite', {templates: {layout: 'layout2', four: 'partials/friends/peopleToInvite.html', five:'partials/navbar.html'}})
       .when('/personalinfo', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/myaccount/personalinfo.html', five:'partials/navbar.html'}})
       .when('/privacy', {templates: {layout: 'support', one:'partials/privacy.html', four:'partials/navbar-nli.html'}})
-      .when('/register', {templates: {layout: 'home', one: 'partials/register.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
+      .when('/register', {templates: {layout: 'home', one: 'partials/register.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html', five:'partials/carousel.html'}})
       .when('/reminders', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/reminders.html', five:'partials/navbar.html'}})
       .when('/state', {templates: {layout: 'foo',               menu: 'partials/foo/menu.html', body:'partials/foo/foo.html'}})
       .when('/support', {templates: {layout: 'support', one:'partials/support.html', four:'partials/navbar-nli.html'}})
       .when('/test', {templates: {layout: 'layout-nli.html', one: 'partials/test.html', two: 'partials/loginsectiontwo.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
       .when('/welcome', {templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/welcome.html', five:'partials/navbar.html'}})
       .when('/whoareyou', {templates: {layout: 'layout3', two: 'partials/whoareyou.html', four:'partials/navbar.html'}})
-      .when('/', {templates: {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html'}})
+      .when('/', {templates: {layout: 'home', one: 'partials/loginWithLittleBlueBird.html', two: 'partials/loginWithFacebook.html', three:'partials/LittleBlueBird.html', four:'partials/navbar-nli.html', five:'partials/carousel.html'}})
       .otherwise({redirectTo: '/welcome', templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', two: 'partials/friends/friends.html', four: 'partials/welcome.html', five:'partials/navbar.html'}})
       //.otherwise({redirectTo: '/mywishlist', templates: {layout: 'layout.html', one: 'partials/friends/addfacebookfriends.html', four: 'partials/giftlist.html', five:'partials/navbar.html'}})
       ;
@@ -69,6 +69,9 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         // of setInterval() otherwise we will end up with multiple instances all doing the same thing - we only need one.
         clearInterval($rootScope.timerId);
         
+        
+        // Don't know how to actually pause the carousel - nothing seems to work - so cycle very slowly
+        jQuery('.carousel').carousel.defaults = {interval:30000, pause:'hover'};
         
         
         //$rootScope.templates = {layout: 'layout3', two: 'partials/offline.html', four:'partials/navbar-nli.html'};

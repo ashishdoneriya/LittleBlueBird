@@ -27,6 +27,15 @@ function PingCtrl($rootScope, $scope, Server) {
   
 }
 
+
+function CarouselCtrl($scope) {
+
+
+    // Don't know how to actually pause the carousel - nothing seems to work - so cycle very slowly in app.js:routeChangeStart
+
+}
+
+
 LoginCtrl = function($rootScope, $cookieStore, $scope, $location, User, Logout, Email, facebookConnect, $window, $timeout) { 
 
     $scope.fbuser = {}

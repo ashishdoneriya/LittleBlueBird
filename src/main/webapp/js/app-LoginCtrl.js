@@ -36,6 +36,13 @@ function CarouselCtrl($scope) {
 }
 
 
+function MobileBannerCtrl($scope, $window) {
+    $scope.mobiletestdrive = function() {
+        $window.open('http://www.littlebluebird.com/gf/www','Mobile App','scrollbars=1,location=0,height=480,width=320');
+    }
+}
+
+
 LoginCtrl = function($rootScope, $cookieStore, $scope, $location, User, Logout, Email, facebookConnect, $window, $timeout) { 
 
     $scope.fbuser = {}

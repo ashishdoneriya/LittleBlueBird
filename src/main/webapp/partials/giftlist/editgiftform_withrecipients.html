@@ -21,14 +21,14 @@
 	                <div class="span4"><input class="span4" type="URL" name="url" ng-model="gift.url" placeholder="URL (incl http://)" title="URL (incl http://)" /></div>
 	              </div>
                 </div>
-                <div class="span3">
+                <div class="span2">
                   <div class="row">
-                    <div class="span3">
+                    <div class="span2">
                       This item is for<br/>(check all that apply)
                     </div>
                   </div>
                   <div class="row">
-                    <div class="span3">
+                    <div class="span2">
                       <div ng-repeat="receiver in gift.possiblerecipients">
                         <input type="checkbox" ng-model="receiver.checked"> {{receiver.fullname}}
                       </div>

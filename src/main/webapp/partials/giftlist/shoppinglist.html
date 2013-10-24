@@ -1,0 +1,71 @@
+
+<div ng-controller="ShoppingListCtrl">
+
+
+<div class="row">
+  <div class="span6 roundedtop bgbluegradient white pad10">
+    <div class="row">
+      <div class="span6 padtop5 font24">Shopping List</div>  
+    </div>  
+    
+    
+    <div class="row">
+      <div class="span6">
+	      <div ng-include src="'partials/circleinfo.html'"></div>
+      </div>  
+    </div>  
+    
+  </div>
+</div>
+<!-- end of the header row -->
+
+
+
+<div class="row" ng-show="shoppingList.length==0">
+        <div class="span6 list pad10 lastrow">
+              <P><h4 class="font16">Your shopping list is empty</h4></P>
+              <P class="font14">When you click the "Give" button on someone's list, that item will appear here</P>
+              <P>The shopping list page is great for people that buy a lot of gifts for a lot of people</P>
+        </div>
+</div>
+
+
+
+<div ng-repeat="item in shoppingList">
+  <div class="row">
+    <div class="{{isLastRow('span6 list pad10', $index, shoppingList.length)}}">
+
+		      <div class="row">
+		      
+		        <div class="span6">
+		        
+				  <span class="font18">
+				    <span ng-show="item.affiliateUrl != '' && item.affiliateUrl != null">
+				      <a ng-href="{{item.affiliateUrl}}" 
+				         target="item">
+				        {{item.description}}
+				      </a>
+				    </span>
+				    
+				    <span ng-hide="item.affiliateUrl != '' && item.affiliateUrl != null">
+				        {{item.description}}  <!-- TODO: use the amazon quick linker widget when no link is provided -->
+				    </span>
+				    
+				  </span> 
+		
+		        </div>
+		      </div>
+		      
+		      
+		      <div class="row">
+		        <div class="span6">
+			      For {{commasep(item.recipients)}}
+		        </div>
+		      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+</div>

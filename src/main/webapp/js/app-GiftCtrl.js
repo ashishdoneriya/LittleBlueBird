@@ -1,3 +1,22 @@
+function ShoppingListCtrl($scope, $route, ShoppingList) {
+  
+  $scope.shoppingList = ShoppingList.query({senderId:$route.current.params.senderId, circleId:$route.current.params.circleId},
+        function() {console.log('shoppingList:', $scope.shoppingList)});
+  console.log('ShoppingListCtrl ------------------------------------------');
+  
+  // TODO duplicated code from GiftCtrl below
+  $scope.commasep = function(people) {
+    
+    if(!angular.isDefined(people)) return "";
+    var names = [];
+    for(var i=0; i < people.length; ++i) {
+      names.push(people[i].fullname);
+    }
+    return names.join(" and ");
+  }
+}
+
+
 function GiftListCtrl($window, $location, $route, $scope, Gift, User, Circle, $rootScope, facebookConnect, $cookieStore) {
   
   
@@ -149,6 +168,7 @@ function GiftCtrl($rootScope, $location, $route, $cookieStore, $scope, Circle, G
   
   // 2013-10-04 copied from user.js on the mobile side - needed to list multiple recipients in viewitem.html when they exist
   $scope.commasep = function(people) {
+    
     if(!angular.isDefined(people)) return "";
     var names = [];
     for(var i=0; i < people.length; ++i) {

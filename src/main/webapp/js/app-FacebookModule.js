@@ -196,7 +196,8 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                         if($rootScope.users.length == 0) {
                             // need to create account for this person in LBB
                                                        
-                            $rootScope.user = User.save({login:true, fullname:$rootScope.fbuser.first_name+' '+$rootScope.fbuser.last_name, first:$rootScope.fbuser.first_name, last:$rootScope.fbuser.last_name, username:$rootScope.fbuser.email, email:$rootScope.fbuser.email, password:$rootScope.fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+$rootScope.fbuser.id+'/picture?type=large', facebookId:$rootScope.fbuser.id}, 
+                            // 2013-10-22 change: don't set username and password = email.  Don't pass them at all. Let the server generate a username and password for the user.
+                            $rootScope.user = User.save({login:true, fullname:$rootScope.fbuser.first_name+' '+$rootScope.fbuser.last_name, first:$rootScope.fbuser.first_name, last:$rootScope.fbuser.last_name, email:$rootScope.fbuser.email, bio:'', profilepic:'http://graph.facebook.com/'+$rootScope.fbuser.id+'/picture?type=large', facebookId:$rootScope.fbuser.id}, 
                                                function() { 
                                                  $rootScope.showUser = angular.copy($rootScope.user);
                                                  $cookieStore.put("user", $rootScope.user.id);

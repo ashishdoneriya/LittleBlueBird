@@ -39,7 +39,6 @@ import net.liftweb.json.JsonAST.JField
 import net.liftweb.json.JsonAST.JObject
 import net.liftweb.json.JsonAST.JString
 import net.liftweb.json.JsonAST.JValue
-import net.liftweb.json.JsonParser
 import net.liftweb.mapper.By
 import net.liftweb.mapper.ByList
 import net.liftweb.mapper.Cmp
@@ -95,6 +94,7 @@ object RestService extends RestHelper with LbbLogger {
     // Can't use the url pattern:  gifts/userId because we already have gifts/giftId - would be ambiguous
     // So we have wishlist/userId - kinda lame
     case Get("rest" :: "wishlist" :: AsLong(userId) :: _, _) => wishlist(userId)
+    case Get("rest" :: "shoppinglist" :: AsLong(senderId) :: AsLong(circleId) :: _, _) => shoppingList(senderId, circleId)
     case Get("rest" :: "users" :: AsLong(userId) :: _, _) => debug("RestService.serve:  22222222222222"); findUser(userId)
     case Get("rest" :: "users" :: _, _) => debug("RestService.serve:  333333333333333333333333"); findUsers
   }
@@ -360,6 +360,11 @@ object RestService extends RestHelper with LbbLogger {
   def wishlist(userId:Long) = {
     val jsongifts = User.findByKey(userId).map(_.mywishlist.map(_.asJs)) openOr Nil
     JsonResponse(JsArray(jsongifts))
+  }
+  
+  def shoppingList(senderId:Long, circleId:Long) = {
+    val shoplist = Gift.getShoppingList(senderId, circleId).map(_.asJs)
+    JsonResponse(JsArray(shoplist))
   }
   
   def logout = {

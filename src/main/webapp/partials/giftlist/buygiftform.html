@@ -55,7 +55,7 @@
 			    <div class="span3">
 			      {{gift.recipients[0].first}} <span ng-repeat="recipient in gift.recipients.slice(1)"> and {{recipient.first}}</span>
 			    </div>  
-			    <div class="span2">Give on (date)</div>
+			    <span ng-show="circle==null"><div class="span2">Give on (date)</div></span>
 			  </div>
 			  
 			  <div class="row"> 
@@ -68,7 +68,7 @@
 			      <input type="text" ng-model="gift.senderName" />
 			    </div>
 			    <div class="span2">
-			      <input class="input-small" date-picker="recdate" name="recdate" ng-model="recdate" type="text"></input>
+			      <span ng-show="circle==null"><input class="input-small" date-picker="recdate" name="recdate" ng-model="recdate" type="text"></input></span>
 			    </div>
 			  </div>
 			  

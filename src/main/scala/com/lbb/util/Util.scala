@@ -73,7 +73,7 @@ object Util extends LbbLogger {
     }
     
     val fff = facebookIds.getOrElse(List())
-    println("fff = "+fff)
+    debug("fff = "+fff)
     fff
   }
   

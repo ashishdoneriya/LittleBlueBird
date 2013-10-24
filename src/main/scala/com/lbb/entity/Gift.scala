@@ -343,6 +343,10 @@ object Gift extends Gift with LongKeyedMetaMapper[Gift] {
   // define the order fields will appear in forms and output
   override def fieldOrder = List(description, url)
   
+  def getShoppingList(senderId:Long, circleId:Long) = {
+    Gift.findAll(By(Gift.sender, senderId), By(Gift.circle, circleId))
+  }
+  
   def merge(keep:User, delete:User) = {
     // PROBLEM: If you delete gift records that have this person as an adder or sender
     // and then try to create new gift records with 'keep' as the adder/sender, you're

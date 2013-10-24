@@ -148,7 +148,10 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany with NOO
         val uname = determineUsernameBasedOnFirstName(unames)
         debug("determined username to be: "+uname);
         this.username(uname)
-        this.password(Util.hashPass(uname)) // we don't want the username and password to be the same - that's pretty easy to hack
+      }
+      
+      if(needToDeterminePassword) {
+        this.password(Util.hashPass(this.username))
       }
       
       val saved = super.save
@@ -718,6 +721,15 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany with NOO
       Friend.associate(newfriend.id.is, this.id.is)
     }
                     
+  }
+  
+  
+  def needToDeterminePassword = {
+    if(this.id.is == -1) {
+      if(this.password == null || this.password.is == null || this.password.isEmpty() || this.password.is.trim().equals("")) true
+      else false
+    }
+    else false
   }
 
   

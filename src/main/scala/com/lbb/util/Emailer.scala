@@ -186,10 +186,16 @@ object Emailer extends LbbLogger {
    */
   def notifyWelcomeFacebookUser(user:User) = {
     val body = <div>{user.first.is} {user.last.is},
+              <P>&nbsp;</P>
               <P>Welcome to LittleBlueBird!</P>
               <P>LittleBlueBird is <i>the place</i> to put your wish list for Christmas, your birthday, and any other occasion.</P>
+              <P>&nbsp;</P>
               <P>Share LittleBlueBird with your friends and family and see how it makes gift giving a snap!</P>
               <P>You are signed in to LittleBlueBird using your Facebook login.  So you don't have to remember another username or password.  The next time you want to login to LittleBlueBird, just use your Facebook login.</P>
+              <P>&nbsp;</P>
+              <P>If you don't want to login via Facebook, you can login to LittleBlueBird with the following username and password</P>
+              <P>username: {user.username.is}</P>
+              <P>password: {user.password.is}</P>
               </div>
     val msg = createEmail(body)
     val subj = "Welcome to LittleBlueBird!"

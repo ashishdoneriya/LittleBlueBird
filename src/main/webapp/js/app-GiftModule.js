@@ -9,6 +9,14 @@ angular.module('GiftModule', ['UserModule']).
                     });
 
       return Gift;
+  }).
+  factory('ShoppingList', function($resource) {
+      var ShoppingList = $resource('/gf/rest/shoppinglist/:senderId/:circleId', {senderId:'@senderId', circleId:'@circleId'}, 
+                    {
+                      query: {method:'GET', isArray:true}, 
+                    });
+
+      return ShoppingList;
   })
 .run(function($route, $cookieStore, $rootScope, $location, User, Gift, Circle) {
   

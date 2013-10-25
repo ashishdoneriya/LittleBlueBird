@@ -254,9 +254,15 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger with DateChangeListener 
     recipientsToSave.append(l)
   }
   
-  override def save() = {
+  override def save = {
     if(dateCreated.is==null) dateCreated(new Date())
-    val saved = super.save();
+    
+    val inserting = if(this.id==null || this.id.is == -1) true else false
+    
+    val saved = super.save;
+    
+    if(saved && inserting) AuditLog.giftInserted(this)
+    else if(saved && inserting) AuditLog.giftUpdated(this)
     
     if(recipientsToSave.size > 0) {
       // delete current recipients before adding the new ones (even though they may be the same)
@@ -266,6 +272,12 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger with DateChangeListener 
     }
     
     saved
+  }
+  
+  override def delete_! = {
+    val deleted = super.delete_!
+    if(deleted) AuditLog.giftDeleted(this)
+    deleted
   }
   
   override def suplementalJs(ob: Box[KeyObfuscator]): List[(String, JsExp)] = {

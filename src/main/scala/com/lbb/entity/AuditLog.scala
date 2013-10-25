@@ -89,7 +89,7 @@ class AuditLog extends LongKeyedMapper[AuditLog] with LbbLogger {
     override def is = new Date()
   } // don't have to supply values (?) because this defaults to current_timestamp
   
-  object action extends MappedString(this, 1024)
+  object action extends MappedString(this, 1024) // NOT NULL on eatj.com but this definition will not create the column that way TODO should probably figure out how to define NOT NULL here
 }
 
 object AuditLog extends AuditLog with LongKeyedMetaMapper[AuditLog] {
@@ -101,6 +101,73 @@ object AuditLog extends AuditLog with LongKeyedMetaMapper[AuditLog] {
     
   def recordLogout(user:User, box:Box[Req]) = {
     recordAction(user, box, "Logout")
+  }
+  
+  def friendInsertBegin(friend:Friend) = {
+    val action = "FRIEND INSERT BEGIN: make "+friend.user.is+" and "+friend.friend.is+" friends"
+    AuditLog.create.action(action).save
+  }
+  
+  def friendInsertSuccess(friend:Friend) = {
+    val action = "FRIEND INSERT SUCCESS: "+friend.user.is+" and "+friend.friend.is+" are now friends"
+    AuditLog.create.action(action).save
+  }
+  
+  def friendSaveError(friend:Friend, e:Throwable) = {
+    val action = "FRIEND SAVE ERROR: trying to make "+friend.user.is+" and "+friend.friend.is+" friends: Error Type: "+e.getClass.getName+"  Error Message: "+e.getMessage
+    AuditLog.create.action(action).save
+  }
+  
+  def friendsAlready(friend:Friend) = {
+    val action = "FRIEND ALREADY: "+friend.user.is+" and "+friend.friend.is
+    AuditLog.create.action(action).save
+  }
+  
+  def friendDeleted(friend:Friend) = {
+    val action = "FRIEND DELETED: "+friend.user.is+" and "+friend.friend.is
+    AuditLog.create.action(action).save
+  }
+  
+  def circleInserted(c:Circle) = {
+    // don't have username, firstname, lastname, email, remote ip (don't think), request url, query string, or session id
+    val action = "CIRCLE INSERTED:  ID="+c.id+" NAME="+c.name
+    AuditLog.create.person(c.creator.is).action(action).save
+  }
+  
+  // We don't know who is updating the circle because that info isn't passed from client to server (2013-10-24)
+  // We should probably be passing the user id on all REST calls
+  // FOR BOTH UPDATE's AND DELETE's
+  def circleUpdated(c:Circle) = {
+    // don't have username, firstname, lastname, email, remote ip (don't think), request url, query string, or session id
+    val action = "CIRCLE UPDATED:  ID="+c.id+" NAME="+c.name+" (may not have been the name that changed)"
+    AuditLog.create.firstname("unknown").action(action).save
+  }
+  
+  def circleDeleted(c:Circle) = {
+    // don't have username, firstname, lastname, email, remote ip (don't think), request url, query string, or session id
+    val action = "CIRCLE DELETED:  ID="+c.id+" NAME="+c.name+" (may not have been the name that changed)"
+    AuditLog.create.firstname("unknown").action(action).save
+  }
+  
+  
+  def giftInserted(g:Gift) = {
+    // don't have username, firstname, lastname, email, remote ip (don't think), request url, query string, or session id
+    val action = "GIFT INSERTED:  ID="+g.id+" DESCRIPTION="+g.description
+    AuditLog.create.person(g.addedBy.is).action(action).save
+  }
+  
+  
+  def giftUpdated(g:Gift) = {
+    // don't have username, firstname, lastname, email, remote ip (don't think), request url, query string, or session id
+    val action = "GIFT UPDATED:  ID="+g.id+" DESCRIPTION="+g.description+" (may not have been the description that changed)"
+    AuditLog.create.person(g.addedBy.is).action(action).save
+  }
+  
+
+  def giftDeleted(g:Gift) = {
+    // don't have username, firstname, lastname, email, remote ip (don't think), request url, query string, or session id
+    val action = "GIFT DELETED: ID="+g.id+" DESCRIPTION="+g.description
+    AuditLog.create.person(g.addedBy.is).action(action).save
   }
   
   private def recordAction(user:User, box:Box[Req], action:String) = {

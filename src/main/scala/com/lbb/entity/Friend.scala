@@ -31,20 +31,28 @@ class Friend extends LongKeyedMapper[Friend] with IdPK with LbbLogger {
       case (f, u) if(f!=u) => {
         // as long as you're not trying to friend yourself, go ahead and save
         try {
-          debug("attempt to save: user="+user+"  friend="+friend);
+          AuditLog.friendInsertBegin(this)
           val saved = super.save
-          debug("attempt to save: user="+user+"  friend="+friend+"  =>  saved="+saved);
+          if(saved) AuditLog.friendInsertSuccess(this)
           saved
         }
         catch { 
-          case e:MySQLIntegrityConstraintViolationException => debug(e.getClass().getName+": "+e.getMessage); false 
-          case e => error(e.getClass().getName+": "+e.getMessage); false 
+          case e:MySQLIntegrityConstraintViolationException => AuditLog.friendsAlready(this); false 
+          case e => AuditLog.friendSaveError(this, e); false 
         }
       }
       case _ => false
     }
     
   }
+  
+  
+  override def delete_! = {
+    val deleted = super.delete_!
+    if(deleted) AuditLog.friendDeleted(this)
+    deleted
+  }
+  
 }
 
 object Friend extends Friend with LongKeyedMetaMapper[Friend] {

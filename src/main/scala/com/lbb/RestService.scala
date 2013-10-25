@@ -617,7 +617,7 @@ object RestService extends RestHelper with LbbLogger {
             
             } // jvalue.values foreach {kv => (kv._1, kv._2) match
             
-            circle.save()
+            circle.save
             JsonResponse(circle.asJs)
             
           } // case Full(jvalue:JObject)
@@ -656,7 +656,7 @@ object RestService extends RestHelper with LbbLogger {
             } // kv => (kv._1, kv._2) match
           } // jvalue.values foreach
             
-          circle.save()
+          circle.save
           JsonResponse(circle.asJs)
             
         } // case Full(jvalue:JObject)
@@ -1076,7 +1076,8 @@ object RestService extends RestHelper with LbbLogger {
                 case _ => debug("insertGift:  Not handled: Gift."+kv._1+" = "+kv._2)
               } // (kv._1, kv._2) match
             } // jvalue.values foreach
-            gift.save
+            
+            gift.save            
             gift.edbr
             JsonResponse(gift.asJs)
           } // case Full(jvalue:JObject)

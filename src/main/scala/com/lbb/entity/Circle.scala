@@ -225,10 +225,15 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLog
     giversToSave.append(id)
   }
   
-  override def save() = {
+  override def save = {
     val inserting = id.is == -1
+    val deleting = this.isDeleted
     
     val saved = super.save();
+    
+    if(saved && inserting) AuditLog.circleInserted(this)
+    else if(saved && deleting) AuditLog.circleDeleted(this)
+    else if(saved && !inserting) AuditLog.circleUpdated(this)
     
     if(inserting) {
       val receiverSet = receiversToSave.toSet

@@ -10,7 +10,7 @@ var app = angular.module('project', ['ngResource', 'User', 'Email', 'Gift', 'Cir
     $locationProvider.hashPrefix('#').html5Mode(false);
   }).
   factory('FacebookUser', function($resource) {
-      var FacebookUser = $resource('http://www.littlebluebird.com/gf/rest/fb/:facebookId/:email/:first/:last', {facebookId:'@facebookId', email:'@email', first:'@first', last:'#last'}, 
+      var FacebookUser = $resource('http://www.littlebluebird.com/gf/rest/fb/:facebookId/:email/:first/:last', {facebookId:'@facebookId', email:'@email', first:'@first', last:'@last'}, 
                     {
                       findOrCreate: {method:'GET', isArray:true}
                     });

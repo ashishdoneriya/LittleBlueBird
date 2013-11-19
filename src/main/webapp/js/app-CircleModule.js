@@ -372,15 +372,13 @@ angular.module('CircleModule', ['UserModule'])
   $rootScope.savecircle = function(circle, expdate) {
     circle.expirationdate = new Date(expdate);
     
-    console.log("app-CircleModule: $rootScope.savecircle:  circle.expirationdate.getTime() = "+circle.expirationdate.getTime());
-    console.log("app-CircleModule: trying to save this circle...");
-    console.log(circle);
+    console.log("app-CircleModule: trying to save this circle: ",circle);
     console.log("app-CircleModule: and these participants...", circle.participants);
     
     var inserting = !angular.isDefined(circle.id)
     
     // The saved circle should become the current circle if it isn't already
-    $rootScope.circle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.getTime(), circleType:circle.circleType, 
+    $rootScope.circle = Circle.save({circleId:circle.id, name:circle.name, expirationdate:circle.expirationdate.toString('MM/dd/yyyy'), circleType:circle.circleType, 
                  creatorId:$rootScope.user.id},
                  function() {
                    if(inserting) {

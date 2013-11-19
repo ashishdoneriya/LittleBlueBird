@@ -642,6 +642,13 @@ object RestService extends RestHelper with LbbLogger {
               case ("circleId", id:BigInt) => { }
               case ("datedeleted", b:BigInt) => circle.date_deleted(new Date(b.toLong)) // side effect: reminders get deleted by virtue of this call.  See DateChangeListener.dateDeletedSet
               case ("name", s:String) => circle.name(s)
+              
+              case ("expirationdate", s:String) => {
+                if(s!=null && !s.toString().trim().equals("") && !s.toString().trim().equals("0")) {
+                  debug("RestService.insertCircle:  s = '"+s+"'");  circle.date(new SimpleDateFormat("MM/dd/yyyy").parse(s.toString())) // not sure about this one yet
+                }
+              } // case ("expirationdate", s:String)
+              
               case ("expirationdate", b:BigInt) => circle.date(new Date(b.toLong))
               case ("circleType", s:String) => circle.circleType(s)
               case ("creatorId", b:BigInt) => { /* ignore creator on updates - creator doesn't change */ }

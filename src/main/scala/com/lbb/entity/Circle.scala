@@ -154,7 +154,11 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLog
   
   // new&improved version of 'participants' above
   // return a List[User] not just the fkeys
-  def participantList = participants.map(fk => fk.person.obj.open_!)
+  // 2013-11-21  replacing use of  .open_! with a 'for' comprehension.  Got a NPE in User.friendList because we were relying on .open_!
+  def participantList = {
+    val partlist = for(fk <- participants; ppp <- fk.person.obj) yield ppp
+    partlist
+  }
   
   def receivers = participantList.filter(_.isReceiver(this))//.map(_.asJsShallow)
   def givers = participantList.filter(!_.isReceiver(this))//.map(_.asJsShallow)
@@ -235,13 +239,15 @@ class Circle extends LongKeyedMapper[Circle] with DateChangeListener with LbbLog
     else if(saved && deleting) AuditLog.circleDeleted(this)
     else if(saved && !inserting) AuditLog.circleUpdated(this)
     
-    if(inserting) {
+    
+    // 2013-11-21 added 'saved' condition because we don't want to do all this if the circle itself didn't get saved
+    if(saved && inserting) {
       val receiverSet = receiversToSave.toSet
-      receiverSet foreach { r => CircleParticipant.create.circle(this).person(r).inviter(creator.is).participationLevel("Receiver").save() }
+      receiverSet foreach { r => CircleParticipant.create.circle(this).person(r).inviter(creator.is).participationLevel("Receiver").save }
       receiversToSave.drop(0)
       
       val giverSet = giversToSave.toSet
-      giverSet foreach { r => CircleParticipant.create.circle(this).person(r).inviter(creator.is).participationLevel("Giver").save() }
+      giverSet foreach { r => CircleParticipant.create.circle(this).person(r).inviter(creator.is).participationLevel("Giver").save }
       giversToSave.drop(0)
     }
     

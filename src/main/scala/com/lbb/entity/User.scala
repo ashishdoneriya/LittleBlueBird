@@ -478,7 +478,11 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany with NOO
   
   object friends extends MappedManyToMany(Friend, Friend.friend, Friend.user, User)
   
-  def friendList = Friend.findAll(By(Friend.friend, this.id)).map(_.user.obj.open_!)
+  def friendList = {
+    val xxx = Friend.findAll(By(Friend.friend, this.id))
+    val fff = for(yyy <- xxx; uuu <- yyy.user.obj) yield uuu
+    fff
+  }
   
   // TODO leftover Lift code?
   override def toForm(button: Box[String], f: User => Any): NodeSeq = {

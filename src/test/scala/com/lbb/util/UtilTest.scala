@@ -68,8 +68,8 @@ class UtilTest extends FunSuite with AssertionsForJUnit with LbbLogger {
   
   // 2013-08-06
   test("hash pass") {
-    val exp = "202CB9";
-    val act = Util.hashPass("123")
+    val exp = "332996";
+    val act = Util.hashPass("Beverly1")
     assert(exp===act)
   }
   

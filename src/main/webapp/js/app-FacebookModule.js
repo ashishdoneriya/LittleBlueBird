@@ -39,7 +39,18 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
         
     } // return new function()
     
-}])
+}]).
+  factory('FacebookUser', function($resource) {
+      // 2013-10-31  Took a best practice from the mobile side and moved it over to the web.  Namely, when logging in via FB, take everything you have and send it
+      // to the server and let the server figure out whether or not we already have a record for this person.
+  
+      var FacebookUser = $resource('/gf/rest/fb/:facebookId/:email/:first/:last', {facebookId:'@facebookId', email:'@email', first:'@first', last:'@last'}, 
+                    {
+                      findOrCreate: {method:'GET', isArray:true}
+                    });
+
+      return FacebookUser;
+  })
 .factory('facebookFriends', function() {
   return new function() {
     this.getfriends = function(offset, limit, success, fail) {
@@ -52,7 +63,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
       return this.getfriends(0, 10, success, fail);
     }
   }
-}).run(function($rootScope, $window, $cookieStore, $location, facebookConnect, facebookFriends, AppRequest, UserSearch, User, FacebookServerSide) {
+}).run(function($rootScope, $window, $cookieStore, $location, facebookConnect, facebookFriends, AppRequest, UserSearch, User, FacebookServerSide, FacebookUser) {
     
     // 3/12/13 This function will actually log the user out of Facebook - not sure if this really what we want to do.
     // Other sites don't behave this way, even when you login via fb.
@@ -136,10 +147,14 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
         });
     }
     
-    $rootScope.initfbuser = function(user) {
+    
+    // 2013-11-17 We are replacing one initfbuser() with another.  This is the one we are eventually going to use,
+    // but there is another bug that I am trying to track down (incorrect date displayed on newevent.html when the user is editing
+    // a circle.  I don't want anything else in that fix, so I added the "not ready" suffix to this fn name and 
+    // reinstated the initfbuser() fn below this one by removing its suffix.
+    $rootScope.initfbuser_not_ready_yet = function(user) {
       $rootScope.fbuser = user;
-      console.log("$rootScope.initfbuser...");
-      console.log($rootScope.fbuser);
+      console.log("$rootScope.initfbuser: fbuser", $rootScope.fbuser);
       
       var fbLoginStatus = function() {
 	    //get access token and pass to the server; get all friends on the server not the client
@@ -155,6 +170,52 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
 	                  function() {$rootScope.user.peopleToInvite = peopleToInvite; console.log("FacebookServerSide SUCCESS: $rootScope.user.peopleToInvite", $rootScope.user.peopleToInvite)},
 	                  function() {console.log("FacebookServerSide FAIL: $rootScope.peopleToInvite --------------------")});
 	    });
+      }
+	    
+	    
+      $rootScope.users = FacebookUser.findOrCreate({email:fbuser.email, facebookId:fbuser.id, first:fbuser.first_name, last:fbuser.last_name},
+                function() {
+                    if($rootScope.users.length == 1) {
+                    }
+                    else {}
+                    
+                    // delete some attribute that says we are in the process of logging in?
+                    
+                }, // success
+                function() {
+                    alert('Woops! Facebook login is not working right now.  Contact us at info@littlebluebird.com if this problem persists.')
+                    delete $rootScope.users;
+                    delete $rootScope.user;
+                    // delete some attribute that says we are in the process of logging in?
+                } // fail
+      ); // FacebookUser.findOrCreate
+	    
+	    
+      
+    } // $rootScope.initfbuser()
+    
+    
+    // 2013-10-31 TODO remove this once the new initfbuser() fn is working
+    //$rootScope.initfbuser_bug_2013_10_31 = function(user) {
+    $rootScope.initfbuser = function(user) {
+      $rootScope.fbuser = user;
+      console.log("$rootScope.initfbuser: fbuser", $rootScope.fbuser);
+      
+      var fbLoginStatus = function() {
+	    //get access token and pass to the server; get all friends on the server not the client
+	    // so I can make a call like this on the server:
+	    // 		https://graph.facebook.com/569956369/friends?limit=0&offset=0&access_token=CAAAAH7GIRHUBAEJqVt3iB3Lut0BkFoSMFW0gM32LNpZATLoe140CTMAUe3QSxK1qnficW9wr9ZApT4xG1CUgaiuMoL3e7zoxV8jZAfDulYGD8czWpZAxB8aLIP5f4TFkajsJDf5OaRnpHOPXqmdO3bpagMJnNnM3ho8PgXBixF3exAUrr3vfXG4TnC8xZBHzcIDTV1p05oAZDZD&__after_id=100005734893581%22
+	    FB.getLoginStatus(function(response) {
+	      console.log("access token:", response.authResponse.accessToken);
+	       var peopleToFollow = FacebookServerSide.friends({accessToken:response.authResponse.accessToken, facebookId:user.id, userId:$rootScope.user.id, queryType:'peopleToFollow'},
+	                  function() {$rootScope.user.peopleToFollow = peopleToFollow; console.log("FacebookServerSide SUCCESS: $rootScope.user.peopleToFollow", $rootScope.user.peopleToFollow)},
+	                  function() {console.log("FacebookServerSide FAIL: $rootScope.peopleToFollow -------------------------")});
+	                  
+	       var peopleToInvite = FacebookServerSide.friends({accessToken:response.authResponse.accessToken, facebookId:user.id, userId:$rootScope.user.id, queryType:'peopleToInvite'},
+	                  function() {$rootScope.user.peopleToInvite = peopleToInvite; console.log("FacebookServerSide SUCCESS: $rootScope.user.peopleToInvite", $rootScope.user.peopleToInvite)},
+	                  function() {console.log("FacebookServerSide FAIL: $rootScope.peopleToInvite --------------------")});
+	    });
+	    
       }
       
       // could get more than one person back - parent + children
@@ -266,7 +327,7 @@ angular.module('FacebookModule', ['UserModule']).factory('facebookConnect', [fun
                     },
                     function() {alert("Could not log you in at this time (error 201)");});
     
-    }
+    } // $rootScope.initfbuser_bug_2013_10_31
     
 
   })

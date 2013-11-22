@@ -167,7 +167,11 @@ class Gift extends LongKeyedMapper[Gift] with LbbLogger with DateChangeListener 
   
   def recipients = Recipient.findAll(By(Recipient.gift, this.id))
   
-  def recipientList = recipients.map(fk => fk.person.obj.open_!)
+  // 2013-11-21  replacing use of  .open_! with a 'for' comprehension.  Got a NPE in User.friendList because we were relying on .open_!
+  def recipientList = {
+    val rrr = for(fk <- recipients; r <- fk.person.obj) yield r
+    rrr
+  }
   
   def recipientNames = {
     val names = recipientList.map(_.first.is)

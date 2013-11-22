@@ -15,6 +15,7 @@ import net.liftweb.mapper.By
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException
 import com.lbb.util.NOOPDateChangeListener
 import net.liftweb.mapper.UniqueIndex
+import com.lbb.util.Emailer
 
 /**
  * READY TO DEPLOY
@@ -100,10 +101,12 @@ class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK wit
   def circleName =
     Text((circle.obj.map(_.name.is) openOr "Unknown"))
   
-  def name(u:MappedLongForeignKey[CircleParticipant, User]) : Text = (first(u), last(u), email(u)) match {
-    case(f, l, e) if f.length > 0 && l.length > 0 => Text(f + " " + l)
-    case(f, _, _) if f.length > 0 => Text(f)
-    case(_, _, e) => Text(e)
+  // 2013-11-21 don't know why we were returning the name wrapped in a scala.xml.Text object
+  // This method wasn't even being called anywhere up until now except in a test class - CircleParticipantTest
+  def name(u:MappedLongForeignKey[CircleParticipant, User]) : String = (first(u), last(u), email(u)) match {
+    case(f, l, e) if f.length > 0 && l.length > 0 => f + " " + l
+    case(f, _, _) if f.length > 0 => f
+    case(_, _, e) => e
   }
   
   def first(u:MappedLongForeignKey[CircleParticipant, User]) = {
@@ -128,7 +131,7 @@ class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK wit
   /**
    * override so we can update the reminders when a participant is added
    */
-  override def save() = {
+  override def save = {
     try {
       val saved = super.save
       saved match {
@@ -139,6 +142,21 @@ class CircleParticipant extends LongKeyedMapper[CircleParticipant] with IdPK wit
           // Now we have to associate the new participant with all other participants in the friends table!
           debug("calling: Friend.createFriends(this).foreach(_.save)");
           Friend.createFriends(this) foreach {debug("saving friend..."); _.save}
+          
+          // Also send out emails to people when they are included in events...
+          
+          // person - the name of the person who got added to the event
+          // adder - the name of the person who added the other person
+          for(person <- User.findByKey(person); 
+              adder <- User.findByKey(inviter);
+              circle <- Circle.findByKey(circle);
+              if(saved) ) {
+                  val who = person.first.is + person.last.is
+                  val adderName = adder.first.is + adder.last.is;
+                  val notifyonaddtoevent = person.notifyonaddtoevent.is;
+                  if(notifyonaddtoevent.equals("true")) Emailer.notifyAddedToCircle(who, person.email.is, circle.name, circle.id, adderName)
+          }
+          
         }
         case _ => {}
       }

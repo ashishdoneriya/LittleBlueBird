@@ -11,6 +11,7 @@ import net.liftweb.common.Box
 import net.liftweb.http.Req
 import java.util.Date
 import net.liftweb.mapper.By
+import com.lbb.util.Email
 
 /**
  * id - auto incr
@@ -125,6 +126,20 @@ object AuditLog extends AuditLog with LongKeyedMetaMapper[AuditLog] {
   
   def friendDeleted(friend:Friend) = {
     val action = "FRIEND DELETED: "+friend.user.is+" and "+friend.friend.is
+    AuditLog.create.action(action).save
+  }
+  
+  def error(e:String) = {
+    AuditLog.create.action(e).save
+  }
+  
+  def emailBegin(e:Email) = {
+    val action = "EMAIL BEGIN: FROM:"+e.fromemail+" TO:"+e.to+" SUBJECT:"+e.subject
+    AuditLog.create.action(action).save
+  }
+  
+  def emailEnd(e:Email) = {
+    val action = "EMAIL END: FROM:"+e.fromemail+" TO:"+e.to+" SUBJECT:"+e.subject
     AuditLog.create.action(action).save
   }
   

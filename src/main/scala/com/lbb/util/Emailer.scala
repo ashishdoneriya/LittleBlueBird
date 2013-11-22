@@ -13,6 +13,7 @@ import net.liftweb.mapper.By
 import scala.xml.Text
 import com.lbb.entity.Gift
 import scala.xml.Elem
+import com.lbb.entity.AuditLog
 
 case class Email(to:String, fromemail:String, fromname:String, subject:String, message:NodeSeq, cc:List[String], bcc:List[String])
 
@@ -25,9 +26,9 @@ object Emailer extends LbbLogger {
   
   
   def send(e:Email) = {
-    debug("Mailer.sendMail about to be called");
+    AuditLog.emailBegin(e)
     Mailer.sendMail(From(e.fromemail), Subject(e.subject), To(e.to), XHTMLMailBodyType(e.message))
-    debug("Mailer.sendMail just called");
+    AuditLog.emailEnd(e)
   }
   
   def config {

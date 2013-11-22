@@ -52,7 +52,7 @@ import net.liftweb.util.BasicTypesHelpers.asLong
 object RestService extends RestHelper with LbbLogger {
   
   serve {
-    case JsonPost("rest" :: "apprequest" :: _, (json, req)) => saveAppRequests
+    // 2013-11-21  no more app requests - facebook says they are for games only now
     case JsonPost("rest" :: "mergeusers" :: AsLong(userId) :: facebookId :: email :: _, _) => mergeUsers(userId, facebookId, email)
     case Delete("rest" :: "friend" :: AsLong(userId) :: AsLong(friendId) :: _, _) => deleteFriend(userId, friendId)
   }
@@ -200,129 +200,6 @@ object RestService extends RestHelper with LbbLogger {
     val f2 = Friend.findAll(By(Friend.friend, userId), By(Friend.user, friendId))
     (f1 :: f2 :: Nil).flatten.foreach(_.delete_!)
     NoContentResponse()
-  }
-  
-  
-  /**
-   * Write to app_request table for every app request here
-   * Write to person table for every person that isn't represented there (with a facebook id)
-   * Write to friends table for all associations that don't already exist
-   * app-FacebookModule.js contains $rootScope.fbinvite() which calls this method via
-   * AppRequest.save({requests:apprequests})
-   * Return 'friends' to display on the user's Friends page
-   */
-  def saveAppRequests = {
-    
-    // create the AppRequest objects
-    val apprequests = AppRequest.createFromHttp
-    apprequests.foreach(_.save)
-    
-    // write to person
-    val insertTheseUsers = User.createFromAppRequests(apprequests)
-    insertTheseUsers.foreach(_.save)
-    
-    // unique constraint violations definitely possible above, so 'insertTheseUsers' may contain User objects with null id's, that's why we're querying here
-    val facebookIds = apprequests.map(_.facebookId.is)
-    val newusers = User.findAll(ByList(User.facebookId, facebookIds))
-    
-    // write to friends
-    // Don't worry if any relationships exist already; Friend.save is overridden and will handle unique constraint violations
-    val inviterId = apprequests.head.inviter.is 
-    val listoflists = for(newuser <- newusers) yield {
-      Friend.createFriends(newuser.id.is, inviterId)
-    }
-    val potentialnewfriends = listoflists.flatten
-    potentialnewfriends.foreach(_.save)
-    
-    // return friends of the current user
-    val friendbox = for(user <- User.findByKey(inviterId)) yield user.friendList
-    val friends = friendbox openOr Nil
-    
-    /////////////////////////////////////////////////////////////////////////////////////
-    // 2nd half of the method :(   
-    // Figure out if the user is inviting this new facebook user to an event or if the person 
-    // is just being invited as a friend
-    val boxofcirclestuff = for(req <- S.request; jvalue <- req.json) yield {
-      jvalue match {
-        case jobj:JObject => {
-          jobj.values.get("circlestuff") match {
-            case Some(m:Map[String, Any]) => {
-              
-              m.filter(kv => kv._1.equals("circleId") || kv._1.equals("participationlevel"))
-              
-            } // case Some(list:List[Map[String, Any]])
-            
-            case _ => Map[String, Any]()
-            
-          } // jobj.values.get("circlestuff") match 
-          
-        } // case jobj:JObject
-            
-        case _ => Map[String, Any]()
-        
-      } // jvalue match 
-      
-    } // val cccc = for(req <- S.request; jvalue <- req.json) yield
-    
-    debug("CHECK: newusers="+newusers)
-    debug("CHECK: boxofcirclestuff="+boxofcirclestuff)
-    boxofcirclestuff.openOr(Map("sorry" -> "sorry"))
-    debug("CHECK: boxofcirclestuff.openOr(Map(\"sorry\" -> \"sorry\"))="+boxofcirclestuff.openOr(Map("sorry" -> "sorry")))
-    
-    val cps = for(user <- newusers; circlestuff <- boxofcirclestuff; circleId <- circlestuff.get("circleId");   participationlevel <- circlestuff.get("participationlevel")) yield {
-      CircleParticipant.create.circle(circleId.toString().toLong).participationLevel(participationlevel.toString()).date_invited(new Date()).inviter(inviterId).person(user)
-    }
-    
-    cps.foreach(_.save())
-    
-    // trying to create JField("participants", participants)...
-    val www = for(circlestuff <- boxofcirclestuff; circleId <- circlestuff.get("circleId"); participationlevel <- circlestuff.get("participationlevel")) yield {
-      val jobj = (circleId, participationlevel) match {
-        case (cid:BigInt, level:String) => {
-          val c = Circle.findByKey(cid.toLong)
-          debug("for cid.toLong="+cid.toLong+", Circle="+c);
-          c match {
-            case Full(circle) => {
-              val receivers = circle.receivers.map(_.asReceiverJs(Full(circle)))
-              val rarr = JArray(receivers)
-      
-              val givers = circle.givers.map(_.asJsShallow)
-              val garr = JArray(givers)
-      
-              val giverField = JField("givers", garr)
-              val receiverField = JField("receivers", rarr)
-      
-              val participants = JObject(List(giverField, receiverField))  
-              JField("participants", participants) 
-            }
-            case _ => { JsonAST.JNull }
-          }
-        }
-        case _ => { JsonAST.JNull }
-      }
-      jobj
-    }
-    
-    
-    // combining JField("participants", participants) with JField("friends", farr)...
-    val ppp = www match {
-      case Full(participantsField:JsonAST.JField) => {
-        List(participantsField)
-      }
-      case _ => {
-        Nil
-      }
-    }    
-    
-    val friendsjs = friends.map(_.asJsShallow)
-    val farr = JArray(friendsjs)
-    val friendsField = JField("friends", farr)
-    val fff = (ppp :: List(friendsField) :: Nil).flatten
-    val stuff = JObject(fff)
-    val r = JsonResponse(stuff)
-    debug("saveAppRequests: JsonResponse(stuff)=" + r.toString())
-    r
-    
   }
 
   
@@ -489,12 +366,6 @@ object RestService extends RestHelper with LbbLogger {
     }
     
     val saved = cp.save
-    
-    for(who <- S.param("who"); 
-        email <- S.param("email"); 
-        circle <- S.param("circle");
-        notifyonaddtoevent <- S.param("notifyonaddtoevent");
-        adder <- S.param("adder"); if(notifyonaddtoevent.equals("true") && saved)) Emailer.notifyAddedToCircle(who, email, circle, circleId, adder)
     
     JsonResponse("")
   }
@@ -828,7 +699,12 @@ object RestService extends RestHelper with LbbLogger {
         val users = User.findAll(qp: _*)
         users match {
           case l:List[User] if(l.size == 1) => JsonResponse(l.head.asJs)
-          case _ => debug("findUsers:  users.size="+users.size); BadResponse() // too many or not enough people found
+          case _ => { 
+            val err = "findUsers:  users.size="+users.size+" where username:"+S.param("username"); 
+            warn(err)
+            AuditLog.error(err)
+            BadResponse() // too many or not enough people found
+          }
         }
       }
       case _ => { // typical findUsers function

@@ -103,10 +103,12 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
       return Reminder;
   }).
   factory('Email', function($resource) {
-      var Email = $resource('/gf/rest/email', {to:'@to', from:'@from', subject:'@subject', message:'@message', type:'@type', user:'@user'}, 
+      var Email = $resource('/gf/rest/email', {to:'@to', email:'@email', from:'@from', subject:'@subject', message:'@message', type:'@type', user:'@user'}, 
                     {
                       send: {method:'POST'}
                     });
+                    
+      // 2013/11/25 Added email:'@email'  See diary for this day
 
       return Email;
   })

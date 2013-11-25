@@ -318,8 +318,19 @@ object RestService extends RestHelper with LbbLogger {
     try {
       println("sendPasswordRecoveryEmail: begin");
       val message = Emailer.createRecoverPasswordMessage
+      
+      /**
+       * 2013-11-25 Little bit of a hack:  Noticed that the website was using the "to" parameter to send over email addresses, while the mobile app
+       * was using the "email" parameter.  I'll check the email parameter first and if that doesn't exist, I'll look at the to parameter.
+       * Notice though that on the web, in app-LoginCtrl:emailIt(), I changed "to" to "email".  So we fixed this problem there.  The only other place
+       * where we send email from the website is in app-UserCtrl where we resend the welcome email.  But in that case, we don't use the "to" parm OR
+       * the "email" parm; we use the "user" parm (geez)
+       */
+      val emailParm = S.param("email")
+      val toParm = S.param("to").getOrElse("info@littlebluebird.com")
+      val to = emailParm.getOrElse(toParm)
     
-      val email = Email(S.param("email").getOrElse("info@littlebluebird.com"),
+      val email = Email(to,
                         S.param("from").getOrElse("info@littlebluebird.com"),          
                         S.param("fromname").getOrElse("LittleBlueBird.com"),          
                         S.param("subject").getOrElse("Password Recovery"),          

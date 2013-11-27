@@ -230,6 +230,21 @@ class User extends LongKeyedMapper[User] with LbbLogger with ManyToMany with NOO
       //debug("User.password: super.asJs = "+sup)
       List(("password", JsonAST.JNull))
     }
+    override def apply(v:String) = {
+      // 2013-11-26 Had a weird problem where users where having their passwords set to null/"" - no idea why right now
+      // so in the meantime, check for null/empty strings and prevent setting.
+      if(v != null && !v.trim().equals("")) {
+        //println("User.apply:  v="+v)
+        super.apply(v) // return this normally
+      }
+      else {
+        val err = "Tried to set password to: '"+v+"' for user:"+id+" name:"+first+" "+last
+        error(err);
+        //AuditLog.error(err) throw a NPE: Looking for connection identifier ?!
+        new RuntimeException().printStackTrace()
+        User.this // else return this
+      }
+    }
   }
   
   object facebookId extends MappedString(this, 140) {

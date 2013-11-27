@@ -45,6 +45,54 @@ class UserTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     Schemifier.schemify(true, Schemifier.infoF _, User) 
   }
   
+  
+  /**
+   * 2013-11-26 Noticed a weird bug (don't know the cause yet) where users passwords were being set to empty string
+   * So we overrode the apply() method and inside apply() we check for null/empty strings
+   * And if the passed-in password is null/empty, then we don't set the password - we leave it alone.
+   */
+  test("do not let password be empty") {
+    val user = User.create.first("Brent").last("Dunklau")
+    user.password("goodpassword")
+    assert(user.password==="goodpassword")
+    
+    // now try to set to empty string
+    user.password("")
+    assert(user.password==="goodpassword")
+    
+    // now try to set to empty string
+    user.password("    ")
+    assert(user.password==="goodpassword")
+    
+    // now try to set to null
+    user.password(null)
+    assert(user.password==="goodpassword")
+    
+    // now try to set to null
+    user.password("changed")
+    assert(user.password==="changed")
+  }
+  
+  /**
+   * Something deletes this record at the end of the end of the test, but I'm not sure what
+   * I ran this in debug mode and put a breakpoint right after the save call.  The db showed this record - so it did get saved
+   * But at the end of the test, the record was gone
+   */
+  test("create password when not supplied") {
+    initDb
+    val user = User.create.first("Brent").last("Dunklau").username("user123")
+    assert(user.save===true)
+    assert(user.password.is==="6AD14B")
+  }
+  
+  
+  test("create username when not supplied") {
+    initDb
+    val user = User.create.first("BrentX").last("Dunklau")
+    assert(user.save===true)
+    assert(user.username.is==="BrentX")
+  }
+  
     
   test("parse first last") {
     val user = User.create

@@ -24,7 +24,7 @@ BUT THAT DIDN'T WORK - THE MODAL WOULD OPEN ONCE THEN NEVER AGAIN.  SO WE'RE STU
 	</div>
 	<div class="modal-footer">
 	  <span ng-show="selectedfriends.length > 0">
-	    <a class="btn btn-primary" ng-click="addLbbFriendModal=false;addselectedfriends();">Add {{selectedfriends.length}} Friend<span ng-show="selectedfriends.length > 1">s</span></a>
+	    <a id="btn_addfriend_enabled" class="btn btn-primary" ng-click="addLbbFriendModal=false;addselectedfriends();">Add {{selectedfriends.length}} Friend<span ng-show="selectedfriends.length > 1">s</span></a>
 	  </span>
 	  <span ng-show="selectedfriends.length == 0">
 	    <a class="btn btn-primary disabled">Add Friends</a>
@@ -38,8 +38,8 @@ BUT THAT DIDN'T WORK - THE MODAL WOULD OPEN ONCE THEN NEVER AGAIN.  SO WE'RE STU
   
 
           <div class="btn-group">
-		    <a class="btn btn-mini btn-primary dropdown-toggle font14 white" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
+		    <a class="btn btn-mini btn-primary dropdown-toggle font14 white" data-toggle="dropdown" id="plussign_addfriend">+</a> <!-- see dropdownToggle.js -->
 		    <ul class="dropdown-menu font12 align-left">
-		      <li><a ng-href="{{currentlocation}}" ng-click="addLbbFriendModal=true">Add by Name</a></li>
+		      <li><a ng-href="{{currentlocation}}" ng-click="addLbbFriendModal=true" id="menuitem_add_friend_by_name">Add by Name</a></li>
 		    </ul>
 		  </div> 

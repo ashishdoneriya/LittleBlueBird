@@ -6,12 +6,12 @@
   </div>
   <div class="row margtop5">
     <div class="span3">
-			        <input class="span3" maxlength="140" value="" type="text" name="fullname" placeholder="Name" title="Name" ng-model="newuser.fullname"  ng-required="true" />
+			        <input id="invite-participant-fullname" class="span3" maxlength="140" value="" type="text" placeholder="Name" title="Name" ng-model="newuser.fullname"  ng-required="true" />
     </div>
   </div>
   <div class="row">
     <div class="span3">
-                    <input class="span3" maxlength="140" value="" type="email" name="email" placeholder="Email" title="Email" ng-model="newuser.email" ng-required="true">
+                    <input id="invite-participant-email" class="span3" maxlength="140" value="" type="email" name="email" placeholder="Email" title="Email" ng-model="newuser.email" ng-required="true">
     </div>
   </div>
   <div class="row">
@@ -33,7 +33,7 @@
 		                <a ng-href="{{currentlocation}}" class="btn btn-mini" ng-click="resetInviteByEmailForm(emailnewuserform);back('byname')">Cancel</a>
 		              </div>
                       <div ng-show="validateEmailInvitation(newuser)" >
-		                <a ng-href="{{currentlocation}}" class="btn btn-primary btn-mini" ng-click="createonthefly(newuser, thecircle);resetInviteByEmailForm(emailnewuserform);$parent.addLbbFriendModal=false;">Save</a>
+		                <a id="savenewpartbtn" ng-href="{{currentlocation}}" class="btn btn-primary btn-mini" ng-click="createonthefly(newuser, thecircle);resetInviteByEmailForm(emailnewuserform);$parent.addLbbFriendModal=false;">Save</a>
 		                &nbsp;
 		                <a ng-href="{{currentlocation}}" class="btn btn-mini" ng-click="resetInviteByEmailForm(emailnewuserform);back('byname')">Cancel</a>
 		              </div>

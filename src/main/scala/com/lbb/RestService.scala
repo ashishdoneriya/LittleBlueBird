@@ -169,6 +169,7 @@ object RestService extends RestHelper with LbbLogger {
   def lookupBarcode(code:String) = {
     val barcodeType = "UPC"
     val searchIndex = "All"
+    // http://sowacs.appspot.com/AWS/%5Bbdunklau@yahoo.com%5Decs.amazonaws.com/onca/xml?IdType=UPC&ItemId=744476121042&SearchIndex=All&Service=AWSECommerceService&AWSAccessKeyId=056DP6E1ENJTZNSNP602&Operation=ItemLookup&AssociateTag=wwwlittleb040-20
     val url = "http://sowacs.appspot.com/AWS/%5Bbdunklau@yahoo.com%5Decs.amazonaws.com/onca/xml?IdType="+barcodeType+"&ItemId="+code+"&SearchIndex="+searchIndex+"&Service=AWSECommerceService&AWSAccessKeyId=056DP6E1ENJTZNSNP602&Operation=ItemLookup&AssociateTag=wwwlittleb040-20"
     val res = io.Source.fromURL(url).mkString
     val f1 = JField("xml", JString(res))
@@ -316,7 +317,7 @@ object RestService extends RestHelper with LbbLogger {
   
   private def sendPasswordRecoveryEmail = {
     try {
-      println("sendPasswordRecoveryEmail: begin");
+      info("sendPasswordRecoveryEmail: begin");
       val message = Emailer.createRecoverPasswordMessage
       
       /**
@@ -329,7 +330,9 @@ object RestService extends RestHelper with LbbLogger {
       val emailParm = S.param("email")
       val toParm = S.param("to").getOrElse("info@littlebluebird.com")
       val to = emailParm.getOrElse(toParm)
-    
+      
+      println("sendPasswordRecoveryEmail: emailParm="+emailParm+", toParm="+toParm+" -> to="+to)
+      
       val email = Email(to,
                         S.param("from").getOrElse("info@littlebluebird.com"),          
                         S.param("fromname").getOrElse("LittleBlueBird.com"),          

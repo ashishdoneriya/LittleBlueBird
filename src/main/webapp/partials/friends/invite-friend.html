@@ -5,7 +5,7 @@
 			    </div>
 		        <div class="tablerow w245">
   			      <div class="tablecell w245 bgwhite sideborders_009dcb padleft5 padtop5">
-			        <input class="w200" maxlength="140" value="" type="text" name="fullname" placeholder="Name" title="Name" ng-model="newuser.fullname"  ng-required="true" />
+			        <input id="invite-friend-fullname" class="w200" maxlength="140" value="" type="text" placeholder="Name" title="Name" ng-model="newuser.fullname"  ng-required="true" />
                     <span ng-show="emailnewuserform.fullname.$dirty">
                       <span ng-show="emailnewuserform.fullname.$error.required"><img src="img/red_x.png" id="fullnamerequired" title="Name is required"></span>
                     </span>
@@ -13,7 +13,7 @@
 			    </div>
 		        <div class="tablerow w245">
 			      <div class="tablecell w245 bgwhite sideborders_009dcb padleft5">
-                    <input class="w200" maxlength="140" value="" type="email" name="email" placeholder="Email" title="Email" ng-model="newuser.email" ng-required="true">
+                    <input id="invite-friend-email" class="w200" maxlength="140" value="" type="email" placeholder="Email" title="Email" ng-model="newuser.email" ng-required="true">
                     <span ng-show="emailnewuserform.email.$dirty">
                       <span ng-show="emailnewuserform.email.$error.email"><img src="img/red_x.png" id="emailinvalid" title="Email is invalid"></span>
                       <span ng-show="emailnewuserform.email.$error.required"><img src="img/red_x.png" id="emailinvalid" title="Email is required"></span>
@@ -36,12 +36,12 @@
 		          <div class="tablecell w245 listfooter pad5 roundedbottom">
 		            <span class="pull-right">
                       <div ng-hide="validateEmailInvitation(newuser)" >
-		                <a ng-href="{{currentlocation}}" ng-disabled="true" class="btn btn-primary btn-mini" title="Not ready to save yet">Save</a>
+		                <a ng-href="{{currentlocation}}" ng-disabled="true" class="btn btn-primary btn-mini" title="Not ready to save yet" id="save_disabled">Save</a>
 		                &nbsp;
 		                <a ng-href="{{currentlocation}}" class="btn btn-mini" ng-click="resetInviteByEmailForm(emailnewuserform);back('byname')">Cancel</a>
 		              </div>
                       <div ng-show="validateEmailInvitation(newuser)" >
-		                <a ng-href="{{currentlocation}}" class="btn btn-primary btn-mini" ng-click="createFriendOnTheFly(newuser);resetInviteByEmailForm(emailnewuserform);$parent.addLbbFriendModal=false;">Save</a>
+		                <a ng-href="{{currentlocation}}" class="btn btn-primary btn-mini" ng-click="createFriendOnTheFly(newuser);resetInviteByEmailForm(emailnewuserform);$parent.addLbbFriendModal=false;" id="savebtn">Save</a>
 		                &nbsp;
 		                <a ng-href="{{currentlocation}}" class="btn btn-mini" ng-click="resetInviteByEmailForm(emailnewuserform);back('byname')">Cancel</a>
 		              </div>

@@ -8,7 +8,7 @@
       <span class="pull-right">
       
         <span ng-show="friendeditmode=='true'">
-            <button class="btn btn-mini btn-danger" title="will not unfriend on Facebook" ng-click="removefriend($event, friend)">Delete</button>
+            <button id="delete{{friend.id}}" class="btn btn-mini btn-danger" title="will not unfriend on Facebook" ng-click="removefriend($event, friend)">Delete</button>
         </span>
         
       </span>

@@ -19,13 +19,13 @@
                       <input type="hidden" name="giftId" ng-model="newgift.id" />
                       <input type="hidden" name="addedBy" ng-model="newgift.addedBy" />
                       <input type="hidden" name="circle" ng-model="newgift.circle" />
-	                <div class="span4"><textarea class="span4" rows="5" ng-model="newgift.description" cols="80" required></textarea></div>
+	                <div class="span4"><textarea id="addgiftform_description" class="span4" rows="5" ng-model="newgift.description" cols="80" required></textarea></div>
 	              </div>
 	              <div class="row">
 	                <div class="span1">URL</div>
 	              </div>
 	              <div class="row">
-	                <div class="span4"><input class="span4" type="URL" name="url" ng-model="newgift.url" /></div>
+	                <div class="span4"><input id="addgiftform_url" class="span4" type="URL" name="url" ng-model="newgift.url" /></div>
 	              </div>
                 </div>
                 
@@ -61,7 +61,7 @@
                       </div>    
           
                       <div ng-hide="addGiftForm.$invalid">
-                        <button class="btn btn-primary" ng-click="addgift(newgift);addGiftFormModalShown = false">Add Item</button>
+                        <button id="addgiftform_additembutton" class="btn btn-primary" ng-click="addgift(newgift);addGiftFormModalShown = false">Add Item</button>
                       </div>
                     </div>
                     <div class="span1">
@@ -75,4 +75,4 @@
 </form>
 
 
-<a ng-href="{{currentlocation}}" class="btn btn-primary pull-right font18" title="Add an item to this wish list" ng-click="addGiftFormModalShown = !addGiftFormModalShown;gift.adding=true;initNewGift();">+</a>
+<a id="addgiftform_plussign" ng-href="{{currentlocation}}" class="btn btn-primary pull-right font18" title="Add an item to this wish list" ng-click="addGiftFormModalShown = !addGiftFormModalShown;gift.adding=true;initNewGift();">+</a>

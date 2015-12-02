@@ -4,10 +4,10 @@
 <div class="row">
   <div class="span6 roundedtop bgbluegradient white pad10">
     <div class="row">
-      <div class="span4 font24">{{circle.name}}</div>
-      <div class="span2 align-right font14">
+      <div class="span4 font24" id="eventname">{{circle.name}}</div>
+      <div class="span2 align-right font14" id="eventdate">
           {{circle.date | date:'MMM d, yyyy'}}
-		  <a ng-href="editevent" class="btn btn-mini" title="Edit Event"><i class="icon-edit font14"></i></a>
+		  <a ng-href="editevent" class="btn btn-mini" title="Edit Event" id="btnEditEvent"><i class="icon-edit font14"></i></a>
 	  </div>
     </div>
     
@@ -22,7 +22,7 @@
 
 
 <!-- see app-EventCtrl.js, routeChangeSuccess - that's where we combine givers and receivers -->
-<div ng-repeat="p in circle.participants.both">
+<div ng-repeat="p in circle.participants.both" id="participant_{{p.username}}">
 
   <span ng-show="p.isReceiver">
   <a ng-href="giftlist/{{p.id}}/{{circle.id}}" title="see {{p.fullname}}'s wish list">

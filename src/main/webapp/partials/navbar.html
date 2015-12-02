@@ -22,12 +22,12 @@
 
 
   <ul class="nav">
-    <li class="dropdown">
-      <a class="dropdown-toggle" data-toggle="dropdown">{{user.fullname}} <b class="caret"></b></a>
+    <li class="dropdown">                                                 <!-- username attr just for selenium testing -->
+      <a class="dropdown-toggle" data-toggle="dropdown" id="currentuser_anchor" name="{{user.username}}">{{user.fullname}} <b class="caret"></b></a>
       <ul class="dropdown-menu">
         <li><a class="font12" ng-href="accountinfo">My Account</a></li>
         <li class="divider"></li>
-        <li><a class="font12" ng-href="home" ng-click="logout()">Logout</a></li>
+        <li><a id="logoutlink" class="font12" ng-href="home" ng-click="logout()">Logout</a></li>
       </ul>
     </li>
   </ul>

@@ -6,7 +6,7 @@ to a circle as it is when I'm trying to make them a friend.
 
 <div class="row">
   <div class="span3">
-      <input search-users type="text" class="span2 search-query" ng-model="search" placeholder="Search" title="Search by name/email" />
+      <input id="searchbox_addpeople" search-users type="text" class="span2 search-query" ng-model="search" placeholder="Search" title="Search by name/email" />
   </div>
 </div>
 
@@ -19,7 +19,7 @@ to a circle as it is when I'm trying to make them a friend.
 		<div class="row">
 		  <div class="span3 roundedbottom padtop5 padbottom5">
 		      <P>No one found matching "{{search}}"</P>
-		      <p><a ng-href="{{currentlocation}}" ng-click="emailnewuser();">Invite by Email <i class="icon-chevron-right"></i></a></p>
+		      <p><a id="invpartbyemail" ng-href="{{currentlocation}}" ng-click="emailnewuser();">Invite by Email <i class="icon-chevron-right"></i></a></p>
 		  </div>
 		</div>
     </span>
@@ -34,7 +34,7 @@ to a circle as it is when I'm trying to make them a friend.
 	          
     <div ng-repeat="person in peoplesearchresults | filter:search">
 	    <span ng-hide="person.hide">
-		  <div class="row" ng-click="addparticipant($index, person, thecircle, participationLevel)">
+		  <div id="searchresults_{{person.username}}" class="row" ng-click="addparticipant($index, person, thecircle, participationLevel)">
 		    <div class="{{isLastRow('span3 list', $index, peoplesearchresults.length)}}">
 			  <div class="row">
 			    <div class="span1">

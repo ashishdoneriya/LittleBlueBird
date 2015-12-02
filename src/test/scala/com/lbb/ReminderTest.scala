@@ -422,7 +422,12 @@ class ReminderTest extends FunSuite with AssertionsForJUnit with LbbLogger {
     actualreminders.foreach(a => assert(expectedreminders.contains(a)))
     
     // make sure the ones we expect to be gone are really gone
-    val brentsreminders = expectedreminders.filter(rem => rem.viewer.obj.first.equals("Brent"))
+    val brentsreminders = expectedreminders.filter(rem => {   //   rem.viewer.obj.first.equals("Brent"))
+        val huh = for(viewer <- rem.viewer.obj) yield viewer.first.is.equals("Brent")
+        val bool = huh openOr false
+        bool
+    })
+    
     brentsreminders.foreach(b => {
       val same = actualreminders.contains(b)
       debug("actualreminders.contains(b)"+same+" => "+b)

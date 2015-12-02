@@ -95,7 +95,7 @@
             </span>    
           
             <span ng-hide="regForm.$invalid || (newuser.emailAgain != newuser.email && !regForm.emailAgain.$error.required)" >
-              <a href="#" class="btn btn-primary w75" ng-click="save(newuser)">Sign Up</a>
+              <a id="signup_button" href="#" class="btn btn-primary w75" ng-click="save(newuser)">Sign Up</a>
             </span>
             
             <a class="btn w75" ng-href="home">Cancel</a>

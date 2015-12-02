@@ -14,11 +14,11 @@
                       <input type="hidden" name="addedBy" ng-model="gift.addedBy" />
                       <input type="hidden" name="circle" ng-model="gift.circle" />
                       
-	                  <textarea class="span4" rows="5" ng-model="gift.description" cols="80" placeholder="Item" title="Item" required></textarea>
+	                  <textarea id="editgiftform_withrecipients_description{{gift.id}}" class="span4" rows="5" ng-model="gift.description" cols="80" placeholder="Item" title="Item" required></textarea>
 	                </div>
 	              </div>
 	              <div class="row">
-	                <div class="span4"><input class="span4" type="URL" name="url" ng-model="gift.url" placeholder="URL (incl http://)" title="URL (incl http://)" /></div>
+	                <div class="span4"><input id="editgiftform_withrecipients_url{{gift.id}}" class="span4" type="URL" name="url" ng-model="gift.url" placeholder="URL (incl http://)" title="URL (incl http://)" /></div>
 	              </div>
                 </div>
                 <div class="span2">
@@ -48,7 +48,7 @@
                       </div>    
           
                       <div ng-hide="giftForm.$invalid">
-                        <button class="btn btn-primary" ng-click="gift.editing=false;updategift($index, gift);">Save</button>
+                        <button id="editgiftform_withrecipients_save{{gift.id}}" class="btn btn-primary" ng-click="gift.editing=false;updategift($index, gift);">Save</button>
                       </div>
                     </div>
               </div>

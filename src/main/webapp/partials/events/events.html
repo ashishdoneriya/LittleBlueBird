@@ -74,18 +74,18 @@ list contains only one person: YOU -->
           <div class="span2">
 			      <span class="pull-right">
 			        <div class="btn-group">
-				      <a class="btn btn-mini btn-primary dropdown-toggle font14 white" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
+				      <a id="create-event" class="btn btn-mini btn-primary dropdown-toggle font14 white" data-toggle="dropdown">+</a> <!-- see dropdownToggle.js -->
 				      <ul class="dropdown-menu font12 align-left">
 				        <!-- See app-CircleModule:run():routeChangeStart that references this page -->
-				        <li><a ng-href="newevent/Christmas">Christmas</a></li>
-				        <li><a ng-href="newevent/Birthday">Birthday</a></li>
-				        <li><a ng-href="newevent/Anniversary">Anniversary</a></li>
-				        <li><a ng-href="newevent/Mothers Day">Mothers Day</a></li>
-				        <li><a ng-href="newevent/Fathers Day">Fathers Day</a></li>
-				        <li><a ng-href="newevent/Valentines Day">Valentines Day</a></li>
-				        <li><a ng-href="newevent/Graduation">Graduation</a></li>
-				        <li><a ng-href="newevent/Baby Shower">Baby Shower</a></li>
-				        <li><a ng-href="newevent/Other">Other</a></li>
+				        <li><a id="newChristmas" ng-href="newevent/Christmas">Christmas</a></li>
+				        <li><a id="newBirthday" ng-href="newevent/Birthday">Birthday</a></li>
+				        <li><a id="newAnniversary" ng-href="newevent/Anniversary">Anniversary</a></li>
+				        <li><a id="newMothers Day" ng-href="newevent/Mothers Day">Mothers Day</a></li>
+				        <li><a id="newFathers Day" ng-href="newevent/Fathers Day">Fathers Day</a></li>
+				        <li><a id="newValentines Day" ng-href="newevent/Valentines Day">Valentines Day</a></li>
+				        <li><a id="newGraduation" ng-href="newevent/Graduation">Graduation</a></li>
+				        <li><a id="newBaby Shower" ng-href="newevent/Baby Shower">Baby Shower</a></li>
+				        <li><a id="newOther" ng-href="newevent/Other">Other</a></li>
 				      </ul>
 				    </div>
 			      </span>
@@ -135,7 +135,7 @@ list contains only one person: YOU -->
 
 
 <div class="row" ng-repeat="event in user.circles | filter: eventDateFilter" ng-cloak">
-  <a ng-href="event/{{event.id}}">
+  <a ng-href="event/{{event.id}}" class="eventlink">
     <div class="{{styleRow('span6 list pad10 font18', $index, user.circles.length, event)}}">
         
             <span ng-show="circleeditmode=='true'">

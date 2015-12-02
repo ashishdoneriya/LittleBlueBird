@@ -296,9 +296,15 @@ angular.module('UserModule', ['ngResource', 'ngCookies', 'ui', 'angularBootstrap
     
     // 3/12/13
     $rootScope.logout = function() {
-      Logout.logout({}, function() {delete $rootScope.user;});   
-      $cookieStore.remove("user");
-      console.log("app-UserModule: $rootScope.logout() 44444444444444 -----------------------------");                                      
+      console.log("app-UserModule: $rootScope.logout() before: $cookieStore.get('user')=", $cookieStore.get("user"));   
+      
+      Logout.logout({}, function() {
+        $cookieStore.remove("user");
+        delete $rootScope.user;
+        console.log("app-UserModule: $rootScope.logout() after: $cookieStore.get('user')=", $cookieStore.get("user"));
+      });
+      
+                                            
     }
 
   });

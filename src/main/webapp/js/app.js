@@ -59,9 +59,89 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
   .run(function($rootScope, Facebook) {
     $rootScope.Facebook = Facebook;
   })
-  .run(function($window, $route, $rootScope, $cookieStore, $location, facebookConnect, $timeout, User, FacebookServerSide){    
+  .run(function($window, $route, $rootScope, $cookieStore, $location, facebookConnect, $timeout, User, FacebookServerSide){ 
+  
+    $rootScope.$on('$routeChangeStartXXX', function(scope, newRoute){
+        console.log("app.js: $routeChangeStart:  begin ----------------------------");   
+        
+        console.log("newRoute:", newRoute);
+        
+        
+        // See PingCtrl - there's a setInterval() call in that controller.  Every time the user clicks somewhere, we have to cancel the current instance
+        // of setInterval() otherwise we will end up with multiple instances all doing the same thing - we only need one.
+        clearInterval($rootScope.timerId);
+        
+        
+        // Don't know how to actually pause the carousel - nothing seems to work - so cycle very slowly
+        //jQuery('.carousel').carousel.defaults = {interval:30000, pause:'hover'}; 
+        
+        
+        // Allow anonymous access and do NOT assume the FB user is the person behind the keyboard
+        // If we are going to any of these pages, we do NOT want to see if someone is logged in to FB
+        var nonsecure =  ['home', 'emailit', 'register', 'marketing', 'privacy', 'support', 'whoareyou', 'beta', 'download', 'askmobile', 'offline'];
+        var allowAnonymousAccess = $location.url() == '/';
+        console.log("app.js:routeChangeStart: location.url(): ", $location.url());
+        for(var i=0; i < nonsecure.length; ++i) {
+          if($location.url().indexOf(nonsecure[i]) != -1) {
+            allowAnonymousAccess = true;
+            break;
+          }
+        }
+        
+        // 2013-05-29: IE9 does serve up the home page, but FB login is messed up - not sure why
+        // 2013-06-03 SCREW IT FOR NOW - NO IE
+        if($window.navigator.userAgent.indexOf('MSIE') != -1) {
+          var sss = $window.navigator.userAgent.substring($window.navigator.userAgent.indexOf('MSIE'));
+          var ttt = sss.indexOf(';');
+          var version = parseFloat(sss.substring('MSIE '.length, ttt)); // 2013-06-03 This is the version but we don't care right now - no IE
+          if(true) {
+            $rootScope.templates = {layout: 'internetexplorer', one: 'partials/internetexplorer.html'};
+            $rootScope.layoutController = newRoute.controller;
+            return;
+          }
+        }
+        /**************/
+        // PUT THIS IN ONCE YOU KNOW WHAT THE URL IS TO LBB IN THE APP STORE
+        // If viewing from iPhone/iPad, give the user the option of launching the mobile app or standard web presentation
+        // Android: Once you figure out how to launch app in android, just add:  |(Android)  to the list below
+        else if(navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i)) {  
+            $rootScope.xxxModalShown = true;
+        }
+        /**************/
+              
+        if(!newRoute) return;
+        
+        $rootScope.currentlocation = "/gf" + $location.path();
+        
+        if(angular.isDefined($rootScope.user)) {
+          console.log('WE ARE IN THE ROOTSCOPE.USER BLOCK');
+          $rootScope.templates = newRoute.templates;
+          $rootScope.layoutController = newRoute.controller;
+        }
+        else if(allowAnonymousAccess) {  // PROBLEM SEEMS TO BE IN THIS BLOCK
+          console.log('WE ARE IN THE allowAnonymousAccess BLOCK');
+          $rootScope.templates = newRoute.templates;
+          $rootScope.layoutController = newRoute.controller;
+        }
+        
+        console.log('app.js: 77777777777777777777');
+        
+        
+        
+    });  // $rootScope.$on('$routeChangeStartXXX', function(scope, newRoute){
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+     
     $rootScope.$on('$routeChangeStart', function(scope, newRoute){
-        console.log("FINAL ROUTECHANGESTART FUNCTION ----------------------------");   
+        console.log("app.js: $routeChangeStart:  begin ----------------------------");   
         
         console.log("newRoute:", newRoute);
         
@@ -85,7 +165,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         // If we are going to any of these pages, we do NOT want to see if someone is logged in to FB
         var nonsecure =  ['home', 'emailit', 'register', 'marketing', 'privacy', 'support', 'whoareyou', 'beta', 'download', 'askmobile', 'offline'];
         var allowAnonymousAccess = $location.url() == '/';
-        console.log("location.url(): ", $location.url());
+        console.log("app.js:routeChangeStarte: location.url(): ", $location.url());
         for(var i=0; i < nonsecure.length; ++i) {
           if($location.url().indexOf(nonsecure[i]) != -1) {
             allowAnonymousAccess = true;
@@ -132,13 +212,15 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         if(!newRoute) return;
         
         $rootScope.currentlocation = "/gf" + $location.path();
-        
+
+        console.log("app.js:  took out window.location.search");        
         // 2013-10-01 Don't think we need this anymore.  I think it was related to FB app requests which they deactivated for everything but games.
-        if($window.location.search != '') {
-          var s = $window.location.search;
-          $cookieStore.put("window.location.search", s); 
-          $window.location.search = '';
-        }
+        // 2014-01-30  took this out
+        //if($window.location.search != '') {
+        //  var s = $window.location.search;
+        //  $cookieStore.put("window.location.search", s); 
+        //  $window.location.search = '';
+        //}
         
             
         // Rule:  NOT SURE IF THIS IS TOTALLY ACCURATE ANYMORE  2013-10-01
@@ -150,8 +232,13 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         
         
         
-        if(angular.isDefined($rootScope.user) || allowAnonymousAccess) {
+        if(angular.isDefined($rootScope.user)) {
           console.log('WE ARE IN THE ROOTSCOPE.USER BLOCK');
+          $rootScope.templates = newRoute.templates;
+          $rootScope.layoutController = newRoute.controller;
+        }
+        else if(allowAnonymousAccess) {
+          console.log('WE ARE IN THE allowAnonymousAccess BLOCK');
           $rootScope.templates = newRoute.templates;
           $rootScope.layoutController = newRoute.controller;
         }
@@ -159,7 +246,7 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
         // 2013-03-12:  next - check for "user" cookie
         // 2013-09-04:  Strictly speaking, we don't have to check 'allowAnonymousAccess' We know it's false because the 'if' block above didn't get called.
         else if(angular.isDefined($cookieStore.get("user"))) {
-          console.log('WE ARE IN THE COOKIESTORE USER BLOCK');
+          console.log('WE ARE IN THE COOKIESTORE USER BLOCK: user=', $cookieStore.get("user"));
           $rootScope.user = User.find({userId:$cookieStore.get("user")}, 
                               function(){
                                   console.log("FOUND user from $cookieStore.get('user') BEFORE we checked Facebook");console.log($rootScope.user);
@@ -203,6 +290,8 @@ var app = angular.module('project', ['UserModule', 'CircleModule', 'GiftModule',
           console.log('SET PROCEED TO: ', $rootScope.proceedTo);
           $location.url('/');
         }
+        
+        console.log("app.js: 111111111111111111111111111");
         
     }); // $rootScope.$on('$routeChangeStart', function(scope, newRoute){
     

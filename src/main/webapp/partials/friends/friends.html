@@ -4,10 +4,10 @@
   <div class="row">
 	  <div class="span2 pad5 roundedtop bgbluegradient white font14 center">
 	    <span ng-show="friendeditmode=='true'">
-	      <span class="pull-left"><a class="btn btn-mini" ng-click="friendeditmode='false'">Done</a></span>
+	      <span class="pull-left"><a id="friends_done_button" class="btn btn-mini" ng-click="friendeditmode='false'">Done</a></span>
 	    </span>
 	    <span ng-hide="friendeditmode=='true'">
-	      <span class="pull-left"><a class="btn btn-mini btn-primary" ng-click="friendeditmode='true'">&nbsp;Edit&nbsp;&nbsp;</a></span>
+	      <span class="pull-left"><a id="editfriendbtn" class="btn btn-mini btn-primary" ng-click="friendeditmode='true'">&nbsp;Edit&nbsp;&nbsp;</a></span>
 	    </span>
 	        Friends
 	        <div class="pull-right">
@@ -17,7 +17,8 @@
 	  </div>
   </div>
   
-  <div class="row" ng-repeat="friend in user.friends">
+  <!-- 'friends' class is only to help with selenium testing 2/20/14 -->
+  <div class="row friends" ng-repeat="friend in user.friends" id="friend_{{friend.username}}" username="{{friend.username}}" friendid="{{friend.id}}">
 
       <a ng-href="giftlist/{{friend.id}}" ng-click="friendwishlist(friend)" title="See {{friend.fullname}}'s wish list">
         <div class="{{isLastRow('span2 pad5 list2 overflow-hidden', $index, user.friends.length)}}">

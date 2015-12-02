@@ -16,7 +16,7 @@
           
           <div ng-hide="circleForm.name.$error.required || circleForm.expdate.$error.required">
             <div class="btn-group pull-right">
-              <a ng-href="" class="btn btn-primary" ng-click="savecircle(thecircle, expdate);showRegister=false;search='';">Save</a>
+              <a ng-href="" class="btn btn-primary" ng-click="savecircle(thecircle, expdate);showRegister=false;search='';" id="btnSaveEvent">Save</a>
               <a ng-href="" class="btn" ng-click="cancelcirclechanges();addmethod='';search='';">Cancel</a>
             </div>
           </div>   
@@ -33,8 +33,8 @@
   <div class="span6 roundedbottom bgwhite pad10">
   
     <div class="row">
-      <div class="span4"><input class="span4 largefield" maxlength="140" value="" type="text" name="name" ng-model="thecircle.name" ng-required="true" placeholder="Event Name" title="Event Name" /></div>
-      <div class="span2"><input class="span2 largefield" date-picker="expdate" name="expdate" ng-model="expdate" type="text" placeholder="Event Date" title="Event Date" ng-required="true"></input></div>
+      <div class="span4"><input id="newevent-name" class="span4 largefield" maxlength="140" value="" type="text" name="name" ng-model="thecircle.name" ng-required="true" placeholder="Event Name" title="Event Name" /></div>
+      <div class="span2"><input id="newevent-date" class="span2 largefield" date-picker="expdate" name="expdate" ng-model="expdate" type="text" placeholder="Event Date" title="Event Date" ng-required="true"></input></div>
     </div>
   
 
@@ -68,11 +68,11 @@
 	              
 	              <span ng-show="canaddreceiver(thecircle)">
                     <div class="btn-group pull-right">
-	                  <a class="btn btn-mini font14 bold dropdown-toggle" data-toggle="dropdown">+</a>
+	                  <a class="btn btn-mini font14 bold dropdown-toggle" data-toggle="dropdown" id="addreceiver_plussign">+</a>
 			          <ul class="dropdown-menu">
-			            <li><a ng-href="{{currentlocation}}" ng-click="addmyselfasreceiver(thecircle)">Add myself</a></li>
-			            <li><a ng-href="{{currentlocation}}" ng-click="beginAddingByName('Receiver');">Add by name/email</a></li>
-			            <span ng-hide="user.circles.length == 0"><li><a ng-href="{{currentlocation}}" ng-click="beginAddingFromAnotherEvent('Receiver');">Add from another event</a></li></span>
+			            <li><a ng-href="{{currentlocation}}" ng-click="addmyselfasreceiver(thecircle)" id="addmyself_asreceiver">Add myself</a></li>
+			            <li><a ng-href="{{currentlocation}}" ng-click="beginAddingByName('Receiver');" id="addreceiver_byname">Add by name/email</a></li>
+			            <span ng-hide="user.circles.length == 0"><li><a ng-href="{{currentlocation}}" id="addreceiver_fromevent" ng-click="beginAddingFromAnotherEvent('Receiver');">Add from another event</a></li></span>
 			          </ul>	
 	                </div>
 	              </span>
@@ -87,8 +87,11 @@
           
           <div class="row">
             <div class="span3 roundedbottom pad5">
-              <div ng-repeat="participant in thecircle.participants.receivers" class="pad5">
-                <a ng-href="{{currentlocation}}" class="align-bottom" ng-click="removereceiver($index, thecircle, participant)"><i class="icon-remove"></i></a><span class="font16">{{participant.fullname}}</span>
+              <div ng-repeat="participant in thecircle.participants.receivers" class="pad5">  
+                <a id="remove_{{participant.username}}" ng-href="{{currentlocation}}" class="align-bottom" ng-click="removereceiver($index, thecircle, participant)">
+                  <i class="icon-remove"></i>
+                </a>
+                <span id="selenium_receiver_{{participant.fullname}}" class="font16" username="{{participant.username}}">{{participant.fullname}}</span> 
               </div>
               
               <div ng-show="thecircle.participants.receivers == 0">
@@ -130,8 +133,11 @@
           <div class="row">
             <div class="span3 roundedbottom pad5">
 	       
-	          <div ng-repeat="participant in thecircle.participants.givers">
-                  <a ng-href="{{currentlocation}}" class="align-bottom" ng-click="removegiver($index, thecircle, participant)"><i class="icon-remove"></i></a><span class="font16">{{participant.fullname}}</span>
+	          <div ng-repeat="participant in thecircle.participants.givers">                                             
+                  <a id="remove_{{participant.username}}" ng-href="{{currentlocation}}" ng-click="removegiver($index, thecircle, participant)" class="align-bottom">
+                    <i class="icon-remove"></i>
+                  </a>
+                  <span id="selenium_giver_{{participant.fullname}}" class="font16" username="{{participant.username}}">{{participant.fullname}}</span> 
               </div>
               
 	          <span ng-show="thecircle.participants.givers == 0">

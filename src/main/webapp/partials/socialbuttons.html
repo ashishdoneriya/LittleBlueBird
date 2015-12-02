@@ -1,6 +1,14 @@
 
 
 <!-- AddThis Button BEGIN:  https://www.addthis.com/get/sharing?flag=registered&lb=1#.Ul7uGRBLmwV   -->
+
+<!--
+2014-02-06  All this stuff was commented out because it was rewriting my url's - adding a # and then some random chars
+The result: routeChangeStart events were firing multiple times and (I think) cause a "10 digest error" in angular
+Taking this stuff out, I see now that routeChangeStart only fires once and I don't get those 10 digest errors anymore
+
+I left this stuff in just for informational purposes - in case I want to put it back in and don't remember how
+
 <div class="addthis_toolbox addthis_default_style">
 <a class="addthis_button_facebook_like" fb:like:layout="false"></a>
 <a class="addthis_button_tweet" tw:count="none"></a>
@@ -10,4 +18,6 @@
 </div>
 <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-525eee183beac055"></script>
+-->
+
 <!-- AddThis Button END -->

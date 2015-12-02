@@ -10,10 +10,10 @@
 			    <div class="span1">
 			    
 			      <span ng-hide="circle.isExpired || gifts.mylist">
-			        <span ng-show="gift.canbuy">
+			        <span ng-show="gift.canbuy" id="viewitem_canbuy{{gift.id}}">
 			          <a href="buy/{{circle.id}}/{{showUser.id}}/{{gift.id}}" class="btn btn-success btn-mini" title="Give tells others you are buying this" ng-click="startbuying(gift)">&nbsp;&nbsp; Give &nbsp;&nbsp;</a>
 			        </span>
-			        <span ng-show="gift.canreturn">
+			        <span ng-show="gift.canreturn" id="viewitem_canreturn{{gift.id}}">
 			          <span ng-show="gift.returning">
 			            <img src="img/spinner-16.gif"/>
 			          </span>
@@ -34,11 +34,11 @@
 			    
 			    <div class="span3">
 			      <div class="row">
-			        <div class="span3">
+			        <div class="span3" id="viewitem_giftdescription{{gift.id}}" giftid="{{gift.id}}">
 						      <span class="font14">
 						        <span ng-show="gift.issurprise"><img src="img/shhh.gif" title="Shhhh! {{showUser.fullname}} does not know anything about this" /></span>
 						        <span ng-show="gift.affiliateUrl != '' && gift.affiliateUrl != null">
-						          <a ng-href="{{gift.affiliateUrl}}" 
+						          <a ng-href="{{gift.affiliateUrl}}" id="viewitem_link{{gift.id}}"
 						             target="item">
 						            {{gift.description}}
 						          </a>
@@ -66,8 +66,8 @@
 			      <span ng-show="$parent.showbuttons">
 			        <span class="pull-right">
 			        
-					    <span ng-show="gift.canedit"><a class="btn btn-mini" href="{{currentlocation}}" ng-click="editgift(gift)"><i class="icon-pencil"></i> Edit</a></span> 
-			            <span ng-show="gift.candelete"><a class="btn btn-mini" href="{{currentlocation}}" ng-click="deletegift($index, gift)"><i class="icon-remove"></i> Delete</a></span>
+					    <span ng-show="gift.canedit"><a id="viewitem_editbutton{{gift.id}}" class="btn btn-mini" href="{{currentlocation}}" ng-click="editgift(gift)"><i class="icon-pencil"></i> Edit</a></span> 
+			            <span ng-show="gift.candelete"><a id="viewitem_deletebutton{{gift.id}}" class="btn btn-mini" href="{{currentlocation}}" ng-click="deletegift($index, gift)"><i class="icon-remove"></i> Delete</a></span>
 					  
 					    <span ng-hide="gift.canedit"><button class="btn btn-mini disabled" title="You can't edit this item because you didn't add it"><i class="icon-pencil"></i> Edit</button></span> 
 					    <span ng-hide="gift.candelete"><button class="btn btn-mini disabled" title="You can't delete this item because you didn't add it"><i class="icon-remove"></i> Delete</button></span>
